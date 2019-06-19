@@ -304,6 +304,214 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/10/11/2018-10-10-hashmap的源码查看/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="NanYin">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NanYin的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/10/11/2018-10-10-hashmap的源码查看/" itemprop="url">HashMap的源码查看</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-10T22:05:00Z">
+                2018-10-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  2.4k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  12
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
+
+<ul>
+<li><a href="#hashmap的源码查看">HashMap的源码查看</a><ul>
+<li><a href="#hashmap结构源码">HashMap结构源码</a><ul>
+<li><a href="#基本属性">基本属性</a></li>
+<li><a href="#依赖的数据结构">依赖的数据结构</a><ul>
+<li><a href="#node节点">Node节点</a></li>
+</ul>
+</li>
+<li><a href="#hashmap的三个构造方法">hashMap的三个构造方法</a></li>
+</ul>
+</li>
+<li><a href="#hashmap的方法源码">hashMap的方法源码</a><ul>
+<li><a href="#put方法">put方法</a><ul>
+<li><a href="#在看get方法之前先看和put方法息息相关的resize方法">在看get方法之前先看和put方法息息相关的resize方法</a></li>
+</ul>
+</li>
+<li><a href="#get方法">get方法</a></li>
+<li><a href="#remove方法">remove方法</a></li>
+<li><a href="#keyset方法">keySet方法</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<!-- /TOC -->
+
+<h1 id="HashMap的源码查看"><a href="#HashMap的源码查看" class="headerlink" title="HashMap的源码查看"></a>HashMap的源码查看</h1><h2 id="HashMap结构源码"><a href="#HashMap结构源码" class="headerlink" title="HashMap结构源码"></a>HashMap结构源码</h2><h3 id="基本属性"><a href="#基本属性" class="headerlink" title="基本属性"></a>基本属性</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"> <span class="comment">/* 实际上结构就是一个node数组 */</span></span><br><span class="line"> <span class="keyword">transient</span> Node&lt;K,V&gt;[] table;</span><br><span class="line"></span><br><span class="line"> <span class="comment">/**</span></span><br><span class="line"><span class="comment">  * Holds cached entrySet(). Note that AbstractMap fields are used</span></span><br><span class="line"><span class="comment">  * for keySet() and values().</span></span><br><span class="line"><span class="comment">  * 得到entryset</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line"> <span class="keyword">transient</span> Set&lt;Map.Entry&lt;K,V&gt;&gt; entrySet;</span><br><span class="line"></span><br><span class="line"> <span class="comment">/**</span></span><br><span class="line"><span class="comment">  * The number of key-value mappings contained in this map.</span></span><br><span class="line"><span class="comment">    map的大小</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line"> <span class="keyword">transient</span> <span class="keyword">int</span> size;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 操作次数 */</span></span><br><span class="line"> <span class="keyword">transient</span> <span class="keyword">int</span> modCount;</span><br><span class="line"></span><br><span class="line"> <span class="comment">/* 临界值，如果超过临界值就会自动扩充数组 */</span></span><br><span class="line"> <span class="keyword">int</span> threshold;</span><br><span class="line"></span><br><span class="line"> <span class="comment">/* 加载因子  */</span></span><br><span class="line"> <span class="keyword">final</span> <span class="keyword">float</span> loadFactor;</span><br></pre></td></tr></table></figure>
+
+<h3 id="依赖的数据结构"><a href="#依赖的数据结构" class="headerlink" title="依赖的数据结构"></a>依赖的数据结构</h3><h4 id="Node节点"><a href="#Node节点" class="headerlink" title="Node节点"></a>Node节点</h4><p>首先看到hashmap中的node类继承了map.Entry&lt;k,v&gt;结构，有类型为K的key和类型为V的value；其次node是一个链表结构。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Node</span>&lt;<span class="title">K</span>,<span class="title">V</span>&gt; <span class="keyword">implements</span> <span class="title">Map</span>.<span class="title">Entry</span>&lt;<span class="title">K</span>,<span class="title">V</span>&gt; </span>&#123;</span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">int</span> hash;</span><br><span class="line">        <span class="keyword">final</span> K key;</span><br><span class="line">        V value;</span><br><span class="line">        Node&lt;K,V&gt; next;</span><br><span class="line"><span class="comment">/* node的构造方法 */</span></span><br><span class="line">        Node(<span class="keyword">int</span> hash, K key, V value, Node&lt;K,V&gt; next) &#123;</span><br><span class="line">            <span class="keyword">this</span>.hash = hash;</span><br><span class="line">            <span class="keyword">this</span>.key = key;</span><br><span class="line">            <span class="keyword">this</span>.value = value;</span><br><span class="line">            <span class="keyword">this</span>.next = next;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> K <span class="title">getKey</span><span class="params">()</span>        </span>&#123; <span class="keyword">return</span> key; &#125;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> V <span class="title">getValue</span><span class="params">()</span>      </span>&#123; <span class="keyword">return</span> value; &#125;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123; <span class="keyword">return</span> key + <span class="string">"="</span> + value; &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">int</span> <span class="title">hashCode</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> Objects.hashCode(key) ^ Objects.hashCode(value);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> V <span class="title">setValue</span><span class="params">(V newValue)</span> </span>&#123;</span><br><span class="line">            V oldValue = value;</span><br><span class="line">            value = newValue;</span><br><span class="line">            <span class="keyword">return</span> oldValue;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">equals</span><span class="params">(Object o)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">if</span> (o == <span class="keyword">this</span>)</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">            <span class="keyword">if</span> (o <span class="keyword">instanceof</span> Map.Entry) &#123;</span><br><span class="line">                Map.Entry&lt;?,?&gt; e = (Map.Entry&lt;?,?&gt;)o;</span><br><span class="line">                <span class="keyword">if</span> (Objects.equals(key, e.getKey()) &amp;&amp;</span><br><span class="line">                    Objects.equals(value, e.getValue()))</span><br><span class="line">                    <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="hashMap的三个构造方法"><a href="#hashMap的三个构造方法" class="headerlink" title="hashMap的三个构造方法"></a>hashMap的三个构造方法</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 第一个参数 是默认的初始化阈值大小，第二个是加载因子大小 */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">HashMap</span><span class="params">(<span class="keyword">int</span> initialCapacity, <span class="keyword">float</span> loadFactor)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (initialCapacity &lt; <span class="number">0</span>)</span><br><span class="line">    <span class="comment">/* 如果制定的初始化阈值小于0 */</span></span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"Illegal initial capacity: "</span> +</span><br><span class="line">                                           initialCapacity);</span><br><span class="line">    <span class="keyword">if</span> (initialCapacity &gt; MAXIMUM_CAPACITY)</span><br><span class="line">        initialCapacity = MAXIMUM_CAPACITY;</span><br><span class="line">    <span class="keyword">if</span> (loadFactor &lt;= <span class="number">0</span> || Float.isNaN(loadFactor))</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"Illegal load factor: "</span> +</span><br><span class="line">                                           loadFactor);</span><br><span class="line">    <span class="keyword">this</span>.loadFactor = loadFactor;</span><br><span class="line">    <span class="keyword">this</span>.threshold = tableSizeFor(initialCapacity);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 使用this调用上面的方法 */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">HashMap</span><span class="params">(<span class="keyword">int</span> initialCapacity)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>(initialCapacity, DEFAULT_LOAD_FACTOR);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 使用默认的阈值和因子，大小分别为16和0.75</span></span><br><span class="line"><span class="comment"> * Constructs an empty &lt;tt&gt;HashMap&lt;/tt&gt; with the default initial capacity</span></span><br><span class="line"><span class="comment"> * (16) and the default load factor (0.75).</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">HashMap</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.loadFactor = DEFAULT_LOAD_FACTOR; <span class="comment">// all other fields defaulted</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="hashMap的方法源码"><a href="#hashMap的方法源码" class="headerlink" title="hashMap的方法源码"></a>hashMap的方法源码</h2><p>hashMap中最重要的当然是put和get方法了，就要先从这两个最重要的方法入手。</p>
+<h3 id="put方法"><a href="#put方法" class="headerlink" title="put方法"></a>put方法</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> V <span class="title">put</span><span class="params">(K key, V value)</span> </span>&#123;</span><br><span class="line">  <span class="comment">/* 调用putVal方法 */</span></span><br><span class="line">    <span class="keyword">return</span> putVal(hash(key), key, value, <span class="keyword">false</span>, <span class="keyword">true</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Implements Map.put and related methods</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> hash hash for key key的hash码</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> key the key key值</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> value the value to put value值</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> onlyIfAbsent if true, don't change existing value 如果是true 不改变当前值</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> evict if false, the table is in creation mode. 如果是false，那么table就属于创建模式 （？）</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> previous value, or null if none</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">final</span> V <span class="title">putVal</span><span class="params">(<span class="keyword">int</span> hash, K key, V value, <span class="keyword">boolean</span> onlyIfAbsent,</span></span></span><br><span class="line"><span class="function"><span class="params">               <span class="keyword">boolean</span> evict)</span> </span>&#123;</span><br><span class="line">    Node&lt;K,V&gt;[] tab; Node&lt;K,V&gt; p; <span class="keyword">int</span> n, i;</span><br><span class="line">    <span class="keyword">if</span> ((tab = table) == <span class="keyword">null</span> || (n = tab.length) == <span class="number">0</span>)</span><br><span class="line">    <span class="comment">/* 当Map为空的时候  这时候tab为16也就是n为16*/</span></span><br><span class="line">    <span class="comment">/* 这是当map中的内容为空的时候</span></span><br><span class="line"><span class="comment">     * newCap = DEFAULT_INITIAL_CAPACITY;</span></span><br><span class="line"><span class="comment">     * newThr = (int)(DEFAULT_LOAD_FACTOR * DEFAULT_INITIAL_CAPACITY);</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">        n = (tab = resize()).length;</span><br><span class="line">        <span class="comment">/* 如果当前tab的length&amp;hash值再tab列表中不重复 */</span></span><br><span class="line">    <span class="keyword">if</span> ((p = tab[i = (n - <span class="number">1</span>) &amp; hash]) == <span class="keyword">null</span>)</span><br><span class="line">    <span class="comment">/* 新建一个noede 再tab[i]的位置上 */</span></span><br><span class="line">        tab[i] = newNode(hash, key, value, <span class="keyword">null</span>);</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        Node&lt;K,V&gt; e; K k;</span><br><span class="line">        <span class="comment">/* 当添加重复的key的时候 这时候hash和key的值都相等，就相当于不添加 */</span></span><br><span class="line">        <span class="keyword">if</span> (p.hash == hash &amp;&amp;</span><br><span class="line">            ((k = p.key) == key || (key != <span class="keyword">null</span> &amp;&amp; key.equals(k))))</span><br><span class="line">            e = p;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (p <span class="keyword">instanceof</span> TreeNode)</span><br><span class="line">        <span class="comment">/* 如果e是treeNode的时候  */</span></span><br><span class="line">            e = ((TreeNode&lt;K,V&gt;)p).putTreeVal(<span class="keyword">this</span>, tab, hash, key, value);</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> binCount = <span class="number">0</span>; ; ++binCount) &#123;</span><br><span class="line">                <span class="keyword">if</span> ((e = p.next) == <span class="keyword">null</span>) &#123;</span><br><span class="line">                    p.next = newNode(hash, key, value, <span class="keyword">null</span>);</span><br><span class="line">                    <span class="keyword">if</span> (binCount &gt;= TREEIFY_THRESHOLD - <span class="number">1</span>) <span class="comment">// -1 for 1st</span></span><br><span class="line">                    <span class="comment">/* 如果当前列表中的长度大于等于 8-1 的时候，把这个列表整理成树形结构 */</span></span><br><span class="line">                        treeifyBin(tab, hash);</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">if</span> (e.hash == hash &amp;&amp;</span><br><span class="line">                    ((k = e.key) == key || (key != <span class="keyword">null</span> &amp;&amp; key.equals(k))))</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                p = e;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (e != <span class="keyword">null</span>) &#123; <span class="comment">// existing mapping for key</span></span><br><span class="line">            V oldValue = e.value;</span><br><span class="line">            <span class="keyword">if</span> (!onlyIfAbsent || oldValue == <span class="keyword">null</span>)</span><br><span class="line">                e.value = value;</span><br><span class="line">            afterNodeAccess(e);</span><br><span class="line">            <span class="keyword">return</span> oldValue;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    ++modCount;</span><br><span class="line">    <span class="comment">/* 如果当前size大于threshold的时候扩充table */</span></span><br><span class="line">    <span class="keyword">if</span> (++size &gt; threshold)</span><br><span class="line">        resize();</span><br><span class="line">    afterNodeInsertion(evict);</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="在看get方法之前先看和put方法息息相关的resize方法"><a href="#在看get方法之前先看和put方法息息相关的resize方法" class="headerlink" title="在看get方法之前先看和put方法息息相关的resize方法"></a>在看get方法之前先看和put方法息息相关的resize方法</h4><p>我理解的 <code>hashMap</code> 大致形状，总体为纵向拓展，如果 <code>hash&amp;length-1</code> 的值重复的话，说明位置冲突，首先会加在这个位置元素后面，如果大小超过 <code>TREEIFY_THRESHOLD - 1</code> 的时候自动为这列整理成树形状。这样就会变为纵向列表，横向列表或树的结构。</p>
+<p>在未重复hash的前提下，如果table的大小超过设置的 <code>threshold</code> 的大小的时候，就会触发 <code>resize</code> 方法。下面就来看看resize方法的代码结构。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">final</span> Node&lt;K,V&gt;[] resize() &#123;</span><br><span class="line">        Node&lt;K,V&gt;[] oldTab = table;</span><br><span class="line">        <span class="keyword">int</span> oldCap = (oldTab == <span class="keyword">null</span>) ? <span class="number">0</span> : oldTab.length;</span><br><span class="line">        <span class="keyword">int</span> oldThr = threshold;</span><br><span class="line">        <span class="keyword">int</span> newCap, newThr = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">if</span> (oldCap &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (oldCap &gt;= MAXIMUM_CAPACITY) &#123;</span><br><span class="line">                threshold = Integer.MAX_VALUE;</span><br><span class="line">                <span class="keyword">return</span> oldTab;</span><br><span class="line">            &#125; <span class="comment">//newcap是oldcap的2倍</span></span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> ((newCap = oldCap &lt;&lt; <span class="number">1</span>) &lt; MAXIMUM_CAPACITY &amp;&amp;</span><br><span class="line">                     oldCap &gt;= DEFAULT_INITIAL_CAPACITY)</span><br><span class="line">                newThr = oldThr &lt;&lt; <span class="number">1</span>; <span class="comment">// double threshold</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (oldThr &gt; <span class="number">0</span>) <span class="comment">// initial capacity was placed in threshold</span></span><br><span class="line">            newCap = oldThr;</span><br><span class="line">        <span class="keyword">else</span> &#123;               <span class="comment">// zero initial threshold signifies using defaults</span></span><br><span class="line">            newCap = DEFAULT_INITIAL_CAPACITY;</span><br><span class="line">            newThr = (<span class="keyword">int</span>)(DEFAULT_LOAD_FACTOR * DEFAULT_INITIAL_CAPACITY);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (newThr == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">float</span> ft = (<span class="keyword">float</span>)newCap * loadFactor;</span><br><span class="line">            newThr = (newCap &lt; MAXIMUM_CAPACITY &amp;&amp; ft &lt; (<span class="keyword">float</span>)MAXIMUM_CAPACITY ?</span><br><span class="line">                      (<span class="keyword">int</span>)ft : Integer.MAX_VALUE);</span><br><span class="line">        &#125;</span><br><span class="line">        threshold = newThr;</span><br><span class="line">        <span class="meta">@SuppressWarnings</span>(&#123;<span class="string">"rawtypes"</span>,<span class="string">"unchecked"</span>&#125;)</span><br><span class="line">        Node&lt;K,V&gt;[] newTab = (Node&lt;K,V&gt;[])<span class="keyword">new</span> Node[newCap];</span><br><span class="line">        table = newTab;</span><br><span class="line">        <span class="keyword">if</span> (oldTab != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; oldCap; ++j) &#123; <span class="comment">//循环原table数组 ？因为在扩容后 hash &amp; (size-1) 的位置发生了变化 ，所以应当进行重排</span></span><br><span class="line">                Node&lt;K,V&gt; e;</span><br><span class="line">                <span class="keyword">if</span> ((e = oldTab[j]) != <span class="keyword">null</span>) &#123;</span><br><span class="line">                    oldTab[j] = <span class="keyword">null</span>;</span><br><span class="line">                    <span class="keyword">if</span> (e.next == <span class="keyword">null</span>)<span class="comment">//说明e不存在hash冲突</span></span><br><span class="line">                        newTab[e.hash &amp; (newCap - <span class="number">1</span>)] = e;</span><br><span class="line">                    <span class="keyword">else</span> <span class="keyword">if</span> (e <span class="keyword">instanceof</span> TreeNode)</span><br><span class="line">                        ((TreeNode&lt;K,V&gt;)e).split(<span class="keyword">this</span>, newTab, j, oldCap);</span><br><span class="line">                    <span class="keyword">else</span> &#123; <span class="comment">// preserve order</span></span><br><span class="line">                        Node&lt;K,V&gt; loHead = <span class="keyword">null</span>, loTail = <span class="keyword">null</span>;</span><br><span class="line">                        Node&lt;K,V&gt; hiHead = <span class="keyword">null</span>, hiTail = <span class="keyword">null</span>;</span><br><span class="line">                        Node&lt;K,V&gt; next;</span><br><span class="line">                        <span class="keyword">do</span> &#123; <span class="comment">//再去循环bin</span></span><br><span class="line">                            next = e.next;</span><br><span class="line">                            <span class="keyword">if</span> ((e.hash &amp; oldCap) == <span class="number">0</span>) &#123; <span class="comment">//如果在低位 （老）数组中也就是元素hast和就数组取模为0时，说明重排后仍在老数组内</span></span><br><span class="line">                                <span class="keyword">if</span> (loTail == <span class="keyword">null</span>)</span><br><span class="line">                                    loHead = e;</span><br><span class="line">                                <span class="keyword">else</span></span><br><span class="line">                                    loTail.next = e;</span><br><span class="line">                                loTail = e;<span class="comment">//递归向下继续排</span></span><br><span class="line">                            &#125;</span><br><span class="line">                            <span class="keyword">else</span> &#123;<span class="comment">//否则在高位数组中 ，也就是在扩容出来的数组中</span></span><br><span class="line">                                <span class="keyword">if</span> (hiTail == <span class="keyword">null</span>)</span><br><span class="line">                                    hiHead = e;</span><br><span class="line">                                <span class="keyword">else</span></span><br><span class="line">                                    hiTail.next = e;</span><br><span class="line">                                hiTail = e;</span><br><span class="line">                            &#125;</span><br><span class="line">                        &#125; <span class="keyword">while</span> ((e = next) != <span class="keyword">null</span>);</span><br><span class="line">                        <span class="keyword">if</span> (loTail != <span class="keyword">null</span>) &#123;</span><br><span class="line">                            loTail.next = <span class="keyword">null</span>;</span><br><span class="line">                            newTab[j] = loHead; <span class="comment">//低位数组还是在原来的位置上</span></span><br><span class="line">                        &#125;</span><br><span class="line">                        <span class="keyword">if</span> (hiTail != <span class="keyword">null</span>) &#123;</span><br><span class="line">                            hiTail.next = <span class="keyword">null</span>;</span><br><span class="line">                            newTab[j + oldCap] = hiHead; <span class="comment">//高位数组在旧数组+j的位置上</span></span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> newTab;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="get方法"><a href="#get方法" class="headerlink" title="get方法"></a>get方法</h3><p>get方法是根据hash和key值进行查找,同理containKey方法也是调用getNode方法进行判断。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> V <span class="title">get</span><span class="params">(Object key)</span> </span>&#123;</span><br><span class="line">    Node&lt;K,V&gt; e;</span><br><span class="line">    <span class="keyword">return</span> (e = getNode(hash(key), key)) == <span class="keyword">null</span> ? <span class="keyword">null</span> : e.value;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">final</span> Node&lt;K,V&gt; <span class="title">getNode</span><span class="params">(<span class="keyword">int</span> hash, Object key)</span> </span>&#123;</span><br><span class="line">    Node&lt;K,V&gt;[] tab; Node&lt;K,V&gt; first, e; <span class="keyword">int</span> n; K k;</span><br><span class="line">    <span class="keyword">if</span> ((tab = table) != <span class="keyword">null</span> &amp;&amp; (n = tab.length) &gt; <span class="number">0</span> &amp;&amp;</span><br><span class="line">        (first = tab[(n - <span class="number">1</span>) &amp; hash]) != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (first.hash == hash &amp;&amp; <span class="comment">// 先回检查第一个节点</span></span><br><span class="line">            ((k = first.key) == key || (key != <span class="keyword">null</span> &amp;&amp; key.equals(k))))</span><br><span class="line">            <span class="keyword">return</span> first;</span><br><span class="line">        <span class="keyword">if</span> ((e = first.next) != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (first <span class="keyword">instanceof</span> TreeNode)</span><br><span class="line">                <span class="keyword">return</span> ((TreeNode&lt;K,V&gt;)first).getTreeNode(hash, key);</span><br><span class="line">            <span class="keyword">do</span> &#123;</span><br><span class="line">              <span class="comment">/* 从第二个节点开始循环 查找hash和key分别相同  */</span></span><br><span class="line">                <span class="keyword">if</span> (e.hash == hash &amp;&amp;</span><br><span class="line">                    ((k = e.key) == key || (key != <span class="keyword">null</span> &amp;&amp; key.equals(k))))</span><br><span class="line">                    <span class="keyword">return</span> e;</span><br><span class="line">            &#125; <span class="keyword">while</span> ((e = e.next) != <span class="keyword">null</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="remove方法"><a href="#remove方法" class="headerlink" title="remove方法"></a>remove方法</h3><p>使用remove方法根据key移除节点</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> V <span class="title">remove</span><span class="params">(Object key)</span> </span>&#123;</span><br><span class="line">    Node&lt;K,V&gt; e;</span><br><span class="line">    <span class="keyword">return</span> (e = removeNode(hash(key), key, <span class="keyword">null</span>, <span class="keyword">false</span>, <span class="keyword">true</span>)) == <span class="keyword">null</span> ?</span><br><span class="line">        <span class="keyword">null</span> : e.value;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Implements Map.remove and related methods</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> hash key的hash值</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> key 键值</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> value 如果想匹配的话就是value，否则空</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> matchValue 如果是ture那么就移除和value equal的</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> movable 如果是false的话，移除这个节点不要移动其他节点</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> the node, or null if none</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">final</span> Node&lt;K,V&gt; <span class="title">removeNode</span><span class="params">(<span class="keyword">int</span> hash, Object key, Object value,</span></span></span><br><span class="line"><span class="function"><span class="params">                           <span class="keyword">boolean</span> matchValue, <span class="keyword">boolean</span> movable)</span> </span>&#123;</span><br><span class="line">    Node&lt;K,V&gt;[] tab; Node&lt;K,V&gt; p; <span class="keyword">int</span> n, index;</span><br><span class="line">    <span class="comment">/* 确定节点 */</span></span><br><span class="line">    <span class="keyword">if</span> ((tab = table) != <span class="keyword">null</span> &amp;&amp; (n = tab.length) &gt; <span class="number">0</span> &amp;&amp;</span><br><span class="line">        (p = tab[index = (n - <span class="number">1</span>) &amp; hash]) != <span class="keyword">null</span>) &#123;</span><br><span class="line">        Node&lt;K,V&gt; node = <span class="keyword">null</span>, e; K k; V v;</span><br><span class="line">        <span class="comment">/* 如果hash值相同 key值也相同 说明就是这个节点 */</span></span><br><span class="line">        <span class="keyword">if</span> (p.hash == hash &amp;&amp;</span><br><span class="line">            ((k = p.key) == key || (key != <span class="keyword">null</span> &amp;&amp; key.equals(k))))</span><br><span class="line">            node = p;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> ((e = p.next) != <span class="keyword">null</span>) &#123;</span><br><span class="line">          <span class="comment">/* 否则横向查找下一个节点 */</span></span><br><span class="line">            <span class="keyword">if</span> (p <span class="keyword">instanceof</span> TreeNode)</span><br><span class="line">                node = ((TreeNode&lt;K,V&gt;)p).getTreeNode(hash, key);</span><br><span class="line">            <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">do</span> &#123;</span><br><span class="line">                    <span class="comment">/* 省略-------- */</span></span><br><span class="line">                &#125; <span class="keyword">while</span> ((e = e.next) != <span class="keyword">null</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (node != <span class="keyword">null</span> &amp;&amp; (!matchValue || (v = node.value) == value ||</span><br><span class="line">                             (value != <span class="keyword">null</span> &amp;&amp; value.equals(v)))) &#123;</span><br><span class="line">            <span class="keyword">if</span> (node <span class="keyword">instanceof</span> TreeNode)</span><br><span class="line">                ((TreeNode&lt;K,V&gt;)node).removeTreeNode(<span class="keyword">this</span>, tab, movable);</span><br><span class="line">                <span class="comment">/* 接下来把tab中对应的index remove掉 */</span></span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (node == p)</span><br><span class="line">                tab[index] = node.next;</span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">                p.next = node.next;</span><br><span class="line">            ++modCount;</span><br><span class="line">            --size;</span><br><span class="line">            afterNodeRemoval(node);</span><br><span class="line">            <span class="keyword">return</span> node;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="keySet方法"><a href="#keySet方法" class="headerlink" title="keySet方法"></a>keySet方法</h3><p>ketSet方法也是经常用到的方法，keySet方法实际上就是返回新建的keyset结构。具体结构可以看如下代码，可以看到只有使用forEach和Iterator方法的时候才会循环tab来找key的set数据。数据结构中都是调用外部方法的方法。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">KeySet</span> <span class="keyword">extends</span> <span class="title">AbstractSet</span>&lt;<span class="title">K</span>&gt; </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">int</span> <span class="title">size</span><span class="params">()</span>                 </span>&#123; <span class="keyword">return</span> size; &#125; <span class="comment">//返回当前size</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">clear</span><span class="params">()</span>               </span>&#123; HashMap.<span class="keyword">this</span>.clear(); &#125; <span class="comment">//直接调用hashMap的clear方法</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> Iterator&lt;K&gt; <span class="title">iterator</span><span class="params">()</span>     </span>&#123; <span class="keyword">return</span> <span class="keyword">new</span> KeyIterator(); &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">contains</span><span class="params">(Object o)</span> </span>&#123; <span class="keyword">return</span> containsKey(o); &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">remove</span><span class="params">(Object key)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> removeNode(hash(key), key, <span class="keyword">null</span>, <span class="keyword">false</span>, <span class="keyword">true</span>) != <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> Spliterator&lt;K&gt; <span class="title">spliterator</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> KeySpliterator&lt;&gt;(HashMap.<span class="keyword">this</span>, <span class="number">0</span>, -<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">forEach</span><span class="params">(Consumer&lt;? <span class="keyword">super</span> K&gt; action)</span> </span>&#123;</span><br><span class="line">        Node&lt;K,V&gt;[] tab;</span><br><span class="line">        <span class="keyword">if</span> (action == <span class="keyword">null</span>)</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException();</span><br><span class="line">        <span class="keyword">if</span> (size &gt; <span class="number">0</span> &amp;&amp; (tab = table) != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">int</span> mc = modCount;</span><br><span class="line">            <span class="comment">/* 把当前操作数记下来  */</span></span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; tab.length; ++i) &#123;</span><br><span class="line">                <span class="keyword">for</span> (Node&lt;K,V&gt; e = tab[i]; e != <span class="keyword">null</span>; e = e.next)</span><br><span class="line">                    action.accept(e.key);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (modCount != mc)</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> ConcurrentModificationException();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这是几个非常常用的hashMap的方法和基本的数据结构源码的分析查看。就当做笔记记录一下。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+<div>
+      
+</div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/10/08/2018-10-08-LinkedList的源码查看/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -487,6 +695,9 @@
     <div>
       
     </div>
+<div>
+      
+</div>
     
 
     
@@ -673,6 +884,9 @@
     <div>
       
     </div>
+<div>
+      
+</div>
     
 
     
@@ -863,203 +1077,9 @@
     <div>
       
     </div>
-    
-
-    
-
-    
-
-    <footer class="post-footer">
+<div>
       
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/07/13/2018-07-12-bash问题总结/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="NanYin">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NanYin的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/07/13/2018-07-12-bash问题总结/" itemprop="url">bash相关问题总结</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-12T17:00:00Z">
-                2018-07-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  507
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  1
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="bash相关问题总结"><a href="#bash相关问题总结" class="headerlink" title="bash相关问题总结"></a>bash相关问题总结</h1><h2 id="七月专题"><a href="#七月专题" class="headerlink" title="七月专题 - -"></a>七月专题 - -</h2><h3 id="关于bash中的-lt-lt-lt-的含义"><a href="#关于bash中的-lt-lt-lt-的含义" class="headerlink" title="关于bash中的 &lt;&lt;&lt; 的含义"></a>关于bash中的 <code>&lt;&lt;&lt;</code> 的含义</h3><p>在StackOverflow中有个例子非常的详细。。先贴连接 <a href="https://unix.stackexchange.com/questions/80362/what-does-mean" target="_blank" rel="noopener">What does &lt;&lt;&lt; mean? </a>以下是我的渣翻译，可能会翻译错。。</p>
-<p>我们可以这样对字符串进行处理</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="string">"<span class="variable">$string</span>"</span> | <span class="built_in">command</span></span><br></pre></td></tr></table></figure>
-
-<p>然而在bash中，这样写（使用管道）就相当于把命令分到子shell中进行处理，考虑这种情况</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="string">"hello world"</span> | <span class="built_in">read</span> first second</span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$second</span> <span class="variable">$first</span></span><br></pre></td></tr></table></figure>
-
-<p>它会输出一个空行，子shell成功的读到了两个变量，但是随后子shell退出，两个变量就消失掉了。所以输出是没有结果的。应当这样写</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="string">"hello world"</span> | &#123;</span><br><span class="line">    <span class="built_in">read</span> first second</span><br><span class="line">    <span class="built_in">echo</span> <span class="variable">$second</span> <span class="variable">$first</span></span><br><span class="line">&#125;</span><br><span class="line">```</span><br><span class="line"></span><br><span class="line">但是这样还是没有解决这种分成子shell去执行的尴尬。这时候就能够使用 `&lt;&lt;&lt;` 了</span><br><span class="line"></span><br><span class="line">````bash</span><br><span class="line"><span class="built_in">read</span> first second &lt;&lt;&lt; <span class="built_in">echo</span> <span class="string">"hello world"</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="关于-var-var是变量名"><a href="#关于-var-var是变量名" class="headerlink" title="关于${!var} var是变量名"></a>关于${!var} var是变量名</h3><p>使用${!var}的作用是当ver不存在的时候会原样输出，也就是显示${var}</p>
-<h3 id="关于bash中的trap命令的使用"><a href="#关于bash中的trap命令的使用" class="headerlink" title="关于bash中的trap命令的使用"></a>关于bash中的trap命令的使用</h3><p>trap可以强化bash脚本，让脚本更加稳定。</p>
-<h4 id="trap的使用方式"><a href="#trap的使用方式" class="headerlink" title="trap的使用方式"></a>trap的使用方式</h4><p>trap有三种使用方式，对应这不同的对信号的回应方式。</p>
-<ol>
-<li>trap ”something“ signal</li>
-</ol>
-<p>其中”something“ 是在接受signal信号之后作出的命令</p>
-<ol start="2">
-<li>trap signal </li>
-</ol>
-<p>trap不指定任何命令，接受信号的默认操作，默认操作是结束进程的运行</p>
-<ol start="3">
-<li>trap “” signal</li>
-</ol>
-<p>trap命令指定一个空命令串，允许忽视信号</p>
-<h4 id="常用信号"><a href="#常用信号" class="headerlink" title="常用信号"></a>常用信号</h4><ul>
-<li><p>HUB(1) 挂起，通常因终端掉线或用户退出而引发</p>
-</li>
-<li><p>INT(2) 中断，通常因按下Ctrl+C组合键而引发</p>
-</li>
-<li><p>QUIT(3) 退出，通常因按下Ctrl+/组合键而引发</p>
-</li>
-<li><p>ABRT(6) 中止，通常因某些严重的执行错误而引发</p>
-</li>
-<li><p>ALRM(14) 报警，通常用来处理超时</p>
-</li>
-<li><p>TERM(15) 终止，通常在系统关机时发送</p>
-</li>
-<li><p>KILL(9) 杀死进程</p>
-</li>
-<li><p>STOP 停止进程执行</p>
-</li>
-</ul>
-<p>更过的信号 可以使用 trap -l 命令来查看</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
+</div>
     
 
     
@@ -1276,6 +1296,209 @@
     <div>
       
     </div>
+<div>
+      
+</div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/07/13/2018-07-12-bash问题总结/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="NanYin">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NanYin的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/07/13/2018-07-12-bash问题总结/" itemprop="url">bash相关问题总结</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-12T17:00:00Z">
+                2018-07-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  507
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  1
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="bash相关问题总结"><a href="#bash相关问题总结" class="headerlink" title="bash相关问题总结"></a>bash相关问题总结</h1><h2 id="七月专题"><a href="#七月专题" class="headerlink" title="七月专题 - -"></a>七月专题 - -</h2><h3 id="关于bash中的-lt-lt-lt-的含义"><a href="#关于bash中的-lt-lt-lt-的含义" class="headerlink" title="关于bash中的 &lt;&lt;&lt; 的含义"></a>关于bash中的 <code>&lt;&lt;&lt;</code> 的含义</h3><p>在StackOverflow中有个例子非常的详细。。先贴连接 <a href="https://unix.stackexchange.com/questions/80362/what-does-mean" target="_blank" rel="noopener">What does &lt;&lt;&lt; mean? </a>以下是我的渣翻译，可能会翻译错。。</p>
+<p>我们可以这样对字符串进行处理</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="string">"<span class="variable">$string</span>"</span> | <span class="built_in">command</span></span><br></pre></td></tr></table></figure>
+
+<p>然而在bash中，这样写（使用管道）就相当于把命令分到子shell中进行处理，考虑这种情况</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="string">"hello world"</span> | <span class="built_in">read</span> first second</span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$second</span> <span class="variable">$first</span></span><br></pre></td></tr></table></figure>
+
+<p>它会输出一个空行，子shell成功的读到了两个变量，但是随后子shell退出，两个变量就消失掉了。所以输出是没有结果的。应当这样写</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="string">"hello world"</span> | &#123;</span><br><span class="line">    <span class="built_in">read</span> first second</span><br><span class="line">    <span class="built_in">echo</span> <span class="variable">$second</span> <span class="variable">$first</span></span><br><span class="line">&#125;</span><br><span class="line">```</span><br><span class="line"></span><br><span class="line">但是这样还是没有解决这种分成子shell去执行的尴尬。这时候就能够使用 `&lt;&lt;&lt;` 了</span><br><span class="line"></span><br><span class="line">````bash</span><br><span class="line"><span class="built_in">read</span> first second &lt;&lt;&lt; <span class="built_in">echo</span> <span class="string">"hello world"</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="关于-var-var是变量名"><a href="#关于-var-var是变量名" class="headerlink" title="关于${!var} var是变量名"></a>关于${!var} var是变量名</h3><p>使用${!var}的作用是当ver不存在的时候会原样输出，也就是显示${var}</p>
+<h3 id="关于bash中的trap命令的使用"><a href="#关于bash中的trap命令的使用" class="headerlink" title="关于bash中的trap命令的使用"></a>关于bash中的trap命令的使用</h3><p>trap可以强化bash脚本，让脚本更加稳定。</p>
+<h4 id="trap的使用方式"><a href="#trap的使用方式" class="headerlink" title="trap的使用方式"></a>trap的使用方式</h4><p>trap有三种使用方式，对应这不同的对信号的回应方式。</p>
+<ol>
+<li>trap ”something“ signal</li>
+</ol>
+<p>其中”something“ 是在接受signal信号之后作出的命令</p>
+<ol start="2">
+<li>trap signal </li>
+</ol>
+<p>trap不指定任何命令，接受信号的默认操作，默认操作是结束进程的运行</p>
+<ol start="3">
+<li>trap “” signal</li>
+</ol>
+<p>trap命令指定一个空命令串，允许忽视信号</p>
+<h4 id="常用信号"><a href="#常用信号" class="headerlink" title="常用信号"></a>常用信号</h4><ul>
+<li><p>HUB(1) 挂起，通常因终端掉线或用户退出而引发</p>
+</li>
+<li><p>INT(2) 中断，通常因按下Ctrl+C组合键而引发</p>
+</li>
+<li><p>QUIT(3) 退出，通常因按下Ctrl+/组合键而引发</p>
+</li>
+<li><p>ABRT(6) 中止，通常因某些严重的执行错误而引发</p>
+</li>
+<li><p>ALRM(14) 报警，通常用来处理超时</p>
+</li>
+<li><p>TERM(15) 终止，通常在系统关机时发送</p>
+</li>
+<li><p>KILL(9) 杀死进程</p>
+</li>
+<li><p>STOP 停止进程执行</p>
+</li>
+</ul>
+<p>更过的信号 可以使用 trap -l 命令来查看</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+<div>
+      
+</div>
     
 
     
@@ -1479,6 +1702,9 @@
     <div>
       
     </div>
+<div>
+      
+</div>
     
 
     
@@ -1641,6 +1867,9 @@
     <div>
       
     </div>
+<div>
+      
+</div>
     
 
     
@@ -1805,6 +2034,9 @@
     <div>
       
     </div>
+<div>
+      
+</div>
     
 
     
@@ -2021,197 +2253,9 @@
     <div>
       
     </div>
-    
-
-    
-
-    
-
-    <footer class="post-footer">
+<div>
       
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/06/24/2018-06-27-bash_11_bash命令篇（三）/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="NanYin">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NanYin的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/24/2018-06-27-bash_11_bash命令篇（三）/" itemprop="url">bash学习记录（十二）命令篇（3）</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-24T15:00:00Z">
-                2018-06-24
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  556
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  2
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="bash命令篇（三）"><a href="#bash命令篇（三）" class="headerlink" title="bash命令篇（三）"></a>bash命令篇（三）</h1><h2 id="bash中的关于通信的命令"><a href="#bash中的关于通信的命令" class="headerlink" title="bash中的关于通信的命令"></a>bash中的关于通信的命令</h2><ol>
-<li>host 通过ip或者域名搜索互联网的主机地址（使用DNS）</li>
-</ol>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ host www.baidu.com</span><br><span class="line">www.baidu.com has address 61.135.169.125</span><br><span class="line">www.baidu.com has address 61.135.169.121</span><br><span class="line">www.baidu.com is an <span class="built_in">alias</span> <span class="keyword">for</span> www.a.shifen.com.</span><br><span class="line">www.baidu.com is an <span class="built_in">alias</span> <span class="keyword">for</span> www.a.shifen.com.</span><br></pre></td></tr></table></figure>
-
-<ol start="2">
-<li>nslookup 向上寻找name server</li>
-</ol>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">$ nslookup  -sil 66.97.104.180 </span><br><span class="line">Server:		127.0.1.1</span><br><span class="line">Address:	127.0.1.1<span class="comment">#53</span></span><br><span class="line"></span><br><span class="line">Non-authoritative answer:</span><br><span class="line">180.104.97.66.in-addr.arpa	name = 66-97-104-180.dynamic.bugtusselwireless.com.</span><br><span class="line"></span><br><span class="line">Authoritative answers can be found from:</span><br><span class="line">104.97.66.in-addr.arpa	nameserver = ns2.bugnet.net.</span><br><span class="line">104.97.66.in-addr.arpa	nameserver = ns1.bugnet.net.</span><br><span class="line">ns1.bugnet.net	internet address = 204.11.133.241</span><br><span class="line">ns2.bugnet.net	internet address = 204.11.133.244</span><br></pre></td></tr></table></figure>
-
-<ol start="3">
-<li><p>ping 熟知的ping命令，常用来探测与另一个主机是否有网络链接</p>
-</li>
-<li><p>ftp 从远程主机下载或者上传给远程主机的协议。</p>
-</li>
-<li><p>telnt 链接远程主机的协议</p>
-</li>
-<li><p>wget 使用非交互式的从网站web或者ftp站点下载文件。</p>
-</li>
-<li><p>rcp 远程拷贝，在两台不同的机器间拷贝。</p>
-</li>
-<li><p>ssh <code>secure shell</code> 他代替了telnt rcp等命令。</p>
-</li>
-<li><p>scp <code>secure cp</code> 他用来代替rcp命令，需要登录授权的远程拷贝文件的命令。</p>
-<p> 这里只是简略的谈谈常见的关于机器交互的命令，这些都是熟能生巧的东西，最重要的是要上手练习。</p>
-</li>
-</ol>
-<h2 id="数学运算符"><a href="#数学运算符" class="headerlink" title="数学运算符"></a>数学运算符</h2><ol>
-<li><p>dc：dc是使用逆波兰表示法进行计算，如 11 +   ，3 6 *</p>
-</li>
-<li><p>bc：bc是现代linux下比较常见处理复杂运算的命令那个，可以计算浮点数。</p>
-</li>
-</ol>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$bc</span> -l -q</span><br><span class="line">4/3                   /*未指定精度默认保留整数*/</span><br><span class="line">scale=5               /*指定精度为5*/</span><br><span class="line">4/3</span><br><span class="line">1.33333</span><br><span class="line">ibase=2               /*指定进制转换的输入机制为二进制，输出默认为是十进制*/</span><br><span class="line">10</span><br><span class="line">4^2                   /*指数运算，注：指数不能为浮点数*/</span><br><span class="line">4*a(1)                /*计算π值，a()是个函数：arctan()，好吧，老师教的都被狗吃了，π值是等于四倍的arctan(1)么？*/</span><br><span class="line">3.14159265358979323844</span><br><span class="line">quit                  /*退出*/</span><br></pre></td></tr></table></figure>
-
-<ol start="3">
-<li>let: 表达式可以应用在let命令当中。</li>
-</ol>
-<h3 id="其实在我使用linux系统的几年里，感觉命令不能死记硬背，多用自然就会掌握了。但是有些比较冷门的命令还是背下来比较好-。"><a href="#其实在我使用linux系统的几年里，感觉命令不能死记硬背，多用自然就会掌握了。但是有些比较冷门的命令还是背下来比较好-。" class="headerlink" title="其实在我使用linux系统的几年里，感觉命令不能死记硬背，多用自然就会掌握了。但是有些比较冷门的命令还是背下来比较好 - -。"></a>其实在我使用linux系统的几年里，感觉命令不能死记硬背，多用自然就会掌握了。但是有些比较冷门的命令还是背下来比较好 - -。</h3>
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
+</div>
     
 
     
@@ -2290,12 +2334,21 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">65</span>
+                  <span class="site-state-item-count">66</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
             
 
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
             
 
             
@@ -2344,6 +2397,40 @@
           
           
 
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-block">
+           <div class="links-of-blogroll-title">
+             <!-- modify icon to fire by szw -->
+             <i class="fa fa-history fa-" aria-hidden="true"></i>
+             近期文章
+           </div>
+           <ul class="links-of-blogroll-list">
+             
+             
+               <li>
+                 <a href="/2019/06/19/2019-06-19-设计模式之状态模式/" title="设计模式之状态模式" target="_blank">设计模式之状态模式</a>
+               </li>
+             
+               <li>
+                 <a href="/2019/06/18/hello-world/" title="Hello World" target="_blank">Hello World</a>
+               </li>
+             
+               <li>
+                 <a href="/2019/06/18/2019-06-18-Mac下idea在Dock栏一直存在图标和控制台中文乱码问题/" title="Mac下使用idea时在dock栏一直存在java图标和控制台乱码问题" target="_blank">Mac下使用idea时在dock栏一直存在java图标和控制台乱码问题</a>
+               </li>
+             
+               <li>
+                 <a href="/2019/06/17/2019-06-17-设计模式之模版模式/" title="设计模式之模版模式" target="_blank">设计模式之模版模式</a>
+               </li>
+             
+               <li>
+                 <a href="/2019/06/15/2019-06-15-设计模式之访问者模式/" title="设计模式之访问者模式" target="_blank">设计模式之访问者模式</a>
+               </li>
+             
+           </ul>
+         </div>
+          
+
           
 
         </div>
@@ -2378,7 +2465,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">56.9k</span>
+    <span title="Site words total count">57k</span>
   
 </div>
 
@@ -2399,7 +2486,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共56.9k字</span>
+  <span class="post-count">博客全站共57k字</span>
 </div>
 <span class="post-meta-divider">|</span>
 
