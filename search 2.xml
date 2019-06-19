@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title><![CDATA[设计模式之桥接模式]]></title>
+    <url>%2F2019%2F06%2F03%2F2019-06-03-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E6%A1%A5%E6%8E%A5%E6%A8%A1%E5%BC%8F%2F</url>
+    <content type="text"><![CDATA[设计模式之桥接模式目的在于将抽象与其实现分离，以便两者可以独立变化。独立变化的同时能够根据抽象类的对象关联从而能够将两个继承结构联动起来。就像在两个结构之间建立个桥梁一样进行通信，所以叫桥接模式。 应用场景 如果想避免抽象类与实现的永久绑定，可以在运行时间选择和切换实现类。 抽象类和接口都应该通过子类来进行拓展，在桥接模式中，可以使用子类来进行组合的同时能够独立拓展他们。 接口的实现的变化对客户端无影响。 如果想要在多个对象类中共享实现，并且避免让客户端感知到。 桥接模式结构图 代码主要分为四部分，1.抽象类 2.抽象实现类 3.接口类 4.接口实现类 123456789101112131415161718192021222324252627282930313233343536373839// 抽象类与抽象实现类public abstract class Shape &#123; Colors colors; Shape(Colors colors) &#123; this.colors = colors; &#125; public abstract void buildShape();&#125;// 圆形实现类public class ShapeCircle extends Shape &#123; public ShapeCircle(Colors colors) &#123; super(colors); &#125; @Override public void buildShape() &#123; System.out.println("\n first step : build circle\n and second step:"); colors.paint(); &#125;&#125;//方形实现类public class ShapeSquare extends Shape &#123; public ShapeSquare (Colors colors) &#123; super(colors); &#125; @Override public void buildShape() &#123; System.out.println("\n first step : build Square\n and second step:"); colors.paint(); &#125;&#125; 抽象方法中引用了Colors类变量，使用实现类中的buildShape方法实现具体功能。 1234567891011121314151617public interface Colors &#123; public void paint();&#125;public class ColorBlue implements Colors &#123; @Override public void paint() &#123; System.out.println(" print blue !!"); &#125;&#125;public class ColorRed implements Colors &#123; @Override public void paint() &#123; System.out.println(" paint inner with red !!"); &#125;&#125; 通过使用Color接口，实现类实现Colors中的paint方法实现Color 12345678public class App &#123; public static void main(String[] args) &#123; Shape circle = new ShapeCircle(new ColorBlue()); circle.buildShape(); Shape square = new ShapeSquare(new ColorRed()); square.buildShape(); &#125;&#125; 123456789结果： first step : build circle and second step: print blue !! first step : build Square and second step: paint red !! 上面的例子中，颜色和图形是两个独立不同的维度，两个可以分别变化。将两个维度设计为两个不同的继承的结构，在两个结构之间使用在抽象类中的关联来达到链接的目的，这个链接成为两个继承结构通信的桥梁。所以为桥接模式。]]></content>
+      <tags>
+        <tag>Java</tag>
+        <tag>设计模式</tag>
+      </tags>
+  </entry>
+</search>
