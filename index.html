@@ -304,6 +304,412 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/06/26/2019-06-26-PlantUML类图使用总结/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="NanYin">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NanYin的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/06/26/2019-06-26-PlantUML类图使用总结/" itemprop="url">PlantUML类图使用总结</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-06-26T12:00:00Z">
+                2019-06-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/工具/" itemprop="url" rel="index">
+                    <span itemprop="name">工具</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  1.1k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  4
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="使用PlantUML绘制类图"><a href="#使用PlantUML绘制类图" class="headerlink" title="使用PlantUML绘制类图"></a>使用PlantUML绘制类图</h1><p>本文基于PlantUML官网<a href="http://plantuml.com/zh/class-diagram" target="_blank" rel="noopener">绘制类图</a>和相关如何正确uml类图相关文章。</p>
+<h2 id="为什么使用plantUml"><a href="#为什么使用plantUml" class="headerlink" title="为什么使用plantUml"></a>为什么使用plantUml</h2><p>原因很简单，不用自己考虑构图，像写代码一样写出来，图出来既美观又能够符合逻辑。</p>
+<h2 id="基本类构成"><a href="#基本类构成" class="headerlink" title="基本类构成"></a>基本类构成</h2><h3 id="基本使用"><a href="#基本使用" class="headerlink" title="基本使用"></a>基本使用</h3><p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190626150930.png" alt="基本类构成"></p>
+<p>使用<code>class</code>关键字构件类，同理其他关键字。如<code>interface</code>,<code>enum</code>。</p>
+<p>在类中使用 <code>- # +</code> 分别对应表示类中的<code>private</code>,<code>protected</code>,<code>public</code>。如果在类中使用 <code>static</code>、<code>abstract</code>关键字，需要使用大括号包裹起来。</p>
+<p><strong>备注</strong>使用<code>note</code>来实现，可以使用js优化备注的样式,具体可以参考下面的代码。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">@startuml</span><br><span class="line">&apos; 简单定义类A</span><br><span class="line">class classA</span><br><span class="line">&apos;定义类B</span><br><span class="line">class classB&#123;</span><br><span class="line">    -&#123;static&#125; STATIC:Type</span><br><span class="line">    -a:A</span><br><span class="line">    #b:B</span><br><span class="line">    +c:C</span><br><span class="line">    +hello():void</span><br><span class="line">    -word():void</span><br><span class="line">&#125;</span><br><span class="line">&apos;抽象类C</span><br><span class="line">abstract class classC &#123;</span><br><span class="line">    + &#123;abstract&#125; method1:void</span><br><span class="line">&#125;</span><br><span class="line">&apos;备注</span><br><span class="line">note right: note on right</span><br><span class="line">note top of classA : note on top</span><br><span class="line">&apos; 复杂备注</span><br><span class="line">note top of object</span><br><span class="line">In java, &lt;size:18&gt;every&lt;/size&gt; &lt;u&gt;class&lt;/u&gt;&lt;b&gt;extends&lt;/b&gt;&lt;i&gt;this&lt;/i&gt; one.</span><br><span class="line">end note</span><br><span class="line">@enduml</span><br></pre></td></tr></table></figure>
+
+<h3 id="类更多使用"><a href="#类更多使用" class="headerlink" title="类更多使用"></a>类更多使用</h3><p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190626144335.png" alt="复杂"></p>
+<p>更复杂一些的类的构件参考上图。</p>
+<p>使用<code>__内容__</code>来表示分割线，对不同类型的进行分割。在类名后加<code>&lt;? extends xxx&gt;</code> 表示范型,参考下面代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">@startuml</span><br><span class="line">class classC &lt;&lt;Serializable&gt;&gt; &#123;</span><br><span class="line">__variable__</span><br><span class="line">    -a:A</span><br><span class="line">    #b:B</span><br><span class="line">    +c:C</span><br><span class="line">__methods__</span><br><span class="line">    +hello():void</span><br><span class="line">    -word():void</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class classD &lt;? extends List&gt;&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">@enduml</span><br></pre></td></tr></table></figure>
+
+<h3 id="关系表示"><a href="#关系表示" class="headerlink" title="关系表示"></a>关系表示</h3><h4 id="继承与实现"><a href="#继承与实现" class="headerlink" title="继承与实现"></a>继承与实现</h4><p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190626144700.png" alt="继承与实现"></p>
+<p>继承指的就是<strong>泛化</strong>，如图中左表示一样，类A继承于B，由子类实现父类的行为。泛化使用带<strong>大三角箭头和实线</strong>来表示，表示一种继承关系。</p>
+<p><strong>实现</strong>指的是特定类实现接口，如图中右表示一样，类<code>implement</code>实现<code>interface</code>,表示实现类实现接口类的关系。同样会由子类实现接口类中的行为。实现使用带<strong>大三角的箭头和虚线</strong>来实现。</p>
+<p>无论是继承还是实现，箭头都执行夫类，也就是被实现类。</p>
+<h4 id="依赖与关联"><a href="#依赖与关联" class="headerlink" title="依赖与关联"></a>依赖与关联</h4><p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190626160514.png" alt="依赖与关联"></p>
+<p>使用plantUML代码实现：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">@startuml</span><br><span class="line">&apos;依赖与关联</span><br><span class="line">Class X</span><br><span class="line">&apos; 依赖关系</span><br><span class="line">X ..&gt; Y :&quot;依赖关系&quot;</span><br><span class="line"></span><br><span class="line">class A</span><br><span class="line">&apos; 单向关联 A关联B</span><br><span class="line">A--&gt; B :&quot;单向关联&quot;</span><br><span class="line">&apos; 双向关联</span><br><span class="line">class C</span><br><span class="line">C --  D : &quot;双向关联&quot;</span><br><span class="line">&apos; 自关联</span><br><span class="line">class F</span><br><span class="line">F --&gt; F:&quot;自关联&quot;</span><br><span class="line">&apos; 聚合关系</span><br><span class="line">class G &#123;</span><br><span class="line">List&lt;H&gt; h</span><br><span class="line">&#125;</span><br><span class="line">G &quot;n&quot; o-- &quot;1&quot; H : &quot;组合关系&quot;</span><br><span class="line">&apos; 组合关系</span><br><span class="line">class K &#123;</span><br><span class="line">List&lt;L&gt; l</span><br><span class="line">&#125;</span><br><span class="line">K &quot;n&quot;*--&quot;1&quot; L :&quot;聚合关系&quot;</span><br><span class="line">@enduml</span><br></pre></td></tr></table></figure>
+
+<h5 id="一、依赖关系"><a href="#一、依赖关系" class="headerlink" title="一、依赖关系"></a>一、依赖关系</h5><p>依赖是一种使用的关系，代码中体现到依赖的关系的情况:<code>局部变量</code>、<code>方法的参数或者对静态方法的调用</code>,依赖是最弱的一种关联。依赖关系使用虚线和普通的小箭头来实现，箭头指向被依赖的对象。如图中的x依赖y一样，所以指向y,这个被x依赖的对象。</p>
+<h5 id="二、关联关系"><a href="#二、关联关系" class="headerlink" title="二、关联关系"></a>二、关联关系</h5><p>关联是拥有的关系，如玩家与游戏中的角色一样。关联可能是单向的，也可能是双向的，也同样能够自己关联自己。代码中体现到关联的关系的情况：<code>成员变量</code>。关联关系使用实线和小尖头来实现，箭头指向被关联的对象。</p>
+<h5 id="三、组合关系"><a href="#三、组合关系" class="headerlink" title="三、组合关系"></a>三、组合关系</h5><p>组合关系是<code>整体与部分</code>的关系，但是如果整体不存在，那部分也不能存在。就如同公司与部门一样，公司解散了，部门也就不存在了。和关联关系相同，在代码中的体现也是<code>成员变量</code>。组合关系使用空心的菱形和实线来表示。</p>
+<h5 id="四、聚合关系"><a href="#四、聚合关系" class="headerlink" title="四、聚合关系"></a>四、聚合关系</h5><p>聚合关系是<code>整体与部分</code>的关系，但是和组合关系不同的是，聚合关系中的<code>部分</code>可以脱离整体而存在，就如同麦当劳中的套餐与汉堡一样。在代码中的体现同样是<code>成员变量</code>。聚合关系使用实心的菱形和实线来表示。</p>
+<p>所以可以说聚合关系和组合关系是关系更加确定，更加紧密的关联关系。</p>
+<h5 id="各关系的强弱顺序"><a href="#各关系的强弱顺序" class="headerlink" title="各关系的强弱顺序"></a>各关系的强弱顺序</h5><blockquote>
+<p>泛化= 实现&gt; 组合&gt; 聚合&gt; 关联&gt; 依赖</p>
+</blockquote>
+<p>PlantUML支持更多的更复杂的情景下的图形绘制，具体可以查看<a href="http://plantuml.com/zh/index" target="_blank" rel="noopener">PlantUML的中文网站</a>。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+<div>
+      
+</div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/06/25/2019-06-25-设计模式之备忘录模式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="NanYin">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NanYin的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/06/25/2019-06-25-设计模式之备忘录模式/" itemprop="url">设计模式之备忘录模式</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-06-25T12:00:00Z">
+                2019-06-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/设计模式/" itemprop="url" rel="index">
+                    <span itemprop="name">设计模式</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  647
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  2
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="设计模式之备忘录模式📕"><a href="#设计模式之备忘录模式📕" class="headerlink" title="设计模式之备忘录模式📕"></a>设计模式之备忘录模式📕</h1><p>不违反封装的情况下，捕获并外化对象的内部状态，以便稍后可以将对象恢复到此状态。</p>
+<h2 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h2><p>必须保存对象状态的快照，以便以后可以将其恢复到该状态</p>
+<h2 id="模式结构"><a href="#模式结构" class="headerlink" title="模式结构"></a>模式结构</h2><p>模式结构分为三种结构：</p>
+<ol>
+<li><strong>发起人 (Originator)</strong><br>负责创建一个有内部状态的备忘录对象。</li>
+<li><strong>负责人 (Caretaker)</strong><br>负责保存备忘录内容，但是不检查备忘录的内容。</li>
+<li><strong>备忘录 (Memento)</strong><br>保存发起人的内部的状态。</li>
+</ol>
+<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190625232202.png" alt="模式结构"></p>
+<p>上图中的ActionGame为负责人，负责保存状态，Player为发起人负责主动记录备忘录。</p>
+<h3 id="实际场景"><a href="#实际场景" class="headerlink" title="实际场景"></a>实际场景</h3><p>在玩单机游戏的时候，在通过一个关卡的时候，系统会记录你当时的状态信息，如果下一关没通过，会自动还原到上一个记录点从新开始。这种情况下就可以使用备忘录模式记录存档状态，并在适当的时候还原状态。针对此处场景，使用下面代码还原。</p>
+<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><h3 id="作为发起者的Player"><a href="#作为发起者的Player" class="headerlink" title="作为发起者的Player"></a>作为发起者的Player</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Player</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 游戏状态</span></span><br><span class="line">    <span class="keyword">private</span> GameState gameState;</span><br><span class="line"></span><br><span class="line">    Player(GameState gameState) &#123;</span><br><span class="line">        <span class="keyword">this</span>.gameState = gameState;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 设置状态</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">setGameState</span><span class="params">(GameState gameState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.gameState = gameState;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//获取状态</span></span><br><span class="line">    <span class="function">GameState <span class="title">getGameState</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> gameState;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 创建存档记录</span></span><br><span class="line">    <span class="function">Memento <span class="title">createMemento</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Memento(gameState);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 回退存档记录</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">retrieveMemento</span><span class="params">(Memento memento)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.gameState = memento.getGameState();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="作为负责人的ActionGame"><a href="#作为负责人的ActionGame" class="headerlink" title="作为负责人的ActionGame"></a>作为负责人的ActionGame</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Game</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">storeGamePoint</span><span class="params">(Memento memento)</span></span>;</span><br><span class="line">    <span class="function">Memento <span class="title">retrieveGamePoint</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ActionGame</span> <span class="keyword">implements</span> <span class="title">Game</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Memento memento;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 存档记录</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@Author</span> nanyin</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@Date</span> 17:31 2019-06-26</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> memento 1</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> void</span></span><br><span class="line"><span class="comment">     **/</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">storeGamePoint</span><span class="params">(Memento memento)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.memento = memento;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 还原记录点</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@Author</span> nanyin</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@Date</span> 17:32 2019-06-26</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> Memento</span></span><br><span class="line"><span class="comment">     **/</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Memento <span class="title">retrieveGamePoint</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.memento;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="作为备忘录的Memento"><a href="#作为备忘录的Memento" class="headerlink" title="作为备忘录的Memento"></a>作为备忘录的Memento</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Memento</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> GameState gameState;</span><br><span class="line">    Memento(GameState gameState) &#123;</span><br><span class="line">        <span class="keyword">this</span>.gameState = gameState;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function">GameState <span class="title">getGameState</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> gameState;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">enum</span> GameState &#123;</span><br><span class="line">    DIE,SUCCESS</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="客户端程序"><a href="#客户端程序" class="headerlink" title="客户端程序"></a>客户端程序</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">App</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//创建一个动作类型的游戏</span></span><br><span class="line">        Game actionGame = <span class="keyword">new</span> ActionGame();</span><br><span class="line">        <span class="comment">//玩家通关</span></span><br><span class="line">        Player player = <span class="keyword">new</span> Player(GameState.SUCCESS);</span><br><span class="line">        <span class="comment">//存档</span></span><br><span class="line">        Memento memento = player.createMemento();</span><br><span class="line">        actionGame.storeGamePoint(memento);</span><br><span class="line">        <span class="comment">//此时玩家阵亡</span></span><br><span class="line">        player.setGameState(GameState.DIE);</span><br><span class="line">        System.out.println(player.getGameState());</span><br><span class="line">        <span class="comment">//需要从上一次游戏存档中加载原来的玩家状态</span></span><br><span class="line">        player.retrieveMemento(actionGame.retrieveGamePoint());</span><br><span class="line">        System.out.println(player.getGameState());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在游戏存档后死亡，再重复读存档，得到之前存档之前的状态。游戏不会主动存档和读取存档，只会记录存档中的内容，而玩家会主动从游戏中读取存档，然后恢复到存档的状态。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+<div>
+      
+</div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/06/19/2019-06-19-设计模式之状态模式/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -446,204 +852,6 @@
 
 <h3 id="客户端测试"><a href="#客户端测试" class="headerlink" title="客户端测试"></a>客户端测试</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">App</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Context context = <span class="keyword">new</span> Context(<span class="keyword">new</span> NormalState());</span><br><span class="line">        context.requestToOpen();</span><br><span class="line">        context.requestToClose();</span><br><span class="line">        <span class="comment">//将状态变更为坏的状态</span></span><br><span class="line">        context.changeStageTo(<span class="keyword">new</span> ErrorState());</span><br><span class="line">        context.requestToOpen();</span><br><span class="line">        context.requestToClose();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-<div>
-      
-</div>
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/06/19/2019-06-25-设计模式之备忘录模式/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="NanYin">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NanYin的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/06/19/2019-06-25-设计模式之备忘录模式/" itemprop="url">设计模式之备忘录模式</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-06-19T12:00:00Z">
-                2019-06-19
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/设计模式/" itemprop="url" rel="index">
-                    <span itemprop="name">设计模式</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  647
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  2
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="设计模式之备忘录模式📕"><a href="#设计模式之备忘录模式📕" class="headerlink" title="设计模式之备忘录模式📕"></a>设计模式之备忘录模式📕</h1><p>不违反封装的情况下，捕获并外化对象的内部状态，以便稍后可以将对象恢复到此状态。</p>
-<h2 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h2><p>必须保存对象状态的快照，以便以后可以将其恢复到该状态</p>
-<h2 id="模式结构"><a href="#模式结构" class="headerlink" title="模式结构"></a>模式结构</h2><p>模式结构分为三种结构：</p>
-<ol>
-<li><strong>发起人 (Originator)</strong><br>负责创建一个有内部状态的备忘录对象。</li>
-<li><strong>负责人 (Caretaker)</strong><br>负责保存备忘录内容，但是不检查备忘录的内容。</li>
-<li><strong>备忘录 (Memento)</strong><br>保存发起人的内部的状态。</li>
-</ol>
-<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190625232202.png" alt="模式结构"></p>
-<p>上图中的ActionGame为负责人，负责保存状态，Player为发起人负责主动记录备忘录。</p>
-<h3 id="实际场景"><a href="#实际场景" class="headerlink" title="实际场景"></a>实际场景</h3><p>在玩单机游戏的时候，在通过一个关卡的时候，系统会记录你当时的状态信息，如果下一关没通过，会自动还原到上一个记录点从新开始。这种情况下就可以使用备忘录模式记录存档状态，并在适当的时候还原状态。针对此处场景，使用下面代码还原。</p>
-<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><h3 id="作为发起者的Player"><a href="#作为发起者的Player" class="headerlink" title="作为发起者的Player"></a>作为发起者的Player</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Player</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 游戏状态</span></span><br><span class="line">    <span class="keyword">private</span> GameState gameState;</span><br><span class="line"></span><br><span class="line">    Player(GameState gameState) &#123;</span><br><span class="line">        <span class="keyword">this</span>.gameState = gameState;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 设置状态</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">setGameState</span><span class="params">(GameState gameState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.gameState = gameState;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//获取状态</span></span><br><span class="line">    <span class="function">GameState <span class="title">getGameState</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> gameState;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 创建存档记录</span></span><br><span class="line">    <span class="function">Memento <span class="title">createMemento</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Memento(gameState);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 回退存档记录</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">retrieveMemento</span><span class="params">(Memento memento)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.gameState = memento.getGameState();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="作为负责人的ActionGame"><a href="#作为负责人的ActionGame" class="headerlink" title="作为负责人的ActionGame"></a>作为负责人的ActionGame</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Game</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">storeGamePoint</span><span class="params">(Memento memento)</span></span>;</span><br><span class="line">    <span class="function">Memento <span class="title">retrieveGamePoint</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ActionGame</span> <span class="keyword">implements</span> <span class="title">Game</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Memento memento;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 存档记录</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@Author</span> nanyin</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@Date</span> 17:31 2019-06-26</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> memento 1</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> void</span></span><br><span class="line"><span class="comment">     **/</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">storeGamePoint</span><span class="params">(Memento memento)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.memento = memento;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 还原记录点</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@Author</span> nanyin</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@Date</span> 17:32 2019-06-26</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> Memento</span></span><br><span class="line"><span class="comment">     **/</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Memento <span class="title">retrieveGamePoint</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.memento;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="作为备忘录的Memento"><a href="#作为备忘录的Memento" class="headerlink" title="作为备忘录的Memento"></a>作为备忘录的Memento</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Memento</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> GameState gameState;</span><br><span class="line">    Memento(GameState gameState) &#123;</span><br><span class="line">        <span class="keyword">this</span>.gameState = gameState;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function">GameState <span class="title">getGameState</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> gameState;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">enum</span> GameState &#123;</span><br><span class="line">    DIE,SUCCESS</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="客户端程序"><a href="#客户端程序" class="headerlink" title="客户端程序"></a>客户端程序</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">App</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//创建一个动作类型的游戏</span></span><br><span class="line">        Game actionGame = <span class="keyword">new</span> ActionGame();</span><br><span class="line">        <span class="comment">//玩家通关</span></span><br><span class="line">        Player player = <span class="keyword">new</span> Player(GameState.SUCCESS);</span><br><span class="line">        <span class="comment">//存档</span></span><br><span class="line">        Memento memento = player.createMemento();</span><br><span class="line">        actionGame.storeGamePoint(memento);</span><br><span class="line">        <span class="comment">//此时玩家阵亡</span></span><br><span class="line">        player.setGameState(GameState.DIE);</span><br><span class="line">        System.out.println(player.getGameState());</span><br><span class="line">        <span class="comment">//需要从上一次游戏存档中加载原来的玩家状态</span></span><br><span class="line">        player.retrieveMemento(actionGame.retrieveGamePoint());</span><br><span class="line">        System.out.println(player.getGameState());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>在游戏存档后死亡，再重复读存档，得到之前存档之前的状态。游戏不会主动存档和读取存档，只会记录存档中的内容，而玩家会主动从游戏中读取存档，然后恢复到存档的状态。</p>
 
           
         
@@ -854,214 +1062,6 @@
 <p>结果：最后注册在主题上的所有观察者都收到了通知。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">observer A get new weather message is SUNNY_DAY</span><br><span class="line">observer B get new weather message is SUNNY_DAY</span><br></pre></td></tr></table></figure>
 
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-<div>
-      
-</div>
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/06/19/2019-06-26-PlantUML类图使用总结/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="NanYin">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NanYin的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/06/19/2019-06-26-PlantUML类图使用总结/" itemprop="url">PlantUML类图使用总结</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-06-19T12:00:00Z">
-                2019-06-19
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/工具/" itemprop="url" rel="index">
-                    <span itemprop="name">工具</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  1.1k
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  4
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="使用PlantUML绘制类图"><a href="#使用PlantUML绘制类图" class="headerlink" title="使用PlantUML绘制类图"></a>使用PlantUML绘制类图</h1><p>本文基于PlantUML官网<a href="http://plantuml.com/zh/class-diagram" target="_blank" rel="noopener">绘制类图</a>和相关如何正确uml类图相关文章。</p>
-<h2 id="为什么使用plantUml"><a href="#为什么使用plantUml" class="headerlink" title="为什么使用plantUml"></a>为什么使用plantUml</h2><p>原因很简单，不用自己考虑构图，像写代码一样写出来，图出来既美观又能够符合逻辑。</p>
-<h2 id="基本类构成"><a href="#基本类构成" class="headerlink" title="基本类构成"></a>基本类构成</h2><h3 id="基本使用"><a href="#基本使用" class="headerlink" title="基本使用"></a>基本使用</h3><p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190626150930.png" alt="基本类构成"></p>
-<p>使用<code>class</code>关键字构件类，同理其他关键字。如<code>interface</code>,<code>enum</code>。</p>
-<p>在类中使用 <code>- # +</code> 分别对应表示类中的<code>private</code>,<code>protected</code>,<code>public</code>。如果在类中使用 <code>static</code>、<code>abstract</code>关键字，需要使用大括号包裹起来。</p>
-<p><strong>备注</strong>使用<code>note</code>来实现，可以使用js优化备注的样式,具体可以参考下面的代码。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">@startuml</span><br><span class="line">&apos; 简单定义类A</span><br><span class="line">class classA</span><br><span class="line">&apos;定义类B</span><br><span class="line">class classB&#123;</span><br><span class="line">    -&#123;static&#125; STATIC:Type</span><br><span class="line">    -a:A</span><br><span class="line">    #b:B</span><br><span class="line">    +c:C</span><br><span class="line">    +hello():void</span><br><span class="line">    -word():void</span><br><span class="line">&#125;</span><br><span class="line">&apos;抽象类C</span><br><span class="line">abstract class classC &#123;</span><br><span class="line">    + &#123;abstract&#125; method1:void</span><br><span class="line">&#125;</span><br><span class="line">&apos;备注</span><br><span class="line">note right: note on right</span><br><span class="line">note top of classA : note on top</span><br><span class="line">&apos; 复杂备注</span><br><span class="line">note top of object</span><br><span class="line">In java, &lt;size:18&gt;every&lt;/size&gt; &lt;u&gt;class&lt;/u&gt;&lt;b&gt;extends&lt;/b&gt;&lt;i&gt;this&lt;/i&gt; one.</span><br><span class="line">end note</span><br><span class="line">@enduml</span><br></pre></td></tr></table></figure>
-
-<h3 id="类更多使用"><a href="#类更多使用" class="headerlink" title="类更多使用"></a>类更多使用</h3><p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190626144335.png" alt="复杂"></p>
-<p>更复杂一些的类的构件参考上图。</p>
-<p>使用<code>__内容__</code>来表示分割线，对不同类型的进行分割。在类名后加<code>&lt;? extends xxx&gt;</code> 表示范型,参考下面代码：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">@startuml</span><br><span class="line">class classC &lt;&lt;Serializable&gt;&gt; &#123;</span><br><span class="line">__variable__</span><br><span class="line">    -a:A</span><br><span class="line">    #b:B</span><br><span class="line">    +c:C</span><br><span class="line">__methods__</span><br><span class="line">    +hello():void</span><br><span class="line">    -word():void</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class classD &lt;? extends List&gt;&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">@enduml</span><br></pre></td></tr></table></figure>
-
-<h3 id="关系表示"><a href="#关系表示" class="headerlink" title="关系表示"></a>关系表示</h3><h4 id="继承与实现"><a href="#继承与实现" class="headerlink" title="继承与实现"></a>继承与实现</h4><p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190626144700.png" alt="继承与实现"></p>
-<p>继承指的就是<strong>泛化</strong>，如图中左表示一样，类A继承于B，由子类实现父类的行为。泛化使用带<strong>大三角箭头和实线</strong>来表示，表示一种继承关系。</p>
-<p><strong>实现</strong>指的是特定类实现接口，如图中右表示一样，类<code>implement</code>实现<code>interface</code>,表示实现类实现接口类的关系。同样会由子类实现接口类中的行为。实现使用带<strong>大三角的箭头和虚线</strong>来实现。</p>
-<p>无论是继承还是实现，箭头都执行夫类，也就是被实现类。</p>
-<h4 id="依赖与关联"><a href="#依赖与关联" class="headerlink" title="依赖与关联"></a>依赖与关联</h4><p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190626160514.png" alt="依赖与关联"></p>
-<p>使用plantUML代码实现：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">@startuml</span><br><span class="line">&apos;依赖与关联</span><br><span class="line">Class X</span><br><span class="line">&apos; 依赖关系</span><br><span class="line">X ..&gt; Y :&quot;依赖关系&quot;</span><br><span class="line"></span><br><span class="line">class A</span><br><span class="line">&apos; 单向关联 A关联B</span><br><span class="line">A--&gt; B :&quot;单向关联&quot;</span><br><span class="line">&apos; 双向关联</span><br><span class="line">class C</span><br><span class="line">C --  D : &quot;双向关联&quot;</span><br><span class="line">&apos; 自关联</span><br><span class="line">class F</span><br><span class="line">F --&gt; F:&quot;自关联&quot;</span><br><span class="line">&apos; 聚合关系</span><br><span class="line">class G &#123;</span><br><span class="line">List&lt;H&gt; h</span><br><span class="line">&#125;</span><br><span class="line">G &quot;n&quot; o-- &quot;1&quot; H : &quot;组合关系&quot;</span><br><span class="line">&apos; 组合关系</span><br><span class="line">class K &#123;</span><br><span class="line">List&lt;L&gt; l</span><br><span class="line">&#125;</span><br><span class="line">K &quot;n&quot;*--&quot;1&quot; L :&quot;聚合关系&quot;</span><br><span class="line">@enduml</span><br></pre></td></tr></table></figure>
-
-<h5 id="一、依赖关系"><a href="#一、依赖关系" class="headerlink" title="一、依赖关系"></a>一、依赖关系</h5><p>依赖是一种使用的关系，代码中体现到依赖的关系的情况:<code>局部变量</code>、<code>方法的参数或者对静态方法的调用</code>,依赖是最弱的一种关联。依赖关系使用虚线和普通的小箭头来实现，箭头指向被依赖的对象。如图中的x依赖y一样，所以指向y,这个被x依赖的对象。</p>
-<h5 id="二、关联关系"><a href="#二、关联关系" class="headerlink" title="二、关联关系"></a>二、关联关系</h5><p>关联是拥有的关系，如玩家与游戏中的角色一样。关联可能是单向的，也可能是双向的，也同样能够自己关联自己。代码中体现到关联的关系的情况：<code>成员变量</code>。关联关系使用实线和小尖头来实现，箭头指向被关联的对象。</p>
-<h5 id="三、组合关系"><a href="#三、组合关系" class="headerlink" title="三、组合关系"></a>三、组合关系</h5><p>组合关系是<code>整体与部分</code>的关系，但是如果整体不存在，那部分也不能存在。就如同公司与部门一样，公司解散了，部门也就不存在了。和关联关系相同，在代码中的体现也是<code>成员变量</code>。组合关系使用空心的菱形和实线来表示。</p>
-<h5 id="四、聚合关系"><a href="#四、聚合关系" class="headerlink" title="四、聚合关系"></a>四、聚合关系</h5><p>聚合关系是<code>整体与部分</code>的关系，但是和组合关系不同的是，聚合关系中的<code>部分</code>可以脱离整体而存在，就如同麦当劳中的套餐与汉堡一样。在代码中的体现同样是<code>成员变量</code>。聚合关系使用实心的菱形和实线来表示。</p>
-<p>所以可以说聚合关系和组合关系是关系更加确定，更加紧密的关联关系。</p>
-<h5 id="各关系的强弱顺序"><a href="#各关系的强弱顺序" class="headerlink" title="各关系的强弱顺序"></a>各关系的强弱顺序</h5><blockquote>
-<p>泛化= 实现&gt; 组合&gt; 聚合&gt; 关联&gt; 依赖</p>
-</blockquote>
-<p>PlantUML支持更多的更复杂的情景下的图形绘制，具体可以查看<a href="http://plantuml.com/zh/index" target="_blank" rel="noopener">PlantUML的中文网站</a>。</p>
 
           
         
@@ -2463,19 +2463,19 @@
              
              
                <li>
+                 <a href="/2019/06/26/2019-06-26-PlantUML类图使用总结/" title="PlantUML类图使用总结" target="_blank">PlantUML类图使用总结</a>
+               </li>
+             
+               <li>
+                 <a href="/2019/06/25/2019-06-25-设计模式之备忘录模式/" title="设计模式之备忘录模式" target="_blank">设计模式之备忘录模式</a>
+               </li>
+             
+               <li>
                  <a href="/2019/06/19/2019-06-19-设计模式之状态模式/" title="设计模式之状态模式" target="_blank">设计模式之状态模式</a>
                </li>
              
                <li>
-                 <a href="/2019/06/19/2019-06-25-设计模式之备忘录模式/" title="设计模式之备忘录模式" target="_blank">设计模式之备忘录模式</a>
-               </li>
-             
-               <li>
                  <a href="/2019/06/19/2019-06-24-设计模式之观察者模式/" title="设计模式之观察者模式" target="_blank">设计模式之观察者模式</a>
-               </li>
-             
-               <li>
-                 <a href="/2019/06/19/2019-06-26-PlantUML类图使用总结/" title="PlantUML类图使用总结" target="_blank">PlantUML类图使用总结</a>
                </li>
              
                <li>
