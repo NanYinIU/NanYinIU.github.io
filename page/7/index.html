@@ -304,6 +304,591 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/05/02/2018-05-05-bash_05_操作变量/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="NanYin">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NanYin的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/05/02/2018-05-05-bash_05_操作变量/" itemprop="url">bash学习记录（五） bash中关于变量的更多的知识</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-01T17:00:00Z">
+                2018-05-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Bash/" itemprop="url" rel="index">
+                    <span itemprop="name">Bash</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  2.2k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  9
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="字符串操作"><a href="#字符串操作" class="headerlink" title="字符串操作"></a>字符串操作</h1><p>bash支持很多关于字符串的操作，不过可惜的是，这些操作缺乏统一性，有一些是使用参数等，另外一些是通过内建命令<code>expr</code>命令来实现，这会导致不同的语法功能的重叠，会比较混乱，下面简单介绍一下使用参数和命令的实现字符串的操作。</p>
+<ul>
+<li><p>字符串长度（String Length）</p>
+<ol>
+<li><p>$(#string) 这里是和C语言中的strlen()是相同的。</p>
+</li>
+<li><p>expr length $string 同样表示string串的长度。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#! /bin/bash</span></span><br><span class="line">string=abcdefgHIGKL</span><br><span class="line"><span class="comment">#使用第一种方法$(#string)</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"string的长度是：<span class="variable">$&#123;#string&#125;</span>"</span></span><br><span class="line"><span class="comment">#使用第二种方法使用expr内建命令 优点简单易懂</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"string的长度是：`expr length <span class="variable">$string</span>`"</span></span><br><span class="line">`</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><p>字符串从开头匹配子字串的长度</p>
+<p>  方法如下：</p>
+  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">stringZ=abcABC123ABCab </span><br><span class="line"><span class="built_in">echo</span> `expr match <span class="string">"<span class="variable">$stringZ</span>"</span> <span class="string">'abc[A-Z]*.2'</span>`</span><br><span class="line"><span class="built_in">echo</span> `expr <span class="variable">$stringZ</span> : <span class="string">'abc[A-Z]*.2'</span>`</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>匹配到子串的位置 (index)</p>
+  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> `expr index <span class="variable">$stringZ</span> <span class="string">'abc[A-Z]*.2'</span>`</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>子字符串的截取</p>
+<ol>
+<li><p>${string:position} 从positon位置截取字符串string。</p>
+</li>
+<li><p>${string:positong:length} 从positon位置截取字符串string，并且限定截取长度为length。</p>
+</li>
+<li><p>expr substr $string $positon $length 意思同上。</p>
+</li>
+<li><p>expr match $string ‘\(substring \)’ 这里的substring是正则表达式。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#截取字符串</span></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$&#123;stringZ:5&#125;</span></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$&#123;stringZ:5:4&#125;</span></span><br><span class="line"><span class="built_in">echo</span> `expr substr <span class="variable">$stringZ</span> 5 4`</span><br><span class="line"><span class="built_in">echo</span> `expr match <span class="variable">$stringZ</span> <span class="string">'\(abc[A-Z]*.2\)'</span>`</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><p>从字符串中移除子字符串</p>
+<ol>
+<li><p>${string#substring} substring是子字符串。并且需要注意的是：<strong>该方法表示的是向后移除该子字符串最短匹配到的字符串。</strong></p>
+</li>
+<li><p>${string##substring} 与上面的正好相反。<strong>该方法表示的是向后移除该字符串最长匹配到的字符串。</strong></p>
+</li>
+<li><p>${string%substring} <strong>该方法表示的是由后向前移除该子字符串最短匹配到的字符串。</strong></p>
+</li>
+<li><p>${string%%substring} <strong>该方法表示的是由后向前移除该字符串最长匹配到的字符串。</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="string">"移除字符串"</span></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$&#123;stringZ#a*b&#125;</span> </span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$&#123;stringZ##a*b&#125;</span></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$&#123;stringZ%a*c&#125;</span></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$&#123;stringZ%%a*c&#125;</span></span><br><span class="line"><span class="comment">#结果：</span></span><br><span class="line"><span class="comment">#ABC123ABCabc</span></span><br><span class="line"><span class="comment">#c</span></span><br><span class="line"><span class="comment">#abcABC123ABC</span></span><br><span class="line"><span class="comment">#</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><p>子字符串替换</p>
+<ol>
+<li><p>${string/substring/replacement}  替换第一个匹配到substring的字符串，替换为replacement。</p>
+</li>
+<li><p>${string//substring/replacement} 替换所有匹配到的字符。</p>
+</li>
+<li><p>${string/#substring/replacement} 替换由前向后匹配到的字符。</p>
+</li>
+<li><p>${string/%substring/replacement} 替换由后向前匹配到的字符。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="string">"---------字符串替换---------"</span></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$&#123;stringZ/abc/xyz&#125;</span></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$&#123;stringZ//abc/xyz&#125;</span></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$&#123;stringZ/#abc/xyz&#125;</span></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$&#123;stringZ/%abc/xyz&#125;</span></span><br><span class="line"><span class="comment">#结果：</span></span><br><span class="line"><span class="comment">#xyzABC123ABCabc</span></span><br><span class="line"><span class="comment">#xyzABC123ABCxyz</span></span><br><span class="line"><span class="comment">#xyzABC123ABCabc</span></span><br><span class="line"><span class="comment">#abcABC123ABCxyz</span></span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+</li>
+</ul>
+<h2 id="使用awk操作字符串"><a href="#使用awk操作字符串" class="headerlink" title="使用awk操作字符串"></a>使用awk操作字符串</h2><p>现学先卖，<a href="http://blog.jobbole.com/109089/" target="_blank" rel="noopener">三十分钟学会AWK</a>,快速了解和应用awk。</p>
+<p>基于以上，使用awk练习。</p>
+<p>工作流分为大致三部分， read-&gt;excute-&gt;repeat,实现对文本的处理。</p>
+<h3 id="程序机构"><a href="#程序机构" class="headerlink" title="程序机构"></a>程序机构</h3><ul>
+<li><p>BEGIN 语法：<code>BEGIN {awk-commands}</code> 是可以省略的部分块，主要作用是声明变量，初始化变量，</p>
+</li>
+<li><p>BODY块 ：<code>{commonds}</code>，是必须填写的部分，主要作用是处理文本，会对输入的每一行都执行body块中的命令，并且body是没有关键字的。</p>
+</li>
+</ul>
+<p>-END ：<code>END {commands}</code>,同BEGIN，是可以省略的部分</p>
+<h3 id="基础语法"><a href="#基础语法" class="headerlink" title="基础语法"></a>基础语法</h3><ul>
+<li><p>awk命令行，可以通过执行<code>awk [-option] files</code>来实现对files文件的处理。 如 <code>awk {print} mark.txt</code> 这里就不具体举例了，开头的链接里讲的非常详细，这里只做简单的记录和查看。</p>
+</li>
+<li><p>使用命令文件方式 <code>awk -f command.awk marks.txt</code> 使用-f参数，可以使用文件中的命令。</p>
+</li>
+<li><p>awk基本选项 ： 这里不具体总结，linux环境下终端 <code>man awk</code>可以看到非常多的选项。</p>
+</li>
+</ul>
+<h3 id="基本使用示例"><a href="#基本使用示例" class="headerlink" title="基本使用示例"></a>基本使用示例</h3><ol>
+<li><p>基本打印文件内容</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ awk <span class="string">'&#123;print&#125;'</span> mark.txt </span><br><span class="line">1)  Amit    Physics  80</span><br><span class="line">2)  Rahul   Maths    90</span><br><span class="line">3)  Shyam   Biology  87</span><br><span class="line">4)  Kedar   English  85</span><br><span class="line">5)  Hari    History  89</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>打印具体项内容</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ awk <span class="string">'&#123;print $1 "\t" $2 &#125;'</span> mark.txt</span><br><span class="line">1)      Amit</span><br><span class="line">2)      Rahul</span><br><span class="line">3)      Shyam</span><br><span class="line">4)      Kedar</span><br><span class="line">5)      Hari</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>添加限定条件的打印内容</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ awk  <span class="string">'/a/  &#123;print $1 "\t" $2 &#125;'</span> mark.txt</span><br><span class="line">2)      Rahul</span><br><span class="line">3)      Shyam</span><br><span class="line">4)      Kedar</span><br><span class="line">5)      Hari</span><br></pre></td></tr></table></figure>
+
+<p> 结果只显示匹配到a的行</p>
+</li>
+<li><p>打印匹配到的行数</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ awk <span class="string">'BEGIN&#123;count=0&#125; /a/ &#123; count++&#125; END&#123;print count&#125;'</span> mark.txt</span><br><span class="line">4</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>打印字符数量超过16的行</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ awk <span class="string">'length($0) &gt; 18'</span> marks.txt</span><br><span class="line">3) Shyam   Biology   87</span><br><span class="line">4) Kedar   English   85</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<p>NOTE:在这里的参数和bash中的参数类似。$0当前行，$1之后表示对应文件的行的列。</p>
+<h3 id="内建变量"><a href="#内建变量" class="headerlink" title="内建变量"></a>内建变量</h3><p>AWK提供了很多内建变量提供使用，能够起到很大的作用。</p>
+<h4 id="标准awk变量"><a href="#标准awk变量" class="headerlink" title="标准awk变量"></a>标准awk变量</h4><ul>
+<li><p>ARGC 命令行参数个数</p>
+  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ awk <span class="string">'BEGIN&#123;print "argument=",ARGC&#125;'</span> one two three</span><br><span class="line">argument= 4</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>ARGV  命令行参数数组 如 <code>ARGV[1]=...</code></p>
+</li>
+<li><p>CONVFMT  数字的约定格式，默认值是%.6g</p>
+</li>
+<li><p>ENVIRON 环境变量 </p>
+  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ awk <span class="string">'BEGIN &#123;print "User is",ENVIRON["USER"]&#125;'</span></span><br><span class="line">User is nanyin</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>FILENAME 当前文件的名称</p>
+  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ awk <span class="string">'END&#123;print "this file name is", FILENAME&#125;'</span> mark.txt</span><br><span class="line">this file name is mark.txt</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>FS 分割符 默认是空格也可以使用-F设置分割符</p>
+</li>
+<li><p>NF 当前行的字段数目</p>
+  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ awk <span class="string">'END&#123;print NF&#125;'</span> mark.txt</span><br><span class="line">4</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>NR 行号 </p>
+</li>
+<li><p>FNR 当前文件的行号</p>
+</li>
+<li><p>OFS 输出字段分隔符</p>
+</li>
+<li><p>ORS 输出行分割符</p>
+</li>
+<li><p>RLENGTH 表示match函数匹配字符床的长度</p>
+  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ awk <span class="string">'BEGIN &#123;if(match("One  Three","ree")) &#123;print RLENGTH&#125;&#125;'</span></span><br><span class="line">3</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>RSTART 表示match函数第一次匹配到的位置</p>
+  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ awk <span class="string">'BEGIN &#123;if(match("One  Three","ree")) &#123;print RSTART&#125;&#125;'</span> </span><br><span class="line">8</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h3 id="操作符"><a href="#操作符" class="headerlink" title="操作符"></a>操作符</h3><p>与C语言的操作符基本相同，如数字的一元二元三元操作等，字符串的链接，数组元素等</p>
+<h3 id="正则表达式"><a href="#正则表达式" class="headerlink" title="正则表达式"></a>正则表达式</h3><p>AWK对正则的处理非常强大，通常你一个小小的正则表达式能够处理很复杂的问题。关于正则，有时间整理一篇专门关于正则的文章。</p>
+<h3 id="数组"><a href="#数组" class="headerlink" title="数组"></a>数组</h3><p>AWK支持关联数组，也就是说，不仅可以使用数字索引的数组，还可以使用字符串作为索引。删除数组元素使用delete语句</p>
+<h3 id="流程控制"><a href="#流程控制" class="headerlink" title="流程控制"></a>流程控制</h3><p>流程控制if while for 与C相同</p>
+<h3 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h3><p>查手册吧。。一次性看不完。。。。<a href="https://www.gnu.org/software/gawk/manual/gawk.html#Built_002din" target="_blank" rel="noopener">内建函数手册</a>，这里有在这章比较重要的字符串函数。接下来就来看看有哪些函数比较重要。</p>
+<h4 id="AWK对字符串操作的函数"><a href="#AWK对字符串操作的函数" class="headerlink" title="AWK对字符串操作的函数"></a>AWK对字符串操作的函数</h4><p> 整理出awk对字符串的几个具体函数操作。</p>
+<ol>
+<li><p>asort(source,dest,how) </p>
+</li>
+<li><p>asorti(source,dest,how)</p>
+<p>以上两个函数的how先不解释，前两个参数分别为source数组和排序方式，第二个可以不写，默认使用第一位的进行排位。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">awk <span class="string">'BEGIN&#123;a[0]="xiaohong";a[1]="aiaolan";asort(a);for(i=2;i&gt;=0;i--) &#123;print a[i]&#125;&#125;'</span></span><br><span class="line">    xiaohong</span><br><span class="line">    aiaolan</span><br><span class="line">`</span><br></pre></td></tr></table></figure>
+
+<p>asorti()函数会将顺序替换到数组的value处如：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">awk <span class="string">'BEGIN&#123;a[0]="xiaohong";a[1]="aiaolan";asorti(a);for(i=2;i&gt;=0;i--) &#123;print a[i]&#125;&#125;'</span></span><br><span class="line">    1</span><br><span class="line">    0</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>gensub(regexp,replacement,how[,target]) 类似gsub和sub</p>
+<p>替换匹配到的正则<em>regexp</em>为replacement.如果how是g或者G(global的简写),则表示替换所有使用regexp匹配到的字符串,target是目标字符串</p>
+<p>如果使用regexp未匹配到，则返回原始target的值</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 第一个</span></span><br><span class="line"><span class="built_in">echo</span> a b c a d | gawk <span class="string">'&#123;print gensub(/a/,"AA",2)&#125;'</span> </span><br><span class="line">a b c AA d</span><br><span class="line"><span class="comment"># 第二个</span></span><br><span class="line">awk <span class="string">'</span></span><br><span class="line"><span class="string">BEGIN&#123;</span></span><br><span class="line"><span class="string">a="abc def"</span></span><br><span class="line"><span class="string">b = gensub(/(.+) (.+)/,"\\2 \\1","g",a)</span></span><br><span class="line"><span class="string">print b</span></span><br><span class="line"><span class="string">&#125;'</span></span><br><span class="line">def abc</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<ol start="4">
+<li><p>gsub(regexp,replacement[,target]) </p>
+<p> gsub中的‘g’其实是表示的是global,寻找目标的匹配到从左最长的，不重叠的,找到并且替换掉。</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123; gsub(/Britain/, <span class="string">"United Kingdom"</span>); <span class="built_in">print</span> &#125;</span><br></pre></td></tr></table></figure>
+
+<p> 返回的值为匹配到的次数</p>
+</li>
+<li><p>index(in,find)</p>
+<p> 寻找in串内符合find匹配到的字符的index位置</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ awk <span class="string">'BEGIN&#123;</span></span><br><span class="line"><span class="string">quote&gt; print index("hello","lo")&#125;'</span></span><br><span class="line">4</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>length([string]) 顾名思义，不解释了</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ awk <span class="string">'BEGIN&#123;print length("hello")&#125;'</span></span><br><span class="line">5</span><br></pre></td></tr></table></figure>
+
+<p> NOTE: If no argument is supplied, length() returns the length of $0. </p>
+</li>
+<li><p>match(string,regexp,[,array]) </p>
+<p> 使用正则匹配字符串，返回匹配到的位置，若未匹配到返回0</p>
+</li>
+<li><p>split(string,array[,fieldsep[,seps]])</p>
+<p> 分割string字符串，使用array存放分割后产生的字符组，使用fieldsep组为分割符，seps存放每次分割产生的分割符。一个分割出来的存放到array[1]中，第二个存放到array[2]中，以此类推。如果分割符fieldsep不写，则默认分割符为空格。</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ awk <span class="string">'BEGIN&#123;print split("cul-de-sac",a,"-",seps);for(i=1;i&lt;4;i++)&#123;print a[i]&#125;&#125;'</span> </span><br><span class="line">3</span><br><span class="line">cul</span><br><span class="line">de</span><br><span class="line">sac</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>sprintf(format,expression1,..)</p>
+<p> 是printf的功能，并且能够返回字符串</p>
+</li>
+<li><p>strtonum (str)</p>
+<p>类似java的parseInt()函数，由String字符串转成数字</p>
+</li>
+<li><p>sub（regexp,replacement[,target]）</p>
+<p>最左最长匹配原则进行匹配，sub个gsub的作用相同，分割字符串，并进行替换</p>
+</li>
+<li><p>substr(string,start[,end])</p>
+<p>分割字符串</p>
+</li>
+<li><p>tolower(string) &amp; toupper(string)</p>
+<p>大小写转换</p>
+</li>
+</ol>
+<p>关于awk的就总结到这了。。十分基础的总结。。推荐文档，清晰明了。下一篇打算先整理整理正则表达式。现在哪里都会用到正则，还是很有必要看看正则的。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+<div>
+      
+</div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/04/17/2018-04-17-Java设计模式第一篇/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="NanYin">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NanYin的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/04/17/2018-04-17-Java设计模式第一篇/" itemprop="url">Java设计模式学习记录（一）</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-17T15:00:00Z">
+                2018-04-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/设计模式/" itemprop="url" rel="index">
+                    <span itemprop="name">设计模式</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  515
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  1
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Java设计模式学习记录（一）"><a href="#Java设计模式学习记录（一）" class="headerlink" title="Java设计模式学习记录（一）"></a>Java设计模式学习记录（一）</h1><p>每次学习完设计模式，过一阵就忘了，所以写几篇博客记录下，让自己的记忆更深刻一下。</p>
+<p>推荐 <a href="https://www.cnblogs.com/malihe/p/6891920.html" target="_blank" rel="noopener">Java中23种设计模式–超快速入门及举例代码</a> 这篇博客。能快速了解设计模式。</p>
+<p>推荐github上的项目<a href="https://github.com/iluwatar/java-design-patterns" target="_blank" rel="noopener">java-design-patterns</a> 有例子源码，可以通过具体例子了解设计模式。</p>
+<h2 id="Java设计模式的基本分类"><a href="#Java设计模式的基本分类" class="headerlink" title="Java设计模式的基本分类"></a>Java设计模式的基本分类</h2><p>java的设计模式大体上分为三大类：</p>
+<ul>
+<li><p>创建型模式（5种）：工厂方法模式，抽象工厂模式，单例模式，建造者模式，原型模式。</p>
+</li>
+<li><p>结构型模式（7种）：适配器模式，装饰器模式，代理模式，外观模式，桥接模式，组合模式，享元模式。</p>
+</li>
+<li><p>行为型模式（11种）：策略模式、模板方法模式、观察者模式、迭代子模式、责任链模式、命令模式、备忘录模式、状态模式、访问者模式、中介者模式、解释器模式</p>
+</li>
+</ul>
+<h2 id="设计模式遵循的原则有六个"><a href="#设计模式遵循的原则有六个" class="headerlink" title="设计模式遵循的原则有六个"></a>设计模式遵循的原则有六个</h2><ul>
+<li><p><strong>开闭原则（Open Close Principle）</strong></p>
+<p>  　对扩展开放，对修改关闭。</p>
+</li>
+<li><p><strong>里氏代换原则（Liskov Substitution Principle）</strong></p>
+<p>  只有当衍生类可以替换掉基类，软件单位的功能不受到影响时，基类才能真正被复用，而衍生类也能够在基类的基础上增加新的行为。</p>
+</li>
+<li><p><strong>依赖倒转原则（Dependence Inversion Principle）</strong></p>
+<p>  　　这个是开闭原则的基础，对接口编程，依赖于抽象而不依赖于具体。</p>
+</li>
+<li><p><strong>接口隔离原则（Interface Segregation Principle）</strong></p>
+<p>  使用多个隔离的接口来降低耦合度。</p>
+</li>
+<li><p><strong>迪米特法则（最少知道原则）（Demeter Principle）</strong></p>
+<p>  一个实体应当尽量少的与其他实体之间发生相互作用，使得系统功能模块相对独立。</p>
+</li>
+<li><p><strong>合成复用原则（Composite Reuse Principle）</strong></p>
+<p>  　原则是尽量使用合成/聚合的方式，而不是使用继承。继承实际上破坏了类的封装性，超类的方法可能会被子类修改。</p>
+</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+<div>
+      
+</div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/04/12/2018-04-16-bash_operationAndRelatedTopics/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1761,7 +2346,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">66</span>
+                  <span class="site-state-item-count">68</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1783,7 +2368,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-count">15</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -1835,23 +2420,23 @@
              
              
                <li>
-                 <a href="/2019/06/19/2019-06-24-设计模式之观察者模式/" title="设计模式之观察者模式" target="_blank">设计模式之观察者模式</a>
-               </li>
-             
-               <li>
                  <a href="/2019/06/19/2019-06-19-设计模式之状态模式/" title="设计模式之状态模式" target="_blank">设计模式之状态模式</a>
                </li>
              
                <li>
+                 <a href="/2019/06/19/2019-06-25-设计模式之备忘录模式/" title="设计模式之备忘录模式" target="_blank">设计模式之备忘录模式</a>
+               </li>
+             
+               <li>
+                 <a href="/2019/06/19/2019-06-24-设计模式之观察者模式/" title="设计模式之观察者模式" target="_blank">设计模式之观察者模式</a>
+               </li>
+             
+               <li>
+                 <a href="/2019/06/19/2019-06-26-PlantUML类图使用总结/" title="PlantUML类图使用总结" target="_blank">PlantUML类图使用总结</a>
+               </li>
+             
+               <li>
                  <a href="/2019/06/18/2019-06-18-Mac下idea在Dock栏一直存在图标和控制台中文乱码问题/" title="Mac下使用idea时在dock栏一直存在java图标和控制台乱码问题" target="_blank">Mac下使用idea时在dock栏一直存在java图标和控制台乱码问题</a>
-               </li>
-             
-               <li>
-                 <a href="/2019/06/17/2019-06-17-设计模式之模版模式/" title="设计模式之模版模式" target="_blank">设计模式之模版模式</a>
-               </li>
-             
-               <li>
-                 <a href="/2019/06/15/2019-06-15-设计模式之访问者模式/" title="设计模式之访问者模式" target="_blank">设计模式之访问者模式</a>
                </li>
              
            </ul>
@@ -1900,7 +2485,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共57.8k字</span>
+  <span class="post-count">博客全站共59.6k字</span>
 </div>
 
 
