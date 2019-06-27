@@ -304,6 +304,204 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/06/12/2019-06-12-设计模式之外观模式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="NanYin">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NanYin的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/06/12/2019-06-12-设计模式之外观模式/" itemprop="url">设计模式之外观模式</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-06-12T12:00:00Z">
+                2019-06-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/设计模式/" itemprop="url" rel="index">
+                    <span itemprop="name">设计模式</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  596
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  2
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="设计模式之外观模式"><a href="#设计模式之外观模式" class="headerlink" title="设计模式之外观模式"></a>设计模式之外观模式</h1><p>外部与一个子系统的通信必须通过一个统一的外观对象进行，为子系统中的一组接口提供一个一致的界面，使子系统更容易使用。</p>
+<h2 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h2><ul>
+<li>因为子系统随着发展会变更的更复杂，客户端想更简单统一给子系统建立一个公共的调用方式。这样即使子系统的再增加可重用性而变得更加复杂，客户端也不必知道，因为客户端往往不需要针对某一个子系统进行特定的定制化。</li>
+<li>实现了子系统与客户之间的松耦合关系，这使得子系统的组件变化不会影响到调用它的客户类，只需要调整外观类即可。</li>
+</ul>
+<h2 id="模式结构"><a href="#模式结构" class="headerlink" title="模式结构"></a>模式结构</h2><p>外观模式中客户端依靠Facade类来调用多个子系统，来达到简化客户端调用的目的。</p>
+<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190613005252.png" alt="外观模式"></p>
+<p>例子中，每次开机的时候都要启动mysql,apache服务，两个还好，要是有更多服务岂不是很恼人，每次都要敲一大堆命令来开启服务。这时候可以使用外观模式，将所有服务加入到外观类中，每次开机只用调用外观类中的接口就行了。来达到简化客户端使用的目的。</p>
+<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><p>第一部分：子系统接口</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Services</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">start</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">stop</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">restart</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// mysql 服务</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MysqlService</span> <span class="keyword">implements</span> <span class="title">Services</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">start</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"mysql is started"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">stop</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"mysql is stopped"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">restart</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"mysql is restart"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// apache 服务</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ApacheService</span> <span class="keyword">implements</span> <span class="title">Services</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">start</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"apache is started"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">stop</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"apache is stopped"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">restart</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"apache is restart"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>第二部分：外观类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Facade</span> </span>&#123;</span><br><span class="line">    List&lt;Services&gt; services;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Facade</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        services = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addService</span><span class="params">(Services services)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.services.add(services);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">start</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">for</span> (Services services : <span class="keyword">this</span>.services)&#123;</span><br><span class="line">            services.start();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">stop</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">for</span> (Services services : <span class="keyword">this</span>.services)&#123;</span><br><span class="line">            services.stop();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">restart</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">for</span> (Services services : <span class="keyword">this</span>.services)&#123;</span><br><span class="line">            services.restart();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>第三部分：客户端调用</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">App</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Facade facade = <span class="keyword">new</span> Facade();</span><br><span class="line">        facade.addService(<span class="keyword">new</span> MysqlService());</span><br><span class="line">        facade.addService(<span class="keyword">new</span> ApacheService());</span><br><span class="line">        facade.start();</span><br><span class="line">        facade.stop();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>结果：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mysql is started</span><br><span class="line">apache is started</span><br><span class="line">mysql is stopped</span><br><span class="line">apache is stopped</span><br></pre></td></tr></table></figure>
+
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+<div>
+      
+</div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/06/10/2019-06-10-设计模式之装饰者模式/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -700,197 +898,6 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/06/02/2019-06-02-设计模式之原型模式/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="NanYin">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NanYin的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/06/02/2019-06-02-设计模式之原型模式/" itemprop="url">设计模式之原型模式</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-06-02T12:00:00Z">
-                2019-06-02
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/设计模式/" itemprop="url" rel="index">
-                    <span itemprop="name">设计模式</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  328
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  1
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="设计模式之原型模式"><a href="#设计模式之原型模式" class="headerlink" title="设计模式之原型模式"></a>设计模式之原型模式</h1><p>使用原型实例指定要创建的对象类型，并通过复制此原型来创建新对象.实现方法:通过克隆方法,实现对现有对象的复制克隆.</p>
-<h2 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h2><ul>
-<li>当要在运行时指定要实例化的类时，例如，通过动态加载.</li>
-<li>避免构建与产品类层次结构相似的工厂类层次结构</li>
-<li>当一个类的实例可以只有几个不同的状态的组合之一时.组装相应数量的原型并克隆它们可能更方便，而不是手动实例化类，每次都有适当的状态.</li>
-<li>与对象创建相比,使用克隆成本更低</li>
-</ul>
-<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><p>直接由代码看结构,其实克隆的过程就是创建对象的过程</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 一个细胞</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Author</span> nanyin</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Date</span> 23:49 2019-06-01</span></span><br><span class="line"><span class="comment"> **/</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Cell</span> <span class="keyword">implements</span> <span class="title">Cloneable</span></span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setName</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Cell</span><span class="params">()</span></span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Cell</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> Cell <span class="title">clone</span><span class="params">()</span> <span class="keyword">throws</span> CloneNotSupportedException </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.clone();</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Cell(name);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>客户端程序:</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">App</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testPrototype</span><span class="params">()</span></span>&#123;</span><br><span class="line">       Cell cell = <span class="keyword">new</span> Cell();</span><br><span class="line">       cell.setName(<span class="string">"org"</span>);</span><br><span class="line">       <span class="keyword">try</span>&#123;</span><br><span class="line">           Cell cloneCell = cell.clone();</span><br><span class="line">           Assert.assertEquals(<span class="string">"org"</span>,cloneCell.getName());<span class="comment">//pass</span></span><br><span class="line">           Assert.assertEquals(cell,cloneCell);<span class="comment">//not pass</span></span><br><span class="line">       &#125;<span class="keyword">catch</span> (CloneNotSupportedException e)&#123;</span><br><span class="line">           e.printStackTrace();</span><br><span class="line">       &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-<div>
-      
-</div>
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/06/02/2019-06-02-设计模式之适配器模式/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1028,6 +1035,197 @@
 <h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 三角插头</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Author</span> nanyin</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Date</span> 11:13 2019-06-02</span></span><br><span class="line"><span class="comment"> **/</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ThreeLeggedPlug</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">charge</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"use three legged plug"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 二脚插头</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Author</span> nanyin</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Date</span> 11:13 2019-06-02</span></span><br><span class="line"><span class="comment"> **/</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TwoLeggedPlug</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">fastCharge</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"use two legged plug for fast charge !"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//适配器 继承三角插头</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TwoLeggedPlugAdapter</span> <span class="keyword">extends</span> <span class="title">ThreeLeggedPlug</span> </span>&#123;</span><br><span class="line">    TwoLeggedPlug twoLeggedPlug;</span><br><span class="line">    <span class="comment">// 依赖于二脚插头</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">TwoLeggedPlugAdapter</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        twoLeggedPlug = <span class="keyword">new</span> TwoLeggedPlug();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//使用三角插头的charge方法，调用二脚插头的fastCharge方法</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">charge</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        twoLeggedPlug.fastCharge();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//某S9港版手机</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">S9Plus</span> <span class="keyword">extends</span> <span class="title">ThreeLeggedPlug</span> </span>&#123;</span><br><span class="line">    ThreeLeggedPlug threeLeggedPlug;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">S9Plus</span><span class="params">(ThreeLeggedPlug threeLeggedPlug)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.threeLeggedPlug = threeLeggedPlug;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">charge</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        threeLeggedPlug.charge();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//客户端方法</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">App</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testCharge</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 不使用适配器 使用类三角插头</span></span><br><span class="line">        ThreeLeggedPlug s9Plus = <span class="keyword">new</span> S9Plus(<span class="keyword">new</span> ThreeLeggedPlug());</span><br><span class="line">        s9Plus.charge();</span><br><span class="line">        <span class="comment">// 使用二脚插头的适配器</span></span><br><span class="line">        ThreeLeggedPlug s9PlusUseTwoLeggedPlug = <span class="keyword">new</span> S9Plus(<span class="keyword">new</span> TwoLeggedPlugAdapter());</span><br><span class="line">        s9PlusUseTwoLeggedPlug.charge();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">结果：</span><br><span class="line"></span><br><span class="line">use three legged plug</span><br><span class="line">use two legged plug for fast charge !</span><br><span class="line"></span><br><span class="line">Process finished with exit code 0</span><br></pre></td></tr></table></figure>
+
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+<div>
+      
+</div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/06/02/2019-06-02-设计模式之原型模式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="NanYin">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NanYin的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/06/02/2019-06-02-设计模式之原型模式/" itemprop="url">设计模式之原型模式</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-06-02T12:00:00Z">
+                2019-06-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/设计模式/" itemprop="url" rel="index">
+                    <span itemprop="name">设计模式</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  328
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  1
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="设计模式之原型模式"><a href="#设计模式之原型模式" class="headerlink" title="设计模式之原型模式"></a>设计模式之原型模式</h1><p>使用原型实例指定要创建的对象类型，并通过复制此原型来创建新对象.实现方法:通过克隆方法,实现对现有对象的复制克隆.</p>
+<h2 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h2><ul>
+<li>当要在运行时指定要实例化的类时，例如，通过动态加载.</li>
+<li>避免构建与产品类层次结构相似的工厂类层次结构</li>
+<li>当一个类的实例可以只有几个不同的状态的组合之一时.组装相应数量的原型并克隆它们可能更方便，而不是手动实例化类，每次都有适当的状态.</li>
+<li>与对象创建相比,使用克隆成本更低</li>
+</ul>
+<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><p>直接由代码看结构,其实克隆的过程就是创建对象的过程</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 一个细胞</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Author</span> nanyin</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Date</span> 23:49 2019-06-01</span></span><br><span class="line"><span class="comment"> **/</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Cell</span> <span class="keyword">implements</span> <span class="title">Cloneable</span></span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setName</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Cell</span><span class="params">()</span></span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Cell</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> Cell <span class="title">clone</span><span class="params">()</span> <span class="keyword">throws</span> CloneNotSupportedException </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.clone();</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Cell(name);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>客户端程序:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">App</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testPrototype</span><span class="params">()</span></span>&#123;</span><br><span class="line">       Cell cell = <span class="keyword">new</span> Cell();</span><br><span class="line">       cell.setName(<span class="string">"org"</span>);</span><br><span class="line">       <span class="keyword">try</span>&#123;</span><br><span class="line">           Cell cloneCell = cell.clone();</span><br><span class="line">           Assert.assertEquals(<span class="string">"org"</span>,cloneCell.getName());<span class="comment">//pass</span></span><br><span class="line">           Assert.assertEquals(cell,cloneCell);<span class="comment">//not pass</span></span><br><span class="line">       &#125;<span class="keyword">catch</span> (CloneNotSupportedException e)&#123;</span><br><span class="line">           e.printStackTrace();</span><br><span class="line">       &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 
           
@@ -1677,6 +1875,224 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/05/29/2019-01-30-利用springboot构建SpringData+JAP+RestFul应用/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="NanYin">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NanYin的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/05/29/2019-01-30-利用springboot构建SpringData+JAP+RestFul应用/" itemprop="url">利用springboot构建jpa+springdata+rest应用的基本配置过程</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-29T12:00:00Z">
+                2019-05-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Spring/" itemprop="url" rel="index">
+                    <span itemprop="name">Spring</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  896
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  4
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="利用springboot构建jpa-springdata-rest应用的基本配置过程"><a href="#利用springboot构建jpa-springdata-rest应用的基本配置过程" class="headerlink" title="利用springboot构建jpa+springdata+rest应用的基本配置过程"></a>利用springboot构建jpa+springdata+rest应用的基本配置过程</h1><h2 id="前述"><a href="#前述" class="headerlink" title="前述"></a>前述</h2><p>利用SpringBoot整合springData+JPA应用非常方便，所以本着学习的目的来构建一个基本的web应用，配置起来非常简单。下面来说说配置过程和踩过的坑。</p>
+<h2 id="过程"><a href="#过程" class="headerlink" title="过程"></a>过程</h2><h3 id="后端配置"><a href="#后端配置" class="headerlink" title="后端配置"></a>后端配置</h3><p>因为我使用的是IDEA的spring initalizer，勾选如下：</p>
+<ul>
+<li><p>Rest Repositories</p>
+</li>
+<li><p>Thymeleaf</p>
+</li>
+<li><p>JPA</p>
+</li>
+<li><p>H2</p>
+</li>
+<li><p>Lombok 需要ide下载插件使用</p>
+</li>
+</ul>
+<p>以前在配置spring MVC接口时，往往会浪费很长时间配置rest地址，springdata解决了这个一遍又一遍麻烦的过程。</p>
+<h4 id="首先配置实体类"><a href="#首先配置实体类" class="headerlink" title="首先配置实体类"></a>首先配置实体类</h4><p>任何基于Spring Data REST的应用程序的基石都是域对象。其中的@Id等都是JPA语法，具体用法可以看上一篇文章。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="meta">@Getter</span></span><br><span class="line"><span class="meta">@Setter</span></span><br><span class="line"><span class="meta">@Table</span>(name = <span class="string">"user"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">User</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Id</span></span><br><span class="line">    <span class="keyword">private</span> Long id;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Column</span>(name = <span class="string">"username"</span>,nullable = <span class="keyword">true</span>,length = <span class="number">255</span>)</span><br><span class="line">    <span class="keyword">private</span> String username;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Column</span>(name = <span class="string">"password"</span>,nullable = <span class="keyword">true</span>,length = <span class="number">255</span>)</span><br><span class="line">    <span class="keyword">private</span> String password;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@OneToOne</span>()</span><br><span class="line">    <span class="meta">@JoinColumn</span>(name = <span class="string">"person_id"</span>,nullable = <span class="keyword">false</span>)</span><br><span class="line">    <span class="keyword">private</span> Person person;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="定义一个存储库"><a href="#定义一个存储库" class="headerlink" title="定义一个存储库"></a>定义一个存储库</h4><p>Spring Data REST应用程序的另一个关键部分是创建相应的存储库定义</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">UserRepository</span> <span class="keyword">extends</span> <span class="title">JpaRepository</span>&lt;<span class="title">User</span>,<span class="title">Long</span>&gt; </span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="配置service和controller"><a href="#配置service和controller" class="headerlink" title="配置service和controller"></a>配置service和controller</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UserServiceImpl</span> <span class="keyword">implements</span> <span class="title">UserService</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    UserRepository userRepository;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">save</span><span class="params">(User user)</span> </span>&#123;</span><br><span class="line">        user.setPassword(...); <span class="comment">//定义代码</span></span><br><span class="line">        userRepository.save(user);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="配置数据库和application-properties"><a href="#配置数据库和application-properties" class="headerlink" title="配置数据库和application.properties"></a>配置数据库和application.properties</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"># 驱动配置信息</span><br><span class="line">spring.datasource.type=com.alibaba.druid.pool.DruidDataSource</span><br><span class="line">spring.datasource.url = jdbc:mysql://127.0.0.1:3306/jreact?useUnicode=true&amp;characterEncoding=utf-8</span><br><span class="line">spring.datasource.username = root</span><br><span class="line">spring.datasource.password = 123456</span><br><span class="line">spring.datasource.driverClassName = com.mysql.jdbc.Driver</span><br><span class="line">#非严格的html解析</span><br><span class="line">spring.thymeleaf.mode =LEGACYHTML5</span><br><span class="line"># 彩色输出</span><br><span class="line">spring.output.ansi.enabled=DETECT</span><br><span class="line"># 设置默认引擎</span><br><span class="line">spring.jpa.database-platform=org.hibernate.dialect.MySQL5InnoDBDialect</span><br><span class="line">#配置自动建表：updata:没有表新建，有表更新操作,控制台显示建表语句</span><br><span class="line">spring.jpa.hibernate.ddl-auto=update</span><br><span class="line">spring.jpa.show-sql=true</span><br><span class="line">#配置spring data rest的基地址</span><br><span class="line">spring.data.rest.base-path=/api</span><br></pre></td></tr></table></figure>
+
+<h4 id="启动应用"><a href="#启动应用" class="headerlink" title="启动应用"></a>启动应用</h4><p>访问 <code>localhost:8080/api/users</code> 可以查看到如下信息,说明配置成功了。只是表中还没有数据，另外表已经由自动建好，以后如果更新，直接更新程序就好了。</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"_embedded"</span> : &#123;</span><br><span class="line">    <span class="attr">"users"</span> : [ ]</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">"_links"</span> : &#123;</span><br><span class="line">    <span class="attr">"self"</span> : &#123;</span><br><span class="line">      <span class="attr">"href"</span> : <span class="string">"http://localhost:8080/api/users&#123;?page,size,sort&#125;"</span>,</span><br><span class="line">      <span class="attr">"templated"</span> : <span class="literal">true</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">"profile"</span> : &#123;</span><br><span class="line">      <span class="attr">"href"</span> : <span class="string">"http://localhost:8080/api/profile/users"</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">"page"</span> : &#123;</span><br><span class="line">    <span class="attr">"size"</span> : <span class="number">20</span>,</span><br><span class="line">    <span class="attr">"totalElements"</span> : <span class="number">0</span>,</span><br><span class="line">    <span class="attr">"totalPages"</span> : <span class="number">0</span>,</span><br><span class="line">    <span class="attr">"number"</span> : <span class="number">0</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="前端配置"><a href="#前端配置" class="headerlink" title="前端配置"></a>前端配置</h3><p>使用react框架作为前端框架，首先下载create-react-app作为开发的脚手架。这里我选用的是meterial-UI的create-react-app，按照文档中的说明来下载并安装。</p>
+<h4 id="配置proxy"><a href="#配置proxy" class="headerlink" title="配置proxy"></a>配置proxy</h4><p>在src目录下新建名称为setupProxy.js的文件，并在文件中写入如下内容：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> proxy = <span class="built_in">require</span>(<span class="string">'http-proxy-middleware'</span>);</span><br><span class="line"><span class="built_in">module</span>.exports = <span class="function"><span class="keyword">function</span>(<span class="params">app</span>) </span>&#123;</span><br><span class="line">    app.use(proxy(<span class="string">'/api/'</span>, </span><br><span class="line">        &#123; <span class="attr">target</span>: <span class="string">'http://localhost:8080/'</span> &#125;</span><br><span class="line">    ));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其中/api/为访问后端的基地址，target为访问后端的主机地址和端口号</p>
+<h4 id="配置router"><a href="#配置router" class="headerlink" title="配置router"></a>配置router</h4><p>使用npm下载 <code>react-router-dom</code>后，在src目录下新建router文件夹，并创建baseRouter.js文件，引入刚下载的包，基本的文件内容如：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">"react"</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; BrowserRouter <span class="keyword">as</span> Router, Route, Link,Switch &#125; <span class="keyword">from</span> <span class="string">"react-router-dom"</span>;</span><br><span class="line"><span class="keyword">import</span> Index <span class="keyword">from</span> <span class="string">"../pages/index"</span></span><br><span class="line"><span class="keyword">import</span> SignIn <span class="keyword">from</span> <span class="string">"../pages/login/signIn"</span></span><br><span class="line"><span class="keyword">import</span> Error404 <span class="keyword">from</span> <span class="string">"../pages/error/404"</span></span><br><span class="line"><span class="keyword">const</span> About = <span class="function"><span class="params">()</span> =&gt;</span> &lt;h2&gt;About&lt;/h2&gt;;</span><br><span class="line"><span class="keyword">const</span> Users = <span class="function"><span class="params">()</span> =&gt;</span> &lt;h2&gt;Users&lt;/h2&gt;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> AppRouter = <span class="function"><span class="params">()</span> =&gt;</span> (</span><br><span class="line">  &lt;Router&gt;</span><br><span class="line">    &lt;div&gt;</span><br><span class="line">    &lt;Switch&gt;</span><br><span class="line">        &lt;Route exact path=<span class="string">"/"</span> component=&#123;Index&#125; /&gt;</span><br><span class="line">        &lt;Route path=<span class="string">"/SignIn"</span> component=&#123;SignIn&#125; /&gt;</span><br><span class="line">        &lt;Route path=<span class="string">"/About"</span> component=&#123;About&#125; /&gt;</span><br><span class="line">        &#123;<span class="comment">/* when none of the above match, &lt;NoMatch&gt; will be rendered */</span>&#125;</span><br><span class="line">        &lt;Route component=&#123;Error404&#125; /&gt;</span><br><span class="line">    &lt;<span class="regexp">/Switch&gt;</span></span><br><span class="line"><span class="regexp">    &lt;/</span>div&gt;</span><br><span class="line">  &lt;<span class="regexp">/Router&gt;</span></span><br><span class="line"><span class="regexp">);</span></span><br><span class="line"><span class="regexp">export default AppRouter;</span></span><br></pre></td></tr></table></figure>
+
+<p>并最后在index.js入口文件中写入</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ReactDOM.render(&lt;AppRouter /&gt;, document.getElementById('root'));</span><br></pre></td></tr></table></figure>
+
+<p>这样可以访问localhost:3000的时候可以访问到Index文件内容。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+<div>
+      
+</div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/05/29/2019-02-17-使用IDEA设置springboot热部署/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1854,439 +2270,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/05/29/2019-01-30-利用springboot构建SpringData+JAP+RestFul应用/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="NanYin">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NanYin的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/05/29/2019-01-30-利用springboot构建SpringData+JAP+RestFul应用/" itemprop="url">利用springboot构建jpa+springdata+rest应用的基本配置过程</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-29T12:00:00Z">
-                2019-05-29
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Spring/" itemprop="url" rel="index">
-                    <span itemprop="name">Spring</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  896
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  4
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="利用springboot构建jpa-springdata-rest应用的基本配置过程"><a href="#利用springboot构建jpa-springdata-rest应用的基本配置过程" class="headerlink" title="利用springboot构建jpa+springdata+rest应用的基本配置过程"></a>利用springboot构建jpa+springdata+rest应用的基本配置过程</h1><h2 id="前述"><a href="#前述" class="headerlink" title="前述"></a>前述</h2><p>利用SpringBoot整合springData+JPA应用非常方便，所以本着学习的目的来构建一个基本的web应用，配置起来非常简单。下面来说说配置过程和踩过的坑。</p>
-<h2 id="过程"><a href="#过程" class="headerlink" title="过程"></a>过程</h2><h3 id="后端配置"><a href="#后端配置" class="headerlink" title="后端配置"></a>后端配置</h3><p>因为我使用的是IDEA的spring initalizer，勾选如下：</p>
-<ul>
-<li><p>Rest Repositories</p>
-</li>
-<li><p>Thymeleaf</p>
-</li>
-<li><p>JPA</p>
-</li>
-<li><p>H2</p>
-</li>
-<li><p>Lombok 需要ide下载插件使用</p>
-</li>
-</ul>
-<p>以前在配置spring MVC接口时，往往会浪费很长时间配置rest地址，springdata解决了这个一遍又一遍麻烦的过程。</p>
-<h4 id="首先配置实体类"><a href="#首先配置实体类" class="headerlink" title="首先配置实体类"></a>首先配置实体类</h4><p>任何基于Spring Data REST的应用程序的基石都是域对象。其中的@Id等都是JPA语法，具体用法可以看上一篇文章。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="meta">@Getter</span></span><br><span class="line"><span class="meta">@Setter</span></span><br><span class="line"><span class="meta">@Table</span>(name = <span class="string">"user"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">User</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Id</span></span><br><span class="line">    <span class="keyword">private</span> Long id;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Column</span>(name = <span class="string">"username"</span>,nullable = <span class="keyword">true</span>,length = <span class="number">255</span>)</span><br><span class="line">    <span class="keyword">private</span> String username;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Column</span>(name = <span class="string">"password"</span>,nullable = <span class="keyword">true</span>,length = <span class="number">255</span>)</span><br><span class="line">    <span class="keyword">private</span> String password;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@OneToOne</span>()</span><br><span class="line">    <span class="meta">@JoinColumn</span>(name = <span class="string">"person_id"</span>,nullable = <span class="keyword">false</span>)</span><br><span class="line">    <span class="keyword">private</span> Person person;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="定义一个存储库"><a href="#定义一个存储库" class="headerlink" title="定义一个存储库"></a>定义一个存储库</h4><p>Spring Data REST应用程序的另一个关键部分是创建相应的存储库定义</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">UserRepository</span> <span class="keyword">extends</span> <span class="title">JpaRepository</span>&lt;<span class="title">User</span>,<span class="title">Long</span>&gt; </span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="配置service和controller"><a href="#配置service和controller" class="headerlink" title="配置service和controller"></a>配置service和controller</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UserServiceImpl</span> <span class="keyword">implements</span> <span class="title">UserService</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    UserRepository userRepository;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">save</span><span class="params">(User user)</span> </span>&#123;</span><br><span class="line">        user.setPassword(...); <span class="comment">//定义代码</span></span><br><span class="line">        userRepository.save(user);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="配置数据库和application-properties"><a href="#配置数据库和application-properties" class="headerlink" title="配置数据库和application.properties"></a>配置数据库和application.properties</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"># 驱动配置信息</span><br><span class="line">spring.datasource.type=com.alibaba.druid.pool.DruidDataSource</span><br><span class="line">spring.datasource.url = jdbc:mysql://127.0.0.1:3306/jreact?useUnicode=true&amp;characterEncoding=utf-8</span><br><span class="line">spring.datasource.username = root</span><br><span class="line">spring.datasource.password = 123456</span><br><span class="line">spring.datasource.driverClassName = com.mysql.jdbc.Driver</span><br><span class="line">#非严格的html解析</span><br><span class="line">spring.thymeleaf.mode =LEGACYHTML5</span><br><span class="line"># 彩色输出</span><br><span class="line">spring.output.ansi.enabled=DETECT</span><br><span class="line"># 设置默认引擎</span><br><span class="line">spring.jpa.database-platform=org.hibernate.dialect.MySQL5InnoDBDialect</span><br><span class="line">#配置自动建表：updata:没有表新建，有表更新操作,控制台显示建表语句</span><br><span class="line">spring.jpa.hibernate.ddl-auto=update</span><br><span class="line">spring.jpa.show-sql=true</span><br><span class="line">#配置spring data rest的基地址</span><br><span class="line">spring.data.rest.base-path=/api</span><br></pre></td></tr></table></figure>
-
-<h4 id="启动应用"><a href="#启动应用" class="headerlink" title="启动应用"></a>启动应用</h4><p>访问 <code>localhost:8080/api/users</code> 可以查看到如下信息,说明配置成功了。只是表中还没有数据，另外表已经由自动建好，以后如果更新，直接更新程序就好了。</p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"_embedded"</span> : &#123;</span><br><span class="line">    <span class="attr">"users"</span> : [ ]</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">"_links"</span> : &#123;</span><br><span class="line">    <span class="attr">"self"</span> : &#123;</span><br><span class="line">      <span class="attr">"href"</span> : <span class="string">"http://localhost:8080/api/users&#123;?page,size,sort&#125;"</span>,</span><br><span class="line">      <span class="attr">"templated"</span> : <span class="literal">true</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">"profile"</span> : &#123;</span><br><span class="line">      <span class="attr">"href"</span> : <span class="string">"http://localhost:8080/api/profile/users"</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">"page"</span> : &#123;</span><br><span class="line">    <span class="attr">"size"</span> : <span class="number">20</span>,</span><br><span class="line">    <span class="attr">"totalElements"</span> : <span class="number">0</span>,</span><br><span class="line">    <span class="attr">"totalPages"</span> : <span class="number">0</span>,</span><br><span class="line">    <span class="attr">"number"</span> : <span class="number">0</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="前端配置"><a href="#前端配置" class="headerlink" title="前端配置"></a>前端配置</h3><p>使用react框架作为前端框架，首先下载create-react-app作为开发的脚手架。这里我选用的是meterial-UI的create-react-app，按照文档中的说明来下载并安装。</p>
-<h4 id="配置proxy"><a href="#配置proxy" class="headerlink" title="配置proxy"></a>配置proxy</h4><p>在src目录下新建名称为setupProxy.js的文件，并在文件中写入如下内容：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> proxy = <span class="built_in">require</span>(<span class="string">'http-proxy-middleware'</span>);</span><br><span class="line"><span class="built_in">module</span>.exports = <span class="function"><span class="keyword">function</span>(<span class="params">app</span>) </span>&#123;</span><br><span class="line">    app.use(proxy(<span class="string">'/api/'</span>, </span><br><span class="line">        &#123; <span class="attr">target</span>: <span class="string">'http://localhost:8080/'</span> &#125;</span><br><span class="line">    ));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>其中/api/为访问后端的基地址，target为访问后端的主机地址和端口号</p>
-<h4 id="配置router"><a href="#配置router" class="headerlink" title="配置router"></a>配置router</h4><p>使用npm下载 <code>react-router-dom</code>后，在src目录下新建router文件夹，并创建baseRouter.js文件，引入刚下载的包，基本的文件内容如：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">"react"</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; BrowserRouter <span class="keyword">as</span> Router, Route, Link,Switch &#125; <span class="keyword">from</span> <span class="string">"react-router-dom"</span>;</span><br><span class="line"><span class="keyword">import</span> Index <span class="keyword">from</span> <span class="string">"../pages/index"</span></span><br><span class="line"><span class="keyword">import</span> SignIn <span class="keyword">from</span> <span class="string">"../pages/login/signIn"</span></span><br><span class="line"><span class="keyword">import</span> Error404 <span class="keyword">from</span> <span class="string">"../pages/error/404"</span></span><br><span class="line"><span class="keyword">const</span> About = <span class="function"><span class="params">()</span> =&gt;</span> <span class="xml"><span class="tag">&lt;<span class="name">h2</span>&gt;</span>About<span class="tag">&lt;/<span class="name">h2</span>&gt;</span></span>;</span><br><span class="line"><span class="keyword">const</span> Users = <span class="function"><span class="params">()</span> =&gt;</span> <span class="xml"><span class="tag">&lt;<span class="name">h2</span>&gt;</span>Users<span class="tag">&lt;/<span class="name">h2</span>&gt;</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> AppRouter = <span class="function"><span class="params">()</span> =&gt;</span> (</span><br><span class="line">  &lt;Router&gt;</span><br><span class="line">    &lt;div&gt;</span><br><span class="line">    &lt;Switch&gt;</span><br><span class="line">        &lt;Route exact path=<span class="string">"/"</span> component=&#123;Index&#125; /&gt;</span><br><span class="line">        &lt;Route path=<span class="string">"/SignIn"</span> component=&#123;SignIn&#125; /&gt;</span><br><span class="line">        &lt;Route path=<span class="string">"/About"</span> component=&#123;About&#125; /&gt;</span><br><span class="line">        &#123;<span class="comment">/* when none of the above match, &lt;NoMatch&gt; will be rendered */</span>&#125;</span><br><span class="line">        &lt;Route component=&#123;Error404&#125; /&gt;</span><br><span class="line">    &lt;<span class="regexp">/Switch&gt;</span></span><br><span class="line"><span class="regexp">    &lt;/</span>div&gt;</span><br><span class="line">  &lt;<span class="regexp">/Router&gt;</span></span><br><span class="line"><span class="regexp">);</span></span><br><span class="line"><span class="regexp">export default AppRouter;</span></span><br></pre></td></tr></table></figure>
-
-<p>并最后在index.js入口文件中写入</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ReactDOM.render(<span class="xml"><span class="tag">&lt;<span class="name">AppRouter</span> /&gt;</span>, document.getElementById('root'));</span></span><br></pre></td></tr></table></figure>
-
-<p>这样可以访问localhost:3000的时候可以访问到Index文件内容。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-<div>
-      
-</div>
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/05/29/2019-05-29-设计模式之工厂模式/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="NanYin">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NanYin的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/05/29/2019-05-29-设计模式之工厂模式/" itemprop="url">设计模式之工厂模式</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-29T12:00:00Z">
-                2019-05-29
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/设计模式/" itemprop="url" rel="index">
-                    <span itemprop="name">设计模式</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  1k
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  4
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="设计模式之工厂模式"><a href="#设计模式之工厂模式" class="headerlink" title="设计模式之工厂模式"></a>设计模式之工厂模式</h1><p>工厂模式分为<code>简单工厂模式</code>,<code>工厂方法模式</code>,<code>抽象工厂方法模式</code>三种,但是其中简单工厂方法其实不在23中设计模式之中,都属于创建型的设计模式.</p>
-<h2 id="简单工厂模式"><a href="#简单工厂模式" class="headerlink" title="简单工厂模式"></a>简单工厂模式</h2><p>简单工厂方法其实不属于工厂模式的,他只是一种设计思路,是一种对接口的编程的习惯而已.简单工厂抽象出一个公共的接口,不同的对象实现这个公共的接口.定义一个工厂类,根据不同的条件来返回不同类型的实例.</p>
-<h3 id="简单工厂结构"><a href="#简单工厂结构" class="headerlink" title="简单工厂结构"></a>简单工厂结构</h3><p>简单工厂的简单类图如下:</p>
-<p><img src="https://i.loli.net/2019/05/28/5ced33e62381b24104.png" alt="简单工厂类图"></p>
-<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><p>接口与实现类</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Shoes</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">getColor</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RedShoes</span> <span class="keyword">implements</span> <span class="title">Shoes</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">getColor</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">" is red color shoes"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">    </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WhiteShoes</span> <span class="keyword">implements</span> <span class="title">Shoes</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">getColor</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"is white color shoes"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>工厂类</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ShoesFactory</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Shoes <span class="title">getShoes</span><span class="params">(String color)</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(<span class="string">"red"</span>.equals(color))&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> RedShoes();</span><br><span class="line">        &#125;<span class="keyword">else</span> <span class="keyword">if</span>(<span class="string">"white"</span>.equals(color))&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> WhiteShoes();</span><br><span class="line">        &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> OtherShoes();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="工厂方法模式"><a href="#工厂方法模式" class="headerlink" title="工厂方法模式"></a>工厂方法模式</h2><p>创建一个公共的工厂接口类,其中在接口类中定义工厂方法.但是通过实现类去实现结构,在调用的时候通过使用实现类来实例化特定的工厂.也就是说,工厂方法类需要通过子类去实例化建造对象.</p>
-<h3 id="工厂方法结构"><a href="#工厂方法结构" class="headerlink" title="工厂方法结构"></a>工厂方法结构</h3><p>工厂方法的类图如下:</p>
-<p><img src="https://i.loli.net/2019/05/28/5ced3f6d5a12f11044.png" alt="工厂方法模式"></p>
-<p>和上面简单工厂类的例子类似,这里同样通过实现鞋子这个接口来创建红鞋子和白鞋子,简单工厂无论白鞋子、红鞋子还是其他颜色的鞋子都是同一个工厂来创建出来的,而 <strong>工厂方法是通过具体的白鞋子工厂和红鞋子工厂来分别生产对应的白鞋子和红鞋子</strong>.</p>
-<p>所以如类图中所展示的一样,<code>RedShoesFactory</code>和<code>WhiteShoesFactroy</code>都实现来接口<code>ShoesFactory</code>,并且在getshoes方法里分别创建对应的<code>RedShoes</code>和<code>WhiteShoes</code>.</p>
-<h3 id="工厂方法模式使用场景"><a href="#工厂方法模式使用场景" class="headerlink" title="工厂方法模式使用场景:"></a>工厂方法模式使用场景:</h3><ol>
-<li>客户端不必要知道它需要创建对象的类,只需要创建完工厂后,从工厂中直接取对应的对象即可.</li>
-<li>客户端可以使用指定实现子类来创建对应对象.</li>
-</ol>
-<h3 id="代码-1"><a href="#代码-1" class="headerlink" title="代码"></a>代码</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 鞋子接口与实现同简单工厂中的相同,所以这里省略....</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ShoesFactory</span> </span>&#123;</span><br><span class="line">    <span class="function">Shoes <span class="title">getShoes</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RedShoesFactory</span> <span class="keyword">implements</span> <span class="title">ShoesFactory</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> Shoes <span class="title">getShoes</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> RedShoes();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WhiteShoesFactory</span> <span class="keyword">implements</span> <span class="title">ShoesFactory</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> Shoes <span class="title">getShoes</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> WhiteShoes();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 客户端调用</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">App</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        ShoesFactory redFactory = <span class="keyword">new</span> RedShoesFactory();</span><br><span class="line">        <span class="comment">// 只需要创建一个工厂,每次获取红鞋子,只需调用工厂的getShoes方法即可</span></span><br><span class="line">        Shoes redshoes = redFactory.getShoes();</span><br><span class="line">        redshoes.getColor();</span><br><span class="line">        ShoesFactory whiteFactory = <span class="keyword">new</span> WhiteShoesFactory();</span><br><span class="line">        Shoes whiteshoes = whiteFactory.getShoes();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="抽象工厂模式"><a href="#抽象工厂模式" class="headerlink" title="抽象工厂模式"></a>抽象工厂模式</h2><p>提供用于创建相关或从属的对象族(多个组件,并且组件之间是由必要联系的)的接口，而无需指定其具体类.是对工厂方法的再次延展.</p>
-<h3 id="抽象方法结构"><a href="#抽象方法结构" class="headerlink" title="抽象方法结构"></a>抽象方法结构</h3><p><img src="https://i.loli.net/2019/05/28/5ced50f7bd0d134180.png" alt="抽象工厂类图"></p>
-<h3 id="代码-2"><a href="#代码-2" class="headerlink" title="代码"></a>代码</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 鞋底</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Sole</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 材料</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">getMaterial</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 鞋带</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Shoelace</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 长度</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">length</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ShoesFactory</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> Sole <span class="title">createSole</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> Shoelace <span class="title">createShoelace</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>Nike工厂需要生产鞋带和鞋底</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">NikeBrandSole</span> <span class="keyword">implements</span> <span class="title">Sole</span></span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">getMaterial</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 橡胶鞋底</span></span><br><span class="line">        System.out.println(<span class="string">"rubber"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">NikeBrandShoelace</span> <span class="keyword">implements</span> <span class="title">Shoelace</span></span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">length</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"1 m "</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>同样的LiNing工厂需要生产鞋带和鞋底</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LiNingBrandSole</span> <span class="keyword">implements</span> <span class="title">Sole</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">getMaterial</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"air cushion"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LiNingBrandShoelace</span> <span class="keyword">implements</span> <span class="title">Shoelace</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">length</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"1.5 m"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>LiNing和Nike工厂都需要生产各自的鞋带和鞋底</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">NikeShoeFactory</span> <span class="keyword">implements</span> <span class="title">ShoesFactory</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Sole <span class="title">createSole</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> NikeBrandSole();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Shoelace <span class="title">createShoelace</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> createShoelace();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LiNingShoeFactory</span> <span class="keyword">implements</span> <span class="title">ShoesFactory</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Sole <span class="title">createSole</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> LiNingBrandSole();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Shoelace <span class="title">createShoelace</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> LiNingBrandShoelace();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>客户端代码,创建工厂,生产各自组件</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">App</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        ShoesFactory shoesFactory = <span class="keyword">new</span> NikeShoeFactory();</span><br><span class="line">        Shoelace nikeLace = shoesFactory.createShoelace();</span><br><span class="line">        Sole nikeSole = shoesFactory.createSole();</span><br><span class="line">        nikeLace.length();</span><br><span class="line">        nikeSole.getMaterial();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-<div>
-      
-</div>
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2339,7 +2322,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">68</span>
+                  <span class="site-state-item-count">69</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2413,6 +2396,10 @@
              
              
                <li>
+                 <a href="/2019/06/27/2019-06-27-设计模式之迭代器模式/" title="设计模式之迭代器模式" target="_blank">设计模式之迭代器模式</a>
+               </li>
+             
+               <li>
                  <a href="/2019/06/26/2019-06-26-PlantUML类图使用总结/" title="PlantUML类图使用总结" target="_blank">PlantUML类图使用总结</a>
                </li>
              
@@ -2421,15 +2408,11 @@
                </li>
              
                <li>
-                 <a href="/2019/06/19/2019-06-19-设计模式之状态模式/" title="设计模式之状态模式" target="_blank">设计模式之状态模式</a>
-               </li>
-             
-               <li>
                  <a href="/2019/06/19/2019-06-24-设计模式之观察者模式/" title="设计模式之观察者模式" target="_blank">设计模式之观察者模式</a>
                </li>
              
                <li>
-                 <a href="/2019/06/18/2019-06-18-Mac下idea在Dock栏一直存在图标和控制台中文乱码问题/" title="Mac下使用idea时在dock栏一直存在java图标和控制台乱码问题" target="_blank">Mac下使用idea时在dock栏一直存在java图标和控制台乱码问题</a>
+                 <a href="/2019/06/19/2019-06-19-设计模式之状态模式/" title="设计模式之状态模式" target="_blank">设计模式之状态模式</a>
                </li>
              
            </ul>
@@ -2478,7 +2461,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共59.6k字</span>
+  <span class="post-count">博客全站共60.1k字</span>
 </div>
 
 
