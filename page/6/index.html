@@ -304,6 +304,234 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/07/08/2018-07-06-bash_15_终章/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="NanYin">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NanYin的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/07/08/2018-07-06-bash_15_终章/" itemprop="url">bash学习记录（十六） bash学习终章</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-07T17:00:00Z">
+                2018-07-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Bash/" itemprop="url" rel="index">
+                    <span itemprop="name">Bash</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  909
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  3
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="bash学习终章"><a href="#bash学习终章" class="headerlink" title="bash学习终章"></a>bash学习终章</h1><p>学习bash有很长时间了，很多时间花费在学习基础语法上，没有真正的上手实践编写一些使用的bash脚本，接下来我把剩余的比较常见的bash语法学习完，找一些github上的的大牛写过的bash脚本去先<br>分析，然后自己边理解边实践吧，我的目标就是能够基本熟练的使用bash脚本。</p>
+<h2 id="bash的list结构"><a href="#bash的list结构" class="headerlink" title="bash的list结构"></a>bash的list结构</h2><p>这里所说到的list结构不是Java语言中的list结构，而是在做条件的时候的一种链式机构，可以使用 <code>&amp;&amp;</code> 或者 <code>||</code> 来处理多个命令的方法。</p>
+<p>其中分为两种简单的结构</p>
+<ul>
+<li>和结构 （and list）</li>
+</ul>
+<p>这种结构会同时比较多个命令，如果前一个命令返回true，则下一个命令一次去执行。但是如果前一个命令返回false，那么后面都不去执行（命令链终止）。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># command-1 &amp;&amp; command-2 &amp;&amp; command-3 &amp;&amp; ... command-n</span></span><br><span class="line"><span class="keyword">if</span> [ ! -z <span class="string">"<span class="variable">$1</span>"</span> ] &amp;&amp; <span class="built_in">echo</span> <span class="string">"Argument #1 = <span class="variable">$1</span>"</span> &amp;&amp; [ ! -z <span class="string">"<span class="variable">$2</span>"</span> ] &amp;&amp;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>与结构 （or list）</li>
+</ul>
+<p>这个结构和 and list正好相反，如果前一个命令返回false，则下一个命令依次去执行。如果前一个命令时ture，那么终止命令链。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># command-1 || command-2 || command-3 || ... command-n</span></span><br><span class="line">[ ! -f <span class="string">"<span class="variable">$file</span>"</span> ] || (rm -f <span class="variable">$file</span>; <span class="built_in">echo</span> <span class="string">"File \"<span class="variable">$file</span>\" deleted."</span>)</span><br></pre></td></tr></table></figure>
+
+<h2 id="bash中的数组"><a href="#bash中的数组" class="headerlink" title="bash中的数组"></a>bash中的数组</h2><p>数组也是非常常见的一种数据结构，那么在bash中如何初始化和使用数组呢</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 第一种方式为数组赋值</span></span><br><span class="line">area[11]=23</span><br><span class="line">area[13]=37</span><br><span class="line">area[51]=UFOs</span><br><span class="line"><span class="comment"># 第二种方式</span></span><br><span class="line">area2=( zero one two three four )</span><br><span class="line"><span class="comment"># 第三种方式</span></span><br><span class="line">area3=([17]=seventeen [24]=twenty-four)</span><br></pre></td></tr></table></figure>
+
+<p>可以看到可以方便的使用小括号进行数组的初始化，以后会接触到更多关于bash数组的实例，比如写一个使用bash的冒泡排序。</p>
+<h2 id="Linux中的-dev和-proc"><a href="#Linux中的-dev和-proc" class="headerlink" title="Linux中的 /dev和 /proc"></a>Linux中的 <code>/dev</code>和 <code>/proc</code></h2><ul>
+<li><code>/dev</code> 是设备文件的目录，可以看出来dev时device设备的缩写。如果想查看某些特定设备的文件，可以直接去对应的 <code>/dev/*</code>的目录下面去找对应的目录就行了。</li>
+</ul>
+<p>作为参考</p>
+<pre><code>/dev/hd[a-t]：IDE设备
+/dev/sd[a-z]：SCSI设备
+/dev/fd[0-7]：标准软驱
+/dev/md[0-31]：软raid设备
+/dev/loop[0-7]：本地回环设备
+/dev/ram[0-15]：内存
+/dev/null：无限数据接收设备 ,相当于回收站
+/dev/zero：无限零资源
+/dev/tty[0-63]：虚拟终端
+/dev/ttyS[0-3]：串口
+/dev/lp[0-3]：并口
+/dev/console：控制台
+/dev/fb[0-31]：framebuffer
+/dev/cdrom =&gt; /dev/hdc
+/dev/modem =&gt; /dev/ttyS[0-9]
+/dev/pilot =&gt; /dev/ttyS[0-9]</code></pre><ul>
+<li><code>/proc</code> 可以看作是一个文件系统，但是是伪文件系统，因为他之存储一些当前内核状态的一系列特殊文件。以下就不详细举例了，可以看看这个文件夹下的内容。使用 cat命令或者less之类的查看。</li>
+</ul>
+<h2 id="bash中的null和0"><a href="#bash中的null和0" class="headerlink" title="bash中的null和0"></a>bash中的null和0</h2><p>bash中的null和zero是通过设备资源文件 <code>/dev/null</code> , <code>/dev/zero</code> 来实现的</p>
+<ul>
+<li>null 使用 <code>dev/null</code> 这个设备文件是一个”黑洞”，可以看作是一个只能够写文件。写进去的东西都会被清空，当然也可以使用从 <code>/dev/null</code> 写入到文件来实现清空文件内容的目的。</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cat newfile1 &gt; /dev/null <span class="comment">#会什么也不输出</span></span><br><span class="line">cat /dev/null &gt; /var/<span class="built_in">log</span>/wtmp <span class="comment"># 清空该文件内容</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>zero 为指定目的的文件来清零（指定大小的文件）</li>
+</ul>
+<h3 id="以上就是我在bash学习中的所有内容，当然会在以后写一些实际的bash脚本。这个bash学习系列就写到这。"><a href="#以上就是我在bash学习中的所有内容，当然会在以后写一些实际的bash脚本。这个bash学习系列就写到这。" class="headerlink" title="以上就是我在bash学习中的所有内容，当然会在以后写一些实际的bash脚本。这个bash学习系列就写到这。"></a>以上就是我在bash学习中的所有内容，当然会在以后写一些实际的bash脚本。这个bash学习系列就写到这。</h3>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+<div>
+      
+</div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/07/03/2018-07-03-bash_14_bash中的函数/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -923,222 +1151,6 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/06/24/2018-06-27-bash_11_bash命令篇（三）/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="NanYin">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NanYin的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/24/2018-06-27-bash_11_bash命令篇（三）/" itemprop="url">bash学习记录（十二）命令篇（3）</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-24T15:00:00Z">
-                2018-06-24
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Bash/" itemprop="url" rel="index">
-                    <span itemprop="name">Bash</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  556
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  2
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="bash命令篇（三）"><a href="#bash命令篇（三）" class="headerlink" title="bash命令篇（三）"></a>bash命令篇（三）</h1><h2 id="bash中的关于通信的命令"><a href="#bash中的关于通信的命令" class="headerlink" title="bash中的关于通信的命令"></a>bash中的关于通信的命令</h2><ol>
-<li>host 通过ip或者域名搜索互联网的主机地址（使用DNS）</li>
-</ol>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ host www.baidu.com</span><br><span class="line">www.baidu.com has address 61.135.169.125</span><br><span class="line">www.baidu.com has address 61.135.169.121</span><br><span class="line">www.baidu.com is an <span class="built_in">alias</span> <span class="keyword">for</span> www.a.shifen.com.</span><br><span class="line">www.baidu.com is an <span class="built_in">alias</span> <span class="keyword">for</span> www.a.shifen.com.</span><br></pre></td></tr></table></figure>
-
-<ol start="2">
-<li>nslookup 向上寻找name server</li>
-</ol>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">$ nslookup  -sil 66.97.104.180 </span><br><span class="line">Server:		127.0.1.1</span><br><span class="line">Address:	127.0.1.1<span class="comment">#53</span></span><br><span class="line"></span><br><span class="line">Non-authoritative answer:</span><br><span class="line">180.104.97.66.in-addr.arpa	name = 66-97-104-180.dynamic.bugtusselwireless.com.</span><br><span class="line"></span><br><span class="line">Authoritative answers can be found from:</span><br><span class="line">104.97.66.in-addr.arpa	nameserver = ns2.bugnet.net.</span><br><span class="line">104.97.66.in-addr.arpa	nameserver = ns1.bugnet.net.</span><br><span class="line">ns1.bugnet.net	internet address = 204.11.133.241</span><br><span class="line">ns2.bugnet.net	internet address = 204.11.133.244</span><br></pre></td></tr></table></figure>
-
-<ol start="3">
-<li><p>ping 熟知的ping命令，常用来探测与另一个主机是否有网络链接</p>
-</li>
-<li><p>ftp 从远程主机下载或者上传给远程主机的协议。</p>
-</li>
-<li><p>telnt 链接远程主机的协议</p>
-</li>
-<li><p>wget 使用非交互式的从网站web或者ftp站点下载文件。</p>
-</li>
-<li><p>rcp 远程拷贝，在两台不同的机器间拷贝。</p>
-</li>
-<li><p>ssh <code>secure shell</code> 他代替了telnt rcp等命令。</p>
-</li>
-<li><p>scp <code>secure cp</code> 他用来代替rcp命令，需要登录授权的远程拷贝文件的命令。</p>
-<p> 这里只是简略的谈谈常见的关于机器交互的命令，这些都是熟能生巧的东西，最重要的是要上手练习。</p>
-</li>
-</ol>
-<h2 id="数学运算符"><a href="#数学运算符" class="headerlink" title="数学运算符"></a>数学运算符</h2><ol>
-<li><p>dc：dc是使用逆波兰表示法进行计算，如 11 +   ，3 6 *</p>
-</li>
-<li><p>bc：bc是现代linux下比较常见处理复杂运算的命令那个，可以计算浮点数。</p>
-</li>
-</ol>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$bc</span> -l -q</span><br><span class="line">4/3                   /*未指定精度默认保留整数*/</span><br><span class="line">scale=5               /*指定精度为5*/</span><br><span class="line">4/3</span><br><span class="line">1.33333</span><br><span class="line">ibase=2               /*指定进制转换的输入机制为二进制，输出默认为是十进制*/</span><br><span class="line">10</span><br><span class="line">4^2                   /*指数运算，注：指数不能为浮点数*/</span><br><span class="line">4*a(1)                /*计算π值，a()是个函数：arctan()，好吧，老师教的都被狗吃了，π值是等于四倍的arctan(1)么？*/</span><br><span class="line">3.14159265358979323844</span><br><span class="line">quit                  /*退出*/</span><br></pre></td></tr></table></figure>
-
-<ol start="3">
-<li>let: 表达式可以应用在let命令当中。</li>
-</ol>
-<h3 id="其实在我使用linux系统的几年里，感觉命令不能死记硬背，多用自然就会掌握了。但是有些比较冷门的命令还是背下来比较好-。"><a href="#其实在我使用linux系统的几年里，感觉命令不能死记硬背，多用自然就会掌握了。但是有些比较冷门的命令还是背下来比较好-。" class="headerlink" title="其实在我使用linux系统的几年里，感觉命令不能死记硬背，多用自然就会掌握了。但是有些比较冷门的命令还是背下来比较好 - -。"></a>其实在我使用linux系统的几年里，感觉命令不能死记硬背，多用自然就会掌握了。但是有些比较冷门的命令还是背下来比较好 - -。</h3>
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-<div>
-      
-</div>
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/06/24/2018-06-28-bash_12_bash管理员命令/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1339,6 +1351,222 @@
 </li>
 </ul>
 <h3 id="其实还有很多命令没有涉及到，如果想练习这些基本的系统命令的话，可以跟着arch-wiki-装一遍arch，装完后这里的命令就都能记住了。"><a href="#其实还有很多命令没有涉及到，如果想练习这些基本的系统命令的话，可以跟着arch-wiki-装一遍arch，装完后这里的命令就都能记住了。" class="headerlink" title="其实还有很多命令没有涉及到，如果想练习这些基本的系统命令的话，可以跟着arch wiki 装一遍arch，装完后这里的命令就都能记住了。"></a>其实还有很多命令没有涉及到，如果想练习这些基本的系统命令的话，可以跟着arch wiki 装一遍arch，装完后这里的命令就都能记住了。</h3>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+<div>
+      
+</div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/06/24/2018-06-27-bash_11_bash命令篇（三）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="NanYin">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NanYin的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/06/24/2018-06-27-bash_11_bash命令篇（三）/" itemprop="url">bash学习记录（十二）命令篇（3）</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-24T15:00:00Z">
+                2018-06-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Bash/" itemprop="url" rel="index">
+                    <span itemprop="name">Bash</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  556
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  2
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="bash命令篇（三）"><a href="#bash命令篇（三）" class="headerlink" title="bash命令篇（三）"></a>bash命令篇（三）</h1><h2 id="bash中的关于通信的命令"><a href="#bash中的关于通信的命令" class="headerlink" title="bash中的关于通信的命令"></a>bash中的关于通信的命令</h2><ol>
+<li>host 通过ip或者域名搜索互联网的主机地址（使用DNS）</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ host www.baidu.com</span><br><span class="line">www.baidu.com has address 61.135.169.125</span><br><span class="line">www.baidu.com has address 61.135.169.121</span><br><span class="line">www.baidu.com is an <span class="built_in">alias</span> <span class="keyword">for</span> www.a.shifen.com.</span><br><span class="line">www.baidu.com is an <span class="built_in">alias</span> <span class="keyword">for</span> www.a.shifen.com.</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>nslookup 向上寻找name server</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">$ nslookup  -sil 66.97.104.180 </span><br><span class="line">Server:		127.0.1.1</span><br><span class="line">Address:	127.0.1.1<span class="comment">#53</span></span><br><span class="line"></span><br><span class="line">Non-authoritative answer:</span><br><span class="line">180.104.97.66.in-addr.arpa	name = 66-97-104-180.dynamic.bugtusselwireless.com.</span><br><span class="line"></span><br><span class="line">Authoritative answers can be found from:</span><br><span class="line">104.97.66.in-addr.arpa	nameserver = ns2.bugnet.net.</span><br><span class="line">104.97.66.in-addr.arpa	nameserver = ns1.bugnet.net.</span><br><span class="line">ns1.bugnet.net	internet address = 204.11.133.241</span><br><span class="line">ns2.bugnet.net	internet address = 204.11.133.244</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li><p>ping 熟知的ping命令，常用来探测与另一个主机是否有网络链接</p>
+</li>
+<li><p>ftp 从远程主机下载或者上传给远程主机的协议。</p>
+</li>
+<li><p>telnt 链接远程主机的协议</p>
+</li>
+<li><p>wget 使用非交互式的从网站web或者ftp站点下载文件。</p>
+</li>
+<li><p>rcp 远程拷贝，在两台不同的机器间拷贝。</p>
+</li>
+<li><p>ssh <code>secure shell</code> 他代替了telnt rcp等命令。</p>
+</li>
+<li><p>scp <code>secure cp</code> 他用来代替rcp命令，需要登录授权的远程拷贝文件的命令。</p>
+<p> 这里只是简略的谈谈常见的关于机器交互的命令，这些都是熟能生巧的东西，最重要的是要上手练习。</p>
+</li>
+</ol>
+<h2 id="数学运算符"><a href="#数学运算符" class="headerlink" title="数学运算符"></a>数学运算符</h2><ol>
+<li><p>dc：dc是使用逆波兰表示法进行计算，如 11 +   ，3 6 *</p>
+</li>
+<li><p>bc：bc是现代linux下比较常见处理复杂运算的命令那个，可以计算浮点数。</p>
+</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$bc</span> -l -q</span><br><span class="line">4/3                   /*未指定精度默认保留整数*/</span><br><span class="line">scale=5               /*指定精度为5*/</span><br><span class="line">4/3</span><br><span class="line">1.33333</span><br><span class="line">ibase=2               /*指定进制转换的输入机制为二进制，输出默认为是十进制*/</span><br><span class="line">10</span><br><span class="line">4^2                   /*指数运算，注：指数不能为浮点数*/</span><br><span class="line">4*a(1)                /*计算π值，a()是个函数：arctan()，好吧，老师教的都被狗吃了，π值是等于四倍的arctan(1)么？*/</span><br><span class="line">3.14159265358979323844</span><br><span class="line">quit                  /*退出*/</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>let: 表达式可以应用在let命令当中。</li>
+</ol>
+<h3 id="其实在我使用linux系统的几年里，感觉命令不能死记硬背，多用自然就会掌握了。但是有些比较冷门的命令还是背下来比较好-。"><a href="#其实在我使用linux系统的几年里，感觉命令不能死记硬背，多用自然就会掌握了。但是有些比较冷门的命令还是背下来比较好-。" class="headerlink" title="其实在我使用linux系统的几年里，感觉命令不能死记硬背，多用自然就会掌握了。但是有些比较冷门的命令还是背下来比较好 - -。"></a>其实在我使用linux系统的几年里，感觉命令不能死记硬背，多用自然就会掌握了。但是有些比较冷门的命令还是背下来比较好 - -。</h3>
           
         
       
@@ -2186,194 +2414,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/06/12/2018-06-16-bash_09_命令置换/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="NanYin">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NanYin的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/12/2018-06-16-bash_09_命令置换/" itemprop="url">bash学习记录（九）命令置换和算数扩展</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-11T17:00:00Z">
-                2018-06-11
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Bash/" itemprop="url" rel="index">
-                    <span itemprop="name">Bash</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  201
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  1
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="命令置换"><a href="#命令置换" class="headerlink" title="命令置换"></a>命令置换</h1><p>命令置换可以输出一条或者多条命令的输出。可以让命令在不同语境下起作用，最常见的是使用  <code>\</code>`` 符号进行对命令的包裹，这样就能够输出使用命令得出的结果。可以成为另外一个命令的参数，也可以成为循环的参数。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> `hostname`</span><br><span class="line"><span class="built_in">echo</span> $(<span class="string">"hostname"</span>)</span><br><span class="line"><span class="comment"># 两种使用都可以，都能够达到命令置换的目的</span></span><br></pre></td></tr></table></figure>
-
-<h1 id="算数运算"><a href="#算数运算" class="headerlink" title="算数运算"></a>算数运算</h1><p>使用反引号，双括号，和let进行相对来说简单</p>
-<h2 id="使用反引号"><a href="#使用反引号" class="headerlink" title="使用反引号"></a>使用反引号</h2><p>使用反引号内用expr命令进行整型数的运算。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">z=`expr <span class="variable">$z</span>+1`</span><br></pre></td></tr></table></figure>
-
-<h2 id="使用双括号和let进行运算"><a href="#使用双括号和let进行运算" class="headerlink" title="使用双括号和let进行运算"></a>使用双括号和let进行运算</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">z=$((z+3))</span><br><span class="line"></span><br><span class="line"><span class="built_in">let</span> z=z+3</span><br><span class="line"><span class="built_in">let</span> <span class="string">"z += 3"</span>  <span class="comment">#  Quotes permit the use of spaces in variable assignment.</span></span><br></pre></td></tr></table></figure>
-
-<p>今天的内容有点少。。。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-<div>
-      
-</div>
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2426,7 +2466,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">69</span>
+                  <span class="site-state-item-count">70</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2500,6 +2540,10 @@
              
              
                <li>
+                 <a href="/2019/06/28/2019-06-28-设计模式之命令模式/" title="设计模式之命令模式" target="_blank">设计模式之命令模式</a>
+               </li>
+             
+               <li>
                  <a href="/2019/06/27/2019-06-27-设计模式之迭代器模式/" title="设计模式之迭代器模式" target="_blank">设计模式之迭代器模式</a>
                </li>
              
@@ -2513,10 +2557,6 @@
              
                <li>
                  <a href="/2019/06/19/2019-06-24-设计模式之观察者模式/" title="设计模式之观察者模式" target="_blank">设计模式之观察者模式</a>
-               </li>
-             
-               <li>
-                 <a href="/2019/06/19/2019-06-19-设计模式之状态模式/" title="设计模式之状态模式" target="_blank">设计模式之状态模式</a>
                </li>
              
            </ul>
@@ -2565,7 +2605,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共60.1k字</span>
+  <span class="post-count">博客全站共60.9k字</span>
 </div>
 
 
