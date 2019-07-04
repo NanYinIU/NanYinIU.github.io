@@ -304,6 +304,216 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/06/14/2019-06-14-设计模式之代理模式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="NanYin">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NanYin的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/06/14/2019-06-14-设计模式之代理模式/" itemprop="url">设计模式之代理模式</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-06-14T12:00:00Z">
+                2019-06-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/设计模式/" itemprop="url" rel="index">
+                    <span itemprop="name">设计模式</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  604
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  2
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="设计模式之代理模式"><a href="#设计模式之代理模式" class="headerlink" title="设计模式之代理模式"></a>设计模式之代理模式</h1><p>代理模式是对象的结构模式。代理模式给某一个对象提供一个代理对象，并由代理对象控制对原对象的引用。</p>
+<h2 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h2><ol>
+<li>远程代理不同地址空间的对象，都当作本地化对象来处理</li>
+<li>控制对象的访问权限。</li>
+</ol>
+<p>当遇到一下情况是可以使用代理模式：</p>
+<ul>
+<li>想控制对另一个对象的访问</li>
+<li>懒加载</li>
+<li>控制日志输出</li>
+<li>计算对象引用</li>
+<li>控制网络链接问题</li>
+</ul>
+<h2 id="代理模式模式结构"><a href="#代理模式模式结构" class="headerlink" title="代理模式模式结构"></a>代理模式模式结构</h2><p>浴室分为男浴室和女浴室，其中前台判断能够进入浴室的前提是没有皮肤病，如有没有，才让进入浴室。这里的前台就是一个代理，它代理来浴室，用来判断能否进入浴室的权限。这就是代理的作用。</p>
+<p>代理模式和装饰者模式比较容易混淆。需要记住的是，两者的功能区别在于，代理模式改变的是对象的职能，控制对象的行为。而装饰者模式是对职能的增加和减少。使用场景上有所不同。</p>
+<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190614132147.png" alt="代理模式结构图"></p>
+<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><p>代理模式大致能够分为三部分：抽象职能类，代理类，被代理类</p>
+<p>第一部分：抽象职能类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Person 基本信息类 和性别枚举 </span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String name ;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> SexEnum sex;</span><br><span class="line">    <span class="comment">//是否有皮肤病</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> hasSkinDisease;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Person</span><span class="params">(String name, SexEnum sex, <span class="keyword">int</span> hasSkinDisease)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">        <span class="keyword">this</span>.sex = sex;</span><br><span class="line">        <span class="keyword">this</span>.hasSkinDisease = hasSkinDisease;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> SexEnum <span class="title">getSex</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> sex;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getHasSkinDisease</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> hasSkinDisease;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">enum</span> SexEnum &#123;</span><br><span class="line">    MALE,FEMALE</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//抽象职能</span></span><br><span class="line"><span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">BathRoom</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 去澡堂泡澡</span></span><br><span class="line">    <span class="function"><span class="keyword">abstract</span> BathRoom <span class="title">enterBathroom</span><span class="params">(Person person)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>第二部分：被代理类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MaleBathRoom</span> <span class="keyword">extends</span> <span class="title">BathRoom</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> BathRoom <span class="title">enterBathroom</span><span class="params">(Person p)</span> </span>&#123;</span><br><span class="line">        String sexName = <span class="string">""</span>;</span><br><span class="line">        <span class="keyword">if</span>(SexEnum.MALE.equals(p.getSex()))&#123;</span><br><span class="line">            sexName = SexEnum.MALE.toString();</span><br><span class="line">            System.out.println(<span class="string">"name : "</span>+ p.getName() +<span class="string">" sex: "</span>+ sexName +<span class="string">" go bath for male !"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>第三部分：代理类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BathRoomProxy</span> <span class="keyword">extends</span> <span class="title">BathRoom</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    BathRoom bathRoom;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">BathRoomProxy</span><span class="params">(BathRoom bathRoom)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.bathRoom = bathRoom;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> BathRoom <span class="title">enterBathroom</span><span class="params">(Person person)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (person.getHasSkinDisease() == <span class="number">0</span>) &#123;</span><br><span class="line">                <span class="keyword">this</span>.bathRoom.enterBathroom(person);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            System.out.println(person.getName() + <span class="string">" has disease."</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>客户端调用：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">App</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Person p1 = <span class="keyword">new</span> Person(<span class="string">"1"</span>,SexEnum.MALE,<span class="number">0</span>);</span><br><span class="line">        Person p2 = <span class="keyword">new</span> Person(<span class="string">"2"</span>,SexEnum.MALE,<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">        BathRoomProxy bathRoomProxy = <span class="keyword">new</span> BathRoomProxy(<span class="keyword">new</span> MaleBathRoom());</span><br><span class="line">        bathRoomProxy.enterBathroom(p1).enterBathroom(p2);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>结果：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">name : 1 sex: MALE go bath for male !</span><br><span class="line">2 has disease.</span><br></pre></td></tr></table></figure>
+
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+<div>
+      
+</div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/06/13/2019-06-13-设计模式之享元模式/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1103,198 +1313,6 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/06/02/2019-06-02-设计模式之适配器模式/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="NanYin">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NanYin的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/06/02/2019-06-02-设计模式之适配器模式/" itemprop="url">设计模式之适配器模式</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-06-02T12:00:00Z">
-                2019-06-02
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/设计模式/" itemprop="url" rel="index">
-                    <span itemprop="name">设计模式</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  593
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  2
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="设计模式之适配器模式"><a href="#设计模式之适配器模式" class="headerlink" title="设计模式之适配器模式"></a>设计模式之适配器模式</h1><p>我们实际中会用到两个不同接口的类的通信,在不修改两个类的前提下,使用新的中间类来完成衔接的过程,这个中间件就是适配器.可以让两个完全不同的接口相互转化.</p>
-<p>适配器模式允许在适配器中包装其他不兼容的对象，以使其与另一个类兼容。</p>
-<p>就如同生活中买了港版的手机,但是附赠的是三脚插头，而大陆上用的是两脚的，需要一个适配器来将三角插头转换为两脚的。其中这个中间件就是适配器。</p>
-<h2 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h2><ul>
-<li>当你想要这个类，但是类中的接口与想用的接口并不匹配</li>
-<li>当想要去创建一个可重用的类，让它与不相关或不可预见的类合作，这个类不必要有兼容的接口</li>
-<li>当你需要一系列的子类的时候，如果想要调整这些子类的接口方法的时候，对每一个接口子类化的这种方法是不可行的。这时就可使用适配器适配这些子类的夫类。</li>
-</ul>
-<h2 id="结构图"><a href="#结构图" class="headerlink" title="结构图"></a>结构图</h2><p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190602120227.png" alt="适配器模式图"></p>
-<p>使用client调用适配器，适配器继承与三脚插头，依赖于二脚插头。这样就可以使用三脚插头的接口调用二脚插头的方法。</p>
-<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 三角插头</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Author</span> nanyin</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Date</span> 11:13 2019-06-02</span></span><br><span class="line"><span class="comment"> **/</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ThreeLeggedPlug</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">charge</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"use three legged plug"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 二脚插头</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Author</span> nanyin</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Date</span> 11:13 2019-06-02</span></span><br><span class="line"><span class="comment"> **/</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TwoLeggedPlug</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">fastCharge</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"use two legged plug for fast charge !"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//适配器 继承三角插头</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TwoLeggedPlugAdapter</span> <span class="keyword">extends</span> <span class="title">ThreeLeggedPlug</span> </span>&#123;</span><br><span class="line">    TwoLeggedPlug twoLeggedPlug;</span><br><span class="line">    <span class="comment">// 依赖于二脚插头</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">TwoLeggedPlugAdapter</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        twoLeggedPlug = <span class="keyword">new</span> TwoLeggedPlug();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//使用三角插头的charge方法，调用二脚插头的fastCharge方法</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">charge</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        twoLeggedPlug.fastCharge();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//某S9港版手机</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">S9Plus</span> <span class="keyword">extends</span> <span class="title">ThreeLeggedPlug</span> </span>&#123;</span><br><span class="line">    ThreeLeggedPlug threeLeggedPlug;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">S9Plus</span><span class="params">(ThreeLeggedPlug threeLeggedPlug)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.threeLeggedPlug = threeLeggedPlug;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">charge</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        threeLeggedPlug.charge();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//客户端方法</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">App</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testCharge</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 不使用适配器 使用类三角插头</span></span><br><span class="line">        ThreeLeggedPlug s9Plus = <span class="keyword">new</span> S9Plus(<span class="keyword">new</span> ThreeLeggedPlug());</span><br><span class="line">        s9Plus.charge();</span><br><span class="line">        <span class="comment">// 使用二脚插头的适配器</span></span><br><span class="line">        ThreeLeggedPlug s9PlusUseTwoLeggedPlug = <span class="keyword">new</span> S9Plus(<span class="keyword">new</span> TwoLeggedPlugAdapter());</span><br><span class="line">        s9PlusUseTwoLeggedPlug.charge();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">结果：</span><br><span class="line"></span><br><span class="line">use three legged plug</span><br><span class="line">use two legged plug for fast charge !</span><br><span class="line"></span><br><span class="line">Process finished with exit code 0</span><br></pre></td></tr></table></figure>
-
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-<div>
-      
-</div>
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/06/02/2019-06-02-设计模式之原型模式/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1486,7 +1504,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/06/01/2019-06-03-设计模式之组合模式/">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/06/02/2019-06-02-设计模式之适配器模式/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="NanYin">
@@ -1505,7 +1523,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/06/01/2019-06-03-设计模式之组合模式/" itemprop="url">设计模式之组合模式</a></h1>
+                <a class="post-title-link" href="/2019/06/02/2019-06-02-设计模式之适配器模式/" itemprop="url">设计模式之适配器模式</a></h1>
         
 
         <div class="post-meta">
@@ -1517,8 +1535,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-06-01T12:00:00Z">
-                2019-06-01
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-06-02T12:00:00Z">
+                2019-06-02
               </time>
             
 
@@ -1571,7 +1589,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  767
+                  593
                 </span>
               
 
@@ -1587,7 +1605,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  3
+                  2
                 </span>
               
             </div>
@@ -1610,25 +1628,19 @@
       
         
           
-            <h1 id="设计模式之组合模式"><a href="#设计模式之组合模式" class="headerlink" title="设计模式之组合模式"></a>设计模式之组合模式</h1><p>将对象组合成树结构以表示部分整体层次结构。当使用树结构的上层和下层组件属性可能差别很大，所以说一般情况下需要对这两类对象进行分别处理， 但Composite允许客户端统一处理单个对象和对象组合。也就是说可以将叶子组件与整体进行一致性处理，实现的方法是组件和整体实现相同接口。</p>
-<h2 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h2><ol>
-<li>想要表示对象的部分与整体之间的层次结构</li>
-<li>想要客户端忽略组合对象和单个对象的区别，使用组合模式会统一处理最后的组合对象。</li>
-</ol>
-<h2 id="组合模式结构"><a href="#组合模式结构" class="headerlink" title="组合模式结构"></a>组合模式结构</h2><p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190610110055.png" alt="经典模式"></p>
-<p>最典型的情况就是多级树形菜单和文件夹结构。盗个图 - - </p>
-<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190605154848.png" alt="组合模式结构"></p>
-<p>上图，虽然国家，地区，城市属于不同的层级，但是都需要继承同一个接口，是客户端能够统一的调用不同层级的对象。类似多级树形菜单的结构。</p>
-<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><p>第一部分：抽象组件</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 这个抽象组件即完成了抽象组件的功能，又完成了“树枝”的功能，能够链接各个叶子节点</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Component</span> </span>&#123;</span><br><span class="line">    String name;</span><br><span class="line">    Integer areaLevel;</span><br><span class="line">    List&lt;Component&gt; list = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Component</span><span class="params">(String name, Integer areaLevel)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">        <span class="keyword">this</span>.areaLevel = areaLevel;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">printName</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"Name : "</span>+name);</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">printLevel</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"Area Level :"</span> + areaLevel);</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="comment">// 这里在抽象类的方法中直接打印子组件（ps:应统一递归输出子组件的子组件）</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">printAll</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">for</span> (Component p:list</span><br><span class="line">             ) &#123;</span><br><span class="line">            System.out.println(<span class="string">"子组件："</span>+ p.name);</span><br><span class="line">            p.printName();</span><br><span class="line">            p.printLevel();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">add</span><span class="params">(Component component)</span></span>&#123;</span><br><span class="line">       list.add(component);</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+            <h1 id="设计模式之适配器模式"><a href="#设计模式之适配器模式" class="headerlink" title="设计模式之适配器模式"></a>设计模式之适配器模式</h1><p>我们实际中会用到两个不同接口的类的通信,在不修改两个类的前提下,使用新的中间类来完成衔接的过程,这个中间件就是适配器.可以让两个完全不同的接口相互转化.</p>
+<p>适配器模式允许在适配器中包装其他不兼容的对象，以使其与另一个类兼容。</p>
+<p>就如同生活中买了港版的手机,但是附赠的是三脚插头，而大陆上用的是两脚的，需要一个适配器来将三角插头转换为两脚的。其中这个中间件就是适配器。</p>
+<h2 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h2><ul>
+<li>当你想要这个类，但是类中的接口与想用的接口并不匹配</li>
+<li>当想要去创建一个可重用的类，让它与不相关或不可预见的类合作，这个类不必要有兼容的接口</li>
+<li>当你需要一系列的子类的时候，如果想要调整这些子类的接口方法的时候，对每一个接口子类化的这种方法是不可行的。这时就可使用适配器适配这些子类的夫类。</li>
+</ul>
+<h2 id="结构图"><a href="#结构图" class="headerlink" title="结构图"></a>结构图</h2><p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190602120227.png" alt="适配器模式图"></p>
+<p>使用client调用适配器，适配器继承与三脚插头，依赖于二脚插头。这样就可以使用三脚插头的接口调用二脚插头的方法。</p>
+<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 三角插头</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Author</span> nanyin</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Date</span> 11:13 2019-06-02</span></span><br><span class="line"><span class="comment"> **/</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ThreeLeggedPlug</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">charge</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"use three legged plug"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 二脚插头</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Author</span> nanyin</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Date</span> 11:13 2019-06-02</span></span><br><span class="line"><span class="comment"> **/</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TwoLeggedPlug</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">fastCharge</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"use two legged plug for fast charge !"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//适配器 继承三角插头</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TwoLeggedPlugAdapter</span> <span class="keyword">extends</span> <span class="title">ThreeLeggedPlug</span> </span>&#123;</span><br><span class="line">    TwoLeggedPlug twoLeggedPlug;</span><br><span class="line">    <span class="comment">// 依赖于二脚插头</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">TwoLeggedPlugAdapter</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        twoLeggedPlug = <span class="keyword">new</span> TwoLeggedPlug();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//使用三角插头的charge方法，调用二脚插头的fastCharge方法</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">charge</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        twoLeggedPlug.fastCharge();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//某S9港版手机</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">S9Plus</span> <span class="keyword">extends</span> <span class="title">ThreeLeggedPlug</span> </span>&#123;</span><br><span class="line">    ThreeLeggedPlug threeLeggedPlug;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">S9Plus</span><span class="params">(ThreeLeggedPlug threeLeggedPlug)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.threeLeggedPlug = threeLeggedPlug;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">charge</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        threeLeggedPlug.charge();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//客户端方法</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">App</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testCharge</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 不使用适配器 使用类三角插头</span></span><br><span class="line">        ThreeLeggedPlug s9Plus = <span class="keyword">new</span> S9Plus(<span class="keyword">new</span> ThreeLeggedPlug());</span><br><span class="line">        s9Plus.charge();</span><br><span class="line">        <span class="comment">// 使用二脚插头的适配器</span></span><br><span class="line">        ThreeLeggedPlug s9PlusUseTwoLeggedPlug = <span class="keyword">new</span> S9Plus(<span class="keyword">new</span> TwoLeggedPlugAdapter());</span><br><span class="line">        s9PlusUseTwoLeggedPlug.charge();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>第二部分：树叶构件</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 国家级别树叶节点</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Country</span> <span class="keyword">extends</span> <span class="title">Component</span> </span>&#123;</span><br><span class="line">    List&lt;Province&gt; provinceList = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Country</span><span class="params">(String name, Integer areaLevel)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(name, areaLevel);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">printName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"Country Name :"</span> + <span class="keyword">this</span>.name);;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">add</span><span class="params">(Province province)</span></span>&#123;</span><br><span class="line">        provinceList.add(province);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">     <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">printAll</span><span class="params">()</span></span>&#123;</span><br><span class="line">         System.out.println(<span class="string">"当前组件:"</span>+name + <span class="string">"等级："</span>+ areaLevel);</span><br><span class="line">        <span class="keyword">for</span> (Province p:provinceList</span><br><span class="line">        ) &#123;</span><br><span class="line">            p.printAll();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">printLevel</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"Country Level :"</span> + <span class="keyword">this</span>.areaLevel);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 省级别树叶节点</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Province</span> <span class="keyword">extends</span> <span class="title">Component</span></span>&#123;</span><br><span class="line"></span><br><span class="line">   List&lt;City&gt; cityList = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Province</span><span class="params">(String name, Integer areaLevel)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(name, areaLevel);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">printName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"Province Name :"</span> +<span class="keyword">this</span>.name);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">add</span><span class="params">(City city)</span></span>&#123;</span><br><span class="line">       cityList.add(city);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">printAll</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"当前组件:"</span>+name + <span class="string">"等级："</span>+ areaLevel);</span><br><span class="line">        <span class="keyword">for</span> (City p:cityList</span><br><span class="line">        ) &#123;</span><br><span class="line">            p.printAll();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">printLevel</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">""</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 市级别树叶节点</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">City</span> <span class="keyword">extends</span> <span class="title">Component</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">City</span><span class="params">(String name, Integer areaLevel)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(name, areaLevel);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">printName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"City Name :"</span> + <span class="keyword">this</span>.name);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">printLevel</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"City Level "</span> + <span class="keyword">this</span>.areaLevel);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">printAll</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"组件："</span>+ <span class="keyword">this</span>.name);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>第三部分：客户端</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">App</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Country zhongguo = <span class="keyword">new</span> Country(<span class="string">"china"</span>, <span class="number">0</span>);</span><br><span class="line">        City langfang = <span class="keyword">new</span> City(<span class="string">"langfang"</span>, <span class="number">2</span>);</span><br><span class="line">        Province hebei = <span class="keyword">new</span> Province(<span class="string">"hebei"</span>, <span class="number">1</span>);</span><br><span class="line">        zhongguo.add(hebei);</span><br><span class="line">        hebei.add(langfang);</span><br><span class="line">        zhongguo.printAll();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">当前组件:china 等级：0</span><br><span class="line">当前组件:hebei 等级：1</span><br><span class="line">组件：langfang</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">结果：</span><br><span class="line"></span><br><span class="line">use three legged plug</span><br><span class="line">use two legged plug for fast charge !</span><br><span class="line"></span><br><span class="line">Process finished with exit code 0</span><br></pre></td></tr></table></figure>
 
 
           
@@ -1883,6 +1895,204 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/06/01/2019-06-03-设计模式之组合模式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="NanYin">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NanYin的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/06/01/2019-06-03-设计模式之组合模式/" itemprop="url">设计模式之组合模式</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-06-01T12:00:00Z">
+                2019-06-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/设计模式/" itemprop="url" rel="index">
+                    <span itemprop="name">设计模式</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  767
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  3
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="设计模式之组合模式"><a href="#设计模式之组合模式" class="headerlink" title="设计模式之组合模式"></a>设计模式之组合模式</h1><p>将对象组合成树结构以表示部分整体层次结构。当使用树结构的上层和下层组件属性可能差别很大，所以说一般情况下需要对这两类对象进行分别处理， 但Composite允许客户端统一处理单个对象和对象组合。也就是说可以将叶子组件与整体进行一致性处理，实现的方法是组件和整体实现相同接口。</p>
+<h2 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h2><ol>
+<li>想要表示对象的部分与整体之间的层次结构</li>
+<li>想要客户端忽略组合对象和单个对象的区别，使用组合模式会统一处理最后的组合对象。</li>
+</ol>
+<h2 id="组合模式结构"><a href="#组合模式结构" class="headerlink" title="组合模式结构"></a>组合模式结构</h2><p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190610110055.png" alt="经典模式"></p>
+<p>最典型的情况就是多级树形菜单和文件夹结构。盗个图 - - </p>
+<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190605154848.png" alt="组合模式结构"></p>
+<p>上图，虽然国家，地区，城市属于不同的层级，但是都需要继承同一个接口，是客户端能够统一的调用不同层级的对象。类似多级树形菜单的结构。</p>
+<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><p>第一部分：抽象组件</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 这个抽象组件即完成了抽象组件的功能，又完成了“树枝”的功能，能够链接各个叶子节点</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Component</span> </span>&#123;</span><br><span class="line">    String name;</span><br><span class="line">    Integer areaLevel;</span><br><span class="line">    List&lt;Component&gt; list = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Component</span><span class="params">(String name, Integer areaLevel)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">        <span class="keyword">this</span>.areaLevel = areaLevel;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">printName</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"Name : "</span>+name);</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">printLevel</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"Area Level :"</span> + areaLevel);</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="comment">// 这里在抽象类的方法中直接打印子组件（ps:应统一递归输出子组件的子组件）</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">printAll</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">for</span> (Component p:list</span><br><span class="line">             ) &#123;</span><br><span class="line">            System.out.println(<span class="string">"子组件："</span>+ p.name);</span><br><span class="line">            p.printName();</span><br><span class="line">            p.printLevel();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">add</span><span class="params">(Component component)</span></span>&#123;</span><br><span class="line">       list.add(component);</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>第二部分：树叶构件</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 国家级别树叶节点</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Country</span> <span class="keyword">extends</span> <span class="title">Component</span> </span>&#123;</span><br><span class="line">    List&lt;Province&gt; provinceList = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Country</span><span class="params">(String name, Integer areaLevel)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(name, areaLevel);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">printName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"Country Name :"</span> + <span class="keyword">this</span>.name);;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">add</span><span class="params">(Province province)</span></span>&#123;</span><br><span class="line">        provinceList.add(province);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">     <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">printAll</span><span class="params">()</span></span>&#123;</span><br><span class="line">         System.out.println(<span class="string">"当前组件:"</span>+name + <span class="string">"等级："</span>+ areaLevel);</span><br><span class="line">        <span class="keyword">for</span> (Province p:provinceList</span><br><span class="line">        ) &#123;</span><br><span class="line">            p.printAll();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">printLevel</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"Country Level :"</span> + <span class="keyword">this</span>.areaLevel);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 省级别树叶节点</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Province</span> <span class="keyword">extends</span> <span class="title">Component</span></span>&#123;</span><br><span class="line"></span><br><span class="line">   List&lt;City&gt; cityList = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Province</span><span class="params">(String name, Integer areaLevel)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(name, areaLevel);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">printName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"Province Name :"</span> +<span class="keyword">this</span>.name);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">add</span><span class="params">(City city)</span></span>&#123;</span><br><span class="line">       cityList.add(city);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">printAll</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"当前组件:"</span>+name + <span class="string">"等级："</span>+ areaLevel);</span><br><span class="line">        <span class="keyword">for</span> (City p:cityList</span><br><span class="line">        ) &#123;</span><br><span class="line">            p.printAll();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">printLevel</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">""</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 市级别树叶节点</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">City</span> <span class="keyword">extends</span> <span class="title">Component</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">City</span><span class="params">(String name, Integer areaLevel)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(name, areaLevel);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">printName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"City Name :"</span> + <span class="keyword">this</span>.name);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">printLevel</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"City Level "</span> + <span class="keyword">this</span>.areaLevel);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">printAll</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"组件："</span>+ <span class="keyword">this</span>.name);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>第三部分：客户端</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">App</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Country zhongguo = <span class="keyword">new</span> Country(<span class="string">"china"</span>, <span class="number">0</span>);</span><br><span class="line">        City langfang = <span class="keyword">new</span> City(<span class="string">"langfang"</span>, <span class="number">2</span>);</span><br><span class="line">        Province hebei = <span class="keyword">new</span> Province(<span class="string">"hebei"</span>, <span class="number">1</span>);</span><br><span class="line">        zhongguo.add(hebei);</span><br><span class="line">        hebei.add(langfang);</span><br><span class="line">        zhongguo.printAll();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">当前组件:china 等级：0</span><br><span class="line">当前组件:hebei 等级：1</span><br><span class="line">组件：langfang</span><br></pre></td></tr></table></figure>
+
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+<div>
+      
+</div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/05/30/2019-05-30-设计模式之单例模式/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2067,229 +2277,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/05/29/2019-01-30-利用springboot构建SpringData+JAP+RestFul应用/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="NanYin">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NanYin的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/05/29/2019-01-30-利用springboot构建SpringData+JAP+RestFul应用/" itemprop="url">利用springboot构建jpa+springdata+rest应用的基本配置过程</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-29T12:00:00Z">
-                2019-05-29
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Spring/" itemprop="url" rel="index">
-                    <span itemprop="name">Spring</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  896
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  4
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="利用springboot构建jpa-springdata-rest应用的基本配置过程"><a href="#利用springboot构建jpa-springdata-rest应用的基本配置过程" class="headerlink" title="利用springboot构建jpa+springdata+rest应用的基本配置过程"></a>利用springboot构建jpa+springdata+rest应用的基本配置过程</h1><h2 id="前述"><a href="#前述" class="headerlink" title="前述"></a>前述</h2><p>利用SpringBoot整合springData+JPA应用非常方便，所以本着学习的目的来构建一个基本的web应用，配置起来非常简单。下面来说说配置过程和踩过的坑。</p>
-<h2 id="过程"><a href="#过程" class="headerlink" title="过程"></a>过程</h2><h3 id="后端配置"><a href="#后端配置" class="headerlink" title="后端配置"></a>后端配置</h3><p>因为我使用的是IDEA的spring initalizer，勾选如下：</p>
-<ul>
-<li><p>Rest Repositories</p>
-</li>
-<li><p>Thymeleaf</p>
-</li>
-<li><p>JPA</p>
-</li>
-<li><p>H2</p>
-</li>
-<li><p>Lombok 需要ide下载插件使用</p>
-</li>
-</ul>
-<p>以前在配置spring MVC接口时，往往会浪费很长时间配置rest地址，springdata解决了这个一遍又一遍麻烦的过程。</p>
-<h4 id="首先配置实体类"><a href="#首先配置实体类" class="headerlink" title="首先配置实体类"></a>首先配置实体类</h4><p>任何基于Spring Data REST的应用程序的基石都是域对象。其中的@Id等都是JPA语法，具体用法可以看上一篇文章。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="meta">@Getter</span></span><br><span class="line"><span class="meta">@Setter</span></span><br><span class="line"><span class="meta">@Table</span>(name = <span class="string">"user"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">User</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Id</span></span><br><span class="line">    <span class="keyword">private</span> Long id;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Column</span>(name = <span class="string">"username"</span>,nullable = <span class="keyword">true</span>,length = <span class="number">255</span>)</span><br><span class="line">    <span class="keyword">private</span> String username;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Column</span>(name = <span class="string">"password"</span>,nullable = <span class="keyword">true</span>,length = <span class="number">255</span>)</span><br><span class="line">    <span class="keyword">private</span> String password;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@OneToOne</span>()</span><br><span class="line">    <span class="meta">@JoinColumn</span>(name = <span class="string">"person_id"</span>,nullable = <span class="keyword">false</span>)</span><br><span class="line">    <span class="keyword">private</span> Person person;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="定义一个存储库"><a href="#定义一个存储库" class="headerlink" title="定义一个存储库"></a>定义一个存储库</h4><p>Spring Data REST应用程序的另一个关键部分是创建相应的存储库定义</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">UserRepository</span> <span class="keyword">extends</span> <span class="title">JpaRepository</span>&lt;<span class="title">User</span>,<span class="title">Long</span>&gt; </span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="配置service和controller"><a href="#配置service和controller" class="headerlink" title="配置service和controller"></a>配置service和controller</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UserServiceImpl</span> <span class="keyword">implements</span> <span class="title">UserService</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    UserRepository userRepository;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">save</span><span class="params">(User user)</span> </span>&#123;</span><br><span class="line">        user.setPassword(...); <span class="comment">//定义代码</span></span><br><span class="line">        userRepository.save(user);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="配置数据库和application-properties"><a href="#配置数据库和application-properties" class="headerlink" title="配置数据库和application.properties"></a>配置数据库和application.properties</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"># 驱动配置信息</span><br><span class="line">spring.datasource.type=com.alibaba.druid.pool.DruidDataSource</span><br><span class="line">spring.datasource.url = jdbc:mysql://127.0.0.1:3306/jreact?useUnicode=true&amp;characterEncoding=utf-8</span><br><span class="line">spring.datasource.username = root</span><br><span class="line">spring.datasource.password = 123456</span><br><span class="line">spring.datasource.driverClassName = com.mysql.jdbc.Driver</span><br><span class="line">#非严格的html解析</span><br><span class="line">spring.thymeleaf.mode =LEGACYHTML5</span><br><span class="line"># 彩色输出</span><br><span class="line">spring.output.ansi.enabled=DETECT</span><br><span class="line"># 设置默认引擎</span><br><span class="line">spring.jpa.database-platform=org.hibernate.dialect.MySQL5InnoDBDialect</span><br><span class="line">#配置自动建表：updata:没有表新建，有表更新操作,控制台显示建表语句</span><br><span class="line">spring.jpa.hibernate.ddl-auto=update</span><br><span class="line">spring.jpa.show-sql=true</span><br><span class="line">#配置spring data rest的基地址</span><br><span class="line">spring.data.rest.base-path=/api</span><br></pre></td></tr></table></figure>
-
-<h4 id="启动应用"><a href="#启动应用" class="headerlink" title="启动应用"></a>启动应用</h4><p>访问 <code>localhost:8080/api/users</code> 可以查看到如下信息,说明配置成功了。只是表中还没有数据，另外表已经由自动建好，以后如果更新，直接更新程序就好了。</p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"_embedded"</span> : &#123;</span><br><span class="line">    <span class="attr">"users"</span> : [ ]</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">"_links"</span> : &#123;</span><br><span class="line">    <span class="attr">"self"</span> : &#123;</span><br><span class="line">      <span class="attr">"href"</span> : <span class="string">"http://localhost:8080/api/users&#123;?page,size,sort&#125;"</span>,</span><br><span class="line">      <span class="attr">"templated"</span> : <span class="literal">true</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">"profile"</span> : &#123;</span><br><span class="line">      <span class="attr">"href"</span> : <span class="string">"http://localhost:8080/api/profile/users"</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">"page"</span> : &#123;</span><br><span class="line">    <span class="attr">"size"</span> : <span class="number">20</span>,</span><br><span class="line">    <span class="attr">"totalElements"</span> : <span class="number">0</span>,</span><br><span class="line">    <span class="attr">"totalPages"</span> : <span class="number">0</span>,</span><br><span class="line">    <span class="attr">"number"</span> : <span class="number">0</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="前端配置"><a href="#前端配置" class="headerlink" title="前端配置"></a>前端配置</h3><p>使用react框架作为前端框架，首先下载create-react-app作为开发的脚手架。这里我选用的是meterial-UI的create-react-app，按照文档中的说明来下载并安装。</p>
-<h4 id="配置proxy"><a href="#配置proxy" class="headerlink" title="配置proxy"></a>配置proxy</h4><p>在src目录下新建名称为setupProxy.js的文件，并在文件中写入如下内容：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> proxy = <span class="built_in">require</span>(<span class="string">'http-proxy-middleware'</span>);</span><br><span class="line"><span class="built_in">module</span>.exports = <span class="function"><span class="keyword">function</span>(<span class="params">app</span>) </span>&#123;</span><br><span class="line">    app.use(proxy(<span class="string">'/api/'</span>, </span><br><span class="line">        &#123; <span class="attr">target</span>: <span class="string">'http://localhost:8080/'</span> &#125;</span><br><span class="line">    ));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>其中/api/为访问后端的基地址，target为访问后端的主机地址和端口号</p>
-<h4 id="配置router"><a href="#配置router" class="headerlink" title="配置router"></a>配置router</h4><p>使用npm下载 <code>react-router-dom</code>后，在src目录下新建router文件夹，并创建baseRouter.js文件，引入刚下载的包，基本的文件内容如：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">"react"</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; BrowserRouter <span class="keyword">as</span> Router, Route, Link,Switch &#125; <span class="keyword">from</span> <span class="string">"react-router-dom"</span>;</span><br><span class="line"><span class="keyword">import</span> Index <span class="keyword">from</span> <span class="string">"../pages/index"</span></span><br><span class="line"><span class="keyword">import</span> SignIn <span class="keyword">from</span> <span class="string">"../pages/login/signIn"</span></span><br><span class="line"><span class="keyword">import</span> Error404 <span class="keyword">from</span> <span class="string">"../pages/error/404"</span></span><br><span class="line"><span class="keyword">const</span> About = <span class="function"><span class="params">()</span> =&gt;</span> &lt;h2&gt;About&lt;/h2&gt;;</span><br><span class="line"><span class="keyword">const</span> Users = <span class="function"><span class="params">()</span> =&gt;</span> &lt;h2&gt;Users&lt;/h2&gt;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> AppRouter = <span class="function"><span class="params">()</span> =&gt;</span> (</span><br><span class="line">  &lt;Router&gt;</span><br><span class="line">    &lt;div&gt;</span><br><span class="line">    &lt;Switch&gt;</span><br><span class="line">        &lt;Route exact path=<span class="string">"/"</span> component=&#123;Index&#125; /&gt;</span><br><span class="line">        &lt;Route path=<span class="string">"/SignIn"</span> component=&#123;SignIn&#125; /&gt;</span><br><span class="line">        &lt;Route path=<span class="string">"/About"</span> component=&#123;About&#125; /&gt;</span><br><span class="line">        &#123;<span class="comment">/* when none of the above match, &lt;NoMatch&gt; will be rendered */</span>&#125;</span><br><span class="line">        &lt;Route component=&#123;Error404&#125; /&gt;</span><br><span class="line">    &lt;<span class="regexp">/Switch&gt;</span></span><br><span class="line"><span class="regexp">    &lt;/</span>div&gt;</span><br><span class="line">  &lt;<span class="regexp">/Router&gt;</span></span><br><span class="line"><span class="regexp">);</span></span><br><span class="line"><span class="regexp">export default AppRouter;</span></span><br></pre></td></tr></table></figure>
-
-<p>并最后在index.js入口文件中写入</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ReactDOM.render(&lt;AppRouter /&gt;, document.getElementById('root'));</span><br></pre></td></tr></table></figure>
-
-<p>这样可以访问localhost:3000的时候可以访问到Index文件内容。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-<div>
-      
-</div>
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2337,7 +2329,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">70</span>
+                  <span class="site-state-item-count">71</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2348,7 +2340,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-count">13</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -2359,7 +2351,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-count">16</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -2411,6 +2403,10 @@
              
              
                <li>
+                 <a href="/2019/07/06/2019-07-03-SpringBoot与微服务简介/" title="SpringBoot与微服务简介" target="_blank">SpringBoot与微服务简介</a>
+               </li>
+             
+               <li>
                  <a href="/2019/06/28/2019-06-28-设计模式之命令模式/" title="设计模式之命令模式" target="_blank">设计模式之命令模式</a>
                </li>
              
@@ -2424,10 +2420,6 @@
              
                <li>
                  <a href="/2019/06/25/2019-06-25-设计模式之备忘录模式/" title="设计模式之备忘录模式" target="_blank">设计模式之备忘录模式</a>
-               </li>
-             
-               <li>
-                 <a href="/2019/06/19/2019-06-24-设计模式之观察者模式/" title="设计模式之观察者模式" target="_blank">设计模式之观察者模式</a>
                </li>
              
            </ul>
@@ -2476,7 +2468,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共60.9k字</span>
+  <span class="post-count">博客全站共61.6k字</span>
 </div>
 
 
