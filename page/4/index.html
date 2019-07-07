@@ -304,6 +304,427 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/04/24/2019-04-24-JVM相关知识整理/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="NanYin">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NanYin的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/04/24/2019-04-24-JVM相关知识整理/" itemprop="url">JVM基本知识整理</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-04-24T12:00:00Z">
+                2019-04-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/JVM/" itemprop="url" rel="index">
+                    <span itemprop="name">JVM</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  1.7k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  5
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="java内存空间"><a href="#java内存空间" class="headerlink" title="java内存空间"></a>java内存空间</h1><p><img src="https://i.loli.net/2019/05/12/5cd7c7e477235.jpg" alt="内存空间"></p>
+<p>其中如图中所展示的，按功能分了大致分为两类，一类为线程共享的JAVA堆和元数据区和直接内存，另一类是线程私有的虚拟机栈，方法区栈和程序计数器。 </p>
+<p>下面针对这几种区域来详细将这几个区域分别的作用是什么。 </p>
+<h2 id="程序计数器"><a href="#程序计数器" class="headerlink" title="程序计数器"></a>程序计数器</h2><p>程序计数器是一块较小的内存空间，可以看作是当前线程执行程序的字节码的的行号的指示器。字节码解释器工作时通过改变程序计数器的值来改变将要选取的下一个指令。并且由于每个线程执行的运行的指令不同，每个线程有个字的程序计数器，并且互不干扰。所以程序计数器被称作是线程私有的。这种线程私有的区域有着很明显的特征就是生命周期和当前线程的周期保持一致。并且需要注意的是程序计数器是内存中唯一一个不会出现<code>outOfMemory</code>的区域。 </p>
+<p> 程序计数器有两个作用： </p>
+<p> A: 字节码解释器通过读取程序计数器的值来选取下一条将要执行的语句。 </p>
+<p>B:在多线程切换的情况下，记录当前线程执行的位置，方便于切换回时进程运行的位置。 </p>
+<h2 id="虚拟机栈"><a href="#虚拟机栈" class="headerlink" title="虚拟机栈"></a>虚拟机栈</h2><p>Java内存可以粗糙的分为堆内存和栈内存，所谓的堆就是图中的java堆（<code>Heap</code>），而所谓的栈就是指的虚拟机栈（<code>VM Stack</code>）的局部变量表。虚拟机栈是由一个个栈针构成的，可以想为一个方法为一个栈针，随着方法的被调用完成（完成的条件有两个，一个是return，另外一个是发生异常），对应着方法的栈针出栈。栈针中都包含：局部变量表，操作数栈，动态链接和方法出口。<strong>局部变量表主要存放了编译器可知的各种数据类型</strong>（boolean、byte、char、short、int、float、long、double）、<strong>对象引用</strong>（reference类型，它不同于对象本身，可能是一个指向对象起始地址的引用指针，也可能是指向一个代表对象的句柄或其他与此对象相关的位置） </p>
+<p><img src="https://i.loli.net/2019/05/12/5cd7cb63399f3.jpg" alt="虚拟机栈结构"></p>
+<h2 id="本地方法栈"><a href="#本地方法栈" class="headerlink" title="本地方法栈"></a>本地方法栈</h2><p>本地方法栈同样是线程私有的,区别是java虚拟机栈是用于java字节码的,而本地方法栈是用来执行Native方法的.结构都和虚拟机栈的结构相同. </p>
+<h2 id="Java堆"><a href="#Java堆" class="headerlink" title="Java堆"></a>Java堆</h2><p>Java堆是整个虚拟机中最大的一块区域,是线程共享的区域,再虚拟机启动时创建,该块存在的唯一目的就是存放类的事例和数组. </p>
+<h2 id="方法区"><a href="#方法区" class="headerlink" title="方法区"></a>方法区</h2><p>和Java堆一样都是线程共享的区域,主要用于存放已经被虚拟机加载的类信息,常量,静态变量和已经被编译后的代码等数据.方法区和永久代的关系很像Java中接口和类的关系，类实现了接口，而永久代就是HotSpot虚拟机对虚拟机规范中方法区的一种实现方式。 也就是说，永久代是HotSpot的概念，方法区是Java虚拟机规范中的定义，是一种规范，而永久代是一种实现，一个是标准一个是实现，其他的虚拟机实现并没有永久带这一说法。 </p>
+<h2 id="运行时常量池"><a href="#运行时常量池" class="headerlink" title="运行时常量池"></a>运行时常量池</h2><p>原来的运行时常量池是方法区的一部分,而在1.7之后,讲运行时常量池放到堆(Heap)中开辟了一个区域专门用来放运行时常量池.运行时常量池中遥遥包括两部分,一部分是实际存在的字面量,所谓字面量包括[1.文本字符串,2.被声明为final的常量,基本数据类型…..],另一部分是符号引用,包含[类和结构的名称,字段的名称,方法的名称]</p>
+<p><img src="https://i.loli.net/2019/05/12/5cd7cbf57ba27.jpg" alt="运行时常量池"></p>
+<h2 id="元数据区"><a href="#元数据区" class="headerlink" title="元数据区"></a>元数据区</h2><p>替代了永久代,使用的是直接内存,什么是直接内存,它有能够干什么? 首先直接内存区域不是虚拟机运行时数据区的一部分,也不是虚拟机定义的一部分,但是经常会使用到.</p>
+<blockquote>
+<p>JDK1.4 中新加入的 <strong>NIO(New Input/Output) 类</strong>，引入了一种基于<strong>通道（Channel）</strong> 与<strong>缓存区（Buffer）</strong> 的 I/O 方式，它可以直接使用 Native 函数库直接分配堆外内存，然后通过一个存储在 Java 堆中的 DirectByteBuffer 对象作为这块内存的引用进行操作。这样就能在一些场景中显著提高性能，因为<strong>避免了在 Java 堆和 Native 堆之间来回复制数据</strong>。</p>
+</blockquote>
+<p>本机直接内存的分配不会收到 Java 堆的限制，但是，既然是内存就会受到本机总内存大小以及处理器寻址空间的限制。</p>
+<h1 id="对象的创建过程"><a href="#对象的创建过程" class="headerlink" title="对象的创建过程"></a>对象的创建过程</h1><p><img src="https://i.loli.net/2019/05/12/5cd7cbf57ba27.jpg" alt="对象的创建过程"></p>
+<p>对象的创建过程分为上图中的5步 </p>
+<ol>
+<li>类加载检查:当虚拟机遇到new的时候,会检查这个类是否存在,是否被加载,解释和初始化过,如果没有则进行类的初始化过程. </li>
+<li>分配内存:再进行类加载检查后,会在堆内存中为新的对象分配内存,分配的规则有两种,一种是指针碰撞,另一种是空闲列表,针对不同的垃圾回收器会使用不同的方法.第一种方法指针碰撞的原理大致为它会将分配过的内存和未分配的内存间建立一个指针,当分配内存的时候,向为分配内存的地方移动新的对象的大小的位置,适用于比较规整的内存空间.第二种方法是维护一个分配内存的列表,每次分配内存都想列表中添加相关记录,表明这些对象在哪. </li>
+<li>初始化零值:保证在分配完内存后,为分配的内存区域初始化为零值 </li>
+<li>设置对象头:虚拟机对对象的各种设置信息,保存在对象头中. </li>
+<li>执行init方法:在执行init方法前,从虚拟机的角度来看其实对象已经生成了,但是在程序员的角度对象并没有生成,只有在init方法执行过后,对象才算生成. </li>
+</ol>
+<h1 id="对象的定位方式"><a href="#对象的定位方式" class="headerlink" title="对象的定位方式"></a>对象的定位方式</h1><p>Java虚拟机定位对象的方式主要有两种,一是使用句柄,二是直接使用指针.</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+<div>
+      
+</div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/04/23/2019-04-08-悲观锁和乐观锁/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="NanYin">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NanYin的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/04/23/2019-04-08-悲观锁和乐观锁/" itemprop="url">悲观锁和乐观锁</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-04-23T12:00:00Z">
+                2019-04-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/多线程/" itemprop="url" rel="index">
+                    <span itemprop="name">多线程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  577
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  2
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="悲观锁和乐观锁"><a href="#悲观锁和乐观锁" class="headerlink" title="悲观锁和乐观锁"></a>悲观锁和乐观锁</h1><h2 id="悲观锁"><a href="#悲观锁" class="headerlink" title="悲观锁"></a>悲观锁</h2><p>悲观锁是总会先去想最坏的情况，每次线程拿数据的时候都会认为他会进行修改，适用于的场景是多写少读，这时使用悲观锁效率会高。程序中典型的悲观锁时synchronized和ReentrantLock </p>
+<h2 id="乐观锁"><a href="#乐观锁" class="headerlink" title="乐观锁"></a>乐观锁</h2><p>乐观锁是总会先去想好的情况，每次线程拿数据只会看一眼，并不会做修改操作，这时没有必要加锁，程序中的atom原子类使用cas+volatile+native方法实现乐观锁。 </p>
+<p>两种锁的机制，有各自的好处，不能说谁好谁坏，各有优点： </p>
+<p>悲观锁适用于多写少读的情况，而乐观锁适用于多读少写的情况，如果在多写的情况下使用乐观锁，会经常产生冲突，反而会降低性能。 </p>
+<h3 id="乐观锁常用的两种方式"><a href="#乐观锁常用的两种方式" class="headerlink" title="乐观锁常用的两种方式"></a>乐观锁常用的两种方式</h3><h4 id="版本号的控制"><a href="#版本号的控制" class="headerlink" title="版本号的控制"></a>版本号的控制</h4><p>每次读取数据的时候都会连同版本号一同读取，在当更新数据的时候，会比较读取到的版本号和数据库中的版本号是否一致，如果一致则更新，如果不一致则继续读取，更新数据。 </p>
+<h4 id="CAS操作（compareAndSwap）"><a href="#CAS操作（compareAndSwap）" class="headerlink" title="CAS操作（compareAndSwap）"></a>CAS操作（compareAndSwap）</h4><p>举个例子,在atomInteger类中涉及了CAS</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">native</span> <span class="keyword">boolean</span> <span class="title">compareAndSwapInt</span><span class="params">(Object o, <span class="keyword">long</span> offset,</span></span></span><br><span class="line"><span class="function"><span class="params">                                                  <span class="keyword">int</span> expected,</span></span></span><br><span class="line"><span class="function"><span class="params">                                                  <span class="keyword">int</span> x)</span></span></span><br><span class="line"><span class="function"><span class="comment">//这里是native方法 offset是偏移量先暂且不提，o是需要比较的值，expected是预期值，x是新值</span></span></span><br><span class="line"><span class="function"><span class="comment">// 如果使用程序写出来就是大概这样：</span></span></span><br><span class="line"><span class="function">    <span class="keyword">int</span> value</span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">fakeCAS</span><span class="params">(<span class="keyword">int</span> expect,<span class="keyword">int</span> newValue)</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(value == expect)&#123;</span><br><span class="line">            value = newValue;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>比较替换(compareAndSwap)</code>是一个原子操作，也是一个自旋操作，等待一个周期再次尝试。</p>
+<h4 id="CAS操作的缺点"><a href="#CAS操作的缺点" class="headerlink" title="CAS操作的缺点"></a>CAS操作的缺点</h4><ol>
+<li>ABA问题，何谓ABA：当两个线程读取到当前值为A，其中一个线程把值改为B后再把B改为A，这是另外一个线程使用cas操作读取到的值仍然是A，CAS会认为这个值从来没有变过，这就是ABA问题。也就是说遗失掉中间的过程，在链式的操作总更能体会到ABA问题的严重性。 </li>
+<li>自旋时间过长，消耗CPU资源。 </li>
+<li>只能对单个共享变量的原子性操作 </li>
+</ol>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+<div>
+      
+</div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/04/23/2019-04-23-线程池代码解析/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2382,392 +2803,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/11/09/2018-12-18-关于SpringMvc使用DELETE和PUT请求时405错误/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="NanYin">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NanYin的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/11/09/2018-12-18-关于SpringMvc使用DELETE和PUT请求时405错误/" itemprop="url">关于SpringMvc实现restFul时DELETE和PUT出现错误</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-08T22:05:00Z">
-                2018-11-08
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Java/" itemprop="url" rel="index">
-                    <span itemprop="name">Java</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  197
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  1
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="关于RESTful"><a href="#关于RESTful" class="headerlink" title="关于RESTful"></a>关于RESTful</h1><p>我理解的restful是一种风格，每一个url表示一个资源，一个资源不同的操作享用同一个接口，但是传输的状态是不同的，比如http中的POST,DELETE,PUT,GET。</p>
-<h1 id="再springMVC中实现RESTful"><a href="#再springMVC中实现RESTful" class="headerlink" title="再springMVC中实现RESTful"></a>再springMVC中实现RESTful</h1><ol>
-<li>web.xml中配置</li>
-</ol>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&lt;filter&gt;</span><br><span class="line">        &lt;filter-name&gt;HiddenHttpMethodFilter&lt;/filter-name&gt;</span><br><span class="line">        &lt;filter-<span class="class"><span class="keyword">class</span>&gt;<span class="title">org</span>.<span class="title">springframework</span>.<span class="title">web</span>.<span class="title">filter</span>.<span class="title">HiddenHttpMethodFilter</span>&lt;/<span class="title">filter</span>-<span class="title">class</span>&gt;</span></span><br><span class="line"><span class="class">    &lt;/<span class="title">filter</span>&gt;</span></span><br><span class="line"><span class="class">    &lt;<span class="title">filter</span>-<span class="title">mapping</span>&gt;</span></span><br><span class="line"><span class="class">        &lt;<span class="title">filter</span>-<span class="title">name</span>&gt;<span class="title">HiddenHttpMethodFilter</span>&lt;/<span class="title">filter</span>-<span class="title">name</span>&gt;</span></span><br><span class="line"><span class="class">        &lt;<span class="title">url</span>-<span class="title">pattern</span>&gt;/*&lt;/<span class="title">url</span>-<span class="title">pattern</span>&gt;</span></span><br><span class="line"><span class="class">    &lt;/<span class="title">filter</span>-<span class="title">mapping</span>&gt;</span></span><br><span class="line"><span class="class"></span></span><br><span class="line"><span class="class">    &lt;<span class="title">filter</span>&gt;</span></span><br><span class="line"><span class="class">        &lt;<span class="title">filter</span>-<span class="title">name</span>&gt;<span class="title">HttpMethodFilter</span>&lt;/<span class="title">filter</span>-<span class="title">name</span>&gt;</span></span><br><span class="line"><span class="class">        &lt;<span class="title">filter</span>-<span class="title">class</span>&gt;<span class="title">org</span>.<span class="title">springframework</span>.<span class="title">web</span>.<span class="title">filter</span>.<span class="title">HttpPutFormContentFilter</span>&lt;/<span class="title">filter</span>-<span class="title">class</span>&gt;</span></span><br><span class="line"><span class="class">    &lt;/<span class="title">filter</span>&gt;</span></span><br><span class="line"><span class="class">    &lt;<span class="title">filter</span>-<span class="title">mapping</span>&gt;</span></span><br><span class="line"><span class="class">        &lt;<span class="title">filter</span>-<span class="title">name</span>&gt;<span class="title">HttpMethodFilter</span>&lt;/<span class="title">filter</span>-<span class="title">name</span>&gt;</span></span><br><span class="line"><span class="class">        &lt;<span class="title">url</span>-<span class="title">pattern</span>&gt;/*&lt;/<span class="title">url</span>-<span class="title">pattern</span>&gt;</span></span><br><span class="line"><span class="class">    &lt;/<span class="title">filter</span>-<span class="title">mapping</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<ol start="2">
-<li>springmvc control层使用相应状态码来标识。</li>
-</ol>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping</span>(value = <span class="string">"/navbarCategory/&#123;id&#125;"</span>, method = RequestMethod.DELETE)</span><br></pre></td></tr></table></figure>
-
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-<div>
-      
-</div>
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/10/30/2018-10-29-什么是消息中间件，RPC框架，数据库中间件/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="NanYin">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NanYin的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/10/30/2018-10-29-什么是消息中间件，RPC框架，数据库中间件/" itemprop="url">消息中间件，RPC框架，数据库中间件的概念认知</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-29T22:05:00Z">
-                2018-10-29
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Java/" itemprop="url" rel="index">
-                    <span itemprop="name">Java</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  663
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  2
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="消息中间件，RPC框架，数据库中间件的概念认知"><a href="#消息中间件，RPC框架，数据库中间件的概念认知" class="headerlink" title="消息中间件，RPC框架，数据库中间件的概念认知"></a>消息中间件，RPC框架，数据库中间件的概念认知</h1><h2 id="消息中间件"><a href="#消息中间件" class="headerlink" title="消息中间件"></a>消息中间件</h2><h3 id="什么是消息中间件"><a href="#什么是消息中间件" class="headerlink" title="什么是消息中间件"></a>什么是消息中间件</h3><p>对中间件的理解大概就是具体业务和底层逻辑解耦的组件。相当于前端业务和底层逻辑的中间桥梁。</p>
-<p>消息中间件是在分布式系统中发送和接受消息的基础服务设施。</p>
-<h3 id="能够做什么？"><a href="#能够做什么？" class="headerlink" title="能够做什么？"></a>能够做什么？</h3><ul>
-<li>业务解耦：交易系统不需要知道短信通知服务的存在，只需要发布消息</li>
-<li>削峰填谷：比如上游系统的吞吐能力高于下游系统，在流量洪峰时可能会冲垮下游系统，消息中间件可以在峰值时堆积消息，而在峰值过去后下游系统慢慢消费消息解决流量洪峰的问题</li>
-<li>事件驱动：系统与系统之间可以通过消息传递的形式驱动业务，以流式的模型处理</li>
-</ul>
-<h2 id="RPC框架"><a href="#RPC框架" class="headerlink" title="RPC框架"></a>RPC框架</h2><h3 id="什么是RPC框架"><a href="#什么是RPC框架" class="headerlink" title="什么是RPC框架"></a>什么是RPC框架</h3><p>远程过程调用协议RPC（Remote Procedure Call Protocol) 两台服务器A，B，一个应用部署在A服务器上，想要调用B服务器上应用提供的函数/方法，<br>由于不在一个内存空间，不能直接调用，需要通过网络来表达调用的语义和传达调用的数据。</p>
-<h3 id="能够做什么？-1"><a href="#能够做什么？-1" class="headerlink" title="能够做什么？"></a>能够做什么？</h3><ul>
-<li>建立客户端和服务器之间的TCP链接，不同的RPC协议，有不同的连接寻址方式。</li>
-<li>在发起远程调用时，由于网络协议是二进制的，所以在传输前要进行对传输实体进行转换二进制的过程，也是就序列化过程（Serialize），通过寻址和二进制的数据传输到服务器端</li>
-<li>在接受到数据后，需要进行反序列化过程解析二进制数据。</li>
-</ul>
-<p>其实就是解决在分布式下，横向拓展的前提下，不同服务器相互调用方法的问题。</p>
-<h2 id="数据库中间件"><a href="#数据库中间件" class="headerlink" title="数据库中间件"></a>数据库中间件</h2><h3 id="什么是数据库中间件"><a href="#什么是数据库中间件" class="headerlink" title="什么是数据库中间件"></a>什么是数据库中间件</h3><p>同样在分布式的架构中，数据库也放到不同的服务器上，需要通过中间的路由进行调用。这个路由实际上就是数据库中间件。</p>
-<h3 id="能够做什么？-2"><a href="#能够做什么？-2" class="headerlink" title="能够做什么？"></a>能够做什么？</h3><ul>
-<li>实现读写分离，但是每个服务器上都需要有一份完整的数据库</li>
-<li>实现分库分表，通过消息中间件进行查询分派到某一个特定的服务器上，通过这个服务器查询出内容返回到消息中间件，再通过中间件返回到客户端。</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-<div>
-      
-</div>
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2820,7 +2855,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">71</span>
+                  <span class="site-state-item-count">73</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2894,6 +2929,14 @@
              
              
                <li>
+                 <a href="/2019/07/09/2019-07-06-SpringBoot的配置文件/" title="SpringBoot中使用yaml配置文件" target="_blank">SpringBoot中使用yaml配置文件</a>
+               </li>
+             
+               <li>
+                 <a href="/2019/07/07/2019-07-04-SpringBoot深入自动配置/" title="SpringBoot深入自动配置" target="_blank">SpringBoot深入自动配置</a>
+               </li>
+             
+               <li>
                  <a href="/2019/07/06/2019-07-03-SpringBoot与微服务简介/" title="SpringBoot与微服务简介" target="_blank">SpringBoot与微服务简介</a>
                </li>
              
@@ -2903,14 +2946,6 @@
              
                <li>
                  <a href="/2019/06/27/2019-06-27-设计模式之迭代器模式/" title="设计模式之迭代器模式" target="_blank">设计模式之迭代器模式</a>
-               </li>
-             
-               <li>
-                 <a href="/2019/06/26/2019-06-26-PlantUML类图使用总结/" title="PlantUML类图使用总结" target="_blank">PlantUML类图使用总结</a>
-               </li>
-             
-               <li>
-                 <a href="/2019/06/25/2019-06-25-设计模式之备忘录模式/" title="设计模式之备忘录模式" target="_blank">设计模式之备忘录模式</a>
                </li>
              
            </ul>
@@ -2959,7 +2994,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共61.6k字</span>
+  <span class="post-count">博客全站共63.8k字</span>
 </div>
 
 

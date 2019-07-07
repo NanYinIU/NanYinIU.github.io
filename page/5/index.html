@@ -304,6 +304,392 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/11/09/2018-12-18-关于SpringMvc使用DELETE和PUT请求时405错误/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="NanYin">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NanYin的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/11/09/2018-12-18-关于SpringMvc使用DELETE和PUT请求时405错误/" itemprop="url">关于SpringMvc实现restFul时DELETE和PUT出现错误</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-08T22:05:00Z">
+                2018-11-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  197
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  1
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="关于RESTful"><a href="#关于RESTful" class="headerlink" title="关于RESTful"></a>关于RESTful</h1><p>我理解的restful是一种风格，每一个url表示一个资源，一个资源不同的操作享用同一个接口，但是传输的状态是不同的，比如http中的POST,DELETE,PUT,GET。</p>
+<h1 id="再springMVC中实现RESTful"><a href="#再springMVC中实现RESTful" class="headerlink" title="再springMVC中实现RESTful"></a>再springMVC中实现RESTful</h1><ol>
+<li>web.xml中配置</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&lt;filter&gt;</span><br><span class="line">        &lt;filter-name&gt;HiddenHttpMethodFilter&lt;/filter-name&gt;</span><br><span class="line">        &lt;filter-<span class="class"><span class="keyword">class</span>&gt;<span class="title">org</span>.<span class="title">springframework</span>.<span class="title">web</span>.<span class="title">filter</span>.<span class="title">HiddenHttpMethodFilter</span>&lt;/<span class="title">filter</span>-<span class="title">class</span>&gt;</span></span><br><span class="line"><span class="class">    &lt;/<span class="title">filter</span>&gt;</span></span><br><span class="line"><span class="class">    &lt;<span class="title">filter</span>-<span class="title">mapping</span>&gt;</span></span><br><span class="line"><span class="class">        &lt;<span class="title">filter</span>-<span class="title">name</span>&gt;<span class="title">HiddenHttpMethodFilter</span>&lt;/<span class="title">filter</span>-<span class="title">name</span>&gt;</span></span><br><span class="line"><span class="class">        &lt;<span class="title">url</span>-<span class="title">pattern</span>&gt;/*&lt;/<span class="title">url</span>-<span class="title">pattern</span>&gt;</span></span><br><span class="line"><span class="class">    &lt;/<span class="title">filter</span>-<span class="title">mapping</span>&gt;</span></span><br><span class="line"><span class="class"></span></span><br><span class="line"><span class="class">    &lt;<span class="title">filter</span>&gt;</span></span><br><span class="line"><span class="class">        &lt;<span class="title">filter</span>-<span class="title">name</span>&gt;<span class="title">HttpMethodFilter</span>&lt;/<span class="title">filter</span>-<span class="title">name</span>&gt;</span></span><br><span class="line"><span class="class">        &lt;<span class="title">filter</span>-<span class="title">class</span>&gt;<span class="title">org</span>.<span class="title">springframework</span>.<span class="title">web</span>.<span class="title">filter</span>.<span class="title">HttpPutFormContentFilter</span>&lt;/<span class="title">filter</span>-<span class="title">class</span>&gt;</span></span><br><span class="line"><span class="class">    &lt;/<span class="title">filter</span>&gt;</span></span><br><span class="line"><span class="class">    &lt;<span class="title">filter</span>-<span class="title">mapping</span>&gt;</span></span><br><span class="line"><span class="class">        &lt;<span class="title">filter</span>-<span class="title">name</span>&gt;<span class="title">HttpMethodFilter</span>&lt;/<span class="title">filter</span>-<span class="title">name</span>&gt;</span></span><br><span class="line"><span class="class">        &lt;<span class="title">url</span>-<span class="title">pattern</span>&gt;/*&lt;/<span class="title">url</span>-<span class="title">pattern</span>&gt;</span></span><br><span class="line"><span class="class">    &lt;/<span class="title">filter</span>-<span class="title">mapping</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>springmvc control层使用相应状态码来标识。</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping</span>(value = <span class="string">"/navbarCategory/&#123;id&#125;"</span>, method = RequestMethod.DELETE)</span><br></pre></td></tr></table></figure>
+
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+<div>
+      
+</div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/10/30/2018-10-29-什么是消息中间件，RPC框架，数据库中间件/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="NanYin">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NanYin的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/10/30/2018-10-29-什么是消息中间件，RPC框架，数据库中间件/" itemprop="url">消息中间件，RPC框架，数据库中间件的概念认知</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-29T22:05:00Z">
+                2018-10-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  663
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  2
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="消息中间件，RPC框架，数据库中间件的概念认知"><a href="#消息中间件，RPC框架，数据库中间件的概念认知" class="headerlink" title="消息中间件，RPC框架，数据库中间件的概念认知"></a>消息中间件，RPC框架，数据库中间件的概念认知</h1><h2 id="消息中间件"><a href="#消息中间件" class="headerlink" title="消息中间件"></a>消息中间件</h2><h3 id="什么是消息中间件"><a href="#什么是消息中间件" class="headerlink" title="什么是消息中间件"></a>什么是消息中间件</h3><p>对中间件的理解大概就是具体业务和底层逻辑解耦的组件。相当于前端业务和底层逻辑的中间桥梁。</p>
+<p>消息中间件是在分布式系统中发送和接受消息的基础服务设施。</p>
+<h3 id="能够做什么？"><a href="#能够做什么？" class="headerlink" title="能够做什么？"></a>能够做什么？</h3><ul>
+<li>业务解耦：交易系统不需要知道短信通知服务的存在，只需要发布消息</li>
+<li>削峰填谷：比如上游系统的吞吐能力高于下游系统，在流量洪峰时可能会冲垮下游系统，消息中间件可以在峰值时堆积消息，而在峰值过去后下游系统慢慢消费消息解决流量洪峰的问题</li>
+<li>事件驱动：系统与系统之间可以通过消息传递的形式驱动业务，以流式的模型处理</li>
+</ul>
+<h2 id="RPC框架"><a href="#RPC框架" class="headerlink" title="RPC框架"></a>RPC框架</h2><h3 id="什么是RPC框架"><a href="#什么是RPC框架" class="headerlink" title="什么是RPC框架"></a>什么是RPC框架</h3><p>远程过程调用协议RPC（Remote Procedure Call Protocol) 两台服务器A，B，一个应用部署在A服务器上，想要调用B服务器上应用提供的函数/方法，<br>由于不在一个内存空间，不能直接调用，需要通过网络来表达调用的语义和传达调用的数据。</p>
+<h3 id="能够做什么？-1"><a href="#能够做什么？-1" class="headerlink" title="能够做什么？"></a>能够做什么？</h3><ul>
+<li>建立客户端和服务器之间的TCP链接，不同的RPC协议，有不同的连接寻址方式。</li>
+<li>在发起远程调用时，由于网络协议是二进制的，所以在传输前要进行对传输实体进行转换二进制的过程，也是就序列化过程（Serialize），通过寻址和二进制的数据传输到服务器端</li>
+<li>在接受到数据后，需要进行反序列化过程解析二进制数据。</li>
+</ul>
+<p>其实就是解决在分布式下，横向拓展的前提下，不同服务器相互调用方法的问题。</p>
+<h2 id="数据库中间件"><a href="#数据库中间件" class="headerlink" title="数据库中间件"></a>数据库中间件</h2><h3 id="什么是数据库中间件"><a href="#什么是数据库中间件" class="headerlink" title="什么是数据库中间件"></a>什么是数据库中间件</h3><p>同样在分布式的架构中，数据库也放到不同的服务器上，需要通过中间的路由进行调用。这个路由实际上就是数据库中间件。</p>
+<h3 id="能够做什么？-2"><a href="#能够做什么？-2" class="headerlink" title="能够做什么？"></a>能够做什么？</h3><ul>
+<li>实现读写分离，但是每个服务器上都需要有一份完整的数据库</li>
+<li>实现分库分表，通过消息中间件进行查询分派到某一个特定的服务器上，通过这个服务器查询出内容返回到消息中间件，再通过中间件返回到客户端。</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+<div>
+      
+</div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/10/29/2018-10-28-Junit4/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -942,6 +1328,199 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/10/16/2018-10-15-Enum类及相关拓展/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="NanYin">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NanYin的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/10/16/2018-10-15-Enum类及相关拓展/" itemprop="url">Enum枚举类分析和相关拓展</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-15T22:05:00Z">
+                2018-10-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  484
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  2
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Enum枚举类分析和相关拓展"><a href="#Enum枚举类分析和相关拓展" class="headerlink" title="Enum枚举类分析和相关拓展"></a>Enum枚举类分析和相关拓展</h1><p>其实我认为使用枚举类就是对使用常量的扩充，例如类中使用类型，分类相同的类变量的时候，可以考虑使用枚举类来替换掉。</p>
+<p>参考了网上的文章，大致有两个好处，第一是确定传入的参数类型。而不是形参是int类型，随便一个int类型就能够满足。第二是对比static静态变量更能够确定变量的意义。下面举一个例子来看。</p>
+<h2 id="Enum类实例"><a href="#Enum类实例" class="headerlink" title="Enum类实例"></a>Enum类实例</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 列举简单的行驶工具 */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">enum</span> trafficTool &#123;</span><br><span class="line">    BIKE,CAR,BUS,TRAIN,AIRPLANE</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TrafficToolTest</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">chooseTool</span><span class="params">(TrafficTool trafficTool)</span></span>&#123;</span><br><span class="line">        <span class="keyword">switch</span> (trafficTool)&#123;</span><br><span class="line">            <span class="keyword">case</span> BIKE:</span><br><span class="line">                System.out.println(<span class="string">"自行车"</span>);<span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> CAR:</span><br><span class="line">                System.out.println(<span class="string">"汽车"</span>);<span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        TrafficToolTest trafficToolTest = <span class="keyword">new</span> TrafficToolTest();</span><br><span class="line">        trafficToolTest.chooseTool(TrafficTool.BIKE);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>和普通的类一样，同样也可以添加构造方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">SPRING(<span class="string">"春天"</span>),SUMMER(<span class="string">"夏天"</span>),FALL(<span class="string">"秋天"</span>),WINTER(<span class="string">"冬天"</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> String name;</span><br><span class="line"></span><br><span class="line">SeasonEnum(String name)&#123;</span><br><span class="line">    <span class="keyword">this</span>.name = name;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function">String <span class="title">getName</span><span class="params">()</span></span>&#123;</span><br><span class="line">   <span class="keyword">return</span> name;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>也可以继承</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">enum</span> SeasonEnum &#123;</span><br><span class="line">    SPRING(<span class="string">"春天"</span>) &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> String <span class="title">comm</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">"这是春天"</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,SUMMER(<span class="string">"夏天"</span>) &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> String <span class="title">comm</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">"这是夏天"</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,FALL(<span class="string">"秋天"</span>) &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> String <span class="title">comm</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">"这是冬天"</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,WINTER(<span class="string">"冬天"</span>) &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> String <span class="title">comm</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">"这是冬天"</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> String name;</span><br><span class="line"></span><br><span class="line">    SeasonEnum(String name)&#123;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function">String <span class="title">getName</span><span class="params">()</span></span>&#123;</span><br><span class="line">       <span class="keyword">return</span> name;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> String <span class="title">comm</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>以上是枚举类的基本使用。</p>
+<h2 id="EnumMap-和-EnumSet"><a href="#EnumMap-和-EnumSet" class="headerlink" title="EnumMap 和 EnumSet"></a><code>EnumMap</code> 和 <code>EnumSet</code></h2><p><code>public class EnumMap&lt;K extends Enum&lt;K&gt;, V&gt; extends AbstractMap&lt;K, V&gt;</code> 这是关于EnumMap的继承关系。<br>可以发现这是key为枚举类的一个Map。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 简单创建，以后就可以实现枚举类的多种复用 */</span></span><br><span class="line">EnumMap&lt;SeasonEnum,Integer&gt; enumIntegerEnumMap = <span class="keyword">new</span> EnumMap&lt;SeasonEnum, Integer&gt;(SeasonEnum.class);</span><br><span class="line">Set&lt;SeasonEnum&gt; set = enumIntegerEnumMap.keySet();</span><br><span class="line">enumIntegerEnumMap.put(SeasonEnum.SPRING,<span class="number">1</span>);</span><br><span class="line">System.out.println(enumIntegerEnumMap.get(SeasonEnum.SPRING));</span><br></pre></td></tr></table></figure>
+
+<p><code>EnumSet</code> 相对于 <code>EnumMap</code> 等同于 <code>hashSet</code> 相对于 <code>HashMap</code> 的存在，很好理解。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+<div>
+      
+</div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/10/16/2018-10-15-HashSet和HashTable的源码分析/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1098,199 +1677,6 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/* 其实大致和HashMap是类似的也是使用Entry作为基本结构 */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> V <span class="title">put</span><span class="params">(K key, V value)</span> </span>&#123;</span><br><span class="line">     <span class="comment">// Make sure the value is not null</span></span><br><span class="line">     <span class="keyword">if</span> (value == <span class="keyword">null</span>) &#123;</span><br><span class="line">         <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException();</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="comment">// Makes sure the key is not already in the hashtable.</span></span><br><span class="line">     Entry&lt;?,?&gt; tab[] = table;</span><br><span class="line">     <span class="keyword">int</span> hash = key.hashCode();</span><br><span class="line">     <span class="comment">/* 这里的0x7FFFFFFF 是32-bit的int的最大值 */</span></span><br><span class="line">     <span class="keyword">int</span> index = (hash &amp; <span class="number">0x7FFFFFFF</span>) % tab.length;</span><br><span class="line">     <span class="meta">@SuppressWarnings</span>(<span class="string">"unchecked"</span>)</span><br><span class="line">     Entry&lt;K,V&gt; entry = (Entry&lt;K,V&gt;)tab[index];</span><br><span class="line">     <span class="comment">/* 如果这个entry存在，也就是键值重复 */</span></span><br><span class="line">     <span class="keyword">for</span>(; entry != <span class="keyword">null</span> ; entry = entry.next) &#123;</span><br><span class="line">         <span class="keyword">if</span> ((entry.hash == hash) &amp;&amp; entry.key.equals(key)) &#123;</span><br><span class="line">             V old = entry.value;</span><br><span class="line">             entry.value = value;</span><br><span class="line">             <span class="keyword">return</span> old;</span><br><span class="line">         &#125;</span><br><span class="line">     &#125;</span><br><span class="line">    <span class="comment">/* 否则添加Entry节点 */</span></span><br><span class="line">     addEntry(hash, key, value, index);</span><br><span class="line">     <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line"> <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">addEntry</span><span class="params">(<span class="keyword">int</span> hash, K key, V value, <span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">    modCount++;</span><br><span class="line"></span><br><span class="line">    Entry&lt;?,?&gt; tab[] = table;</span><br><span class="line">    <span class="keyword">if</span> (count &gt;= threshold) &#123;</span><br><span class="line">      <span class="comment">/* 如果当前count大于阈值的大小 重新生成table size和hash值 */</span></span><br><span class="line">        <span class="comment">// Rehash the table if the threshold is exceeded</span></span><br><span class="line">        rehash();</span><br><span class="line"></span><br><span class="line">        tab = table;</span><br><span class="line">        hash = key.hashCode();</span><br><span class="line">        index = (hash &amp; <span class="number">0x7FFFFFFF</span>) % tab.length;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Creates the new entry.</span></span><br><span class="line">    <span class="meta">@SuppressWarnings</span>(<span class="string">"unchecked"</span>)</span><br><span class="line">    Entry&lt;K,V&gt; e = (Entry&lt;K,V&gt;) tab[index];</span><br><span class="line">    tab[index] = <span class="keyword">new</span> Entry&lt;&gt;(hash, key, value, e);</span><br><span class="line">    count++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>通过上面的代码可以看出HashTable和HashMap的结构还是有差异的，HashMap是纵向的列表当出现相同的hash值的时候，扩展出横向列表，当横向的列表到达一定的长度的时候，这个横向的链表就会自动整理成红黑树的形式，而hashTable不存在横向的这种结构的，当count&gt;=阈值的时候就会把Hash重置，使之不会出现hash值重复的情况。可以说hashTable比较hashMap的结构更简单，但是效率会比HashMap的低。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-<div>
-      
-</div>
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/10/16/2018-10-15-Enum类及相关拓展/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="NanYin">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NanYin的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/10/16/2018-10-15-Enum类及相关拓展/" itemprop="url">Enum枚举类分析和相关拓展</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-15T22:05:00Z">
-                2018-10-15
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Java/" itemprop="url" rel="index">
-                    <span itemprop="name">Java</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  484
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  2
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Enum枚举类分析和相关拓展"><a href="#Enum枚举类分析和相关拓展" class="headerlink" title="Enum枚举类分析和相关拓展"></a>Enum枚举类分析和相关拓展</h1><p>其实我认为使用枚举类就是对使用常量的扩充，例如类中使用类型，分类相同的类变量的时候，可以考虑使用枚举类来替换掉。</p>
-<p>参考了网上的文章，大致有两个好处，第一是确定传入的参数类型。而不是形参是int类型，随便一个int类型就能够满足。第二是对比static静态变量更能够确定变量的意义。下面举一个例子来看。</p>
-<h2 id="Enum类实例"><a href="#Enum类实例" class="headerlink" title="Enum类实例"></a>Enum类实例</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 列举简单的行驶工具 */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">enum</span> trafficTool &#123;</span><br><span class="line">    BIKE,CAR,BUS,TRAIN,AIRPLANE</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TrafficToolTest</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">chooseTool</span><span class="params">(TrafficTool trafficTool)</span></span>&#123;</span><br><span class="line">        <span class="keyword">switch</span> (trafficTool)&#123;</span><br><span class="line">            <span class="keyword">case</span> BIKE:</span><br><span class="line">                System.out.println(<span class="string">"自行车"</span>);<span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> CAR:</span><br><span class="line">                System.out.println(<span class="string">"汽车"</span>);<span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        TrafficToolTest trafficToolTest = <span class="keyword">new</span> TrafficToolTest();</span><br><span class="line">        trafficToolTest.chooseTool(TrafficTool.BIKE);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>和普通的类一样，同样也可以添加构造方法</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">SPRING(<span class="string">"春天"</span>),SUMMER(<span class="string">"夏天"</span>),FALL(<span class="string">"秋天"</span>),WINTER(<span class="string">"冬天"</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> String name;</span><br><span class="line"></span><br><span class="line">SeasonEnum(String name)&#123;</span><br><span class="line">    <span class="keyword">this</span>.name = name;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function">String <span class="title">getName</span><span class="params">()</span></span>&#123;</span><br><span class="line">   <span class="keyword">return</span> name;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>也可以继承</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">enum</span> SeasonEnum &#123;</span><br><span class="line">    SPRING(<span class="string">"春天"</span>) &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> String <span class="title">comm</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">"这是春天"</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,SUMMER(<span class="string">"夏天"</span>) &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> String <span class="title">comm</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">"这是夏天"</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,FALL(<span class="string">"秋天"</span>) &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> String <span class="title">comm</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">"这是冬天"</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,WINTER(<span class="string">"冬天"</span>) &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> String <span class="title">comm</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">"这是冬天"</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> String name;</span><br><span class="line"></span><br><span class="line">    SeasonEnum(String name)&#123;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function">String <span class="title">getName</span><span class="params">()</span></span>&#123;</span><br><span class="line">       <span class="keyword">return</span> name;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> String <span class="title">comm</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>以上是枚举类的基本使用。</p>
-<h2 id="EnumMap-和-EnumSet"><a href="#EnumMap-和-EnumSet" class="headerlink" title="EnumMap 和 EnumSet"></a><code>EnumMap</code> 和 <code>EnumSet</code></h2><p><code>public class EnumMap&lt;K extends Enum&lt;K&gt;, V&gt; extends AbstractMap&lt;K, V&gt;</code> 这是关于EnumMap的继承关系。<br>可以发现这是key为枚举类的一个Map。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 简单创建，以后就可以实现枚举类的多种复用 */</span></span><br><span class="line">EnumMap&lt;SeasonEnum,Integer&gt; enumIntegerEnumMap = <span class="keyword">new</span> EnumMap&lt;SeasonEnum, Integer&gt;(SeasonEnum.class);</span><br><span class="line">Set&lt;SeasonEnum&gt; set = enumIntegerEnumMap.keySet();</span><br><span class="line">enumIntegerEnumMap.put(SeasonEnum.SPRING,<span class="number">1</span>);</span><br><span class="line">System.out.println(enumIntegerEnumMap.get(SeasonEnum.SPRING));</span><br></pre></td></tr></table></figure>
-
-<p><code>EnumSet</code> 相对于 <code>EnumMap</code> 等同于 <code>hashSet</code> 相对于 <code>HashMap</code> 的存在，很好理解。</p>
 
           
         
@@ -2020,462 +2406,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/07/25/2018-07-25-stackOverFlow上的热门问题/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="NanYin">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NanYin的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/07/25/2018-07-25-stackOverFlow上的热门问题/" itemprop="url">整理并学习stackOverFlow上的热门回答</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-25T15:00:00Z">
-                2018-07-25
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Java/" itemprop="url" rel="index">
-                    <span itemprop="name">Java</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  1.2k
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  4
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="基础Java知识"><a href="#基础Java知识" class="headerlink" title="基础Java知识"></a>基础Java知识</h1><p>平常没事的时候会逛逛stackOverFlow,上面有很多非常基础的问题，并且回答者讲解的非常的透彻，我想通过整理上面的热门回答来梳理一下自己的Java基础知识。</p>
-<h2 id="热门"><a href="#热门" class="headerlink" title="热门"></a>热门</h2><h3 id="什么是NullPointerExpection-如何去尽可能的避免"><a href="#什么是NullPointerExpection-如何去尽可能的避免" class="headerlink" title="什么是NullPointerExpection,如何去尽可能的避免"></a>什么是NullPointerExpection,如何去尽可能的避免</h3><p>当你声明一个引用变量(对象)的时候，实际上是创建一个指向该对象的指针。参考如下代码</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> x ;</span><br><span class="line">x = <span class="number">10</span> ;</span><br></pre></td></tr></table></figure>
-
-<p>在例子中，我们声明了变量 <code>x</code> 。因为是原始类型，系统会默认付给变量<code>x</code>初始值是0。但是第二行使用<code>x=10</code>，将数值10付给变量x，实际过程是将10写入变量x所指向的内存位置。<br>然而，当我们声明一个引用类型，对于int来说也就是其包装类型。会出现不一样的情形。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Integer num;</span><br><span class="line">num = <span class="keyword">new</span> Integer(<span class="number">10</span>);</span><br></pre></td></tr></table></figure>
-
-<p>当你创建num的时候，系统不会默认创建一个默认值，因为他引用对象，然而，他会包含一个指针，这个指针虽然存在，但是他没有初始值，所以java会将变量的指针指向空(null)。<br>在第二行使用new关键字实例化了num，这时，会将变量num指针指向这个实例对象。</p>
-<p>在当用到这个变量之前未给变量做实例化时，也就是变量的指针还指向空时，运行后会出现NullPointerExpection 这个问题。</p>
-<p>可能觉得在实际codeing的时候不会出现上面的问题，但是实际上，每个方法的引用对象如果不判断传进来的值是否非空，都可能会出现这个问题</p>
-<p>错误的示范：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doSomething</span><span class="params">(SomeObject obj)</span> </span>&#123;</span><br><span class="line">   <span class="comment">//do something to obj</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 调用的时候 传递null值时,会出现空指针异常</span></span><br><span class="line">doSomething(<span class="keyword">null</span>);</span><br></pre></td></tr></table></figure>
-
-<p>正确的示范：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doSomething</span><span class="params">(SomeObject obj)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(obj != <span class="keyword">null</span>) &#123;</span><br><span class="line">       <span class="comment">//do something</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">       <span class="comment">//do something else</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>尽量在每次开发的过程当中，仔细斟酌变量是否可能为空，当可能为空时一定要做这种判断来预防空指针。保证代码的健壮性。</p>
-<h3 id="如何比较字符串"><a href="#如何比较字符串" class="headerlink" title="如何比较字符串"></a>如何比较字符串</h3><p>在当使用 <code>==</code> 比较字符串是可能会出现bug，这时可以用equals解决。所以引出一个问题，什么时候使用 <code>==</code> 什么时候使用equals</p>
-<p>主要有两方面的差异：</p>
-<ol>
-<li><p><code>==</code> 是比较对象引用，也就是真正的比较两个对象或者变量的地址是否是相同的。而equals比较的是值是否相等。</p>
-</li>
-<li><p><code>==</code> 没有非空的判断，而equals如果比较的对象如果是空则会出现异常，所以一般使用equals的方法都是使用已知的非空对象.equals(Object) 如 <code>&quot;hello&quot;.equals(x)</code></p>
-</li>
-</ol>
-<p>equals是Object的方法，大部分类中也重写了equals方法，所以在比较对象的时候应该使用equals,而当比较基本数据类型如int的时候可以使用 <code>==</code></p>
-<h3 id="Java是传值还是传引用"><a href="#Java是传值还是传引用" class="headerlink" title="Java是传值还是传引用"></a>Java是传值还是传引用</h3><p><strong>Java是传值的</strong> 。但是，通常我们定位值的时候称他为 “引用” 。具一个非常典型的例子</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    Dog aDog = <span class="keyword">new</span> Dog(<span class="string">"Max"</span>);</span><br><span class="line">    <span class="comment">// we pass the object to foo</span></span><br><span class="line">    foo(aDog);</span><br><span class="line">    <span class="comment">// aDog variable is still pointing to the "Max" dog when foo(...) returns</span></span><br><span class="line">    aDog.getName().equals(<span class="string">"Max"</span>); <span class="comment">// true</span></span><br><span class="line">    aDog.getName().equals(<span class="string">"Fifi"</span>); <span class="comment">// false</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">foo</span><span class="params">(Dog d)</span> </span>&#123;</span><br><span class="line">    d.getName().equals(<span class="string">"Max"</span>); <span class="comment">// true</span></span><br><span class="line">    <span class="comment">// change d inside of foo() to point to a new Dog instance "Fifi"</span></span><br><span class="line">    d = <span class="keyword">new</span> Dog(<span class="string">"Fifi"</span>);</span><br><span class="line">    d.getName().equals(<span class="string">"Fifi"</span>); <span class="comment">// true</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>虽然foo方法内改变了传进来的aDog的值，注意这里是 <code>值</code>，所以在调用完foo方法之后再去判断变量aDog的时候他的引用到的值没有变，变的只是当时传进去的值而不是变量的应用，所以可以说，对象的引用是按值传递的。如果这样还是迷糊的话，<br>还可以逆向来想，如果是传引用的话，在当foo方法改变了aDog的时候，也就是说明改变了aDog所引用到的真正的这个值。这样是不能成立。</p>
-<p>所以不管怎么想：Java是传值的！！</p>
-<h3 id="怎样快速打印出array数组内的值"><a href="#怎样快速打印出array数组内的值" class="headerlink" title="怎样快速打印出array数组内的值"></a>怎样快速打印出array数组内的值</h3><p>因为array并没有实现toString()方法，所以当使用array.toString()的时候会打印出类似 <code>[I@17f052a3</code> 的地址信息，在jdk1.5之后可以使用</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span>[] x = <span class="keyword">new</span> <span class="keyword">int</span>[]&#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>&#125;;</span><br><span class="line">String arrayString = Arrays.toString(x);</span><br><span class="line">System.out.println(arrayString);</span><br><span class="line"><span class="comment">//结果： [1, 2, 3, 4, 5]</span></span><br></pre></td></tr></table></figure>
-
-<p>这样的方式可以非常方便的打印出数组内所有元素,嵌套数组可以使用deepToString方法。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">System.out.println(Arrays.toString(deepArray));</span><br><span class="line"><span class="comment">//output: [[Ljava.lang.String;@106d69c, [Ljava.lang.String;@52e922]</span></span><br><span class="line">System.out.println(Arrays.deepToString(deepArray));</span><br><span class="line">结果：[[John, Mary], [Alice, Bob]]</span><br></pre></td></tr></table></figure>
-
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-<div>
-      
-</div>
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/07/13/2018-07-15-idea快捷键/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="NanYin">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NanYin的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/07/13/2018-07-15-idea快捷键/" itemprop="url">IDEA 中的快捷键</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-12T17:00:00Z">
-                2018-07-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/工具/" itemprop="url" rel="index">
-                    <span itemprop="name">工具</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  448
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  1
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="IDEA-中的快捷键"><a href="#IDEA-中的快捷键" class="headerlink" title="IDEA 中的快捷键"></a>IDEA 中的快捷键</h1><p>以前经常用idea开发，但是竟然没有怎么使用到idea的快捷键。。没有真正的使用到idea中非常重要的特性。今天正好看到了有一篇微信公众号里文章总结了关于常用的idea快捷键。<br>遂而也想小小总结一下，希望在以后的开发中多用快捷键，提高开发效率。</p>
-<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><ol>
-<li><p>ctrl+alt+o = 优化导入的包</p>
-</li>
-<li><p>alt+insert = 加入代码</p>
-</li>
-<li><p>ctrl+alt+T = 生成try–catch结构</p>
-</li>
-<li><p>alt+回车   = 导入包</p>
-</li>
-<li><p>ctrl+alt+l = 格式化代码</p>
-</li>
-<li><p>ctrl+e     = 最近更改的代码</p>
-</li>
-<li><p>Shift+F6   = 重构-重命名 包、类、方法、变量、甚至注释等</p>
-</li>
-</ol>
-<h2 id="搜索"><a href="#搜索" class="headerlink" title="搜索"></a>搜索</h2><ol>
-<li><p>ctrl+Shift+backspace =回到上次编辑的地方</p>
-</li>
-<li><p>ctrl+alt+left/right = 回到前后编辑的地方</p>
-</li>
-<li><p>Shift+Shift 在目录中查找类</p>
-</li>
-<li><p>ctrl+n 查找类</p>
-</li>
-<li><p>ctrl+Shift+n 查找文件</p>
-</li>
-<li><p>ctrl+e 打开最近文件</p>
-</li>
-<li><p>ctrl+f 文件内容查找</p>
-</li>
-<li><p>ctrl+shift+f 全局内容查找</p>
-</li>
-<li><p>ctrl+w 快速选中</p>
-</li>
-<li><p>ctrl+b/ctrl+alt+b 对应这回溯到父类和到子类的快捷键</p>
-</li>
-</ol>
-<h2 id="对行的删除，复制，粘贴操作可以使用vim插件来实现"><a href="#对行的删除，复制，粘贴操作可以使用vim插件来实现" class="headerlink" title="对行的删除，复制，粘贴操作可以使用vim插件来实现"></a>对行的删除，复制，粘贴操作可以使用vim插件来实现</h2><h2 id="最后vim的十大快捷键（copy的）"><a href="#最后vim的十大快捷键（copy的）" class="headerlink" title="最后vim的十大快捷键（copy的）"></a>最后vim的十大快捷键（copy的）</h2><p>Ø  Top #10切来切去：Ctrl+Tab</p>
-<p>Ø  Top #9选你所想：Ctrl+W</p>
-<p>Ø  Top #8代码生成：Template/Postfix +Tab</p>
-<p>Ø  Top #7发号施令：Ctrl+Shift+A</p>
-<p>Ø  Top #6无处藏身：Shift+Shift</p>
-<p>Ø  Top #5自动完成：Ctrl+Shift+Enter</p>
-<p>Ø  Top #4创造万物：Alt+Insert</p>
-<p>太难割舍，前三名并列吧！</p>
-<p>Ø  Top #1智能补全：Ctrl+Shift+Space</p>
-<p>Ø  Top #1自我修复：Alt+Enter</p>
-<p>Ø  Top #1重构一切：Ctrl+Shift+Alt+T</p>
-<h2 id="另外补充"><a href="#另外补充" class="headerlink" title="另外补充"></a>另外补充</h2><ol>
-<li><p>alt+1 project视图</p>
-</li>
-<li><p>alt+7 类方法结构</p>
-</li>
-<li><p>alt+home 显示导航栏</p>
-</li>
-<li><p>shift+f6 重命名</p>
-</li>
-<li><p>ctrl+shift+加号 折叠代码</p>
-</li>
-</ol>
-<p>关闭tab页其实是有必要的</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-<div>
-      
-</div>
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2528,7 +2458,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">71</span>
+                  <span class="site-state-item-count">73</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2602,6 +2532,14 @@
              
              
                <li>
+                 <a href="/2019/07/09/2019-07-06-SpringBoot的配置文件/" title="SpringBoot中使用yaml配置文件" target="_blank">SpringBoot中使用yaml配置文件</a>
+               </li>
+             
+               <li>
+                 <a href="/2019/07/07/2019-07-04-SpringBoot深入自动配置/" title="SpringBoot深入自动配置" target="_blank">SpringBoot深入自动配置</a>
+               </li>
+             
+               <li>
                  <a href="/2019/07/06/2019-07-03-SpringBoot与微服务简介/" title="SpringBoot与微服务简介" target="_blank">SpringBoot与微服务简介</a>
                </li>
              
@@ -2611,14 +2549,6 @@
              
                <li>
                  <a href="/2019/06/27/2019-06-27-设计模式之迭代器模式/" title="设计模式之迭代器模式" target="_blank">设计模式之迭代器模式</a>
-               </li>
-             
-               <li>
-                 <a href="/2019/06/26/2019-06-26-PlantUML类图使用总结/" title="PlantUML类图使用总结" target="_blank">PlantUML类图使用总结</a>
-               </li>
-             
-               <li>
-                 <a href="/2019/06/25/2019-06-25-设计模式之备忘录模式/" title="设计模式之备忘录模式" target="_blank">设计模式之备忘录模式</a>
                </li>
              
            </ul>
@@ -2667,7 +2597,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共61.6k字</span>
+  <span class="post-count">博客全站共63.8k字</span>
 </div>
 
 
