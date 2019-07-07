@@ -98,7 +98,7 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190707164406.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190707181447.png">
-<meta property="og:updated_time" content="2019-07-07T14:26:03.281Z">
+<meta property="og:updated_time" content="2019-07-07T14:51:59.070Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="SpringBoot中使用配置">
 <meta name="twitter:description" content="SpringBoot中使用配置一、配置文件SpringBoot使用全局的配置文件，配置文件名是固定的  application.properties application.yml  使用配置文件可以更改系统自动配置的默认值，比如端口号等信息。 YAMLyaml以数据为中心，比xml，json更适合做配置文件。 YAML与properties对比YAML: 12server:    port: 8">
@@ -448,33 +448,30 @@
 <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">server:</span></span><br><span class="line"><span class="attr">      port:</span> <span class="number">8081</span></span><br><span class="line"><span class="attr">      path:</span> <span class="string">/hello</span></span><br></pre></td></tr></table></figure>
 
 <ol start="2">
-<li><p>值的写法</p>
+<li>值的写法</li>
+</ol>
 <ul>
-<li><p>字面量</p>
+<li>字面量</li>
+</ul>
 <p>key : value 字面量直接写，并且字符串不需要添加引号，类似properties。如果添加引号会有特殊的意义。</p>
 <p>双引号： 不会转义特殊字符<br>单引号： 会转义特殊字符，最终会转义成普通的字符串输出</p>
-</li>
+<ul>
 <li><p>对象</p>
 <ol>
-<li>非行内写法 -&gt;  key : value 对象一样按照key，value来写</li>
-</ol>
+<li><p>非行内写法 -&gt;  key : value 对象一样按照key，value来写</p>
 <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">person:</span></span><br><span class="line"><span class="attr">       firstName:</span> <span class="string">zhang</span></span><br><span class="line"><span class="attr">       lastName:</span> <span class="string">san</span></span><br></pre></td></tr></table></figure>
-
-<ol start="2">
-<li>行内写法</li>
-</ol>
+</li>
+<li><p>行内写法</p>
 <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">person:</span><span class="string">&#123;firstName:</span> <span class="string">zhang,lastName:</span> <span class="string">san&#125;</span></span><br></pre></td></tr></table></figure>
-
-<ol start="3">
-<li>数组（list，set）</li>
+</li>
 </ol>
+</li>
+<li><p>数组（list，set）</p>
+</li>
+</ul>
 <p>使用 - 来表示数组中的一个元素</p>
 <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">person</span></span><br><span class="line"><span class="bullet">    -</span> <span class="string">zhangsan</span></span><br><span class="line"><span class="bullet">    -</span> <span class="string">lisi</span></span><br><span class="line"><span class="bullet">    -</span> <span class="string">wangwu</span></span><br></pre></td></tr></table></figure>
 
-</li>
-</ul>
-</li>
-</ol>
 <h4 id="使用yml配置文件进行配置"><a href="#使用yml配置文件进行配置" class="headerlink" title="使用yml配置文件进行配置"></a>使用yml配置文件进行配置</h4><h5 id="编写bean对象"><a href="#编写bean对象" class="headerlink" title="编写bean对象"></a>编写bean对象</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> lombok.Data;</span><br><span class="line"><span class="keyword">import</span> org.springframework.boot.context.properties.ConfigurationProperties;</span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.Component;</span><br><span class="line"><span class="comment">/***</span></span><br><span class="line"><span class="comment"> * 如果需要使用ConfigurationProperties 这个注解需要添加</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * &lt;dependency&gt;</span></span><br><span class="line"><span class="comment"> * 	&lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span></span><br><span class="line"><span class="comment"> * 	&lt;artifactId&gt;spring-boot-configuration-processor&lt;/artifactId&gt;</span></span><br><span class="line"><span class="comment"> * 	&lt;optional&gt;true&lt;/optional&gt;</span></span><br><span class="line"><span class="comment"> * &lt;/dependency&gt;</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Author</span> nanyin</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Date</span> 16:29 2019-07-07</span></span><br><span class="line"><span class="comment"> * </span></span><br><span class="line"><span class="comment"> * 使用Lombok的data注解可以自动的配置 setter，getter，toString属性，</span></span><br><span class="line"><span class="comment"> * 但是需要IDE的Lombok插件</span></span><br><span class="line"><span class="comment"> **/</span></span><br><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="meta">@ConfigurationProperties</span>(value = <span class="string">"person"</span>)</span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> age;</span><br><span class="line">    <span class="keyword">private</span> User user;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">User</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> id;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <h5 id="使用configurationPropertis配置类"><a href="#使用configurationPropertis配置类" class="headerlink" title="使用configurationPropertis配置类"></a>使用configurationPropertis配置类</h5><p>根据bean对象在application.yml文件中编写如下yml内容：</p>
