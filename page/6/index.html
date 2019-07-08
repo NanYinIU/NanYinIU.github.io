@@ -304,6 +304,217 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/10/04/2018-10-04-ArrayList的源码查看/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="NanYin">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NanYin的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/10/04/2018-10-04-ArrayList的源码查看/" itemprop="url">ArrayList的源码查看</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-04T15:00:00Z">
+                2018-10-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  755
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  3
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
+
+<ul>
+<li><a href="#arraylist的源码查看">ArrayList的源码查看</a><ul>
+<li><a href="#结构源码">结构源码</a></li>
+<li><a href="#常用方法源码">常用方法源码</a></li>
+</ul>
+</li>
+</ul>
+<!-- /TOC -->
+
+<h1 id="ArrayList的源码查看"><a href="#ArrayList的源码查看" class="headerlink" title="ArrayList的源码查看"></a>ArrayList的源码查看</h1><h2 id="结构源码"><a href="#结构源码" class="headerlink" title="结构源码"></a>结构源码</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 没有参数的情况下 */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">ArrayList</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.elementData = DEFAULTCAPACITY_EMPTY_ELEMENTDATA;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/* 默认是拥有默认容量（10）的空的 array list */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Object[] DEFAULTCAPACITY_EMPTY_ELEMENTDATA = &#123;&#125;;</span><br><span class="line"><span class="comment">/* 这个默认的容量是定义好的10  */</span></span><br><span class="line"> <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> DEFAULT_CAPACITY = <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 当参数是容量的大小的时候  */</span></span><br><span class="line"> <span class="function"><span class="keyword">public</span> <span class="title">ArrayList</span><span class="params">(<span class="keyword">int</span> initialCapacity)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (initialCapacity &gt; <span class="number">0</span>) &#123;</span><br><span class="line">      <span class="comment">/* 如果自定义初始容量大小*/</span></span><br><span class="line">        <span class="keyword">this</span>.elementData = <span class="keyword">new</span> Object[initialCapacity];</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (initialCapacity == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">this</span>.elementData = EMPTY_ELEMENTDATA;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="comment">/* 如果参数小于0 报参数异常的错误（IllegalArgumentException） */</span></span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"Illegal Capacity: "</span>+</span><br><span class="line">                                           initialCapacity);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/* 当参数是一个Collection结构的时候 */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">ArrayList</span><span class="params">(Collection&lt;? extends E&gt; c)</span> </span>&#123;</span><br><span class="line">     elementData = c.toArray();</span><br><span class="line">     <span class="keyword">if</span> ((size = elementData.length) != <span class="number">0</span>) &#123;</span><br><span class="line">         <span class="comment">// c.toArray might (incorrectly) not return Object[] (see 6260652)</span></span><br><span class="line">         <span class="keyword">if</span> (elementData.getClass() != Object[].class)</span><br><span class="line">         <span class="comment">/* 如果不是object类型的话 转换成object类型 */</span></span><br><span class="line">             elementData = Arrays.copyOf(elementData, size, Object[].class);</span><br><span class="line">     &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">         <span class="comment">// replace with empty array.</span></span><br><span class="line">         <span class="keyword">this</span>.elementData = EMPTY_ELEMENTDATA;</span><br><span class="line">     &#125;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="常用方法源码"><a href="#常用方法源码" class="headerlink" title="常用方法源码"></a>常用方法源码</h2><ul>
+<li>add 添加方法</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 只有一个参数的添加 */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">add</span><span class="params">(E e)</span> </span>&#123;</span><br><span class="line">  <span class="comment">/* 扩充容量 */</span></span><br><span class="line">    ensureCapacityInternal(size + <span class="number">1</span>);  <span class="comment">// Increments modCount!!</span></span><br><span class="line">    <span class="comment">/* ArrayList其实就是个数组 将新add的值放到数组的最后面 */</span></span><br><span class="line">    elementData[size++] = e;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">ensureCapacityInternal</span><span class="params">(<span class="keyword">int</span> minCapacity)</span> </span>&#123;</span><br><span class="line">      ensureExplicitCapacity(calculateCapacity(elementData, minCapacity));</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">calculateCapacity</span><span class="params">(Object[] elementData, <span class="keyword">int</span> minCapacity)</span> </span>&#123;</span><br><span class="line">  <span class="comment">/* 如果是空的话返回 默认或当前 */</span></span><br><span class="line">    <span class="keyword">if</span> (elementData == DEFAULTCAPACITY_EMPTY_ELEMENTDATA) &#123;</span><br><span class="line">        <span class="keyword">return</span> Math.max(DEFAULT_CAPACITY, minCapacity);</span><br><span class="line">     &#125;</span><br><span class="line">    <span class="keyword">return</span> minCapacity;</span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">ensureExplicitCapacity</span><span class="params">(<span class="keyword">int</span> minCapacity)</span> </span>&#123;</span><br><span class="line">  <span class="comment">/* The number of times this list has been &lt;i&gt;structurally modified&lt;/i&gt;. */</span></span><br><span class="line">    modCount++;</span><br><span class="line">    <span class="comment">// overflow-conscious code</span></span><br><span class="line">    <span class="keyword">if</span> (minCapacity - elementData.length &gt; <span class="number">0</span>)</span><br><span class="line">    <span class="comment">/* 如果当前的容量大于给定的长度的时候 需要扩充 */</span></span><br><span class="line">        grow(minCapacity);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">grow</span><span class="params">(<span class="keyword">int</span> minCapacity)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// overflow-conscious code</span></span><br><span class="line">    <span class="keyword">int</span> oldCapacity = elementData.length; <span class="comment">// 原长度</span></span><br><span class="line">    <span class="keyword">int</span> newCapacity = oldCapacity + (oldCapacity &gt;&gt; <span class="number">1</span>); <span class="comment">//新长度 右移运算。长度为1.5倍的原长度</span></span><br><span class="line">    <span class="keyword">if</span> (newCapacity - minCapacity &lt; <span class="number">0</span>)</span><br><span class="line">        newCapacity = minCapacity;</span><br><span class="line">   <span class="keyword">if</span> (newCapacity - MAX_ARRAY_SIZE &gt; <span class="number">0</span>)</span><br><span class="line">        newCapacity = hugeCapacity(minCapacity);</span><br><span class="line">    <span class="comment">// minCapacity is usually close to size, so this is a win:</span></span><br><span class="line">    elementData = Arrays.copyOf(elementData, newCapacity);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>remove 移除元素方法</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> E <span class="title">remove</span><span class="params">(<span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">    rangeCheck(index); <span class="comment">//如果超出 IndexOutOfBoundsException</span></span><br><span class="line"></span><br><span class="line">    modCount++;</span><br><span class="line">    E oldValue = elementData(index);</span><br><span class="line">    <span class="comment">/* 想要移除元素的位置 */</span></span><br><span class="line">    <span class="keyword">int</span> numMoved = size - index - <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">if</span> (numMoved &gt; <span class="number">0</span>)</span><br><span class="line">    <span class="comment">/* arraycopy是个native方法 相当于把index+1位置上的元素挪到index位置上 */</span></span><br><span class="line">        System.arraycopy(elementData, index+<span class="number">1</span>, elementData, index,</span><br><span class="line">                         numMoved);</span><br><span class="line">    elementData[--size] = <span class="keyword">null</span>; <span class="comment">// clear to let GC do its work</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> oldValue;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 只会移除第一个符合条件的条目 */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">remove</span><span class="params">(Object o)</span> </span>&#123;</span><br><span class="line">      <span class="keyword">if</span> (o == <span class="keyword">null</span>) &#123;</span><br><span class="line">          <span class="keyword">for</span> (<span class="keyword">int</span> index = <span class="number">0</span>; index &lt; size; index++)</span><br><span class="line">              <span class="keyword">if</span> (elementData[index] == <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="comment">/* 这个fastRemove方法和上面的方法大相径庭  */</span></span><br><span class="line">                  fastRemove(index);</span><br><span class="line">                  <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">              &#125;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          <span class="keyword">for</span> (<span class="keyword">int</span> index = <span class="number">0</span>; index &lt; size; index++)</span><br><span class="line">              <span class="keyword">if</span> (o.equals(elementData[index])) &#123;</span><br><span class="line">                  fastRemove(index);</span><br><span class="line">                  <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">              &#125;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>contain 是否包含</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">contains</span><span class="params">(Object o)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">return</span> indexOf(o) &gt;= <span class="number">0</span>;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">indexOf</span><span class="params">(Object o)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">if</span> (o == <span class="keyword">null</span>) &#123;</span><br><span class="line">           <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; size; i++)</span><br><span class="line">               <span class="keyword">if</span> (elementData[i]==<span class="keyword">null</span>)</span><br><span class="line">                   <span class="keyword">return</span> i;</span><br><span class="line">       &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">         <span class="comment">/* 内部就是for循环一个一个判断的 */</span></span><br><span class="line">           <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; size; i++)</span><br><span class="line">               <span class="keyword">if</span> (o.equals(elementData[i]))</span><br><span class="line">                   <span class="keyword">return</span> i;</span><br><span class="line">                         &#125;</span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>get 方法</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> E <span class="title">get</span><span class="params">(<span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">    rangeCheck(index);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> elementData(index);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/* 本质就是返回数组位置的元素 */</span></span><br><span class="line"><span class="function">E <span class="title">elementData</span><span class="params">(<span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> (E) elementData[index];</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+<div>
+      
+</div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/07/25/2018-07-25-stackOverFlow上的热门问题/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1588,6 +1799,247 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/06/24/2018-06-24-bash_10_bash命令篇（二）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="NanYin">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NanYin的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/06/24/2018-06-24-bash_10_bash命令篇（二）/" itemprop="url">bash学习记录（十一）命令篇（2）</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-24T15:00:00Z">
+                2018-06-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Bash/" itemprop="url" rel="index">
+                    <span itemprop="name">Bash</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  791
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  3
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="bash命令令篇（二）"><a href="#bash命令令篇（二）" class="headerlink" title="bash命令令篇（二）"></a>bash命令令篇（二）</h1><h2 id="基本命令"><a href="#基本命令" class="headerlink" title="基本命令"></a>基本命令</h2><p>基本命令就是非常需要初学者掌握的重要的知识点，只有掌握这种基本的命令才能稍微熟练的操作linux。具体的基本命令也不一一列举了，对于这种基本命令用几遍就能够掌握了。而且网上的教程一大堆。</p>
+<h2 id="时间日期命令"><a href="#时间日期命令" class="headerlink" title="时间日期命令"></a>时间日期命令</h2><ul>
+<li><p>date: 打印或者是设置本地时间。主要语法可以 <code>man date</code>  主要有date -u 打印 UTC时间。在后面可以使用 +参数的形式格式化为具体的时间格式。</p>
+</li>
+<li><p>zdump: 输出特殊时区的时间。如 <code>zdump EMP</code></p>
+</li>
+<li><p>time： 输出详细的时间信息比如 <code>time ls -l</code></p>
+</li>
+<li><p>at: at命令一般使用在特定时间执行的时候。</p>
+</li>
+<li><p>batch：batch命令和at命令相似。不同在于batch命令能够同时处理多条命令。</p>
+</li>
+<li><p>cal：cal命令可以整洁的打印出来日历</p>
+</li>
+<li><p>sleep：sleep可以使shell暂停固定时间长度</p>
+</li>
+<li><p>hwclock：访问硬件系统时间。需要管理员权限。</p>
+</li>
+</ul>
+<h2 id="文本和文件处理命令"><a href="#文本和文件处理命令" class="headerlink" title="文本和文件处理命令"></a>文本和文件处理命令</h2><ul>
+<li><p>sort：文件排序的实用性工具，同时出现在管道当中，可以使用-m选项合并预分类的输入文件。</p>
+</li>
+<li><p>uniq：使用uniq命令能够去除重复的行，通常和sort使用在管道当中。</p>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ cat list_1.txt|uniq -c|sort -nr</span><br><span class="line">     5 this is the second line</span><br><span class="line">     3 this is the first line</span><br><span class="line">     1 this is the third line</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>expand:可以将tab转换成普通空格，unexpand可以将空格转换成tab，同样比较常见在管道命令当中。</li>
+</ul>
+<p>cut：从文件中提取字段的工具</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ cut -d <span class="string">' '</span> -f 1,2 list_1.txt</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>paste:合并两个文件的内容，是每行都对应合并。而不是一个文件合并到另一个文件的下面。</p>
+</li>
+<li><p>join：和paste命令相似，但是join命令只粘贴两文件有共同标记的行，一般这个标记是数字。</p>
+</li>
+<li><p>head：输出文件的前10行，也可以更改输出的行数。</p>
+</li>
+<li><p>tail：输出文件的末尾10行，同样的可以更改输出的行数。</p>
+</li>
+<li><p>grep：正则匹配出文件的内容，一般使用在管道中，用来匹配上一个输入或者文件的匹配到的内容</p>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ cat list_1.txt| grep <span class="string">"third"</span>  </span><br><span class="line">this is the third line</span><br><span class="line">              ^ 这里的third是红色的表示匹配到的内容</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>wc：输出文件的行数字数等信息</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ wc /usr/share/doc/sed-4.1.2/README</span><br><span class="line">13  70  447 README</span><br><span class="line">[13 lines  70 words  447 characters]</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>tr 字符翻译的过滤器，将特定字符替换成其他字符</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ tr <span class="string">"is"</span> <span class="string">"*"</span> &lt; list_1.txt  </span><br><span class="line">th** ** the f*r*t l*ne</span><br><span class="line">th** ** the *econd l*ne</span><br><span class="line">th** ** the th*rd l*ne</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>nl nl和cat -b有着相似的意义，都能够连同行号打印出来，不同的是，nl可以将空行去除掉。</p>
+</li>
+<li><p>iconv 这个命令能够将文件转换编码，如utf-8转换成utf-16这类的转化。</p>
+</li>
+</ul>
+<h3 id="这类命令真的很多，需要积累的东西也很多，我在这里就做个简单的说明，具体的使用可以-man-命令-查看具体的使用方法。也是学习的一种方式！！"><a href="#这类命令真的很多，需要积累的东西也很多，我在这里就做个简单的说明，具体的使用可以-man-命令-查看具体的使用方法。也是学习的一种方式！！" class="headerlink" title="这类命令真的很多，需要积累的东西也很多，我在这里就做个简单的说明，具体的使用可以 man 命令 查看具体的使用方法。也是学习的一种方式！！"></a>这类命令真的很多，需要积累的东西也很多，我在这里就做个简单的说明，具体的使用可以 man 命令 查看具体的使用方法。也是学习的一种方式！！</h3>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+<div>
+      
+</div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/06/24/2018-06-27-bash_11_bash命令篇（三）/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2044,429 +2496,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/06/24/2018-06-24-bash_10_bash命令篇（二）/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="NanYin">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NanYin的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/24/2018-06-24-bash_10_bash命令篇（二）/" itemprop="url">bash学习记录（十一）命令篇（2）</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-24T15:00:00Z">
-                2018-06-24
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Bash/" itemprop="url" rel="index">
-                    <span itemprop="name">Bash</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  791
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  3
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="bash命令令篇（二）"><a href="#bash命令令篇（二）" class="headerlink" title="bash命令令篇（二）"></a>bash命令令篇（二）</h1><h2 id="基本命令"><a href="#基本命令" class="headerlink" title="基本命令"></a>基本命令</h2><p>基本命令就是非常需要初学者掌握的重要的知识点，只有掌握这种基本的命令才能稍微熟练的操作linux。具体的基本命令也不一一列举了，对于这种基本命令用几遍就能够掌握了。而且网上的教程一大堆。</p>
-<h2 id="时间日期命令"><a href="#时间日期命令" class="headerlink" title="时间日期命令"></a>时间日期命令</h2><ul>
-<li><p>date: 打印或者是设置本地时间。主要语法可以 <code>man date</code>  主要有date -u 打印 UTC时间。在后面可以使用 +参数的形式格式化为具体的时间格式。</p>
-</li>
-<li><p>zdump: 输出特殊时区的时间。如 <code>zdump EMP</code></p>
-</li>
-<li><p>time： 输出详细的时间信息比如 <code>time ls -l</code></p>
-</li>
-<li><p>at: at命令一般使用在特定时间执行的时候。</p>
-</li>
-<li><p>batch：batch命令和at命令相似。不同在于batch命令能够同时处理多条命令。</p>
-</li>
-<li><p>cal：cal命令可以整洁的打印出来日历</p>
-</li>
-<li><p>sleep：sleep可以使shell暂停固定时间长度</p>
-</li>
-<li><p>hwclock：访问硬件系统时间。需要管理员权限。</p>
-</li>
-</ul>
-<h2 id="文本和文件处理命令"><a href="#文本和文件处理命令" class="headerlink" title="文本和文件处理命令"></a>文本和文件处理命令</h2><ul>
-<li><p>sort：文件排序的实用性工具，同时出现在管道当中，可以使用-m选项合并预分类的输入文件。</p>
-</li>
-<li><p>uniq：使用uniq命令能够去除重复的行，通常和sort使用在管道当中。</p>
-</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ cat list_1.txt|uniq -c|sort -nr</span><br><span class="line">     5 this is the second line</span><br><span class="line">     3 this is the first line</span><br><span class="line">     1 this is the third line</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>expand:可以将tab转换成普通空格，unexpand可以将空格转换成tab，同样比较常见在管道命令当中。</li>
-</ul>
-<p>cut：从文件中提取字段的工具</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ cut -d <span class="string">' '</span> -f 1,2 list_1.txt</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><p>paste:合并两个文件的内容，是每行都对应合并。而不是一个文件合并到另一个文件的下面。</p>
-</li>
-<li><p>join：和paste命令相似，但是join命令只粘贴两文件有共同标记的行，一般这个标记是数字。</p>
-</li>
-<li><p>head：输出文件的前10行，也可以更改输出的行数。</p>
-</li>
-<li><p>tail：输出文件的末尾10行，同样的可以更改输出的行数。</p>
-</li>
-<li><p>grep：正则匹配出文件的内容，一般使用在管道中，用来匹配上一个输入或者文件的匹配到的内容</p>
-</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ cat list_1.txt| grep <span class="string">"third"</span>  </span><br><span class="line">this is the third line</span><br><span class="line">              ^ 这里的third是红色的表示匹配到的内容</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>wc：输出文件的行数字数等信息</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ wc /usr/share/doc/sed-4.1.2/README</span><br><span class="line">13  70  447 README</span><br><span class="line">[13 lines  70 words  447 characters]</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>tr 字符翻译的过滤器，将特定字符替换成其他字符</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ tr <span class="string">"is"</span> <span class="string">"*"</span> &lt; list_1.txt  </span><br><span class="line">th** ** the f*r*t l*ne</span><br><span class="line">th** ** the *econd l*ne</span><br><span class="line">th** ** the th*rd l*ne</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><p>nl nl和cat -b有着相似的意义，都能够连同行号打印出来，不同的是，nl可以将空行去除掉。</p>
-</li>
-<li><p>iconv 这个命令能够将文件转换编码，如utf-8转换成utf-16这类的转化。</p>
-</li>
-</ul>
-<h3 id="这类命令真的很多，需要积累的东西也很多，我在这里就做个简单的说明，具体的使用可以-man-命令-查看具体的使用方法。也是学习的一种方式！！"><a href="#这类命令真的很多，需要积累的东西也很多，我在这里就做个简单的说明，具体的使用可以-man-命令-查看具体的使用方法。也是学习的一种方式！！" class="headerlink" title="这类命令真的很多，需要积累的东西也很多，我在这里就做个简单的说明，具体的使用可以 man 命令 查看具体的使用方法。也是学习的一种方式！！"></a>这类命令真的很多，需要积累的东西也很多，我在这里就做个简单的说明，具体的使用可以 man 命令 查看具体的使用方法。也是学习的一种方式！！</h3>
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-<div>
-      
-</div>
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/06/23/2018-06-23-关于elementryOS挂起之后唤醒时黑屏问题/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="NanYin">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NanYin的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/23/2018-06-23-关于elementryOS挂起之后唤醒时黑屏问题/" itemprop="url">关于ElementryOS图形界面挂起之后唤醒后出现黑屏问题</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-23T12:00:00Z">
-                2018-06-23
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Linux/" itemprop="url" rel="index">
-                    <span itemprop="name">Linux</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  101
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  1
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="关于ElementryOS图形界面挂起之后唤醒后出现黑屏问题"><a href="#关于ElementryOS图形界面挂起之后唤醒后出现黑屏问题" class="headerlink" title="关于ElementryOS图形界面挂起之后唤醒后出现黑屏问题"></a>关于ElementryOS图形界面挂起之后唤醒后出现黑屏问题</h1><p>这两天在ElementryOs上踩到了坑，为了以后少踩点这种坑，打算以后将这种小问题也写下来。</p>
-<p>如何解决：安装  <code>xserver-xorg</code></p>
-<p>在ElementryOS的终端中使用 <code>$ sudo apt-get install xserver-xorg</code>  我使用这个方法可以解决问题</p>
-<p>解决时间：2018-6-23 版本：ElementryOS Loki 0.4</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-<div>
-      
-</div>
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2519,7 +2548,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">73</span>
+                  <span class="site-state-item-count">74</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2597,6 +2626,10 @@
                </li>
              
                <li>
+                 <a href="/2019/07/08/2019-07-08-SpringBoot的配置文件（拓展）/" title="SpringBoot中的配置文件（拓展）" target="_blank">SpringBoot中的配置文件（拓展）</a>
+               </li>
+             
+               <li>
                  <a href="/2019/07/07/2019-07-04-SpringBoot深入自动配置/" title="SpringBoot深入自动配置" target="_blank">SpringBoot深入自动配置</a>
                </li>
              
@@ -2606,10 +2639,6 @@
              
                <li>
                  <a href="/2019/06/28/2019-06-28-设计模式之命令模式/" title="设计模式之命令模式" target="_blank">设计模式之命令模式</a>
-               </li>
-             
-               <li>
-                 <a href="/2019/06/27/2019-06-27-设计模式之迭代器模式/" title="设计模式之迭代器模式" target="_blank">设计模式之迭代器模式</a>
                </li>
              
            </ul>
@@ -2658,7 +2687,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共64.6k字</span>
+  <span class="post-count">博客全站共65.2k字</span>
 </div>
 
 

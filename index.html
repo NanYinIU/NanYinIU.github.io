@@ -583,6 +583,208 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/07/08/2019-07-08-SpringBoot的配置文件（拓展）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="NanYin">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NanYin的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/07/08/2019-07-08-SpringBoot的配置文件（拓展）/" itemprop="url">SpringBoot中的配置文件（拓展）</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-08T12:00:00Z">
+                2019-07-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/SpringBoot/" itemprop="url" rel="index">
+                    <span itemprop="name">SpringBoot</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  578
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  2
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="SpringBoot中的配置文件-拓展"><a href="#SpringBoot中的配置文件-拓展" class="headerlink" title="SpringBoot中的配置文件(拓展)"></a>SpringBoot中的配置文件(拓展)</h1><p>如果有多个环境，配置文件需要根据环境来变化，只有一个配置文件就显的鸡肋了，每次变更环境的时候都需要修改一遍配置文件，两个还好，多了就相当麻烦了。</p>
+<p>SpringBoot提供了多配置文件的用法，让环境的变化尽可能少的影响到配置文件的更改。</p>
+<h2 id="多配置文件"><a href="#多配置文件" class="headerlink" title="多配置文件"></a>多配置文件</h2><h3 id="加载顺序"><a href="#加载顺序" class="headerlink" title="加载顺序"></a>加载顺序</h3><p>Spring会按以下顺序查找地址，如果有则优先使用前面的配置文件的属性，如果后面的文件有前面文件没有的属性，则会添加，否则忽略。</p>
+<ol>
+<li>file:./config/</li>
+<li>file:./</li>
+<li>classpath:/config/</li>
+<li>classpath:/</li>
+</ol>
+<h4 id="指定-添加默认加载地址"><a href="#指定-添加默认加载地址" class="headerlink" title="指定/添加默认加载地址"></a>指定/添加默认加载地址</h4><p>使用<code>spring.config.location</code>来指定默认的加载地址。</p>
+<p>如果spring.config.location 指定的值为： classpath:/custom-config/,file:./custom-config/，则系统会优先找这个文件。</p>
+<p>如果使用<code>spring.config.additional-location</code>来添加配置文件的加载地址。</p>
+<h3 id="命名格式"><a href="#命名格式" class="headerlink" title="命名格式"></a>命名格式</h3><p>可以使用 <code>application-{profile}.properties</code>来定义一个特殊的配置文件。特殊的这个配置文件如果调用，那么他总会覆盖掉默认的<code>application.properties</code>文件中的内容。</p>
+<p>比如使用<code>application-dev.properties</code>作为开发环境的配置文件，在其中指定了服务端口8081.而在默认的<code>application.properties</code>中指定的端口号为8080.那么，系统会使用哪个端口呢？</p>
+<p>下面我使用yml文件作为例子（同properties文件）</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># application.yml文件中的内容</span></span><br><span class="line"><span class="attr">server:</span></span><br><span class="line"><span class="attr">  port:</span> <span class="number">8080</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># yaml文件格式指定使用哪个配置</span></span><br><span class="line"><span class="attr">spring:</span></span><br><span class="line"><span class="attr">  profiles:</span></span><br><span class="line"><span class="attr">    active:</span> <span class="string">dev</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># application-dev.properties文件中的内容</span></span><br><span class="line"><span class="attr">server:</span></span><br><span class="line"><span class="attr">  port:</span> <span class="number">8081</span></span><br></pre></td></tr></table></figure>
+
+<p>通过spring.profiles.active=dev(这时properties格式)。来特殊指定启用哪些配置文件。这里启用的是<code>application-dev.properties</code>文件。</p>
+<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190708221852.png" alt="运行结果"></p>
+<p>由控制台的输出结果可以看出，springBoot激活了名为<code>dev</code>的配置文件及<code>application-dev.properties</code>文件，并且更改端口为dev中指定的8081端口。</p>
+<h3 id="使用yaml文档块"><a href="#使用yaml文档块" class="headerlink" title="使用yaml文档块"></a>使用yaml文档块</h3><p>yaml文件提供一种特性叫做文档块。使用三个<code>-</code>来隔离配置信息</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 默认的</span></span><br><span class="line"><span class="attr">server:</span></span><br><span class="line"><span class="attr">  port:</span> <span class="number">8080</span></span><br><span class="line"></span><br><span class="line"><span class="attr">spring:</span></span><br><span class="line"><span class="attr">  profiles:</span></span><br><span class="line"><span class="attr">    active:</span> <span class="string">dev</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 文档块1</span></span><br><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">spring:</span></span><br><span class="line"><span class="attr">  profiles:</span> <span class="string">dev</span></span><br><span class="line"></span><br><span class="line"><span class="attr">server:</span></span><br><span class="line"><span class="attr">  port:</span> <span class="number">8081</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 文档块2</span></span><br><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">spring:</span></span><br><span class="line"><span class="attr">     profiles:</span> <span class="string">prod</span></span><br><span class="line"></span><br><span class="line"><span class="attr">server:</span></span><br><span class="line"><span class="attr">  port:</span> <span class="number">8082</span></span><br></pre></td></tr></table></figure>
+
+<p>使用文档块能够减少多个配置文件。与多个配置文件效果是等同的。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+<div>
+      
+</div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/07/07/2019-07-04-SpringBoot深入自动配置/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1857,202 +2059,6 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/06/19/2019-06-19-设计模式之状态模式/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="NanYin">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NanYin的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/06/19/2019-06-19-设计模式之状态模式/" itemprop="url">设计模式之状态模式</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-06-19T12:00:00Z">
-                2019-06-19
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/设计模式/" itemprop="url" rel="index">
-                    <span itemprop="name">设计模式</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  575
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  2
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="设计模式之状态模式"><a href="#设计模式之状态模式" class="headerlink" title="设计模式之状态模式"></a>设计模式之状态模式</h1><p>状态模式是对象的行为模式。状态模式允许一个对象在其内部状态改变的时候改变其行为。这个对象看上去就像是改变了它的类一样。</p>
-<h2 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h2><ul>
-<li>对象的行为取决于其状态，并且必须根据该状态在运行时更改其行为。</li>
-<li>通常，几个操作将包含相同的条件结构。State模式将条件的每个分支放在一个单独的类中。可以将对象的状态视为一个对象，它可以独立于其他对象而变化</li>
-</ul>
-<p>概括来说，状态模式将行为包装到具体的状态对象中。每个状态对象是抽象状态的子类。状态模式意图是在改变对象的内部状态的时候，行为随之改变。</p>
-<h2 id="模式结构"><a href="#模式结构" class="headerlink" title="模式结构"></a>模式结构</h2><p>状态模式分为三种结构：环境角色、抽象状态角色、具体状态角色</p>
-<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618203143.png" alt="状态模式结构图"></p>
-<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><p>电灯有两种基本行为 开启、关闭。但是有两个状态，正常和坏掉的状态。将共同的行为封装到统一的状态接口中，再根据不同的状态，创建子类完成不同状态形成不同的行为。</p>
-<p>灯再正常状态下能够正常开启，正常关闭。等在坏掉的状态下，不能开启和关闭。状态模式就是根据这个逻辑抽离行为，将具体行为包装到具体状态对象中。</p>
-<h3 id="抽象状态角色"><a href="#抽象状态角色" class="headerlink" title="抽象状态角色"></a>抽象状态角色</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">State</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">open</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">close</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="具体状态角色"><a href="#具体状态角色" class="headerlink" title="具体状态角色"></a>具体状态角色</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">NormalState</span> <span class="keyword">implements</span> <span class="title">State</span></span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">open</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"电灯开了！"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">close</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"电灯关了！"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ErrorState</span> <span class="keyword">implements</span> <span class="title">State</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">open</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"电灯开不了！"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">close</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"电灯关不了！"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="环境角色"><a href="#环境角色" class="headerlink" title="环境角色"></a>环境角色</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Context</span> </span>&#123;</span><br><span class="line">    <span class="comment">//状态参数</span></span><br><span class="line">    State state;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Context</span><span class="params">(State state)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.state = state;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">requestToOpen</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        state.open();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">requestToClose</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        state.close();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//状态变化</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">changeStageTo</span><span class="params">(State state)</span></span>&#123;</span><br><span class="line">       <span class="keyword">this</span>.state = state;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="客户端测试"><a href="#客户端测试" class="headerlink" title="客户端测试"></a>客户端测试</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">App</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Context context = <span class="keyword">new</span> Context(<span class="keyword">new</span> NormalState());</span><br><span class="line">        context.requestToOpen();</span><br><span class="line">        context.requestToClose();</span><br><span class="line">        <span class="comment">//将状态变更为坏的状态</span></span><br><span class="line">        context.changeStageTo(<span class="keyword">new</span> ErrorState());</span><br><span class="line">        context.requestToOpen();</span><br><span class="line">        context.requestToClose();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-<div>
-      
-</div>
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/06/19/2019-06-24-设计模式之观察者模式/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2263,7 +2269,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/06/18/2019-06-18-Mac下idea在Dock栏一直存在图标和控制台中文乱码问题/">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/06/19/2019-06-19-设计模式之状态模式/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="NanYin">
@@ -2282,7 +2288,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/06/18/2019-06-18-Mac下idea在Dock栏一直存在图标和控制台中文乱码问题/" itemprop="url">Mac下使用idea时在dock栏一直存在java图标和控制台乱码问题</a></h1>
+                <a class="post-title-link" href="/2019/06/19/2019-06-19-设计模式之状态模式/" itemprop="url">设计模式之状态模式</a></h1>
         
 
         <div class="post-meta">
@@ -2294,8 +2300,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-06-18T12:00:00Z">
-                2019-06-18
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-06-19T12:00:00Z">
+                2019-06-19
               </time>
             
 
@@ -2317,8 +2323,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/工具/" itemprop="url" rel="index">
-                    <span itemprop="name">工具</span>
+                  <a href="/categories/设计模式/" itemprop="url" rel="index">
+                    <span itemprop="name">设计模式</span>
                   </a>
                 </span>
 
@@ -2348,7 +2354,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  112
+                  575
                 </span>
               
 
@@ -2364,7 +2370,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  1
+                  2
                 </span>
               
             </div>
@@ -2387,16 +2393,23 @@
       
         
           
-            <h1 id="Mac下使用Idea相关问题"><a href="#Mac下使用Idea相关问题" class="headerlink" title="Mac下使用Idea相关问题"></a>Mac下使用Idea相关问题</h1><h2 id="使用tomcat启动IDEA项目后，dock栏一直存在JAVA图标问题"><a href="#使用tomcat启动IDEA项目后，dock栏一直存在JAVA图标问题" class="headerlink" title="使用tomcat启动IDEA项目后，dock栏一直存在JAVA图标问题"></a>使用tomcat启动IDEA项目后，dock栏一直存在JAVA图标问题</h2><p>在mac上启动idea后，存在dock栏一直存在JAVA图标的问题，如下图：</p>
-<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618081946.png" alt="Dock栏存在java图标问题"></p>
-<p>解决方式：</p>
-<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618082435.png" alt="存在图标解决方式"></p>
-<p>打开<code>Run/Debug configurations</code>,在<code>vm options</code>中添加如下内容：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-Dapple.awt.UIElement=<span class="keyword">true</span></span><br></pre></td></tr></table></figure>
+            <h1 id="设计模式之状态模式"><a href="#设计模式之状态模式" class="headerlink" title="设计模式之状态模式"></a>设计模式之状态模式</h1><p>状态模式是对象的行为模式。状态模式允许一个对象在其内部状态改变的时候改变其行为。这个对象看上去就像是改变了它的类一样。</p>
+<h2 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h2><ul>
+<li>对象的行为取决于其状态，并且必须根据该状态在运行时更改其行为。</li>
+<li>通常，几个操作将包含相同的条件结构。State模式将条件的每个分支放在一个单独的类中。可以将对象的状态视为一个对象，它可以独立于其他对象而变化</li>
+</ul>
+<p>概括来说，状态模式将行为包装到具体的状态对象中。每个状态对象是抽象状态的子类。状态模式意图是在改变对象的内部状态的时候，行为随之改变。</p>
+<h2 id="模式结构"><a href="#模式结构" class="headerlink" title="模式结构"></a>模式结构</h2><p>状态模式分为三种结构：环境角色、抽象状态角色、具体状态角色</p>
+<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618203143.png" alt="状态模式结构图"></p>
+<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><p>电灯有两种基本行为 开启、关闭。但是有两个状态，正常和坏掉的状态。将共同的行为封装到统一的状态接口中，再根据不同的状态，创建子类完成不同状态形成不同的行为。</p>
+<p>灯再正常状态下能够正常开启，正常关闭。等在坏掉的状态下，不能开启和关闭。状态模式就是根据这个逻辑抽离行为，将具体行为包装到具体状态对象中。</p>
+<h3 id="抽象状态角色"><a href="#抽象状态角色" class="headerlink" title="抽象状态角色"></a>抽象状态角色</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">State</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">open</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">close</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h2 id="启动IDEA后，控制台乱码"><a href="#启动IDEA后，控制台乱码" class="headerlink" title="启动IDEA后，控制台乱码"></a>启动IDEA后，控制台乱码</h2><p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618082124.png" alt="控制台乱码"></p>
-<p>解决方式和上一个问题相同，同样在vm options中增加参数，具体参数如下：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-Dfile.encoding=UTF-<span class="number">8</span></span><br></pre></td></tr></table></figure>
+<h3 id="具体状态角色"><a href="#具体状态角色" class="headerlink" title="具体状态角色"></a>具体状态角色</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">NormalState</span> <span class="keyword">implements</span> <span class="title">State</span></span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">open</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"电灯开了！"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">close</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"电灯关了！"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ErrorState</span> <span class="keyword">implements</span> <span class="title">State</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">open</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"电灯开不了！"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">close</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"电灯关不了！"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="环境角色"><a href="#环境角色" class="headerlink" title="环境角色"></a>环境角色</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Context</span> </span>&#123;</span><br><span class="line">    <span class="comment">//状态参数</span></span><br><span class="line">    State state;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Context</span><span class="params">(State state)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.state = state;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">requestToOpen</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        state.open();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">requestToClose</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        state.close();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//状态变化</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">changeStageTo</span><span class="params">(State state)</span></span>&#123;</span><br><span class="line">       <span class="keyword">this</span>.state = state;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="客户端测试"><a href="#客户端测试" class="headerlink" title="客户端测试"></a>客户端测试</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">App</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Context context = <span class="keyword">new</span> Context(<span class="keyword">new</span> NormalState());</span><br><span class="line">        context.requestToOpen();</span><br><span class="line">        context.requestToClose();</span><br><span class="line">        <span class="comment">//将状态变更为坏的状态</span></span><br><span class="line">        context.changeStageTo(<span class="keyword">new</span> ErrorState());</span><br><span class="line">        context.requestToOpen();</span><br><span class="line">        context.requestToClose();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 
           
@@ -2491,7 +2504,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">73</span>
+                  <span class="site-state-item-count">74</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2569,6 +2582,10 @@
                </li>
              
                <li>
+                 <a href="/2019/07/08/2019-07-08-SpringBoot的配置文件（拓展）/" title="SpringBoot中的配置文件（拓展）" target="_blank">SpringBoot中的配置文件（拓展）</a>
+               </li>
+             
+               <li>
                  <a href="/2019/07/07/2019-07-04-SpringBoot深入自动配置/" title="SpringBoot深入自动配置" target="_blank">SpringBoot深入自动配置</a>
                </li>
              
@@ -2578,10 +2595,6 @@
              
                <li>
                  <a href="/2019/06/28/2019-06-28-设计模式之命令模式/" title="设计模式之命令模式" target="_blank">设计模式之命令模式</a>
-               </li>
-             
-               <li>
-                 <a href="/2019/06/27/2019-06-27-设计模式之迭代器模式/" title="设计模式之迭代器模式" target="_blank">设计模式之迭代器模式</a>
                </li>
              
            </ul>
@@ -2630,7 +2643,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共64.6k字</span>
+  <span class="post-count">博客全站共65.2k字</span>
 </div>
 
 
