@@ -304,6 +304,402 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/07/11/2019-07-11-使用Mysql的外键/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="NanYin">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NanYin的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/07/11/2019-07-11-使用Mysql的外键/" itemprop="url">MySql使用外键（8.0）</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-11T15:00:00Z">
+                2019-07-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/MYSQL/" itemprop="url" rel="index">
+                    <span itemprop="name">MYSQL</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  794
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  3
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="使用外键约束"><a href="#使用外键约束" class="headerlink" title="使用外键约束"></a>使用外键约束</h1><p>Mysql默认使用的是innoDB引擎，该引擎是支持外键的，下面来说说如何创建外键及各种外键使用的效果。</p>
+<h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><p>需要注意的是外键不支持虚拟构造出的列上。</p>
+<p>MySql支持外键，允许跨表交叉引用相关数据，有助于帮助保持数据的一致性。在create和alter表中的语句如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">-- 中括号内是非必写的</span><br><span class="line">[CONSTRAINT [symbol]] FOREIGN KEY</span><br><span class="line">    [index_name] (col_name, ...)</span><br><span class="line">    REFERENCES tbl_name (col_name,...)</span><br><span class="line">    [ON DELETE reference_option]</span><br><span class="line">    [ON UPDATE reference_option]</span><br><span class="line"></span><br><span class="line">reference_option:</span><br><span class="line">    RESTRICT | CASCADE | SET NULL | NO ACTION | SET DEFAULT</span><br><span class="line"></span><br><span class="line">CREATE TABLE child (</span><br><span class="line">    id INT,</span><br><span class="line">    parent_id INT,</span><br><span class="line">    -- 定义索引</span><br><span class="line">    INDEX par_ind (parent_id),</span><br><span class="line">    -- parent_id关联parent表中的id字段</span><br><span class="line">    -- 如果父表删除了，则子表也需要删除字段内容</span><br><span class="line">    FOREIGN KEY (parent_id)</span><br><span class="line">        REFERENCES parent(id)</span><br><span class="line">        ON DELETE CASCADE</span><br><span class="line">) ENGINE=INNODB;</span><br><span class="line"></span><br><span class="line">-- 添加外键</span><br><span class="line">ALTER TABLE tb1 ADD FOREIGN KEY  (parent_id)</span><br><span class="line">        REFERENCES parent(id)</span><br><span class="line">        ON DELETE CASCADE</span><br><span class="line"></span><br><span class="line">-- 删除外键</span><br><span class="line">ALTER TABLE tbl_name DROP FOREIGN KEY fk_symbol;</span><br></pre></td></tr></table></figure>
+
+<p><code>index_name</code> 指的是外键的标识，如果子表已经显式的定义了可以支持外键的索引（上面例子中的<code>par_ind</code>），则忽略。否则，mysql会依照以下规则隐式的创建一个外键索引。</p>
+<ul>
+<li>如果定义<code>CONSTRAINT symbol</code> 值，则使用这个值，否则使用外键名 <code>index_name</code>.</li>
+<li>如果上面两个都没有定义，外键名使用引用外键列的名称。</li>
+</ul>
+<h2 id="更新-删除行为"><a href="#更新-删除行为" class="headerlink" title="更新/删除行为"></a>更新/删除行为</h2><p>Mysql如何使用外键来保证参照的完整性。</p>
+<p>对于支持外键的innoDB存储引擎来说，MYSQL拒绝在子表中插入或删除在父表中没有匹配到的外键候选值。</p>
+<p>当父表中的外键候选值发生变化的时候，根据不同的行为策略，来影响子表中对应的外键的键值。具体的策略如下：</p>
+<h3 id="CASCADE-【级联】"><a href="#CASCADE-【级联】" class="headerlink" title="CASCADE 【级联】"></a><code>CASCADE</code> 【级联】</h3><p>如果在父表中删除和更新数据，会自动的删除和更新子表中的匹配到的所有数据。支持删除级联<code>ON DELETE CASCADE</code>和更新级联<code>ON UPDATE CASCADE</code>,两个表之间，不要定义几个这样的子句，这些子句作用域父表或子表中的同一列。</p>
+<h3 id="SET-NULL-【置空】"><a href="#SET-NULL-【置空】" class="headerlink" title="SET NULL 【置空】"></a><code>SET NULL</code> 【置空】</h3><p>如果在父表中删除和更新数据，则自动的置空<code>NULL</code>子表中的外键对应的字段。如果在更新或删除操作中指定了<code>ON DELETE SET NULL</code>或者<code>ON UPDATE SET NULL</code> 时，必须保障*<em>子表外键的那个字段没有设置为 <code>NOT NULL</code> *</em></p>
+<h3 id="RESTRICT-【限制】"><a href="#RESTRICT-【限制】" class="headerlink" title="RESTRICT 【限制】"></a><code>RESTRICT</code> 【限制】</h3><p>如果在伏笔啊哦中删除和更新数据，子表拒绝删除或更新对应字段内容。</p>
+<h3 id="NO-ACTION【无动作】"><a href="#NO-ACTION【无动作】" class="headerlink" title="NO ACTION【无动作】"></a><code>NO ACTION</code>【无动作】</h3><p><code>NO ACTION</code> 是标准SQL中的关键字，在mysql中<code>NO ACTION</code>和<code>RESTRICT</code>的作用相同，都是在在修改或者删除之前去检查从表中是否有对应的数据，如果有，拒绝操作。</p>
+<p>但是有些数据库系统会有延迟检查功能，会导致NO Action 会延迟检查是否有对应数据，但是<strong>MYSQL外键的检查是立即执行的，所以RESTRICT和NO ACTION是完全相同的</strong></p>
+<h3 id="SET-DEFAULT"><a href="#SET-DEFAULT" class="headerlink" title="SET DEFAULT"></a><code>SET DEFAULT</code></h3><p>需要注意的是，set default只是MySQL 解析器认可，但是InnoDB和NDB 拒绝在定义表时，出现ON DELETE SET DEFAULT or ON UPDATE SET DEFAULT 语句。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+<div>
+      
+</div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/07/10/2019-07-10-SpringBoot的日志/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="NanYin">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NanYin的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/07/10/2019-07-10-SpringBoot的日志/" itemprop="url">SpringBoot的日志使用</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-10T12:00:00Z">
+                2019-07-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/SpringBoot/" itemprop="url" rel="index">
+                    <span itemprop="name">SpringBoot</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  786
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  2
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="SpringBoot的日志使用"><a href="#SpringBoot的日志使用" class="headerlink" title="SpringBoot的日志使用"></a>SpringBoot的日志使用</h1><h2 id="SpringBoot的日志选择"><a href="#SpringBoot的日志选择" class="headerlink" title="SpringBoot的日志选择"></a>SpringBoot的日志选择</h2><p>SpringBoot默认使用SLF4j和logback用作日志。为什么是两个，为什么是这两个？</p>
+<h3 id="日志框架的大致分类"><a href="#日志框架的大致分类" class="headerlink" title="日志框架的大致分类"></a>日志框架的大致分类</h3><p>日志框架分为日志的门面框架和具体的实现框架，为什么需要门面框架，是因为不同的系统对日志的需求可能不同，系统一可能使用日志框架一，系统二还需要实现日志功能，如果还用日志框架一，则需要适配系统二进行api的调整。</p>
+<p>门面日志框架就为了解决这一问题。让调用框架的api统一，具体的实现可以随不同的系统进行调整。类似jdbc，操作接口需要进行统一。</p>
+<p>所以SpringBoot的日志使用分别是用来日志门面框架<code>SLF4j</code>和日志具体实现框架<code>logback</code>作为日志服务。</p>
+<h2 id="使用日志"><a href="#使用日志" class="headerlink" title="使用日志"></a>使用日志</h2><h3 id="简易使用SLF4j"><a href="#简易使用SLF4j" class="headerlink" title="简易使用SLF4j"></a>简易使用SLF4j</h3><p>参考<a href="https://www.slf4j.org/manual.html" target="_blank" rel="noopener">SLF4j官网</a>中的hello world程序：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 导入slf4j的jar包</span></span><br><span class="line"><span class="keyword">import</span> org.slf4j.Logger;</span><br><span class="line"><span class="keyword">import</span> org.slf4j.LoggerFactory;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloWorld</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    Logger logger = LoggerFactory.getLogger(HelloWorld.class);</span><br><span class="line">    logger.info(<span class="string">"Hello World"</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>下图表示了使用slf4j和各个日志实现框架的匹配。绿色的是适配层，深蓝色的是实现框架。比如使用logback作为实现框架，则需要导入slf4j的jar包和logback的相关jar包。但是如果使用log4j作为实现框架，还需导入中间的适配层jar包（中间绿色的）。</p>
+<p><img src="https://www.slf4j.org/images/concrete-bindings.png" alt="使用slf4j"></p>
+<p>每一个实现框架都有各自的配置文件，使用slf4j后，配置文件还是使用具体实现的配置文件。</p>
+<h4 id="SpringBoot中的SLF4j"><a href="#SpringBoot中的SLF4j" class="headerlink" title="SpringBoot中的SLF4j"></a>SpringBoot中的SLF4j</h4><ol>
+<li>SpringBoot底层自动配置使用的是SLF4j和logback。</li>
+<li>SprintBoot使用中间包将其他日志框架转化为slf4j框架。</li>
+<li>引入其他日志框架时，需要把这个日志的jar包排除掉。否则与slf4j的jar包相冲突，上一条就是原因。</li>
+</ol>
+<p>在测试文件中测试SpringBoot的日志使用</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">Logger logger = LoggerFactory.getLogger(<span class="keyword">this</span>.getClass());</span><br><span class="line">   <span class="meta">@Test</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testLogger</span><span class="params">()</span></span>&#123;</span><br><span class="line">       <span class="comment">// 由低到高 日志的级别，日志框架可以根据配置文件调整输出的日志级别，</span></span><br><span class="line">       <span class="comment">// 只会输出相应日志级别及后面的高级别日志信息</span></span><br><span class="line">       logger.trace(<span class="string">"这是trace日志"</span>);</span><br><span class="line">       logger.debug(<span class="string">"这是debug日志"</span>);</span><br><span class="line">       <span class="comment">// SpringBoot默认使用的是info级别，</span></span><br><span class="line">       <span class="comment">// 可以使用日志的配置文件调整级别</span></span><br><span class="line">       logger.info(<span class="string">"这是info日志"</span>);</span><br><span class="line">       logger.warn(<span class="string">"这是warn日志"</span>);</span><br><span class="line">       logger.error(<span class="string">"这是error日志"</span>);</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<p>日志级别有<code>trace</code>, <code>debug</code>,<code>info</code>,<code>warn</code>,<code>error</code>五种日志级别。并且由低到高排序。指定日志级别，则系统会输出当前日志级别和更高的日志级别的日志。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 全局的日志记录级别</span></span><br><span class="line"><span class="comment">#logging:</span></span><br><span class="line"><span class="comment">#  level: trace</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 指定的包下的日志记录级别</span></span><br><span class="line"><span class="attr">logging:</span></span><br><span class="line"><span class="attr">  level:</span></span><br><span class="line">    <span class="string">com</span> <span class="string">:</span></span><br><span class="line">      <span class="string">nanyin</span> <span class="string">:</span> <span class="string">debug</span></span><br><span class="line"><span class="comment">#  pattern: 输出格式</span></span><br><span class="line"><span class="comment">#    file:</span></span><br><span class="line"><span class="comment">#    console:</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#  file: -- 这里用于指定日志记录的文件名，可以指定具体的路径，未指定则生成在当前项目下</span></span><br><span class="line"><span class="comment">#  path: -- 这里用于指定日志文件的路径，springboot会默认生成路径，默认文件名</span></span><br><span class="line"><span class="comment"># 这两个指定一个就好了，都指定则会默认使用file</span></span><br></pre></td></tr></table></figure>
+
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+<div>
+      
+</div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/07/08/2019-07-08-SpringBoot的配置文件（拓展）/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -499,237 +895,6 @@
 
 <p>其他类型的自动配置类同理，每个自动配置类都配备一个<code>xxxProperties.class</code>类进行属性的匹配,所以如果需要某个属性，则直接向对应的类中查找，找出前缀和属性名，则可直接找出完成的配置名称。</p>
 <p>经过上面的分析，在也不用担心该如何配置配置文件了。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-<div>
-      
-</div>
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/07/07/2019-07-04-SpringBoot深入自动配置/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="NanYin">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NanYin的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/07/07/2019-07-04-SpringBoot深入自动配置/" itemprop="url">SpringBoot深入自动配置</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-07T12:00:00Z">
-                2019-07-07
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/SpringBoot/" itemprop="url" rel="index">
-                    <span itemprop="name">SpringBoot</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  1.3k
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  5
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="SpringBoot深入自动配置"><a href="#SpringBoot深入自动配置" class="headerlink" title="SpringBoot深入自动配置"></a>SpringBoot深入自动配置</h1><h2 id="引入"><a href="#引入" class="headerlink" title="引入"></a>引入</h2><p>在上一篇<a href="https://nanyiniu.github.io/2019/07/06/2019-07-03-SpringBoot与微服务简介/">Spring Boot与微服务基本介绍</a>中，介绍了创建maven项目到运行springboot的基本过程。 </p>
-<p>其中使用主程序来启动<code>SpringBoot</code></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DeepSpringBootApplication</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 使用SpringApplication.run方法来启动spring boot应用 其中参数有类和args</span></span><br><span class="line">        SpringApplication.run(DeepSpringBootApplication.class,args);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>仅仅是添加了一个<code>@SpringBootApplication</code>注解，这个注解的作用是什么，原理是什么，接下来就通过源码简单看一下。</p>
-<h2 id="SpringBootApplication启动注解"><a href="#SpringBootApplication启动注解" class="headerlink" title="SpringBootApplication启动注解"></a>SpringBootApplication启动注解</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//点开@SpringBootApplication源码</span></span><br><span class="line"><span class="meta">@Target</span>(ElementType.TYPE)</span><br><span class="line"><span class="meta">@Retention</span>(RetentionPolicy.RUNTIME)</span><br><span class="line"><span class="meta">@Documented</span></span><br><span class="line"><span class="meta">@Inherited</span></span><br><span class="line"><span class="meta">@SpringBootConfiguration</span></span><br><span class="line"><span class="meta">@EnableAutoConfiguration</span></span><br><span class="line"><span class="meta">@ComponentScan</span>(excludeFilters = &#123; <span class="meta">@Filter</span>(type = FilterType.CUSTOM, classes = TypeExcludeFilter.class),</span><br><span class="line">		<span class="meta">@Filter</span>(type = FilterType.CUSTOM, classes = AutoConfigurationExcludeFilter.class) &#125;)</span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> SpringBootApplication &#123;</span><br><span class="line">    <span class="comment">/** AliasFor注解的作用是为了声明别名</span></span><br><span class="line"><span class="comment">      * AliasFor在下面代码中的作用就是通过别名引用在annotatin指定的类的特定方法</span></span><br><span class="line"><span class="comment">      * 如果有兴趣可以参考AliasFor的官方文档 </span></span><br><span class="line"><span class="comment">      * https://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/core/annotation/AliasFor.html</span></span><br><span class="line"><span class="comment">      * 比如这里就会指定 EnableAutoConfiguration的exclude方法</span></span><br><span class="line"><span class="comment">      **/</span></span><br><span class="line">	<span class="meta">@AliasFor</span>(annotation = EnableAutoConfiguration.class)</span><br><span class="line">	Class&lt;?&gt;[] exclude() <span class="keyword">default</span> &#123;&#125;;</span><br><span class="line">    <span class="comment">// 。。。其他的省略</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>在上面的<code>@SpringBootApplication</code>源码中，其中使用到了三个比较重要的基本注解<code>@SpringBootConfiguration</code>、<code>@EnableAutoConfiguration</code>和<code>@ComponentScan</code>。下面分别来对这三个注解进行简单分析。</p>
-<h3 id="SpringBootConfiguration"><a href="#SpringBootConfiguration" class="headerlink" title="SpringBootConfiguration"></a>SpringBootConfiguration</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">  * 标示是一个spring boot应用的配置类，用作 <span class="doctag">@Configuratio</span>的替代品</span></span><br><span class="line"><span class="comment">  * 以便自动找到配置</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line"><span class="meta">@Target</span>(ElementType.TYPE)</span><br><span class="line"><span class="meta">@Retention</span>(RetentionPolicy.RUNTIME)</span><br><span class="line"><span class="meta">@Documented</span></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> SpringBootConfiguration &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><strong>其实这时<code>SpringBoot</code>对<code>Spring</code>的<code>@Configuration</code>的注解的包装</strong></p>
-<h4 id="Configuration"><a href="#Configuration" class="headerlink" title="Configuration"></a>Configuration</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Target</span>(ElementType.TYPE)</span><br><span class="line"><span class="meta">@Retention</span>(RetentionPolicy.RUNTIME)</span><br><span class="line"><span class="meta">@Documented</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> Configuration &#123;</span><br><span class="line">	<span class="meta">@AliasFor</span>(annotation = Component.class)</span><br><span class="line">	<span class="function">String <span class="title">value</span><span class="params">()</span> <span class="keyword">default</span> ""</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>简单理解为，Configuration 注解上标注了@Component原注解，所以它也是一个spring组件，会通过扫描把标志这个注解的类作为spring的配置类加载到容器中。</p>
-<p>实际上加载Configuration的方法有三种，自动扫描配置类只是其中的一种，其他两种是</p>
-<ol>
-<li>通过AnnotationConfigApplicationContext类</li>
-</ol>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"> <span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AppConfig</span> </span>&#123;</span><br><span class="line">     <span class="meta">@Bean</span></span><br><span class="line">     <span class="function"><span class="keyword">public</span> MyBean <span class="title">myBean</span><span class="params">()</span> </span>&#123;</span><br><span class="line">         <span class="comment">// instantiate, configure and return bean ...</span></span><br><span class="line">     &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">AnnotationConfigApplicationContext ctx = <span class="keyword">new</span> AnnotationConfigApplicationContext();</span><br><span class="line"><span class="comment">// 注册Bean</span></span><br><span class="line">ctx.register(AppConfig.class);</span><br><span class="line">ctx.refresh();</span><br><span class="line">MyBean myBean = ctx.getBean(MyBean.class);</span><br></pre></td></tr></table></figure>
-
-<ol start="2">
-<li>使用xml配置文件,将标注为@Configuration的类作为一个bean来声明在xml文件中。</li>
-</ol>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">beans</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">context:annotation-config</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">"com.acme.AppConfig"</span>/&gt;</span></span><br><span class="line"> <span class="tag">&lt;/<span class="name">beans</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>标记@Configuration注解的类表示这个类中声明了一个或多个@Bean方法，可以交由spring容器处理。可以在运行时生成bean定义和bean之间的服务请求。</p>
-<p>更加详细的参考<a href="https://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/context/annotation/Configuration.html" target="_blank" rel="noopener">Spring官网Configuration注解</a></p>
-<h3 id="EnableAutoConfiguration"><a href="#EnableAutoConfiguration" class="headerlink" title="EnableAutoConfiguration"></a>EnableAutoConfiguration</h3><p>EnableAutoConfiguration是spring boot中的注解，它的作用就是猜测并自动配置可能需要的bean,也就是自动配置功能。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@AutoConfigurationPackage</span></span><br><span class="line"><span class="meta">@Import</span>(AutoConfigurationImportSelector.class)</span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> EnableAutoConfiguration &#123;</span><br><span class="line">	String ENABLED_OVERRIDE_PROPERTY = <span class="string">"spring.boot.enableautoconfiguration"</span>;</span><br><span class="line">	Class&lt;?&gt;[] exclude() <span class="keyword">default</span> &#123;&#125;;</span><br><span class="line">	String[] excludeName() <span class="keyword">default</span> &#123;&#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>其中重要的两个注解<code>@AutoConfigurationPackage</code>和<code>@Import</code>中的内容</p>
-<h4 id="AutoConfigurationPackage"><a href="#AutoConfigurationPackage" class="headerlink" title="AutoConfigurationPackage"></a>AutoConfigurationPackage</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 标注@AutoConfigurationPackage的注解可以使用Registrar进行注册</span></span><br><span class="line"><span class="comment">// @Import的作用就是引用配置类，将多个配置类放到一个主配置中</span></span><br><span class="line"><span class="meta">@Import</span>(AutoConfigurationPackages.Registrar.class)</span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> AutoConfigurationPackage &#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 注册方法</span></span><br><span class="line"><span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Registrar</span> <span class="keyword">implements</span> <span class="title">ImportBeanDefinitionRegistrar</span>, <span class="title">DeterminableImports</span> </span>&#123;</span><br><span class="line"><span class="comment">// 注册bean定义信息</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">registerBeanDefinitions</span><span class="params">(AnnotationMetadata metadata, BeanDefinitionRegistry registry)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 这里的packageName是标注这个注解的类的包的路径名称，如下图</span></span><br><span class="line">        register(registry, <span class="keyword">new</span> PackageImport(metadata).getPackageName());</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Set&lt;Object&gt; <span class="title">determineImports</span><span class="params">(AnnotationMetadata metadata)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> Collections.singleton(<span class="keyword">new</span> PackageImport(metadata));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190705181000.png" alt="debug1"></p>
-<p>将主配置类的所在的包及下面的所有子包扫描到Spring容器中。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 以编程方式注册自动配置包名称.将给定的包【这里的是com.nanyin 】注册添加到已经注册的包名称中</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">register</span><span class="params">(BeanDefinitionRegistry registry, String... packageNames)</span> </span>&#123;</span><br><span class="line"><span class="comment">// 	private static final String BEAN = AutoConfigurationPackages.class.getName();</span></span><br><span class="line">    <span class="keyword">if</span> (registry.containsBeanDefinition(BEAN)) &#123;</span><br><span class="line">        BeanDefinition beanDefinition = registry.getBeanDefinition(BEAN);</span><br><span class="line">        ConstructorArgumentValues constructorArguments = beanDefinition.getConstructorArgumentValues();</span><br><span class="line">        constructorArguments.addIndexedArgumentValue(<span class="number">0</span>, addBasePackages(constructorArguments, packageNames));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">       <span class="comment">//  使用标准的类定义 GenericBeanDefinition 注册bean</span></span><br><span class="line">        GenericBeanDefinition beanDefinition = <span class="keyword">new</span> GenericBeanDefinition();</span><br><span class="line">        beanDefinition.setBeanClass(BasePackages.class);</span><br><span class="line">        beanDefinition.getConstructorArgumentValues().addIndexedArgumentValue(<span class="number">0</span>, packageNames);</span><br><span class="line">        beanDefinition.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);</span><br><span class="line">        <span class="comment">// 注册bean</span></span><br><span class="line">        registry.registerBeanDefinition(BEAN, beanDefinition);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="Import-AutoConfigurationImportSelector-class"><a href="#Import-AutoConfigurationImportSelector-class" class="headerlink" title="@Import(AutoConfigurationImportSelector.class)"></a>@Import(AutoConfigurationImportSelector.class)</h4><p>自动导入组件的选择器。将需要导入的组件以全类名的方式返回一个数组。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">process</span><span class="params">(AnnotationMetadata annotationMetadata, DeferredImportSelector deferredImportSelector)</span> </span>&#123; Assert.state(deferredImportSelector <span class="keyword">instanceof</span> AutoConfigurationImportSelector,</span><br><span class="line">            () -&gt; String.format(<span class="string">"Only %s implementations are supported, got %s"</span>,</span><br><span class="line">                    AutoConfigurationImportSelector.class.getSimpleName(),</span><br><span class="line">                    deferredImportSelector.getClass().getName()));</span><br><span class="line">                    <span class="comment">//获取自动导入的内容的全类名，在这一步进行debug见下图</span></span><br><span class="line">    AutoConfigurationEntry autoConfigurationEntry = ((AutoConfigurationImportSelector) deferredImportSelector)</span><br><span class="line">            .getAutoConfigurationEntry(getAutoConfigurationMetadata(), annotationMetadata);</span><br><span class="line">    <span class="keyword">this</span>.autoConfigurationEntries.add(autoConfigurationEntry);</span><br><span class="line">    <span class="keyword">for</span> (String importClassName : autoConfigurationEntry.getConfigurations()) &#123;</span><br><span class="line">        <span class="keyword">this</span>.entries.putIfAbsent(importClassName, annotationMetadata);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>代码中断点得出的自动导入的包名称：</p>
-<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190706220846.png" alt="代码导入1"></p>
-<p>通过方法getConstructorArgumentValues得到自动配置的包的名称，调用了SpringFactoriesLoader的方法，其中</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> List&lt;String&gt; <span class="title">getCandidateConfigurations</span><span class="params">(AnnotationMetadata metadata, AnnotationAttributes attributes)</span> </span>&#123;</span><br><span class="line">		List&lt;String&gt; configurations = SpringFactoriesLoader.loadFactoryNames(getSpringFactoriesLoaderFactoryClass(),</span><br><span class="line">				getBeanClassLoader());</span><br><span class="line">		Assert.notEmpty(configurations, <span class="string">"No auto configuration classes found in META-INF/spring.factories. If you "</span></span><br><span class="line">				+ <span class="string">"are using a custom packaging, make sure that file is correct."</span>);</span><br><span class="line">		<span class="keyword">return</span> configurations;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 调用loadFactoryNames获得一组包名称</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> List&lt;String&gt; <span class="title">loadFactoryNames</span><span class="params">(Class&lt;?&gt; factoryClass, @Nullable ClassLoader classLoader)</span> </span>&#123;</span><br><span class="line">		String factoryClassName = factoryClass.getName();</span><br><span class="line">		<span class="keyword">return</span> loadSpringFactories(classLoader).getOrDefault(factoryClassName, Collections.emptyList());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>最后通过文件中spring.factorys文件中的内容来获取最终的自动导入自动配置类包范围。</p>
-<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190706221723.png" alt="导入"></p>
-<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190706222017.png" alt="导入包内容"></p>
-<h2 id="ComponentScan"><a href="#ComponentScan" class="headerlink" title="ComponentScan"></a>ComponentScan</h2><p>组件扫描指令，需要与@Configuration一起使用。与Spring提供的xml配置<code>&lt;context:component-scan&gt;</code>作用相同。</p>
-<p>在SpringBootApplication注解中是这样定义ComponentScan的：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@ComponentScan</span>(excludeFilters = &#123; </span><br><span class="line"><span class="meta">@Filter</span>(type = FilterType.CUSTOM, classes = TypeExcludeFilter.class),</span><br><span class="line"><span class="meta">@Filter</span>(type = FilterType.CUSTOM, classes = AutoConfigurationExcludeFilter.class)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-
-<p>excludeFilters的作用是指定哪些类型不符合组件扫描的条件，也就是排除掉指定的类。</p>
 
           
         
@@ -1009,6 +1174,237 @@
 
 <p>将<code>HelloService</code>手动通过配置类的方式添加到容器中，作用和使用xml的方式一样，但是更简单，更容易看懂。</p>
 <p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190707181447.png" alt="结果"></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+<div>
+      
+</div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/07/07/2019-07-04-SpringBoot深入自动配置/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="NanYin">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NanYin的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/07/07/2019-07-04-SpringBoot深入自动配置/" itemprop="url">SpringBoot深入自动配置</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-07T12:00:00Z">
+                2019-07-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/SpringBoot/" itemprop="url" rel="index">
+                    <span itemprop="name">SpringBoot</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  1.3k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  5
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="SpringBoot深入自动配置"><a href="#SpringBoot深入自动配置" class="headerlink" title="SpringBoot深入自动配置"></a>SpringBoot深入自动配置</h1><h2 id="引入"><a href="#引入" class="headerlink" title="引入"></a>引入</h2><p>在上一篇<a href="https://nanyiniu.github.io/2019/07/06/2019-07-03-SpringBoot与微服务简介/">Spring Boot与微服务基本介绍</a>中，介绍了创建maven项目到运行springboot的基本过程。 </p>
+<p>其中使用主程序来启动<code>SpringBoot</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DeepSpringBootApplication</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 使用SpringApplication.run方法来启动spring boot应用 其中参数有类和args</span></span><br><span class="line">        SpringApplication.run(DeepSpringBootApplication.class,args);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>仅仅是添加了一个<code>@SpringBootApplication</code>注解，这个注解的作用是什么，原理是什么，接下来就通过源码简单看一下。</p>
+<h2 id="SpringBootApplication启动注解"><a href="#SpringBootApplication启动注解" class="headerlink" title="SpringBootApplication启动注解"></a>SpringBootApplication启动注解</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//点开@SpringBootApplication源码</span></span><br><span class="line"><span class="meta">@Target</span>(ElementType.TYPE)</span><br><span class="line"><span class="meta">@Retention</span>(RetentionPolicy.RUNTIME)</span><br><span class="line"><span class="meta">@Documented</span></span><br><span class="line"><span class="meta">@Inherited</span></span><br><span class="line"><span class="meta">@SpringBootConfiguration</span></span><br><span class="line"><span class="meta">@EnableAutoConfiguration</span></span><br><span class="line"><span class="meta">@ComponentScan</span>(excludeFilters = &#123; <span class="meta">@Filter</span>(type = FilterType.CUSTOM, classes = TypeExcludeFilter.class),</span><br><span class="line">		<span class="meta">@Filter</span>(type = FilterType.CUSTOM, classes = AutoConfigurationExcludeFilter.class) &#125;)</span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> SpringBootApplication &#123;</span><br><span class="line">    <span class="comment">/** AliasFor注解的作用是为了声明别名</span></span><br><span class="line"><span class="comment">      * AliasFor在下面代码中的作用就是通过别名引用在annotatin指定的类的特定方法</span></span><br><span class="line"><span class="comment">      * 如果有兴趣可以参考AliasFor的官方文档 </span></span><br><span class="line"><span class="comment">      * https://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/core/annotation/AliasFor.html</span></span><br><span class="line"><span class="comment">      * 比如这里就会指定 EnableAutoConfiguration的exclude方法</span></span><br><span class="line"><span class="comment">      **/</span></span><br><span class="line">	<span class="meta">@AliasFor</span>(annotation = EnableAutoConfiguration.class)</span><br><span class="line">	Class&lt;?&gt;[] exclude() <span class="keyword">default</span> &#123;&#125;;</span><br><span class="line">    <span class="comment">// 。。。其他的省略</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在上面的<code>@SpringBootApplication</code>源码中，其中使用到了三个比较重要的基本注解<code>@SpringBootConfiguration</code>、<code>@EnableAutoConfiguration</code>和<code>@ComponentScan</code>。下面分别来对这三个注解进行简单分析。</p>
+<h3 id="SpringBootConfiguration"><a href="#SpringBootConfiguration" class="headerlink" title="SpringBootConfiguration"></a>SpringBootConfiguration</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">  * 标示是一个spring boot应用的配置类，用作 <span class="doctag">@Configuratio</span>的替代品</span></span><br><span class="line"><span class="comment">  * 以便自动找到配置</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line"><span class="meta">@Target</span>(ElementType.TYPE)</span><br><span class="line"><span class="meta">@Retention</span>(RetentionPolicy.RUNTIME)</span><br><span class="line"><span class="meta">@Documented</span></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> SpringBootConfiguration &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>其实这时<code>SpringBoot</code>对<code>Spring</code>的<code>@Configuration</code>的注解的包装</strong></p>
+<h4 id="Configuration"><a href="#Configuration" class="headerlink" title="Configuration"></a>Configuration</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Target</span>(ElementType.TYPE)</span><br><span class="line"><span class="meta">@Retention</span>(RetentionPolicy.RUNTIME)</span><br><span class="line"><span class="meta">@Documented</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> Configuration &#123;</span><br><span class="line">	<span class="meta">@AliasFor</span>(annotation = Component.class)</span><br><span class="line">	<span class="function">String <span class="title">value</span><span class="params">()</span> <span class="keyword">default</span> ""</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>简单理解为，Configuration 注解上标注了@Component原注解，所以它也是一个spring组件，会通过扫描把标志这个注解的类作为spring的配置类加载到容器中。</p>
+<p>实际上加载Configuration的方法有三种，自动扫描配置类只是其中的一种，其他两种是</p>
+<ol>
+<li>通过AnnotationConfigApplicationContext类</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"> <span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AppConfig</span> </span>&#123;</span><br><span class="line">     <span class="meta">@Bean</span></span><br><span class="line">     <span class="function"><span class="keyword">public</span> MyBean <span class="title">myBean</span><span class="params">()</span> </span>&#123;</span><br><span class="line">         <span class="comment">// instantiate, configure and return bean ...</span></span><br><span class="line">     &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">AnnotationConfigApplicationContext ctx = <span class="keyword">new</span> AnnotationConfigApplicationContext();</span><br><span class="line"><span class="comment">// 注册Bean</span></span><br><span class="line">ctx.register(AppConfig.class);</span><br><span class="line">ctx.refresh();</span><br><span class="line">MyBean myBean = ctx.getBean(MyBean.class);</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>使用xml配置文件,将标注为@Configuration的类作为一个bean来声明在xml文件中。</li>
+</ol>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">beans</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">context:annotation-config</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">"com.acme.AppConfig"</span>/&gt;</span></span><br><span class="line"> <span class="tag">&lt;/<span class="name">beans</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>标记@Configuration注解的类表示这个类中声明了一个或多个@Bean方法，可以交由spring容器处理。可以在运行时生成bean定义和bean之间的服务请求。</p>
+<p>更加详细的参考<a href="https://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/context/annotation/Configuration.html" target="_blank" rel="noopener">Spring官网Configuration注解</a></p>
+<h3 id="EnableAutoConfiguration"><a href="#EnableAutoConfiguration" class="headerlink" title="EnableAutoConfiguration"></a>EnableAutoConfiguration</h3><p>EnableAutoConfiguration是spring boot中的注解，它的作用就是猜测并自动配置可能需要的bean,也就是自动配置功能。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@AutoConfigurationPackage</span></span><br><span class="line"><span class="meta">@Import</span>(AutoConfigurationImportSelector.class)</span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> EnableAutoConfiguration &#123;</span><br><span class="line">	String ENABLED_OVERRIDE_PROPERTY = <span class="string">"spring.boot.enableautoconfiguration"</span>;</span><br><span class="line">	Class&lt;?&gt;[] exclude() <span class="keyword">default</span> &#123;&#125;;</span><br><span class="line">	String[] excludeName() <span class="keyword">default</span> &#123;&#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其中重要的两个注解<code>@AutoConfigurationPackage</code>和<code>@Import</code>中的内容</p>
+<h4 id="AutoConfigurationPackage"><a href="#AutoConfigurationPackage" class="headerlink" title="AutoConfigurationPackage"></a>AutoConfigurationPackage</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 标注@AutoConfigurationPackage的注解可以使用Registrar进行注册</span></span><br><span class="line"><span class="comment">// @Import的作用就是引用配置类，将多个配置类放到一个主配置中</span></span><br><span class="line"><span class="meta">@Import</span>(AutoConfigurationPackages.Registrar.class)</span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> AutoConfigurationPackage &#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 注册方法</span></span><br><span class="line"><span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Registrar</span> <span class="keyword">implements</span> <span class="title">ImportBeanDefinitionRegistrar</span>, <span class="title">DeterminableImports</span> </span>&#123;</span><br><span class="line"><span class="comment">// 注册bean定义信息</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">registerBeanDefinitions</span><span class="params">(AnnotationMetadata metadata, BeanDefinitionRegistry registry)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 这里的packageName是标注这个注解的类的包的路径名称，如下图</span></span><br><span class="line">        register(registry, <span class="keyword">new</span> PackageImport(metadata).getPackageName());</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Set&lt;Object&gt; <span class="title">determineImports</span><span class="params">(AnnotationMetadata metadata)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> Collections.singleton(<span class="keyword">new</span> PackageImport(metadata));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190705181000.png" alt="debug1"></p>
+<p>将主配置类的所在的包及下面的所有子包扫描到Spring容器中。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 以编程方式注册自动配置包名称.将给定的包【这里的是com.nanyin 】注册添加到已经注册的包名称中</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">register</span><span class="params">(BeanDefinitionRegistry registry, String... packageNames)</span> </span>&#123;</span><br><span class="line"><span class="comment">// 	private static final String BEAN = AutoConfigurationPackages.class.getName();</span></span><br><span class="line">    <span class="keyword">if</span> (registry.containsBeanDefinition(BEAN)) &#123;</span><br><span class="line">        BeanDefinition beanDefinition = registry.getBeanDefinition(BEAN);</span><br><span class="line">        ConstructorArgumentValues constructorArguments = beanDefinition.getConstructorArgumentValues();</span><br><span class="line">        constructorArguments.addIndexedArgumentValue(<span class="number">0</span>, addBasePackages(constructorArguments, packageNames));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">       <span class="comment">//  使用标准的类定义 GenericBeanDefinition 注册bean</span></span><br><span class="line">        GenericBeanDefinition beanDefinition = <span class="keyword">new</span> GenericBeanDefinition();</span><br><span class="line">        beanDefinition.setBeanClass(BasePackages.class);</span><br><span class="line">        beanDefinition.getConstructorArgumentValues().addIndexedArgumentValue(<span class="number">0</span>, packageNames);</span><br><span class="line">        beanDefinition.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);</span><br><span class="line">        <span class="comment">// 注册bean</span></span><br><span class="line">        registry.registerBeanDefinition(BEAN, beanDefinition);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="Import-AutoConfigurationImportSelector-class"><a href="#Import-AutoConfigurationImportSelector-class" class="headerlink" title="@Import(AutoConfigurationImportSelector.class)"></a>@Import(AutoConfigurationImportSelector.class)</h4><p>自动导入组件的选择器。将需要导入的组件以全类名的方式返回一个数组。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">process</span><span class="params">(AnnotationMetadata annotationMetadata, DeferredImportSelector deferredImportSelector)</span> </span>&#123; Assert.state(deferredImportSelector <span class="keyword">instanceof</span> AutoConfigurationImportSelector,</span><br><span class="line">            () -&gt; String.format(<span class="string">"Only %s implementations are supported, got %s"</span>,</span><br><span class="line">                    AutoConfigurationImportSelector.class.getSimpleName(),</span><br><span class="line">                    deferredImportSelector.getClass().getName()));</span><br><span class="line">                    <span class="comment">//获取自动导入的内容的全类名，在这一步进行debug见下图</span></span><br><span class="line">    AutoConfigurationEntry autoConfigurationEntry = ((AutoConfigurationImportSelector) deferredImportSelector)</span><br><span class="line">            .getAutoConfigurationEntry(getAutoConfigurationMetadata(), annotationMetadata);</span><br><span class="line">    <span class="keyword">this</span>.autoConfigurationEntries.add(autoConfigurationEntry);</span><br><span class="line">    <span class="keyword">for</span> (String importClassName : autoConfigurationEntry.getConfigurations()) &#123;</span><br><span class="line">        <span class="keyword">this</span>.entries.putIfAbsent(importClassName, annotationMetadata);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>代码中断点得出的自动导入的包名称：</p>
+<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190706220846.png" alt="代码导入1"></p>
+<p>通过方法getConstructorArgumentValues得到自动配置的包的名称，调用了SpringFactoriesLoader的方法，其中</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> List&lt;String&gt; <span class="title">getCandidateConfigurations</span><span class="params">(AnnotationMetadata metadata, AnnotationAttributes attributes)</span> </span>&#123;</span><br><span class="line">		List&lt;String&gt; configurations = SpringFactoriesLoader.loadFactoryNames(getSpringFactoriesLoaderFactoryClass(),</span><br><span class="line">				getBeanClassLoader());</span><br><span class="line">		Assert.notEmpty(configurations, <span class="string">"No auto configuration classes found in META-INF/spring.factories. If you "</span></span><br><span class="line">				+ <span class="string">"are using a custom packaging, make sure that file is correct."</span>);</span><br><span class="line">		<span class="keyword">return</span> configurations;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 调用loadFactoryNames获得一组包名称</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> List&lt;String&gt; <span class="title">loadFactoryNames</span><span class="params">(Class&lt;?&gt; factoryClass, @Nullable ClassLoader classLoader)</span> </span>&#123;</span><br><span class="line">		String factoryClassName = factoryClass.getName();</span><br><span class="line">		<span class="keyword">return</span> loadSpringFactories(classLoader).getOrDefault(factoryClassName, Collections.emptyList());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>最后通过文件中spring.factorys文件中的内容来获取最终的自动导入自动配置类包范围。</p>
+<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190706221723.png" alt="导入"></p>
+<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190706222017.png" alt="导入包内容"></p>
+<h2 id="ComponentScan"><a href="#ComponentScan" class="headerlink" title="ComponentScan"></a>ComponentScan</h2><p>组件扫描指令，需要与@Configuration一起使用。与Spring提供的xml配置<code>&lt;context:component-scan&gt;</code>作用相同。</p>
+<p>在SpringBootApplication注解中是这样定义ComponentScan的：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@ComponentScan</span>(excludeFilters = &#123; </span><br><span class="line"><span class="meta">@Filter</span>(type = FilterType.CUSTOM, classes = TypeExcludeFilter.class),</span><br><span class="line"><span class="meta">@Filter</span>(type = FilterType.CUSTOM, classes = AutoConfigurationExcludeFilter.class)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>excludeFilters的作用是指定哪些类型不符合组件扫描的条件，也就是排除掉指定的类。</p>
 
           
         
@@ -2093,412 +2489,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/06/19/2019-06-24-设计模式之观察者模式/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="NanYin">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NanYin的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/06/19/2019-06-24-设计模式之观察者模式/" itemprop="url">设计模式之观察者模式</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-06-19T12:00:00Z">
-                2019-06-19
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/设计模式/" itemprop="url" rel="index">
-                    <span itemprop="name">设计模式</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  889
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  3
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="设计模式之观察者模式"><a href="#设计模式之观察者模式" class="headerlink" title="设计模式之观察者模式"></a>设计模式之观察者模式</h1><p>观察者模式是对象的行为模式，又叫“发布-订阅模式”。由名字就能够得知，观察这模式构造了一个发布者和订阅者。</p>
-<p>观察者模式定义对象之间的一对多依赖关系，以便当一个对象更改状态时，将自动通知和更新其所有依赖项。在观察者模式中，主动发生改变的是发布者称为主题，而被动收到发布者信息的订阅者称为观察者对象，可以根据需要添加/减少具体主题的观察者，实现主题和观察者之间的松耦合。</p>
-<h2 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h2><ul>
-<li><p>当设计中有两种不同方面的抽象，并且是有依赖关系的，这时将两个抽象分别封装到具体的类中，这样就能够独立的改变和重用这些对象。在观察者模式中两种抽象指的就是抽象主题和抽象观察者。</p>
-</li>
-<li><p>当一个对象需要更改时，涉及到更改其他类型的其他对象，并且这些对象的数量多且不确定的时候。</p>
-</li>
-<li><p>当一个对象改变时，其他对象能够得到这个对象已经改变的通知，而不必知道这些对象具体是什么。也就是说要达到这个改变的对象和通知的对象的松耦合。</p>
-<p>  <strong>所以综上:</strong><br>  当希望一个对象改变的同时，多个对象能够得到通知，一块进行变更时，可以使用观察者模式对系统设计</p>
-</li>
-</ul>
-<h2 id="模式结构"><a href="#模式结构" class="headerlink" title="模式结构"></a>模式结构</h2><p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190624203405.png" alt="观察者模式结构图"></p>
-<p>上图中：</p>
-<ol>
-<li><code>Weather</code>为<strong>抽象主题类</strong>，能够将观察者<code>Observer</code>构成一个<code>list</code>结构,从而能够达到<code>Weather</code>改变的时候可以循环表中的观察者，发送通知。并且作为抽象类实现了添加，移除观察者方法。</li>
-<li><code>BeijingWeather</code>为<strong>具体主题类</strong>，实现了<code>Weather</code>类。</li>
-<li><code>Observer</code>作为<strong>抽象观察者类</strong>，作为所有观察者的通用接口，其中定义<code>update</code>方法作为更新状态的接口。通过这个接口和<code>Weather</code>类交互来获取状态通知。</li>
-<li><code>WeatherObserverA</code>与<code>WeatherObserverB</code>作为<strong>具体观察者类</strong>，实现类观察者接口。统一接受通知并更新自身状态。</li>
-</ol>
-<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><h4 id="第一部分：抽象主题类"><a href="#第一部分：抽象主题类" class="headerlink" title="第一部分：抽象主题类"></a>第一部分：抽象主题类</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 状态枚举类</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">enum</span> WeatherState &#123;</span><br><span class="line">    SUNNY_DAY,</span><br><span class="line">    CLOUDY_DAY,</span><br><span class="line">    RAINY_DAY,</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 抽象主题类</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Weather</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">protected</span> WeatherState weatherState;</span><br><span class="line">    <span class="comment">// 观察者集合</span></span><br><span class="line">    <span class="keyword">private</span> List&lt;Observer&gt; observerList = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Weather <span class="title">addObserver</span><span class="params">(Observer observer)</span></span>&#123;</span><br><span class="line">        observerList.add(observer);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">removeObserver</span><span class="params">(Observer observer)</span></span>&#123;</span><br><span class="line">        observerList.remove(observer);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 通过主题更改从而在该主题上注册的观察者能够同时能到通知</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">notifyObserver</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">for</span> (Observer o:observerList</span><br><span class="line">             ) &#123;</span><br><span class="line">            o.update(<span class="keyword">this</span>.weatherState);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="第二部分：具体主题类"><a href="#第二部分：具体主题类" class="headerlink" title="第二部分：具体主题类"></a>第二部分：具体主题类</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BeijingWeather</span> <span class="keyword">extends</span> <span class="title">Weather</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    BeijingWeather(WeatherState weatherState) &#123;</span><br><span class="line">        <span class="keyword">this</span>.weatherState = weatherState;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//作为更新主题的接口</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">changeState</span><span class="params">(WeatherState we)</span></span>&#123;</span><br><span class="line">       <span class="keyword">this</span>.weatherState = we;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="第三部分：抽象观察者"><a href="#第三部分：抽象观察者" class="headerlink" title="第三部分：抽象观察者"></a>第三部分：抽象观察者</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Observer</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 更新接口</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">update</span><span class="params">(WeatherState weatherState)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="第四部分：-具体观察者"><a href="#第四部分：-具体观察者" class="headerlink" title="第四部分： 具体观察者"></a>第四部分： 具体观察者</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WeatherObserverA</span> <span class="keyword">implements</span> <span class="title">Observer</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">update</span><span class="params">(WeatherState weatherState)</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"observer A get new weather message is "</span> + weatherState.toString());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="最后调用"><a href="#最后调用" class="headerlink" title="最后调用"></a>最后调用</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">App</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 定义主题</span></span><br><span class="line">        Weather weather = <span class="keyword">new</span> BeijingWeather(WeatherState.SUNNY_DAY);</span><br><span class="line">        <span class="comment">//添加观察者</span></span><br><span class="line">        weather.addObserver(<span class="keyword">new</span> WeatherObserverA()).addObserver(<span class="keyword">new</span> WeatherObserverB());</span><br><span class="line">        <span class="comment">//通知所有观察者</span></span><br><span class="line">        weather.notifyObserver();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>结果：最后注册在主题上的所有观察者都收到了通知。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">observer A get new weather message is SUNNY_DAY</span><br><span class="line">observer B get new weather message is SUNNY_DAY</span><br></pre></td></tr></table></figure>
-
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-<div>
-      
-</div>
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/06/19/2019-06-19-设计模式之状态模式/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="NanYin">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NanYin的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/06/19/2019-06-19-设计模式之状态模式/" itemprop="url">设计模式之状态模式</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-06-19T12:00:00Z">
-                2019-06-19
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/设计模式/" itemprop="url" rel="index">
-                    <span itemprop="name">设计模式</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  575
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  2
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="设计模式之状态模式"><a href="#设计模式之状态模式" class="headerlink" title="设计模式之状态模式"></a>设计模式之状态模式</h1><p>状态模式是对象的行为模式。状态模式允许一个对象在其内部状态改变的时候改变其行为。这个对象看上去就像是改变了它的类一样。</p>
-<h2 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h2><ul>
-<li>对象的行为取决于其状态，并且必须根据该状态在运行时更改其行为。</li>
-<li>通常，几个操作将包含相同的条件结构。State模式将条件的每个分支放在一个单独的类中。可以将对象的状态视为一个对象，它可以独立于其他对象而变化</li>
-</ul>
-<p>概括来说，状态模式将行为包装到具体的状态对象中。每个状态对象是抽象状态的子类。状态模式意图是在改变对象的内部状态的时候，行为随之改变。</p>
-<h2 id="模式结构"><a href="#模式结构" class="headerlink" title="模式结构"></a>模式结构</h2><p>状态模式分为三种结构：环境角色、抽象状态角色、具体状态角色</p>
-<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618203143.png" alt="状态模式结构图"></p>
-<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><p>电灯有两种基本行为 开启、关闭。但是有两个状态，正常和坏掉的状态。将共同的行为封装到统一的状态接口中，再根据不同的状态，创建子类完成不同状态形成不同的行为。</p>
-<p>灯再正常状态下能够正常开启，正常关闭。等在坏掉的状态下，不能开启和关闭。状态模式就是根据这个逻辑抽离行为，将具体行为包装到具体状态对象中。</p>
-<h3 id="抽象状态角色"><a href="#抽象状态角色" class="headerlink" title="抽象状态角色"></a>抽象状态角色</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">State</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">open</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">close</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="具体状态角色"><a href="#具体状态角色" class="headerlink" title="具体状态角色"></a>具体状态角色</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">NormalState</span> <span class="keyword">implements</span> <span class="title">State</span></span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">open</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"电灯开了！"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">close</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"电灯关了！"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ErrorState</span> <span class="keyword">implements</span> <span class="title">State</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">open</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"电灯开不了！"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">close</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"电灯关不了！"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="环境角色"><a href="#环境角色" class="headerlink" title="环境角色"></a>环境角色</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Context</span> </span>&#123;</span><br><span class="line">    <span class="comment">//状态参数</span></span><br><span class="line">    State state;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Context</span><span class="params">(State state)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.state = state;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">requestToOpen</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        state.open();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">requestToClose</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        state.close();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//状态变化</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">changeStageTo</span><span class="params">(State state)</span></span>&#123;</span><br><span class="line">       <span class="keyword">this</span>.state = state;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="客户端测试"><a href="#客户端测试" class="headerlink" title="客户端测试"></a>客户端测试</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">App</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Context context = <span class="keyword">new</span> Context(<span class="keyword">new</span> NormalState());</span><br><span class="line">        context.requestToOpen();</span><br><span class="line">        context.requestToClose();</span><br><span class="line">        <span class="comment">//将状态变更为坏的状态</span></span><br><span class="line">        context.changeStageTo(<span class="keyword">new</span> ErrorState());</span><br><span class="line">        context.requestToOpen();</span><br><span class="line">        context.requestToClose();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-<div>
-      
-</div>
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2551,7 +2541,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">74</span>
+                  <span class="site-state-item-count">76</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2625,11 +2615,15 @@
              
              
                <li>
-                 <a href="/2019/07/08/2019-07-08-SpringBoot的配置文件（拓展）/" title="SpringBoot中的配置文件（拓展）" target="_blank">SpringBoot中的配置文件（拓展）</a>
+                 <a href="/2019/07/11/2019-07-11-使用Mysql的外键/" title="MySql使用外键（8.0）" target="_blank">MySql使用外键（8.0）</a>
                </li>
              
                <li>
-                 <a href="/2019/07/07/2019-07-04-SpringBoot深入自动配置/" title="SpringBoot深入自动配置" target="_blank">SpringBoot深入自动配置</a>
+                 <a href="/2019/07/10/2019-07-10-SpringBoot的日志/" title="SpringBoot的日志使用" target="_blank">SpringBoot的日志使用</a>
+               </li>
+             
+               <li>
+                 <a href="/2019/07/08/2019-07-08-SpringBoot的配置文件（拓展）/" title="SpringBoot中的配置文件（拓展）" target="_blank">SpringBoot中的配置文件（拓展）</a>
                </li>
              
                <li>
@@ -2637,11 +2631,7 @@
                </li>
              
                <li>
-                 <a href="/2019/07/06/2019-07-03-SpringBoot与微服务简介/" title="SpringBoot与微服务简介" target="_blank">SpringBoot与微服务简介</a>
-               </li>
-             
-               <li>
-                 <a href="/2019/06/28/2019-06-28-设计模式之命令模式/" title="设计模式之命令模式" target="_blank">设计模式之命令模式</a>
+                 <a href="/2019/07/07/2019-07-04-SpringBoot深入自动配置/" title="SpringBoot深入自动配置" target="_blank">SpringBoot深入自动配置</a>
                </li>
              
            </ul>
@@ -2690,7 +2680,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共66.4k字</span>
+  <span class="post-count">博客全站共68k字</span>
 </div>
 
 
