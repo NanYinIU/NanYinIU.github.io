@@ -304,6 +304,276 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/07/13/2019-07-13-SpringBoot的WEB开发/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="NanYin">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NanYin的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/07/13/2019-07-13-SpringBoot的WEB开发/" itemprop="url">SpringBoot的WEB开发-1</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-13T12:00:00Z">
+                2019-07-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/SpringBoot/" itemprop="url" rel="index">
+                    <span itemprop="name">SpringBoot</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  1.6k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  6
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="创建基本的web应用"><a href="#创建基本的web应用" class="headerlink" title="创建基本的web应用"></a>创建基本的web应用</h1><p>SpringBoot可以快速的创建一个restful的web应用。下面开始从零开始创建一套基本的web应用。</p>
+<h2 id="使用idea创建Spring-initializr"><a href="#使用idea创建Spring-initializr" class="headerlink" title="使用idea创建Spring initializr"></a>使用idea创建<code>Spring initializr</code></h2><p>我这里直接使用idea中的<code>Spring initializr</code> 来创建SpringBoot应用。同理可以使用<a href="https://start.spring.io" target="_blank" rel="noopener">start.spring.io</a>中。创建完成后直接在IDE中导入即可。</p>
+<ol>
+<li>需要在idea中新建项目</li>
+</ol>
+<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190713104139.png" alt="新建项目"></p>
+<ol start="2">
+<li>填写项目的基本信息 </li>
+</ol>
+<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190713104731.png" alt="基本信息"></p>
+<ol start="3">
+<li>勾选需要的依赖</li>
+</ol>
+<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190713104941.png" alt="勾选依赖"></p>
+<ol start="4">
+<li>最后点击finish完成创建。</li>
+</ol>
+<h2 id="文档结构说明"><a href="#文档结构说明" class="headerlink" title="文档结构说明"></a>文档结构说明</h2><div><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190713105737.png" style="zoom:50%"></div>
+
+<p>新建SpringBoot应用后自动创建的目录结构如如上图，其中SpringBoot启动类<code>StartSpringBootApplication</code>放在<code>java/com/example/start</code>文件夹中，用于启动整个项目。</p>
+<p>对于资源文件，SpringBoot给出来一套目录标准。</p>
+<p>resource文件夹中的application.properteis为整体的SpringBoot配置文件。其中有static和templates目录。</p>
+<ul>
+<li>static 文件夹用于存放静态资源，如js，css</li>
+<li>templates 文件夹用于存放模版文件，如jsp,html</li>
+</ul>
+<p>那么SpringBoot是如何建立这些目录文件标准的呢？</p>
+<h3 id="web目录相关的自动配置"><a href="#web目录相关的自动配置" class="headerlink" title="web目录相关的自动配置"></a>web目录相关的自动配置</h3><p>web目录相关的自动配置是在<code>WebMvcAutoConfiguration</code>自动配置类中进行配置。而对资源的加载使用的是<code>addResourceHandler</code> 方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addResourceHandlers</span><span class="params">(ResourceHandlerRegistry registry)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 是否启用默认资源处理</span></span><br><span class="line">    <span class="keyword">if</span> (!<span class="keyword">this</span>.resourceProperties.isAddMappings()) &#123;</span><br><span class="line">        logger.debug(<span class="string">"Default resource handling disabled"</span>);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 获取资源处理程序所服务资源的缓存周期</span></span><br><span class="line">    Duration cachePeriod = <span class="keyword">this</span>.resourceProperties.getCache().getPeriod();</span><br><span class="line">    CacheControl cacheControl = <span class="keyword">this</span>.resourceProperties.getCache().getCachecontrol().toHttpCacheControl();</span><br><span class="line">    <span class="comment">// 如果映射器还未映射到/webjars/** 则进行如下操作</span></span><br><span class="line">    <span class="keyword">if</span> (!registry.hasMappingForPattern(<span class="string">"/webjars/**"</span>)) &#123;</span><br><span class="line">    <span class="comment">//  添加对/webjars/** 的资源映射</span></span><br><span class="line">        customizeResourceHandlerRegistration(registry.addResourceHandler(<span class="string">"/webjars/**"</span>)</span><br><span class="line">                .addResourceLocations(<span class="string">"classpath:/META-INF/resources/webjars/"</span>)</span><br><span class="line">                <span class="comment">// 加载包下的 /META-INF/resources/webjars/ 下的内容</span></span><br><span class="line">                .setCachePeriod(getSeconds(cachePeriod)).setCacheControl(cacheControl));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 静态路径pattern 为 "/**"</span></span><br><span class="line">    String staticPathPattern = <span class="keyword">this</span>.mvcProperties.getStaticPathPattern();</span><br><span class="line">    <span class="keyword">if</span> (!registry.hasMappingForPattern(staticPathPattern)) &#123;</span><br><span class="line">        <span class="comment">//如果映射器还没有映射 /** 路径的资源时</span></span><br><span class="line">        customizeResourceHandlerRegistration(registry.addResourceHandler(staticPathPattern)</span><br><span class="line">        <span class="comment">// 加载所有的默认定义的位置里的资源。</span></span><br><span class="line">                .addResourceLocations(getResourceLocations(<span class="keyword">this</span>.resourceProperties.getStaticLocations()))</span><br><span class="line">                .setCachePeriod(getSeconds(cache</span><br><span class="line">                Period)).setCacheControl(cacheControl));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="webjars"><a href="#webjars" class="headerlink" title="webjars"></a>webjars</h4><p>WebJars是打包到JAR（Java Archive）文件中的客户端Web库（例如jQuery和Bootstrap）。</p>
+<p>from <a href="https://www.webjars.org" target="_blank" rel="noopener">webjars官网</a></p>
+<p>根据以上内容举个例子来讲解如何使用webjars进行静态资源的加载：</p>
+<ol>
+<li>去官网找相关资源的依赖</li>
+</ol>
+<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190713113630.png" alt="依赖"></p>
+<ol start="2">
+<li>添加到pom.xml文件中</li>
+</ol>
+<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190713114028.png" alt="webjar"></p>
+<p>以粉色的竖线为分割线，左侧为下载完的webjars的jar包，右侧为在pom.xml文件中的依赖信息。</p>
+<h5 id="加载webjars"><a href="#加载webjars" class="headerlink" title="加载webjars"></a>加载webjars</h5><p>如果SpringBoot发现有webjar的应用jar包，则<strong>加载路径<code>classpath:/META-INF/resources/webjars/</code>下的文件</strong>。在图中例子中就是<code>jquery</code>文件夹下的所有内容。这样SpringBoot就能够识别jquery包下的所有静态文件了。</p>
+<h5 id="映射webjars"><a href="#映射webjars" class="headerlink" title="映射webjars"></a>映射webjars</h5><p>SpringBoot会将所有已将加载jars映射到 <code>/webjars/**</code> 这个路径上。</p>
+<p>比如上面我们添加了jquery.min.js。我们启动程序，可以在<code>http://localhost:8080/webjars/jquery/3.4.1/jquery.min.js</code>这个地址上访问，发现系统已经通过webjars将资源加载到了。在实际的使用中，使用script标签引用webjars也是引用这个地址的静态文件。</p>
+<h4 id="项目内静态资源"><a href="#项目内静态资源" class="headerlink" title="项目内静态资源"></a>项目内静态资源</h4><p>使用webjars用来加载静态资源非常方便，但是如果自己写的js和css等静态资源也需要加载时，就需要放到SpringBoot默认加载的目录下。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@ConfigurationProperties</span>(prefix = <span class="string">"spring.resources"</span>, ignoreUnknownFields = <span class="keyword">false</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ResourceProperties</span> </span>&#123;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String[] CLASSPATH_RESOURCE_LOCATIONS = &#123; <span class="string">"classpath:/META-INF/resources/"</span>,</span><br><span class="line">    <span class="string">"classpath:/resources/"</span>, <span class="string">"classpath:/static/"</span>, <span class="string">"classpath:/public/"</span> &#125;;</span><br><span class="line">	<span class="keyword">private</span> String[] staticLocations = CLASSPATH_RESOURCE_LOCATIONS;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">boolean</span> addMappings = <span class="keyword">true</span>;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">final</span> Chain chain = <span class="keyword">new</span> Chain();</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">final</span> Cache cache = <span class="keyword">new</span> Cache();</span><br><span class="line">    <span class="comment">// 获取静态资源目录</span></span><br><span class="line">	<span class="keyword">public</span> String[] getStaticLocations() &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">this</span>.staticLocations;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+
+<p>通过getStaticLocations获取静态资源的目录，默认的SpringBoot定义了classpath下的以下的文件，都可以放置静态文件，都可以通过url的方式访问到这个静态文件。</p>
+<ul>
+<li><code>classpath:/META-INF/resources</code></li>
+<li><code>classpath:/resources/</code></li>
+<li><code>classpath:/static/</code></li>
+<li><code>classpath:/public/</code></li>
+</ul>
+<blockquote>
+<p>需要注意的是这个classpath就是一开始创建SpringBoot应用帮我们创建好的resource路径</p>
+</blockquote>
+<p>这个类也是一个<code>xxxxProperties</code>类，所以可以通过改变相应的配置文件中的属性来改变这个路径。这里的路径使用的变量是<code>staticLocations</code>,所以相应的在application.properties文件中可以使用<code>spring.resources.staticLocations=路径名称</code>就行了。</p>
+<h5 id="主页的设置"><a href="#主页的设置" class="headerlink" title="主页的设置"></a>主页的设置</h5><p>SpringBoot默认的使用静态资源文件夹下的<code>index.html</code>作为首页。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> Optional&lt;Resource&gt; <span class="title">getWelcomePage</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    String[] locations = getResourceLocations(<span class="keyword">this</span>.resourceProperties.getStaticLocations());</span><br><span class="line">    <span class="comment">//遍历每个locations寻找index.html页面作为首页</span></span><br><span class="line">    <span class="keyword">return</span> Arrays.stream(locations).map(<span class="keyword">this</span>::getIndexHtml).filter(<span class="keyword">this</span>::isReadable).findFirst();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> Resource <span class="title">getIndexHtml</span><span class="params">(String location)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.resourceLoader.getResource(location + <span class="string">"index.html"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果找到主页的index.html后，就开始做主页的映射操作</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> WelcomePageHandlerMapping <span class="title">welcomePageHandlerMapping</span><span class="params">(ApplicationContext applicationContext)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> WelcomePageHandlerMapping(<span class="keyword">new</span> TemplateAvailabilityProviders(applicationContext),</span><br><span class="line">            applicationContext, getWelcomePage(), <span class="keyword">this</span>.mvcProperties.getStaticPathPattern());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">WelcomePageHandlerMapping(TemplateAvailabilityProviders templateAvailabilityProviders,</span><br><span class="line">			ApplicationContext applicationContext, Optional&lt;Resource&gt; welcomePage, String staticPathPattern) &#123;</span><br><span class="line">    <span class="comment">// 如果存在，设置首页为index.html 映射路径为： /**</span></span><br><span class="line">    <span class="keyword">if</span> (welcomePage.isPresent() &amp;&amp; <span class="string">"/**"</span>.equals(staticPathPattern)) &#123;</span><br><span class="line">        logger.info(<span class="string">"Adding welcome page: "</span> + welcomePage.get());</span><br><span class="line">        setRootViewName(<span class="string">"forward:index.html"</span>);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面是依据SpringBoot加载静态资源的方式做的简单总结。</p>
+<h2 id="添加controller"><a href="#添加controller" class="headerlink" title="添加controller"></a>添加controller</h2><p>在上一步创建完项目后，可以紧跟着写一个SpringMVC测试的controller，看看能否启动项目。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 起到了@Controller和@Responsebody两种作用，实际上就是</span></span><br><span class="line"><span class="comment">// 两种注解的整合</span></span><br><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloController</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@RequestMapping</span>(<span class="string">"/hello"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">hello</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"hello world"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果你也像我勾选来数据库相关的starters,在启动时，控制台会提示需要配置数据库的基本配置。</p>
+<blockquote>
+<p>那么怎么找这些配置呢？</p>
+<ol>
+<li>去官网找配置</li>
+<li>直接看代码</li>
+</ol>
+</blockquote>
+<p><strong>如果你没有碰到上面这个问题，那么请忽略以下部分。</strong></p>
+<p>因为前几篇文章中已经分析来SpringBoot是如何完成自动配置的，所以这里我想通过找代码的方式直接看它能够配置哪些属性。</p>
+<ol>
+<li>首先在<code>autoconfiguration</code>包下面的spring.factory中搜索jdbc</li>
+</ol>
+<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190713174948.png" alt="jdbc"></p>
+<ol start="2">
+<li>点击关于DataSource的自动配置类</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@EnableConfigurationProperties</span>(DataSourceProperties.class)</span><br><span class="line"><span class="meta">@Import</span>(&#123; DataSourcePoolMetadataProvidersConfiguration.class, DataSourceInitializationConfiguration.class &#125;)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DataSourceAutoConfiguration</span> </span>&#123;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 使用DataSourceProperties类作为属性类,以下为基本属性</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@ConfigurationProperties</span>(prefix = <span class="string">"spring.datasource"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DataSourceProperties</span> <span class="keyword">implements</span> <span class="title">BeanClassLoaderAware</span>, <span class="title">InitializingBean</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> ClassLoader classLoader;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> String name;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">boolean</span> generateUniqueName;</span><br><span class="line">	<span class="keyword">private</span> Class&lt;? extends DataSource&gt; type;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> String driverClassName;</span><br><span class="line">	<span class="keyword">private</span> String url;</span><br><span class="line">	<span class="keyword">private</span> String username;</span><br><span class="line">	<span class="keyword">private</span> String password;</span><br></pre></td></tr></table></figure>
+
+<p>根据DataSourceProperties类，可以知道如果我们像配置DataSource，那么有这几个属性可以进行配置。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># spring.datasource 为前缀，后面为属性名，和Properties类中的属性相对应。</span><br><span class="line">spring.datasource.url=jdbc:mysql://localhost:3306/springboot</span><br><span class="line">spring.datasource.driverClassName=com.mysql.jdbc.Driver</span><br><span class="line">spring.datasource.username=root</span><br><span class="line">spring.datasource.password=123456</span><br></pre></td></tr></table></figure>
+
+<h2 id="测试结果"><a href="#测试结果" class="headerlink" title="测试结果"></a>测试结果</h2><p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190713180029.png" alt="结果"></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+<div>
+      
+</div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/07/11/2019-07-11-使用Mysql的外键/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -787,7 +1057,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  1.9k
+                  2k
                 </span>
               
 
@@ -803,7 +1073,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  7
+                  8
                 </span>
               
             </div>
@@ -903,6 +1173,9 @@
 <li><code>xxxxProperties</code>类</li>
 <li><code>resources/META-INF/</code> 下的 <code>spring.factories</code> 文件中添加：<code>org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.example.autocinfigure.xxxxAutoConfigure</code></li>
 </ul>
+<p>在创建自动配置包前需要在pom文件中添加自动配置的包依赖。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-autoconfigure<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.5.9.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
 <p>加载的基本过程：</p>
 <ol>
 <li>Spring Boot在启动时扫描项目所依赖的JAR包，寻找包含spring.factories文件的JAR包</li>
@@ -2305,204 +2578,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/06/25/2019-06-25-设计模式之备忘录模式/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="NanYin">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NanYin的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/06/25/2019-06-25-设计模式之备忘录模式/" itemprop="url">设计模式之备忘录模式</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-06-25T12:00:00Z">
-                2019-06-25
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/设计模式/" itemprop="url" rel="index">
-                    <span itemprop="name">设计模式</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  647
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  2
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="设计模式之备忘录模式📕"><a href="#设计模式之备忘录模式📕" class="headerlink" title="设计模式之备忘录模式📕"></a>设计模式之备忘录模式📕</h1><p>不违反封装的情况下，捕获并外化对象的内部状态，以便稍后可以将对象恢复到此状态。</p>
-<h2 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h2><p>必须保存对象状态的快照，以便以后可以将其恢复到该状态</p>
-<h2 id="模式结构"><a href="#模式结构" class="headerlink" title="模式结构"></a>模式结构</h2><p>模式结构分为三种结构：</p>
-<ol>
-<li><strong>发起人 (Originator)</strong><br>负责创建一个有内部状态的备忘录对象。</li>
-<li><strong>负责人 (Caretaker)</strong><br>负责保存备忘录内容，但是不检查备忘录的内容。</li>
-<li><strong>备忘录 (Memento)</strong><br>保存发起人的内部的状态。</li>
-</ol>
-<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190625232202.png" alt="模式结构"></p>
-<p>上图中的ActionGame为负责人，负责保存状态，Player为发起人负责主动记录备忘录。</p>
-<h3 id="实际场景"><a href="#实际场景" class="headerlink" title="实际场景"></a>实际场景</h3><p>在玩单机游戏的时候，在通过一个关卡的时候，系统会记录你当时的状态信息，如果下一关没通过，会自动还原到上一个记录点从新开始。这种情况下就可以使用备忘录模式记录存档状态，并在适当的时候还原状态。针对此处场景，使用下面代码还原。</p>
-<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><h3 id="作为发起者的Player"><a href="#作为发起者的Player" class="headerlink" title="作为发起者的Player"></a>作为发起者的Player</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Player</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 游戏状态</span></span><br><span class="line">    <span class="keyword">private</span> GameState gameState;</span><br><span class="line"></span><br><span class="line">    Player(GameState gameState) &#123;</span><br><span class="line">        <span class="keyword">this</span>.gameState = gameState;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 设置状态</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">setGameState</span><span class="params">(GameState gameState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.gameState = gameState;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//获取状态</span></span><br><span class="line">    <span class="function">GameState <span class="title">getGameState</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> gameState;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 创建存档记录</span></span><br><span class="line">    <span class="function">Memento <span class="title">createMemento</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Memento(gameState);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 回退存档记录</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">retrieveMemento</span><span class="params">(Memento memento)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.gameState = memento.getGameState();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="作为负责人的ActionGame"><a href="#作为负责人的ActionGame" class="headerlink" title="作为负责人的ActionGame"></a>作为负责人的ActionGame</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Game</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">storeGamePoint</span><span class="params">(Memento memento)</span></span>;</span><br><span class="line">    <span class="function">Memento <span class="title">retrieveGamePoint</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ActionGame</span> <span class="keyword">implements</span> <span class="title">Game</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Memento memento;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 存档记录</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@Author</span> nanyin</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@Date</span> 17:31 2019-06-26</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> memento 1</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> void</span></span><br><span class="line"><span class="comment">     **/</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">storeGamePoint</span><span class="params">(Memento memento)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.memento = memento;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 还原记录点</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@Author</span> nanyin</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@Date</span> 17:32 2019-06-26</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> Memento</span></span><br><span class="line"><span class="comment">     **/</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Memento <span class="title">retrieveGamePoint</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.memento;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="作为备忘录的Memento"><a href="#作为备忘录的Memento" class="headerlink" title="作为备忘录的Memento"></a>作为备忘录的Memento</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Memento</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> GameState gameState;</span><br><span class="line">    Memento(GameState gameState) &#123;</span><br><span class="line">        <span class="keyword">this</span>.gameState = gameState;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function">GameState <span class="title">getGameState</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> gameState;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">enum</span> GameState &#123;</span><br><span class="line">    DIE,SUCCESS</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="客户端程序"><a href="#客户端程序" class="headerlink" title="客户端程序"></a>客户端程序</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">App</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//创建一个动作类型的游戏</span></span><br><span class="line">        Game actionGame = <span class="keyword">new</span> ActionGame();</span><br><span class="line">        <span class="comment">//玩家通关</span></span><br><span class="line">        Player player = <span class="keyword">new</span> Player(GameState.SUCCESS);</span><br><span class="line">        <span class="comment">//存档</span></span><br><span class="line">        Memento memento = player.createMemento();</span><br><span class="line">        actionGame.storeGamePoint(memento);</span><br><span class="line">        <span class="comment">//此时玩家阵亡</span></span><br><span class="line">        player.setGameState(GameState.DIE);</span><br><span class="line">        System.out.println(player.getGameState());</span><br><span class="line">        <span class="comment">//需要从上一次游戏存档中加载原来的玩家状态</span></span><br><span class="line">        player.retrieveMemento(actionGame.retrieveGamePoint());</span><br><span class="line">        System.out.println(player.getGameState());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>在游戏存档后死亡，再重复读存档，得到之前存档之前的状态。游戏不会主动存档和读取存档，只会记录存档中的内容，而玩家会主动从游戏中读取存档，然后恢复到存档的状态。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-<div>
-      
-</div>
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2555,7 +2630,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">76</span>
+                  <span class="site-state-item-count">77</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2629,6 +2704,10 @@
              
              
                <li>
+                 <a href="/2019/07/13/2019-07-13-SpringBoot的WEB开发/" title="SpringBoot的WEB开发-1" target="_blank">SpringBoot的WEB开发-1</a>
+               </li>
+             
+               <li>
                  <a href="/2019/07/11/2019-07-11-使用Mysql的外键/" title="MySql使用外键（8.0）" target="_blank">MySql使用外键（8.0）</a>
                </li>
              
@@ -2642,10 +2721,6 @@
              
                <li>
                  <a href="/2019/07/07/2019-07-04-SpringBoot深入自动配置/" title="SpringBoot深入自动配置" target="_blank">SpringBoot深入自动配置</a>
-               </li>
-             
-               <li>
-                 <a href="/2019/07/07/2019-07-06-SpringBoot的配置文件/" title="SpringBoot中使用配置" target="_blank">SpringBoot中使用配置</a>
                </li>
              
            </ul>
@@ -2694,7 +2769,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共68.1k字</span>
+  <span class="post-count">博客全站共69.8k字</span>
 </div>
 
 
