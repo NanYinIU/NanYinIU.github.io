@@ -304,6 +304,199 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/10/16/2018-10-15-Enum类及相关拓展/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="NanYin">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NanYin的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/10/16/2018-10-15-Enum类及相关拓展/" itemprop="url">Enum枚举类分析和相关拓展</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-15T22:05:00Z">
+                2018-10-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  484
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  2
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Enum枚举类分析和相关拓展"><a href="#Enum枚举类分析和相关拓展" class="headerlink" title="Enum枚举类分析和相关拓展"></a>Enum枚举类分析和相关拓展</h1><p>其实我认为使用枚举类就是对使用常量的扩充，例如类中使用类型，分类相同的类变量的时候，可以考虑使用枚举类来替换掉。</p>
+<p>参考了网上的文章，大致有两个好处，第一是确定传入的参数类型。而不是形参是int类型，随便一个int类型就能够满足。第二是对比static静态变量更能够确定变量的意义。下面举一个例子来看。</p>
+<h2 id="Enum类实例"><a href="#Enum类实例" class="headerlink" title="Enum类实例"></a>Enum类实例</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 列举简单的行驶工具 */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">enum</span> trafficTool &#123;</span><br><span class="line">    BIKE,CAR,BUS,TRAIN,AIRPLANE</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TrafficToolTest</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">chooseTool</span><span class="params">(TrafficTool trafficTool)</span></span>&#123;</span><br><span class="line">        <span class="keyword">switch</span> (trafficTool)&#123;</span><br><span class="line">            <span class="keyword">case</span> BIKE:</span><br><span class="line">                System.out.println(<span class="string">"自行车"</span>);<span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> CAR:</span><br><span class="line">                System.out.println(<span class="string">"汽车"</span>);<span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        TrafficToolTest trafficToolTest = <span class="keyword">new</span> TrafficToolTest();</span><br><span class="line">        trafficToolTest.chooseTool(TrafficTool.BIKE);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>和普通的类一样，同样也可以添加构造方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">SPRING(<span class="string">"春天"</span>),SUMMER(<span class="string">"夏天"</span>),FALL(<span class="string">"秋天"</span>),WINTER(<span class="string">"冬天"</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> String name;</span><br><span class="line"></span><br><span class="line">SeasonEnum(String name)&#123;</span><br><span class="line">    <span class="keyword">this</span>.name = name;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function">String <span class="title">getName</span><span class="params">()</span></span>&#123;</span><br><span class="line">   <span class="keyword">return</span> name;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>也可以继承</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">enum</span> SeasonEnum &#123;</span><br><span class="line">    SPRING(<span class="string">"春天"</span>) &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> String <span class="title">comm</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">"这是春天"</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,SUMMER(<span class="string">"夏天"</span>) &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> String <span class="title">comm</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">"这是夏天"</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,FALL(<span class="string">"秋天"</span>) &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> String <span class="title">comm</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">"这是冬天"</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,WINTER(<span class="string">"冬天"</span>) &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> String <span class="title">comm</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">"这是冬天"</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> String name;</span><br><span class="line"></span><br><span class="line">    SeasonEnum(String name)&#123;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function">String <span class="title">getName</span><span class="params">()</span></span>&#123;</span><br><span class="line">       <span class="keyword">return</span> name;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> String <span class="title">comm</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>以上是枚举类的基本使用。</p>
+<h2 id="EnumMap-和-EnumSet"><a href="#EnumMap-和-EnumSet" class="headerlink" title="EnumMap 和 EnumSet"></a><code>EnumMap</code> 和 <code>EnumSet</code></h2><p><code>public class EnumMap&lt;K extends Enum&lt;K&gt;, V&gt; extends AbstractMap&lt;K, V&gt;</code> 这是关于EnumMap的继承关系。<br>可以发现这是key为枚举类的一个Map。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 简单创建，以后就可以实现枚举类的多种复用 */</span></span><br><span class="line">EnumMap&lt;SeasonEnum,Integer&gt; enumIntegerEnumMap = <span class="keyword">new</span> EnumMap&lt;SeasonEnum, Integer&gt;(SeasonEnum.class);</span><br><span class="line">Set&lt;SeasonEnum&gt; set = enumIntegerEnumMap.keySet();</span><br><span class="line">enumIntegerEnumMap.put(SeasonEnum.SPRING,<span class="number">1</span>);</span><br><span class="line">System.out.println(enumIntegerEnumMap.get(SeasonEnum.SPRING));</span><br></pre></td></tr></table></figure>
+
+<p><code>EnumSet</code> 相对于 <code>EnumMap</code> 等同于 <code>hashSet</code> 相对于 <code>HashMap</code> 的存在，很好理解。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+<div>
+      
+</div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/10/16/2018-10-15-HashSet和HashTable的源码分析/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1417,6 +1610,228 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/07/13/2018-07-12-bash问题总结/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="NanYin">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NanYin的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/07/13/2018-07-12-bash问题总结/" itemprop="url">bash相关问题总结</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-12T17:00:00Z">
+                2018-07-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Bash/" itemprop="url" rel="index">
+                    <span itemprop="name">Bash</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  507
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  1
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="bash相关问题总结"><a href="#bash相关问题总结" class="headerlink" title="bash相关问题总结"></a>bash相关问题总结</h1><h2 id="七月专题"><a href="#七月专题" class="headerlink" title="七月专题 - -"></a>七月专题 - -</h2><h3 id="关于bash中的-lt-lt-lt-的含义"><a href="#关于bash中的-lt-lt-lt-的含义" class="headerlink" title="关于bash中的 &lt;&lt;&lt; 的含义"></a>关于bash中的 <code>&lt;&lt;&lt;</code> 的含义</h3><p>在StackOverflow中有个例子非常的详细。。先贴连接 <a href="https://unix.stackexchange.com/questions/80362/what-does-mean" target="_blank" rel="noopener">What does &lt;&lt;&lt; mean? </a>以下是我的渣翻译，可能会翻译错。。</p>
+<p>我们可以这样对字符串进行处理</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="string">"<span class="variable">$string</span>"</span> | <span class="built_in">command</span></span><br></pre></td></tr></table></figure>
+
+<p>然而在bash中，这样写（使用管道）就相当于把命令分到子shell中进行处理，考虑这种情况</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="string">"hello world"</span> | <span class="built_in">read</span> first second</span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$second</span> <span class="variable">$first</span></span><br></pre></td></tr></table></figure>
+
+<p>它会输出一个空行，子shell成功的读到了两个变量，但是随后子shell退出，两个变量就消失掉了。所以输出是没有结果的。应当这样写</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="string">"hello world"</span> | &#123;</span><br><span class="line">    <span class="built_in">read</span> first second</span><br><span class="line">    <span class="built_in">echo</span> <span class="variable">$second</span> <span class="variable">$first</span></span><br><span class="line">&#125;</span><br><span class="line">```</span><br><span class="line"></span><br><span class="line">但是这样还是没有解决这种分成子shell去执行的尴尬。这时候就能够使用 `&lt;&lt;&lt;` 了</span><br><span class="line"></span><br><span class="line">````bash</span><br><span class="line"><span class="built_in">read</span> first second &lt;&lt;&lt; <span class="built_in">echo</span> <span class="string">"hello world"</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="关于-var-var是变量名"><a href="#关于-var-var是变量名" class="headerlink" title="关于${!var} var是变量名"></a>关于${!var} var是变量名</h3><p>使用${!var}的作用是当ver不存在的时候会原样输出，也就是显示${var}</p>
+<h3 id="关于bash中的trap命令的使用"><a href="#关于bash中的trap命令的使用" class="headerlink" title="关于bash中的trap命令的使用"></a>关于bash中的trap命令的使用</h3><p>trap可以强化bash脚本，让脚本更加稳定。</p>
+<h4 id="trap的使用方式"><a href="#trap的使用方式" class="headerlink" title="trap的使用方式"></a>trap的使用方式</h4><p>trap有三种使用方式，对应这不同的对信号的回应方式。</p>
+<ol>
+<li>trap ”something“ signal</li>
+</ol>
+<p>其中”something“ 是在接受signal信号之后作出的命令</p>
+<ol start="2">
+<li>trap signal </li>
+</ol>
+<p>trap不指定任何命令，接受信号的默认操作，默认操作是结束进程的运行</p>
+<ol start="3">
+<li>trap “” signal</li>
+</ol>
+<p>trap命令指定一个空命令串，允许忽视信号</p>
+<h4 id="常用信号"><a href="#常用信号" class="headerlink" title="常用信号"></a>常用信号</h4><ul>
+<li><p>HUB(1) 挂起，通常因终端掉线或用户退出而引发</p>
+</li>
+<li><p>INT(2) 中断，通常因按下Ctrl+C组合键而引发</p>
+</li>
+<li><p>QUIT(3) 退出，通常因按下Ctrl+/组合键而引发</p>
+</li>
+<li><p>ABRT(6) 中止，通常因某些严重的执行错误而引发</p>
+</li>
+<li><p>ALRM(14) 报警，通常用来处理超时</p>
+</li>
+<li><p>TERM(15) 终止，通常在系统关机时发送</p>
+</li>
+<li><p>KILL(9) 杀死进程</p>
+</li>
+<li><p>STOP 停止进程执行</p>
+</li>
+</ul>
+<p>更过的信号 可以使用 trap -l 命令来查看</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+<div>
+      
+</div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/07/13/2018-07-15-idea快捷键/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1604,228 +2019,6 @@
 </li>
 </ol>
 <p>关闭tab页其实是有必要的</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-<div>
-      
-</div>
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/07/13/2018-07-12-bash问题总结/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="NanYin">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NanYin的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/07/13/2018-07-12-bash问题总结/" itemprop="url">bash相关问题总结</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-12T17:00:00Z">
-                2018-07-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Bash/" itemprop="url" rel="index">
-                    <span itemprop="name">Bash</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  507
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  1
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="bash相关问题总结"><a href="#bash相关问题总结" class="headerlink" title="bash相关问题总结"></a>bash相关问题总结</h1><h2 id="七月专题"><a href="#七月专题" class="headerlink" title="七月专题 - -"></a>七月专题 - -</h2><h3 id="关于bash中的-lt-lt-lt-的含义"><a href="#关于bash中的-lt-lt-lt-的含义" class="headerlink" title="关于bash中的 &lt;&lt;&lt; 的含义"></a>关于bash中的 <code>&lt;&lt;&lt;</code> 的含义</h3><p>在StackOverflow中有个例子非常的详细。。先贴连接 <a href="https://unix.stackexchange.com/questions/80362/what-does-mean" target="_blank" rel="noopener">What does &lt;&lt;&lt; mean? </a>以下是我的渣翻译，可能会翻译错。。</p>
-<p>我们可以这样对字符串进行处理</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="string">"<span class="variable">$string</span>"</span> | <span class="built_in">command</span></span><br></pre></td></tr></table></figure>
-
-<p>然而在bash中，这样写（使用管道）就相当于把命令分到子shell中进行处理，考虑这种情况</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="string">"hello world"</span> | <span class="built_in">read</span> first second</span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$second</span> <span class="variable">$first</span></span><br></pre></td></tr></table></figure>
-
-<p>它会输出一个空行，子shell成功的读到了两个变量，但是随后子shell退出，两个变量就消失掉了。所以输出是没有结果的。应当这样写</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="string">"hello world"</span> | &#123;</span><br><span class="line">    <span class="built_in">read</span> first second</span><br><span class="line">    <span class="built_in">echo</span> <span class="variable">$second</span> <span class="variable">$first</span></span><br><span class="line">&#125;</span><br><span class="line">```</span><br><span class="line"></span><br><span class="line">但是这样还是没有解决这种分成子shell去执行的尴尬。这时候就能够使用 `&lt;&lt;&lt;` 了</span><br><span class="line"></span><br><span class="line">````bash</span><br><span class="line"><span class="built_in">read</span> first second &lt;&lt;&lt; <span class="built_in">echo</span> <span class="string">"hello world"</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="关于-var-var是变量名"><a href="#关于-var-var是变量名" class="headerlink" title="关于${!var} var是变量名"></a>关于${!var} var是变量名</h3><p>使用${!var}的作用是当ver不存在的时候会原样输出，也就是显示${var}</p>
-<h3 id="关于bash中的trap命令的使用"><a href="#关于bash中的trap命令的使用" class="headerlink" title="关于bash中的trap命令的使用"></a>关于bash中的trap命令的使用</h3><p>trap可以强化bash脚本，让脚本更加稳定。</p>
-<h4 id="trap的使用方式"><a href="#trap的使用方式" class="headerlink" title="trap的使用方式"></a>trap的使用方式</h4><p>trap有三种使用方式，对应这不同的对信号的回应方式。</p>
-<ol>
-<li>trap ”something“ signal</li>
-</ol>
-<p>其中”something“ 是在接受signal信号之后作出的命令</p>
-<ol start="2">
-<li>trap signal </li>
-</ol>
-<p>trap不指定任何命令，接受信号的默认操作，默认操作是结束进程的运行</p>
-<ol start="3">
-<li>trap “” signal</li>
-</ol>
-<p>trap命令指定一个空命令串，允许忽视信号</p>
-<h4 id="常用信号"><a href="#常用信号" class="headerlink" title="常用信号"></a>常用信号</h4><ul>
-<li><p>HUB(1) 挂起，通常因终端掉线或用户退出而引发</p>
-</li>
-<li><p>INT(2) 中断，通常因按下Ctrl+C组合键而引发</p>
-</li>
-<li><p>QUIT(3) 退出，通常因按下Ctrl+/组合键而引发</p>
-</li>
-<li><p>ABRT(6) 中止，通常因某些严重的执行错误而引发</p>
-</li>
-<li><p>ALRM(14) 报警，通常用来处理超时</p>
-</li>
-<li><p>TERM(15) 终止，通常在系统关机时发送</p>
-</li>
-<li><p>KILL(9) 杀死进程</p>
-</li>
-<li><p>STOP 停止进程执行</p>
-</li>
-</ul>
-<p>更过的信号 可以使用 trap -l 命令来查看</p>
 
           
         
@@ -2284,195 +2477,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/07/01/2018-07-01-bash_13_bash中的输入输出/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="NanYin">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NanYin的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/07/01/2018-07-01-bash_13_bash中的输入输出/" itemprop="url">bash学习记录（十四）linux中的IO</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-01T15:00:00Z">
-                2018-07-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Bash/" itemprop="url" rel="index">
-                    <span itemprop="name">Bash</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  314
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  1
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="linux中的IO"><a href="#linux中的IO" class="headerlink" title="linux中的IO"></a>linux中的IO</h1><h2 id="分类"><a href="#分类" class="headerlink" title="分类"></a>分类</h2><p>linux中总有三种文件，一种时stdin（标准输入），stdout（标准输出），stderr（标准错误），可以重定向这些和其他任意文件，重定向的目的就是可以将文件中的任意内容作为输出或者输出源。</p>
-<h2 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h2><p>系统为每一个打开的文件分配一个文件描述符（FD），为标准输入stdin，标准输出stdout,标准错误stderr分别分配给0，1，2</p>
-<p>简单输入输出：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="string">"helloworld"</span>  &gt; newfile1</span><br><span class="line"><span class="built_in">echo</span> <span class="string">"helloworld"</span> 1 &gt; newfile1 <span class="comment">#等同于第一句</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"helloworld"</span> 1 &gt;&gt; newfile1 <span class="comment">#追加内容</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">command</span> &lt; newfile1 <span class="comment">#标准输入 同理等同于cat 0 &lt; newfile1</span></span><br></pre></td></tr></table></figure>
-
-<p>使用标准输出和标准错误输出</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ls 2&gt; newfile <span class="comment">#将错误信息输出到newfile中</span></span><br><span class="line">ls &gt; newfile 2&gt;1&amp; <span class="comment">#将标准输入和标准输出一起输出到newfile中</span></span><br><span class="line"><span class="comment"># 其中&amp;表示和的关系</span></span><br></pre></td></tr></table></figure>
-
-<p>绑定重定向</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ls &gt;&amp; m <span class="comment">#把标准输出到文件描述符m中</span></span><br><span class="line">ls &lt; &amp;- <span class="comment">#关闭标准输入</span></span><br><span class="line">n &lt; &amp;- <span class="comment">#关闭输入文件描述符n</span></span><br><span class="line">n &gt; &amp;- <span class="comment">#关闭输出文件描述符n</span></span><br><span class="line">1&gt;&amp;-, &gt;&amp;- <span class="comment"># 关闭标准输出</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="其实在linux-下一切都是文件。把所有都想成文件就好理解的多了。"><a href="#其实在linux-下一切都是文件。把所有都想成文件就好理解的多了。" class="headerlink" title="其实在linux 下一切都是文件。把所有都想成文件就好理解的多了。"></a>其实在linux 下一切都是文件。把所有都想成文件就好理解的多了。</h3>
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-<div>
-      
-</div>
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2525,7 +2529,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">77</span>
+                  <span class="site-state-item-count">78</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2599,7 +2603,11 @@
              
              
                <li>
-                 <a href="/2019/07/13/2019-07-13-SpringBoot的WEB开发/" title="SpringBoot的WEB开发-1" target="_blank">SpringBoot的WEB开发-1</a>
+                 <a href="/2019/07/15/2019-07-15-SpringBoot的WEB开发之国际化/" title="SpringBoot的WEB开发之国际化" target="_blank">SpringBoot的WEB开发之国际化</a>
+               </li>
+             
+               <li>
+                 <a href="/2019/07/13/2019-07-13-SpringBoot的WEB开发/" title="SpringBoot的WEB开发之Hello-World" target="_blank">SpringBoot的WEB开发之Hello-World</a>
                </li>
              
                <li>
@@ -2612,10 +2620,6 @@
              
                <li>
                  <a href="/2019/07/08/2019-07-08-SpringBoot的配置文件（拓展）/" title="SpringBoot中的配置文件（拓展）" target="_blank">SpringBoot中的配置文件（拓展）</a>
-               </li>
-             
-               <li>
-                 <a href="/2019/07/07/2019-07-04-SpringBoot深入自动配置/" title="SpringBoot深入自动配置" target="_blank">SpringBoot深入自动配置</a>
                </li>
              
            </ul>
@@ -2664,7 +2668,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共69.8k字</span>
+  <span class="post-count">博客全站共72.6k字</span>
 </div>
 
 

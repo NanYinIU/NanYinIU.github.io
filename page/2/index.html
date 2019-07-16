@@ -304,6 +304,214 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/06/26/2019-06-26-PlantUML类图使用总结/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="NanYin">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NanYin的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/06/26/2019-06-26-PlantUML类图使用总结/" itemprop="url">PlantUML类图使用总结</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-06-26T12:00:00Z">
+                2019-06-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/工具/" itemprop="url" rel="index">
+                    <span itemprop="name">工具</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  1.1k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  4
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="使用PlantUML绘制类图"><a href="#使用PlantUML绘制类图" class="headerlink" title="使用PlantUML绘制类图"></a>使用PlantUML绘制类图</h1><p>本文基于PlantUML官网<a href="http://plantuml.com/zh/class-diagram" target="_blank" rel="noopener">绘制类图</a>和相关如何正确uml类图相关文章。</p>
+<h2 id="为什么使用plantUml"><a href="#为什么使用plantUml" class="headerlink" title="为什么使用plantUml"></a>为什么使用plantUml</h2><p>原因很简单，不用自己考虑构图，像写代码一样写出来，图出来既美观又能够符合逻辑。</p>
+<h2 id="基本类构成"><a href="#基本类构成" class="headerlink" title="基本类构成"></a>基本类构成</h2><h3 id="基本使用"><a href="#基本使用" class="headerlink" title="基本使用"></a>基本使用</h3><p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190626150930.png" alt="基本类构成"></p>
+<p>使用<code>class</code>关键字构件类，同理其他关键字。如<code>interface</code>,<code>enum</code>。</p>
+<p>在类中使用 <code>- # +</code> 分别对应表示类中的<code>private</code>,<code>protected</code>,<code>public</code>。如果在类中使用 <code>static</code>、<code>abstract</code>关键字，需要使用大括号包裹起来。</p>
+<p><strong>备注</strong>使用<code>note</code>来实现，可以使用js优化备注的样式,具体可以参考下面的代码。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">@startuml</span><br><span class="line">&apos; 简单定义类A</span><br><span class="line">class classA</span><br><span class="line">&apos;定义类B</span><br><span class="line">class classB&#123;</span><br><span class="line">    -&#123;static&#125; STATIC:Type</span><br><span class="line">    -a:A</span><br><span class="line">    #b:B</span><br><span class="line">    +c:C</span><br><span class="line">    +hello():void</span><br><span class="line">    -word():void</span><br><span class="line">&#125;</span><br><span class="line">&apos;抽象类C</span><br><span class="line">abstract class classC &#123;</span><br><span class="line">    + &#123;abstract&#125; method1:void</span><br><span class="line">&#125;</span><br><span class="line">&apos;备注</span><br><span class="line">note right: note on right</span><br><span class="line">note top of classA : note on top</span><br><span class="line">&apos; 复杂备注</span><br><span class="line">note top of object</span><br><span class="line">In java, &lt;size:18&gt;every&lt;/size&gt; &lt;u&gt;class&lt;/u&gt;&lt;b&gt;extends&lt;/b&gt;&lt;i&gt;this&lt;/i&gt; one.</span><br><span class="line">end note</span><br><span class="line">@enduml</span><br></pre></td></tr></table></figure>
+
+<h3 id="类更多使用"><a href="#类更多使用" class="headerlink" title="类更多使用"></a>类更多使用</h3><p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190626144335.png" alt="复杂"></p>
+<p>更复杂一些的类的构件参考上图。</p>
+<p>使用<code>__内容__</code>来表示分割线，对不同类型的进行分割。在类名后加<code>&lt;? extends xxx&gt;</code> 表示范型,参考下面代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">@startuml</span><br><span class="line">class classC &lt;&lt;Serializable&gt;&gt; &#123;</span><br><span class="line">__variable__</span><br><span class="line">    -a:A</span><br><span class="line">    #b:B</span><br><span class="line">    +c:C</span><br><span class="line">__methods__</span><br><span class="line">    +hello():void</span><br><span class="line">    -word():void</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class classD &lt;? extends List&gt;&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">@enduml</span><br></pre></td></tr></table></figure>
+
+<h3 id="关系表示"><a href="#关系表示" class="headerlink" title="关系表示"></a>关系表示</h3><h4 id="继承与实现"><a href="#继承与实现" class="headerlink" title="继承与实现"></a>继承与实现</h4><p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190626144700.png" alt="继承与实现"></p>
+<p>继承指的就是<strong>泛化</strong>，如图中左表示一样，类A继承于B，由子类实现父类的行为。泛化使用带<strong>大三角箭头和实线</strong>来表示，表示一种继承关系。</p>
+<p><strong>实现</strong>指的是特定类实现接口，如图中右表示一样，类<code>implement</code>实现<code>interface</code>,表示实现类实现接口类的关系。同样会由子类实现接口类中的行为。实现使用带<strong>大三角的箭头和虚线</strong>来实现。</p>
+<p>无论是继承还是实现，箭头都执行夫类，也就是被实现类。</p>
+<h4 id="依赖与关联"><a href="#依赖与关联" class="headerlink" title="依赖与关联"></a>依赖与关联</h4><p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190626160514.png" alt="依赖与关联"></p>
+<p>使用plantUML代码实现：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">@startuml</span><br><span class="line">&apos;依赖与关联</span><br><span class="line">Class X</span><br><span class="line">&apos; 依赖关系</span><br><span class="line">X ..&gt; Y :&quot;依赖关系&quot;</span><br><span class="line"></span><br><span class="line">class A</span><br><span class="line">&apos; 单向关联 A关联B</span><br><span class="line">A--&gt; B :&quot;单向关联&quot;</span><br><span class="line">&apos; 双向关联</span><br><span class="line">class C</span><br><span class="line">C --  D : &quot;双向关联&quot;</span><br><span class="line">&apos; 自关联</span><br><span class="line">class F</span><br><span class="line">F --&gt; F:&quot;自关联&quot;</span><br><span class="line">&apos; 聚合关系</span><br><span class="line">class G &#123;</span><br><span class="line">List&lt;H&gt; h</span><br><span class="line">&#125;</span><br><span class="line">G &quot;n&quot; o-- &quot;1&quot; H : &quot;组合关系&quot;</span><br><span class="line">&apos; 组合关系</span><br><span class="line">class K &#123;</span><br><span class="line">List&lt;L&gt; l</span><br><span class="line">&#125;</span><br><span class="line">K &quot;n&quot;*--&quot;1&quot; L :&quot;聚合关系&quot;</span><br><span class="line">@enduml</span><br></pre></td></tr></table></figure>
+
+<h5 id="一、依赖关系"><a href="#一、依赖关系" class="headerlink" title="一、依赖关系"></a>一、依赖关系</h5><p>依赖是一种使用的关系，代码中体现到依赖的关系的情况:<code>局部变量</code>、<code>方法的参数或者对静态方法的调用</code>,依赖是最弱的一种关联。依赖关系使用虚线和普通的小箭头来实现，箭头指向被依赖的对象。如图中的x依赖y一样，所以指向y,这个被x依赖的对象。</p>
+<h5 id="二、关联关系"><a href="#二、关联关系" class="headerlink" title="二、关联关系"></a>二、关联关系</h5><p>关联是拥有的关系，如玩家与游戏中的角色一样。关联可能是单向的，也可能是双向的，也同样能够自己关联自己。代码中体现到关联的关系的情况：<code>成员变量</code>。关联关系使用实线和小尖头来实现，箭头指向被关联的对象。</p>
+<h5 id="三、组合关系"><a href="#三、组合关系" class="headerlink" title="三、组合关系"></a>三、组合关系</h5><p>组合关系是<code>整体与部分</code>的关系，但是如果整体不存在，那部分也不能存在。就如同公司与部门一样，公司解散了，部门也就不存在了。和关联关系相同，在代码中的体现也是<code>成员变量</code>。组合关系使用空心的菱形和实线来表示。</p>
+<h5 id="四、聚合关系"><a href="#四、聚合关系" class="headerlink" title="四、聚合关系"></a>四、聚合关系</h5><p>聚合关系是<code>整体与部分</code>的关系，但是和组合关系不同的是，聚合关系中的<code>部分</code>可以脱离整体而存在，就如同麦当劳中的套餐与汉堡一样。在代码中的体现同样是<code>成员变量</code>。聚合关系使用实心的菱形和实线来表示。</p>
+<p>所以可以说聚合关系和组合关系是关系更加确定，更加紧密的关联关系。</p>
+<h5 id="各关系的强弱顺序"><a href="#各关系的强弱顺序" class="headerlink" title="各关系的强弱顺序"></a>各关系的强弱顺序</h5><blockquote>
+<p>泛化= 实现&gt; 组合&gt; 聚合&gt; 关联&gt; 依赖</p>
+</blockquote>
+<p>PlantUML支持更多的更复杂的情景下的图形绘制，具体可以查看<a href="http://plantuml.com/zh/index" target="_blank" rel="noopener">PlantUML的中文网站</a>。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+<div>
+      
+</div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/06/25/2019-06-25-设计模式之备忘录模式/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -448,6 +656,202 @@
 <h3 id="客户端程序"><a href="#客户端程序" class="headerlink" title="客户端程序"></a>客户端程序</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">App</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//创建一个动作类型的游戏</span></span><br><span class="line">        Game actionGame = <span class="keyword">new</span> ActionGame();</span><br><span class="line">        <span class="comment">//玩家通关</span></span><br><span class="line">        Player player = <span class="keyword">new</span> Player(GameState.SUCCESS);</span><br><span class="line">        <span class="comment">//存档</span></span><br><span class="line">        Memento memento = player.createMemento();</span><br><span class="line">        actionGame.storeGamePoint(memento);</span><br><span class="line">        <span class="comment">//此时玩家阵亡</span></span><br><span class="line">        player.setGameState(GameState.DIE);</span><br><span class="line">        System.out.println(player.getGameState());</span><br><span class="line">        <span class="comment">//需要从上一次游戏存档中加载原来的玩家状态</span></span><br><span class="line">        player.retrieveMemento(actionGame.retrieveGamePoint());</span><br><span class="line">        System.out.println(player.getGameState());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>在游戏存档后死亡，再重复读存档，得到之前存档之前的状态。游戏不会主动存档和读取存档，只会记录存档中的内容，而玩家会主动从游戏中读取存档，然后恢复到存档的状态。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+<div>
+      
+</div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/06/19/2019-06-19-设计模式之状态模式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="NanYin">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NanYin的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/06/19/2019-06-19-设计模式之状态模式/" itemprop="url">设计模式之状态模式</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-06-19T12:00:00Z">
+                2019-06-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/设计模式/" itemprop="url" rel="index">
+                    <span itemprop="name">设计模式</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  575
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  2
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="设计模式之状态模式"><a href="#设计模式之状态模式" class="headerlink" title="设计模式之状态模式"></a>设计模式之状态模式</h1><p>状态模式是对象的行为模式。状态模式允许一个对象在其内部状态改变的时候改变其行为。这个对象看上去就像是改变了它的类一样。</p>
+<h2 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h2><ul>
+<li>对象的行为取决于其状态，并且必须根据该状态在运行时更改其行为。</li>
+<li>通常，几个操作将包含相同的条件结构。State模式将条件的每个分支放在一个单独的类中。可以将对象的状态视为一个对象，它可以独立于其他对象而变化</li>
+</ul>
+<p>概括来说，状态模式将行为包装到具体的状态对象中。每个状态对象是抽象状态的子类。状态模式意图是在改变对象的内部状态的时候，行为随之改变。</p>
+<h2 id="模式结构"><a href="#模式结构" class="headerlink" title="模式结构"></a>模式结构</h2><p>状态模式分为三种结构：环境角色、抽象状态角色、具体状态角色</p>
+<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618203143.png" alt="状态模式结构图"></p>
+<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><p>电灯有两种基本行为 开启、关闭。但是有两个状态，正常和坏掉的状态。将共同的行为封装到统一的状态接口中，再根据不同的状态，创建子类完成不同状态形成不同的行为。</p>
+<p>灯再正常状态下能够正常开启，正常关闭。等在坏掉的状态下，不能开启和关闭。状态模式就是根据这个逻辑抽离行为，将具体行为包装到具体状态对象中。</p>
+<h3 id="抽象状态角色"><a href="#抽象状态角色" class="headerlink" title="抽象状态角色"></a>抽象状态角色</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">State</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">open</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">close</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="具体状态角色"><a href="#具体状态角色" class="headerlink" title="具体状态角色"></a>具体状态角色</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">NormalState</span> <span class="keyword">implements</span> <span class="title">State</span></span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">open</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"电灯开了！"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">close</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"电灯关了！"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ErrorState</span> <span class="keyword">implements</span> <span class="title">State</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">open</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"电灯开不了！"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">close</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"电灯关不了！"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="环境角色"><a href="#环境角色" class="headerlink" title="环境角色"></a>环境角色</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Context</span> </span>&#123;</span><br><span class="line">    <span class="comment">//状态参数</span></span><br><span class="line">    State state;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Context</span><span class="params">(State state)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.state = state;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">requestToOpen</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        state.open();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">requestToClose</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        state.close();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//状态变化</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">changeStageTo</span><span class="params">(State state)</span></span>&#123;</span><br><span class="line">       <span class="keyword">this</span>.state = state;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="客户端测试"><a href="#客户端测试" class="headerlink" title="客户端测试"></a>客户端测试</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">App</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Context context = <span class="keyword">new</span> Context(<span class="keyword">new</span> NormalState());</span><br><span class="line">        context.requestToOpen();</span><br><span class="line">        context.requestToClose();</span><br><span class="line">        <span class="comment">//将状态变更为坏的状态</span></span><br><span class="line">        context.changeStageTo(<span class="keyword">new</span> ErrorState());</span><br><span class="line">        context.requestToOpen();</span><br><span class="line">        context.requestToClose();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 
           
         
@@ -657,202 +1061,6 @@
 
 <p>结果：最后注册在主题上的所有观察者都收到了通知。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">observer A get new weather message is SUNNY_DAY</span><br><span class="line">observer B get new weather message is SUNNY_DAY</span><br></pre></td></tr></table></figure>
-
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-<div>
-      
-</div>
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/06/19/2019-06-19-设计模式之状态模式/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="NanYin">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NanYin的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/06/19/2019-06-19-设计模式之状态模式/" itemprop="url">设计模式之状态模式</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-06-19T12:00:00Z">
-                2019-06-19
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/设计模式/" itemprop="url" rel="index">
-                    <span itemprop="name">设计模式</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  575
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  2
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="设计模式之状态模式"><a href="#设计模式之状态模式" class="headerlink" title="设计模式之状态模式"></a>设计模式之状态模式</h1><p>状态模式是对象的行为模式。状态模式允许一个对象在其内部状态改变的时候改变其行为。这个对象看上去就像是改变了它的类一样。</p>
-<h2 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h2><ul>
-<li>对象的行为取决于其状态，并且必须根据该状态在运行时更改其行为。</li>
-<li>通常，几个操作将包含相同的条件结构。State模式将条件的每个分支放在一个单独的类中。可以将对象的状态视为一个对象，它可以独立于其他对象而变化</li>
-</ul>
-<p>概括来说，状态模式将行为包装到具体的状态对象中。每个状态对象是抽象状态的子类。状态模式意图是在改变对象的内部状态的时候，行为随之改变。</p>
-<h2 id="模式结构"><a href="#模式结构" class="headerlink" title="模式结构"></a>模式结构</h2><p>状态模式分为三种结构：环境角色、抽象状态角色、具体状态角色</p>
-<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618203143.png" alt="状态模式结构图"></p>
-<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><p>电灯有两种基本行为 开启、关闭。但是有两个状态，正常和坏掉的状态。将共同的行为封装到统一的状态接口中，再根据不同的状态，创建子类完成不同状态形成不同的行为。</p>
-<p>灯再正常状态下能够正常开启，正常关闭。等在坏掉的状态下，不能开启和关闭。状态模式就是根据这个逻辑抽离行为，将具体行为包装到具体状态对象中。</p>
-<h3 id="抽象状态角色"><a href="#抽象状态角色" class="headerlink" title="抽象状态角色"></a>抽象状态角色</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">State</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">open</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">close</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="具体状态角色"><a href="#具体状态角色" class="headerlink" title="具体状态角色"></a>具体状态角色</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">NormalState</span> <span class="keyword">implements</span> <span class="title">State</span></span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">open</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"电灯开了！"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">close</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"电灯关了！"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ErrorState</span> <span class="keyword">implements</span> <span class="title">State</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">open</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"电灯开不了！"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">close</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"电灯关不了！"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="环境角色"><a href="#环境角色" class="headerlink" title="环境角色"></a>环境角色</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Context</span> </span>&#123;</span><br><span class="line">    <span class="comment">//状态参数</span></span><br><span class="line">    State state;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Context</span><span class="params">(State state)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.state = state;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">requestToOpen</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        state.open();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">requestToClose</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        state.close();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//状态变化</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">changeStageTo</span><span class="params">(State state)</span></span>&#123;</span><br><span class="line">       <span class="keyword">this</span>.state = state;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="客户端测试"><a href="#客户端测试" class="headerlink" title="客户端测试"></a>客户端测试</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">App</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Context context = <span class="keyword">new</span> Context(<span class="keyword">new</span> NormalState());</span><br><span class="line">        context.requestToOpen();</span><br><span class="line">        context.requestToClose();</span><br><span class="line">        <span class="comment">//将状态变更为坏的状态</span></span><br><span class="line">        context.changeStageTo(<span class="keyword">new</span> ErrorState());</span><br><span class="line">        context.requestToOpen();</span><br><span class="line">        context.requestToClose();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 
           
@@ -2129,204 +2337,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/06/10/2019-06-10-设计模式之装饰者模式/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="NanYin">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NanYin的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/06/10/2019-06-10-设计模式之装饰者模式/" itemprop="url">设计模式之装饰者模式</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-06-10T12:00:00Z">
-                2019-06-10
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/设计模式/" itemprop="url" rel="index">
-                    <span itemprop="name">设计模式</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  607
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  2
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="设计模式之装饰者模式"><a href="#设计模式之装饰者模式" class="headerlink" title="设计模式之装饰者模式"></a>设计模式之装饰者模式</h1><p>可以动态地将附加职责附加给对象。装饰器为子类化的方式提供了灵活的替代扩展功能。比如做梦梦到了交个女朋友，她的发型，发色，穿着都是根据场景做梦梦到的时候附加上去的。这时，就应该对“女朋友”这个对象实行装饰者模式来动态的、灵活的拓展。</p>
-<h2 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h2><ol>
-<li>动态且透明地向各个对象添加职责的同时不影响其他对象。</li>
-<li>灵活的可撤回职责。</li>
-<li>有时候需要很多子类来用于支持每种功能的组合，这样每次增加一种功能拓展就要增加很多子类的情况。显然这样是不符合要求的。所以遇到这种多功能拓展时，需要使用装饰者模式来解决。</li>
-</ol>
-<h2 id="装饰者模式结构"><a href="#装饰者模式结构" class="headerlink" title="装饰者模式结构"></a>装饰者模式结构</h2><p>装饰者模式可以大致分为四种结构（本例子中的抽象构件和抽象装饰类为一个）抽象构件，具体构件，抽象装饰类，实际装饰类。</p>
-<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190610190339.png" alt="装饰者模式"></p>
-<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><p>第一部分：抽象构件与抽象装饰类</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 制造一个假想的“女朋友”</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">AbstractGirl</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">dyeHair</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">wearClothes</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">pack</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>第二部分：实现组件</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 基本的功能实现</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">NormalGirl</span> <span class="keyword">extends</span> <span class="title">AbstractGirl</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">dyeHair</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"normal hair"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">wearClothes</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"normal clothes"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">pack</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>第三部分：附加装饰类</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 工作中的女孩 穿正装</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WorkGirl</span> <span class="keyword">extends</span> <span class="title">AbstractGirl</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    AbstractGirl abstractGirl;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">WorkGirl</span><span class="params">(AbstractGirl abstractGirl)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.abstractGirl = abstractGirl;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">wearClothes</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        abstractGirl.wearClothes();</span><br><span class="line">        System.out.println(<span class="string">"wearClothes after : "</span>);</span><br><span class="line">        System.out.println(<span class="string">"wear formal clothes"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//实际出去逛街的女孩应该是这样的</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FashionGirl</span> <span class="keyword">extends</span> <span class="title">AbstractGirl</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    AbstractGirl abstractGirl;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">FashionGirl</span><span class="params">(AbstractGirl abstractGirl)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.abstractGirl = abstractGirl;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">dyeHair</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        abstractGirl.dyeHair();</span><br><span class="line">        System.out.println(<span class="string">"dyeHair after : "</span>);</span><br><span class="line">        System.out.println(<span class="string">"dye blue hair"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">wearClothes</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        abstractGirl.wearClothes();</span><br><span class="line">        System.out.println(<span class="string">"wearClothes after : "</span> );</span><br><span class="line">        System.out.println(<span class="string">"wear rock type clothes"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">pack</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        abstractGirl.pack();</span><br><span class="line">        System.out.println(<span class="string">"wearClothes after : "</span> );</span><br><span class="line">        System.out.println(<span class="string">"take fashion pack"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>最后客户端的调用：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">App</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//先制造一个整体组件</span></span><br><span class="line">        AbstractGirl normalGirl = <span class="keyword">new</span> NormalGirl();</span><br><span class="line">        normalGirl.dyeHair();</span><br><span class="line">        <span class="comment">// 为组件添加装饰，比如这里加了个时尚的包包</span></span><br><span class="line">        AbstractGirl fashionHair = <span class="keyword">new</span> FashionGirl(normalGirl);</span><br><span class="line">        fashionHair.pack();</span><br><span class="line">        <span class="comment">//穿一套正装</span></span><br><span class="line">        AbstractGirl workClose = <span class="keyword">new</span> WorkGirl(fashionHair);</span><br><span class="line">        workClose.wearClothes();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-<div>
-      
-</div>
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2379,7 +2389,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">77</span>
+                  <span class="site-state-item-count">78</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2453,7 +2463,11 @@
              
              
                <li>
-                 <a href="/2019/07/13/2019-07-13-SpringBoot的WEB开发/" title="SpringBoot的WEB开发-1" target="_blank">SpringBoot的WEB开发-1</a>
+                 <a href="/2019/07/15/2019-07-15-SpringBoot的WEB开发之国际化/" title="SpringBoot的WEB开发之国际化" target="_blank">SpringBoot的WEB开发之国际化</a>
+               </li>
+             
+               <li>
+                 <a href="/2019/07/13/2019-07-13-SpringBoot的WEB开发/" title="SpringBoot的WEB开发之Hello-World" target="_blank">SpringBoot的WEB开发之Hello-World</a>
                </li>
              
                <li>
@@ -2466,10 +2480,6 @@
              
                <li>
                  <a href="/2019/07/08/2019-07-08-SpringBoot的配置文件（拓展）/" title="SpringBoot中的配置文件（拓展）" target="_blank">SpringBoot中的配置文件（拓展）</a>
-               </li>
-             
-               <li>
-                 <a href="/2019/07/07/2019-07-04-SpringBoot深入自动配置/" title="SpringBoot深入自动配置" target="_blank">SpringBoot深入自动配置</a>
                </li>
              
            </ul>
@@ -2518,7 +2528,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共69.8k字</span>
+  <span class="post-count">博客全站共72.6k字</span>
 </div>
 
 
