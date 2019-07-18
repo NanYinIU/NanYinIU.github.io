@@ -1,0 +1,1266 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="NanYin的博客" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="12345678title:      &amp;quot;SpringBoot的错误处理机制&amp;quot;date:       2019-07-17 12:00:00copyright: turetags:     - Java     - SpringBoot categories:    - SpringBoot  在web开发中的异常错误处理SpringBoot默认有一套对web开发错误处理的机制">
+<meta name="keywords" content="技术 生活">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NanYin的博客">
+<meta property="og:url" content="https://nanyiniu.github.io/2019/07/17/2019-07-17-SpringBoot错误处理机制/index.html">
+<meta property="og:site_name" content="NanYin的博客">
+<meta property="og:description" content="12345678title:      &amp;quot;SpringBoot的错误处理机制&amp;quot;date:       2019-07-17 12:00:00copyright: turetags:     - Java     - SpringBoot categories:    - SpringBoot  在web开发中的异常错误处理SpringBoot默认有一套对web开发错误处理的机制">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190718192323.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190718194227.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190718194426.png">
+<meta property="og:updated_time" content="2019-07-18T12:03:31.190Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="NanYin的博客">
+<meta name="twitter:description" content="12345678title:      &amp;quot;SpringBoot的错误处理机制&amp;quot;date:       2019-07-17 12:00:00copyright: turetags:     - Java     - SpringBoot categories:    - SpringBoot  在web开发中的异常错误处理SpringBoot默认有一套对web开发错误处理的机制">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190718192323.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://nanyiniu.github.io/2019/07/17/2019-07-17-SpringBoot错误处理机制/">
+
+
+
+
+
+  <title> | NanYin的博客</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+<a href="https://github.com/NanYinIU" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewbox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">NanYin的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">记录生活点滴</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/07/17/2019-07-17-SpringBoot错误处理机制/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="NanYin">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NanYin的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline"></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-17T12:42:47Z">
+                2019-07-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  2k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  8
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">title:      &quot;SpringBoot的错误处理机制&quot;</span><br><span class="line">date:       2019-07-17 12:00:00</span><br><span class="line">copyright: ture</span><br><span class="line">tags: </span><br><span class="line">    - Java </span><br><span class="line">    - SpringBoot </span><br><span class="line">categories:</span><br><span class="line">    - SpringBoot</span><br></pre></td></tr></table></figure>
+
+<h1 id="在web开发中的异常错误处理"><a href="#在web开发中的异常错误处理" class="headerlink" title="在web开发中的异常错误处理"></a>在web开发中的异常错误处理</h1><p>SpringBoot默认有一套对web开发错误处理的机制，在<code>autoConfiguration</code>包下面找到了<code>ErrorMvcAutoConfiguration</code>。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="comment">// 只有基于servlet的web程序</span></span><br><span class="line"><span class="meta">@ConditionalOnWebApplication</span>(type = Type.SERVLET)</span><br><span class="line"><span class="meta">@ConditionalOnClass</span>(&#123; Servlet.class, DispatcherServlet.class &#125;)</span><br><span class="line"><span class="comment">// 需要先加载WebMvcAutoConfiguration</span></span><br><span class="line"><span class="meta">@AutoConfigureBefore</span>(WebMvcAutoConfiguration.class)</span><br><span class="line"><span class="meta">@EnableConfigurationProperties</span>(&#123; ServerProperties.class, ResourceProperties.class, WebMvcProperties.class &#125;)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ErrorMvcAutoConfiguration</span> </span>&#123;</span><br></pre></td></tr></table></figure>
+
+<h2 id="处理机制"><a href="#处理机制" class="headerlink" title="处理机制"></a>处理机制</h2><p>在这个自动配置类中，由三个最基本的<code>bean</code>组件组成，下面挨个看这些注入到容器中的<code>bean</code>的含义</p>
+<h3 id="errorPageCustomizer-定义错误页面"><a href="#errorPageCustomizer-定义错误页面" class="headerlink" title="errorPageCustomizer 定义错误页面"></a><code>errorPageCustomizer</code> 定义错误页面</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> ErrorPageCustomizer <span class="title">errorPageCustomizer</span><span class="params">()</span> </span>&#123;</span><br><span class="line">   <span class="keyword">return</span> <span class="keyword">new</span> ErrorPageCustomizer(<span class="keyword">this</span>.serverProperties, <span class="keyword">this</span>.dispatcherServletPath);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 在ErrorPageCustomizer有一个registerErrorPages 注册页面的方法</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">registerErrorPages</span><span class="params">(ErrorPageRegistry errorPageRegistry)</span> </span>&#123;</span><br><span class="line">			ErrorPage errorPage = <span class="keyword">new</span> ErrorPage(</span><br><span class="line">        <span class="comment">// 用于获取error页面的地址</span></span><br><span class="line">					<span class="keyword">this</span>.dispatcherServletPath.getRelativePath(<span class="keyword">this</span>.properties.getError().getPath()));</span><br><span class="line">			errorPageRegistry.addErrorPages(errorPage);</span><br><span class="line">		&#125;</span><br><span class="line"><span class="comment">// 地址在 this.properties.getError().getPath()变量中具体的值：</span></span><br><span class="line">	<span class="meta">@Value</span>(<span class="string">"$&#123;error.path:/error&#125;"</span>)</span><br><span class="line"><span class="comment">// 配置文件中error.path下的/error或者根目录下的/error文件夹</span></span><br><span class="line">	<span class="keyword">private</span> String path = <span class="string">"/error"</span>;</span><br></pre></td></tr></table></figure>
+
+<p>所以<code>errorPageCustomizer</code>的主要功能就是找到地址，拼装成<code>ErrorPage</code>;</p>
+<h3 id="WhitelabelErrorViewConfiguration-空白页的配置"><a href="#WhitelabelErrorViewConfiguration-空白页的配置" class="headerlink" title="WhitelabelErrorViewConfiguration 空白页的配置"></a><code>WhitelabelErrorViewConfiguration</code> 空白页的配置</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">WhitelabelErrorViewConfiguration</span> </span>&#123;</span><br><span class="line">   <span class="comment">// 在StaticView中定义了默认的Whitelabel页面格式，</span></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">final</span> StaticView defaultErrorView = <span class="keyword">new</span> StaticView();</span><br><span class="line">  </span><br><span class="line">	<span class="meta">@Bean</span>(name = <span class="string">"error"</span>)</span><br><span class="line">	<span class="meta">@ConditionalOnMissingBean</span>(name = <span class="string">"error"</span>)</span><br><span class="line">	<span class="function"><span class="keyword">public</span> View <span class="title">defaultErrorView</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">this</span>.defaultErrorView;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="basicErrorController-控制器"><a href="#basicErrorController-控制器" class="headerlink" title="basicErrorController 控制器"></a><code>basicErrorController</code> 控制器</h3><p>basicErrorController就是简单的控制器</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Controller</span> <span class="comment">//controller实现 注册到容器中</span></span><br><span class="line"><span class="comment">// 错误映射地址 error.path 或</span></span><br><span class="line"><span class="comment">// server.error.path 下 /error</span></span><br><span class="line"><span class="meta">@RequestMapping</span>(<span class="string">"$&#123;server.error.path:$&#123;error.path:/error&#125;&#125;"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BasicErrorController</span> <span class="keyword">extends</span> <span class="title">AbstractErrorController</span></span></span><br></pre></td></tr></table></figure>
+
+<p>在这个<code>Controller</code>中映射到了<code>/error</code>地址上，有具有两个<code>RequestMapping</code>进行映射。</p>
+<h4 id="请求的媒体类型为text-html时"><a href="#请求的媒体类型为text-html时" class="headerlink" title="请求的媒体类型为text/html时"></a>请求的媒体类型为<code>text/html</code>时</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping</span>(produces = MediaType.TEXT_HTML_VALUE)</span><br><span class="line"><span class="comment">// 媒体类型为 text/html 时候使用这个对/error的接收</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> ModelAndView <span class="title">errorHtml</span><span class="params">(HttpServletRequest request, HttpServletResponse response)</span> </span>&#123;</span><br><span class="line">  <span class="comment">// 获得request中的状态码</span></span><br><span class="line">  <span class="comment">// Integer statusCode = </span></span><br><span class="line">  <span class="comment">// (Integer) request.getAttribute("javax.servlet.error.status_code");</span></span><br><span class="line">  HttpStatus status = getStatus(request);</span><br><span class="line">  Map&lt;String, Object&gt; model = Collections</span><br><span class="line">    .unmodifiableMap(getErrorAttributes(request, isIncludeStackTrace(request, MediaType.TEXT_HTML)));</span><br><span class="line">  response.setStatus(status.value());</span><br><span class="line">  ModelAndView modelAndView = resolveErrorView(request, response, status, model);</span><br><span class="line">  <span class="keyword">return</span> (modelAndView != <span class="keyword">null</span>) ? modelAndView : <span class="keyword">new</span> ModelAndView(<span class="string">"error"</span>, model);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其中使用夫类中的<code>getErrorAttributes</code>方法来获取基本属性数据，通过<code>return this.errorAttributes.getErrorAttributes(webRequest, includeStackTrace)</code>直接调用已经注入到容器中的<code>ErrorAttributes</code>类及其子类。如默认的<code>DefaultErrorAttributes</code>。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Map&lt;String, Object&gt; <span class="title">getErrorAttributes</span><span class="params">(WebRequest webRequest, <span class="keyword">boolean</span> includeStackTrace)</span> </span>&#123;</span><br><span class="line">  Map&lt;String, Object&gt; errorAttributes = <span class="keyword">new</span> LinkedHashMap&lt;&gt;();</span><br><span class="line">  <span class="comment">// 返回到页面的当前系统时间</span></span><br><span class="line">  errorAttributes.put(<span class="string">"timestamp"</span>, <span class="keyword">new</span> Date());</span><br><span class="line">  <span class="comment">// 下面的 javax.xxxx 都是从requeset中得到的</span></span><br><span class="line">  <span class="comment">// 返回状态码 javax.servlet.error.status_code</span></span><br><span class="line">  addStatus(errorAttributes, webRequest);</span><br><span class="line">  <span class="comment">//错误信息 avax.servlet.error.message</span></span><br><span class="line">  addErrorDetails(errorAttributes, webRequest, includeStackTrace);</span><br><span class="line">  <span class="comment">// 请求路径 javax.servlet.error.request_uri</span></span><br><span class="line">  addPath(errorAttributes, webRequest);</span><br><span class="line">  <span class="keyword">return</span> errorAttributes;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在获取完需要返回的数据之后，返回一个<code>modelAndView</code>对象，也就是一个带有显示的界面。</p>
+<p>默认使用<code>DefaultErrorViewResolver</code>来进行对<code>ErrorView</code>的解析。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> ModelAndView <span class="title">resolveErrorView</span><span class="params">(HttpServletRequest request, HttpStatus status, Map&lt;String, Object&gt; model)</span> </span>&#123;</span><br><span class="line">  <span class="comment">// 获取modelandview对象</span></span><br><span class="line">  ModelAndView modelAndView = resolve(String.valueOf(status.value()), model);</span><br><span class="line">  <span class="keyword">if</span> (modelAndView == <span class="keyword">null</span> &amp;&amp; SERIES_VIEWS.containsKey(status.series())) &#123;</span><br><span class="line">    <span class="comment">// 如果没有modelandview</span></span><br><span class="line">    modelAndView = resolve(SERIES_VIEWS.get(status.series()), model);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> modelAndView;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果没有通过resolve方法找到一个modelAndView。则会有类似通过 <code>5xx.html</code> 页面来展示5开头的那些错误的页面。可选值有下面两种：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">views.put(Series.CLIENT_ERROR, <span class="string">"4xx"</span>);</span><br><span class="line">views.put(Series.SERVER_ERROR, <span class="string">"5xx"</span>);</span><br><span class="line">SERIES_VIEWS = Collections.unmodifiableMap(views);</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 使用resolve方法来获取ModelAndView</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> ModelAndView <span class="title">resolve</span><span class="params">(String viewName, Map&lt;String, Object&gt; model)</span> </span>&#123;</span><br><span class="line">  <span class="comment">//这里的viewName为状态编码，视图为 error/「状态码值」</span></span><br><span class="line">  </span><br><span class="line">  String errorViewName = <span class="string">"error/"</span> + viewName;</span><br><span class="line">  TemplateAvailabilityProvider provider = <span class="keyword">this</span>.templateAvailabilityProviders.getProvider(errorViewName,</span><br><span class="line">                                                                                         <span class="keyword">this</span>.applicationContext);</span><br><span class="line">  <span class="keyword">if</span> (provider != <span class="keyword">null</span>) &#123;</span><br><span class="line">    <span class="comment">// 如403错误，那么就会返回 error/403.html  前提是有模版引擎</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> ModelAndView(errorViewName, model);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 没有就去  &#123; "classpath:/META-INF/resources/",</span></span><br><span class="line">	<span class="comment">//		"classpath:/resources/", "classpath:/static/", "classpath:/public/" &#125;;</span></span><br><span class="line">  <span class="comment">// 这几个路径上找 路径下的error/xxx.html，这些路径就是默认的资源文件路径</span></span><br><span class="line">  <span class="keyword">return</span> resolveResource(errorViewName, model);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果到上一步仍不存在view则说明，模版引擎/基本资源文件夹下均不存在error文件夹下的xxx.html文件，则会返回一个默认的view 。<code>(modelAndView != null) ? modelAndView : new ModelAndView(&quot;error&quot;, model);</code>，<strong>就是在标题【WhitelabelErrorViewConfiguration】中提及到的StaticView</strong>。</p>
+<h4 id="请求为其他媒体类型"><a href="#请求为其他媒体类型" class="headerlink" title="请求为其他媒体类型"></a>请求为其他媒体类型</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping</span></span><br><span class="line"><span class="keyword">public</span> ResponseEntity&lt;Map&lt;String, Object&gt;&gt; error(HttpServletRequest request) &#123;</span><br><span class="line">  Map&lt;String, Object&gt; body = getErrorAttributes(request, isIncludeStackTrace(request, MediaType.ALL));</span><br><span class="line">  HttpStatus status = getStatus(request);</span><br><span class="line">  <span class="comment">// 直接返回map</span></span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> ResponseEntity&lt;&gt;(body, status);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="errorAttributes-错误页面属性信息"><a href="#errorAttributes-错误页面属性信息" class="headerlink" title="errorAttributes 错误页面属性信息"></a><code>errorAttributes</code> 错误页面属性信息</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="meta">@ConditionalOnMissingBean</span>(value = ErrorAttributes.class, search = SearchStrategy.CURRENT)</span><br><span class="line"><span class="function"><span class="keyword">public</span> DefaultErrorAttributes <span class="title">errorAttributes</span><span class="params">()</span> </span>&#123;</span><br><span class="line">   <span class="keyword">return</span> <span class="keyword">new</span> DefaultErrorAttributes(<span class="keyword">this</span>.serverProperties.getError().isIncludeException());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个bean主要是使用<code>getErrorAttributes</code>提供<code>ErrorController</code>返回值的信息，如果状态码等。。如果想更改错误信息的返回值内容，可以继承<code>DefaultErrorAttributes</code>,然后在<code>getErrorAttributes</code>方法里添加想要添加的内容即可。</p>
+<h2 id="添加错误页面和修改返回信息"><a href="#添加错误页面和修改返回信息" class="headerlink" title="添加错误页面和修改返回信息"></a>添加错误页面和修改返回信息</h2><p>下面具体来根据SpringBoot特性来添加错误页面，如404，500等。</p>
+<p>​    因为在处理机制这章里说明了SpringBoot如何处理错误，他会默认的访问/error/地址，并且如果是text/html的媒体类型，也就是网页访问的话，如果有模版引擎，他会去找在<code>/error</code>文件中对应编码的<code>xxx.html</code>页面进而去渲染这个页面。</p>
+<p>​    比如访问404，他会去找<code>classpath:/error/404.html</code>页面去渲染，如果没有，他会去找<code>classpath:/error/4xx.html</code>，如果还没有，他会返回一个页面。</p>
+<h3 id="添加error页面"><a href="#添加error页面" class="headerlink" title="添加error页面"></a>添加error页面</h3><p>​    为了演示，创建<code>404.html</code>和<code>4xx.html</code>，<strong>来达到这样的目的:如果发生404错误，则访问404.html页面，如果发生402或者以4开头的错误，则访问4xx.html页面</strong>。</p>
+<p>目录结构和示例内容参考如下：</p>
+<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190718192323.png" alt></p>
+<h3 id="定义异常和对应的异常处理"><a href="#定义异常和对应的异常处理" class="headerlink" title="定义异常和对应的异常处理"></a>定义异常和对应的异常处理</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">NoAuthException</span> <span class="keyword">extends</span> <span class="title">RuntimeException</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">NoAuthException</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(<span class="string">"无权限异常"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">NoUserExcetion</span> <span class="keyword">extends</span> <span class="title">RuntimeException</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">NoUserExcetion</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(<span class="string">"无用户异常"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 异常处理类</span></span><br><span class="line"><span class="meta">@ControllerAdvice</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyExecptionHandler</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 处理NoAuthException 异常</span></span><br><span class="line">    <span class="meta">@ExceptionHandler</span>(value = NoAuthException.class)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">handlerNoAuthException</span><span class="params">(HttpServletRequest request)</span></span>&#123;</span><br><span class="line">      <span class="comment">// 这是必须的；定义返回的code值，返回指定的错误页面</span></span><br><span class="line">        request.setAttribute(<span class="string">"javax.servlet.error.status_code"</span>,<span class="number">402</span>);</span><br><span class="line">        Map&lt;String,Object&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">        map.put(<span class="string">"code"</span>,<span class="number">402</span>);</span><br><span class="line">        map.put(<span class="string">"message"</span>,<span class="string">"this is my no auth message"</span>);</span><br><span class="line">      <span class="comment">// 将自定义信息放入 request中</span></span><br><span class="line">        request.setAttribute(<span class="string">"errData"</span>,map);</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"forward:/error"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  <span class="comment">//处理NoUserExcetion 异常</span></span><br><span class="line">    <span class="meta">@ExceptionHandler</span>(value = NoUserExcetion.class)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">handlerNoUserException</span><span class="params">(HttpServletRequest request)</span></span>&#123;</span><br><span class="line">        request.setAttribute(<span class="string">"javax.servlet.error.status_code"</span>,<span class="number">400</span>);</span><br><span class="line">        Map&lt;String,Object&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">        map.put(<span class="string">"code"</span>,<span class="number">404</span>);</span><br><span class="line">        map.put(<span class="string">"message"</span>,<span class="string">"this is my no auth message"</span>);</span><br><span class="line">        request.setAttribute(<span class="string">"errData"</span>,map);</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"forward:/error"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// controller类</span></span><br><span class="line"><span class="meta">@RequestMapping</span>(<span class="string">"/hello"</span>)</span><br><span class="line"><span class="meta">@ResponseBody</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">hello</span><span class="params">(String name)</span></span>&#123;</span><br><span class="line">  <span class="keyword">if</span>(<span class="string">"abc"</span>.equals(name))&#123;</span><br><span class="line">    <span class="comment">// 如果是 /hello?name=abc的时候抛出NoAuthException异常 跳转到4xx页面</span></span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> NoAuthException();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span>(<span class="string">"123"</span>.equals(name))&#123;</span><br><span class="line">    <span class="comment">// 如果是 /hello?name=123的时候抛出NoUserExcetion的异常 跳转到404页面</span></span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> NoUserExcetion();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="string">"hello world"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="定义自定义属性类"><a href="#定义自定义属性类" class="headerlink" title="定义自定义属性类"></a>定义自定义属性类</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="comment">// 放到容器中，默认会替换到springboot的默认的DefaultErrorAttributes</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyErrorAttributes</span> <span class="keyword">extends</span> <span class="title">DefaultErrorAttributes</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Map&lt;String, Object&gt; <span class="title">getErrorAttributes</span><span class="params">(WebRequest webRequest, <span class="keyword">boolean</span> includeStackTrace)</span> </span>&#123;</span><br><span class="line">      <span class="comment">// 获取DefaultErrorAttributes的基本属性</span></span><br><span class="line">        Map&lt;String,Object&gt; map = <span class="keyword">super</span>.getErrorAttributes(webRequest,includeStackTrace);</span><br><span class="line">        Map&lt;String,Object&gt; errData = (Map&lt;String, Object&gt;) 					webRequest.getAttribute(<span class="string">"errData"</span>, <span class="number">0</span>);</span><br><span class="line">      <span class="comment">// 从request中获取自定义的data，添加到返回的信息中。</span></span><br><span class="line">			 map.put(<span class="string">"errData"</span>,errData);</span><br><span class="line">        <span class="keyword">return</span> map;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>通过以上的设置，可以得到如下结果：</p>
+<ul>
+<li>如果是 /hello?name=abc的时候抛出NoAuthException异常 跳转到4xx页面</li>
+<li>如果是 /hello?name=123的时候抛出NoUserExcetion的异常 跳转到404页面</li>
+<li>如果没有访问地址也会到404页面</li>
+</ul>
+<h3 id="测试结果"><a href="#测试结果" class="headerlink" title="测试结果"></a>测试结果</h3><ul>
+<li>访问/hello?name=abc 跳转到4xx页面</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190718194227.png" alt="4xx"></p>
+<ul>
+<li>访问/hello?name=123 跳转到404页面</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190718194426.png" alt="400"></p>
+<h2 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h2><p>在考虑对web错误页面处理的角度，无非就是两个方面：</p>
+<h3 id="一、-页面样式"><a href="#一、-页面样式" class="headerlink" title="一、 页面样式"></a>一、 页面样式</h3><p>​    在有模版引擎的情况下，通过<code>DefaultErrorController</code>在<code>/error</code>上的访问处理，来自动渲染在<code>template/error/</code>目录下的对应的<code>错误code.html</code>的的展示,如404.html。并且支持模糊匹配，如创建4xx.html页面，那么如果没有发现特定的错误代码页面，则自动的使用4xx页面。</p>
+<h3 id="二、-页面内容"><a href="#二、-页面内容" class="headerlink" title="二、 页面内容"></a>二、 页面内容</h3><p>页面内容可以通过继承<code>DefaultErrorAttributes</code>类来进行简单的实现，如果想全部替换掉SpringBoot的默认全部的返回内容，则需要实现<code>ErrorAttributes</code>进行实现，需要注意的是必须放到容器中才能生效。</p>
+
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+        <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+      
+    </div>
+<div>
+      
+        
+
+      
+</div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/07/15/2019-07-15-SpringBoot的WEB开发之国际化/" rel="next" title="SpringBoot的WEB开发之国际化">
+                <i class="fa fa-chevron-left"></i> SpringBoot的WEB开发之国际化
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="lv-container" data-id="city" data-uid="MTAyMC80NDc5NC8yMTMxNQ=="></div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png" alt="NanYin">
+            
+              <p class="site-author-name" itemprop="name">NanYin</p>
+              <p class="site-description motion-element" itemprop="description">Was mich nicht umbringt, macht mich starker.</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">79</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/NanYinIU" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="1977713379@qq.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-block">
+           <div class="links-of-blogroll-title">
+             <!-- modify icon to fire by szw -->
+             <i class="fa fa-history fa-" aria-hidden="true"></i>
+             近期文章
+           </div>
+           <ul class="links-of-blogroll-list">
+             
+             
+               <li>
+                 <a href="/2019/07/17/2019-07-17-SpringBoot错误处理机制/" title target="_blank"></a>
+               </li>
+             
+               <li>
+                 <a href="/2019/07/15/2019-07-15-SpringBoot的WEB开发之国际化/" title="SpringBoot的WEB开发之国际化" target="_blank">SpringBoot的WEB开发之国际化</a>
+               </li>
+             
+               <li>
+                 <a href="/2019/07/13/2019-07-13-SpringBoot的WEB开发/" title="SpringBoot的WEB开发之Hello-World" target="_blank">SpringBoot的WEB开发之Hello-World</a>
+               </li>
+             
+               <li>
+                 <a href="/2019/07/11/2019-07-11-使用Mysql的外键/" title="MySql使用外键（8.0）" target="_blank">MySql使用外键（8.0）</a>
+               </li>
+             
+               <li>
+                 <a href="/2019/07/10/2019-07-10-SpringBoot的日志/" title="SpringBoot的日志使用" target="_blank">SpringBoot的日志使用</a>
+               </li>
+             
+           </ul>
+         </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#在web开发中的异常错误处理"><span class="nav-number">1.</span> <span class="nav-text">在web开发中的异常错误处理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#处理机制"><span class="nav-number">1.1.</span> <span class="nav-text">处理机制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#errorPageCustomizer-定义错误页面"><span class="nav-number">1.1.1.</span> <span class="nav-text">errorPageCustomizer 定义错误页面</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#WhitelabelErrorViewConfiguration-空白页的配置"><span class="nav-number">1.1.2.</span> <span class="nav-text">WhitelabelErrorViewConfiguration 空白页的配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#basicErrorController-控制器"><span class="nav-number">1.1.3.</span> <span class="nav-text">basicErrorController 控制器</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#请求的媒体类型为text-html时"><span class="nav-number">1.1.3.1.</span> <span class="nav-text">请求的媒体类型为text/html时</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#请求为其他媒体类型"><span class="nav-number">1.1.3.2.</span> <span class="nav-text">请求为其他媒体类型</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#errorAttributes-错误页面属性信息"><span class="nav-number">1.1.4.</span> <span class="nav-text">errorAttributes 错误页面属性信息</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#添加错误页面和修改返回信息"><span class="nav-number">1.2.</span> <span class="nav-text">添加错误页面和修改返回信息</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#添加error页面"><span class="nav-number">1.2.1.</span> <span class="nav-text">添加error页面</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#定义异常和对应的异常处理"><span class="nav-number">1.2.2.</span> <span class="nav-text">定义异常和对应的异常处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#定义自定义属性类"><span class="nav-number">1.2.3.</span> <span class="nav-text">定义自定义属性类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#测试结果"><span class="nav-number">1.2.4.</span> <span class="nav-text">测试结果</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#结论"><span class="nav-number">1.3.</span> <span class="nav-text">结论</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#一、-页面样式"><span class="nav-number">1.3.1.</span> <span class="nav-text">一、 页面样式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、-页面内容"><span class="nav-number">1.3.2.</span> <span class="nav-text">二、 页面内容</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">NanYin</span>
+
+</div>
+
+
+  <span class="post-meta-divider">|</span>
+
+
+<div class="powered-by">
+<i class="fa fa-user-md"></i><span id="busuanzi_container_site_uv">
+  本站访客数:<span id="busuanzi_value_site_uv"></span>
+</span>
+</div>
+
+<span class="post-meta-divider">|</span>
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共74.6k字</span>
+</div>
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
