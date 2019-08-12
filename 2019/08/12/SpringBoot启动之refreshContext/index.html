@@ -96,10 +96,14 @@
 <meta property="og:site_name" content="NanYin的博客">
 <meta property="og:description" content="title: “SpringBoot启动之refreshContext”date: 2019-08-12 12:00:00copyright: turetags:  Java SpringBootcategories: SpringBoot   SpringBoot启动之refreshContext这篇主要要通过refreshContext方法来将SpringBoot是如何初始化ioc容器的。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-08-12T14:38:34.865Z">
+<meta property="og:image" content="https://nanyiniu.github.io/2019/08/12/SpringBoot启动之refreshContext/resources/35A360D4D16F0FE32C4F18C184FB074D.jpg">
+<meta property="og:image" content="https://nanyiniu.github.io/2019/08/12/SpringBoot启动之refreshContext/resources/7517F683FBB61095E8482415D2C4E673.jpg">
+<meta property="og:image" content="https://nanyiniu.github.io/2019/08/12/SpringBoot启动之refreshContext/resources/74F314A51E513D3A08C7F54609854583.jpg">
+<meta property="og:updated_time" content="2019-08-12T14:56:23.357Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="NanYin的博客">
 <meta name="twitter:description" content="title: “SpringBoot启动之refreshContext”date: 2019-08-12 12:00:00copyright: turetags:  Java SpringBootcategories: SpringBoot   SpringBoot启动之refreshContext这篇主要要通过refreshContext方法来将SpringBoot是如何初始化ioc容器的。">
+<meta name="twitter:image" content="https://nanyiniu.github.io/2019/08/12/SpringBoot启动之refreshContext/resources/35A360D4D16F0FE32C4F18C184FB074D.jpg">
 
 
 
@@ -333,7 +337,7 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-12T14:38:34Z">
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-12T14:56:23Z">
                 2019-08-12
               </time>
             
@@ -365,7 +369,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  964
+                  949
                 </span>
               
 
@@ -420,7 +424,7 @@
 <li>验证有没有缺失的必要的Property属性。</li>
 </ol>
 <h4 id="initPropertySources-初始化propertySource"><a href="#initPropertySources-初始化propertySource" class="headerlink" title="initPropertySources 初始化propertySource"></a>initPropertySources 初始化propertySource</h4><p>调用实现类的<code>initPropertySources</code>，根据debug的结果，进入到了子类<code>GenericWebApplication</code>类中，对<code>servletContex</code>进行属性设置。如下图中所展示的。</p>
-<p>![IMAGE](resources/35A360D4D16F0FE32C4F18C184FB074D.jpg =1200x435)</p>
+<p><img src="resources/35A360D4D16F0FE32C4F18C184FB074D.jpg" alt="IMAGE"></p>
 <h3 id="obtainFreshBeanFactory-获得beanFactory"><a href="#obtainFreshBeanFactory-获得beanFactory" class="headerlink" title="obtainFreshBeanFactory 获得beanFactory"></a>obtainFreshBeanFactory 获得beanFactory</h3><p>该方法依靠refreshBeanFactory()来只是bean工厂的实际刷新。因为SpringBoot在<code>ApplicationContext</code>已经持有一个类型为DefaultListableBeanFactory类型的<code>beanFactory</code>。所以可以直接返回。</p>
 <h3 id="prepareBeanFactory准备BeanFactory"><a href="#prepareBeanFactory准备BeanFactory" class="headerlink" title="prepareBeanFactory准备BeanFactory"></a>prepareBeanFactory准备BeanFactory</h3><p>配置BeanFactory的标准上下文特征。主要体现在一下几个方面：</p>
 <ol>
@@ -432,9 +436,9 @@
 <h3 id="postProcessBeanFactory"><a href="#postProcessBeanFactory" class="headerlink" title="postProcessBeanFactory"></a>postProcessBeanFactory</h3><p>允许在上下文子类中对bean进行后处理。调用相关方法完成对beanFactory的后置处理其的加载。<br>在之后的<code>invokeBeanFactoryPostProcessors</code>实例化并调用所有已注册的BeanFactoryPostProcessor bean。在方法<code>registerBeanPostProcessors</code>中实例化并注册所有BeanPostProcessor bean。</p>
 <h3 id="initMessageSource-初始化MessageSource"><a href="#initMessageSource-初始化MessageSource" class="headerlink" title="initMessageSource 初始化MessageSource"></a>initMessageSource 初始化MessageSource</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">initMessageSource</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="comment">// 先获得bean工厂</span></span><br><span class="line">		ConfigurableListableBeanFactory beanFactory = getBeanFactory();</span><br><span class="line">		<span class="comment">// 如果存在bean名称为messageSource的bean </span></span><br><span class="line">		<span class="comment">// 也就是国际化的Message</span></span><br><span class="line">		<span class="keyword">if</span> (beanFactory.containsLocalBean(MESSAGE_SOURCE_BEAN_NAME)) &#123;</span><br><span class="line">		  <span class="comment">// 获得messageSource</span></span><br><span class="line">			<span class="keyword">this</span>.messageSource = beanFactory.getBean(MESSAGE_SOURCE_BEAN_NAME, MessageSource.class);</span><br><span class="line">			<span class="comment">// Make MessageSource aware of parent MessageSource.</span></span><br><span class="line">			<span class="keyword">if</span> (<span class="keyword">this</span>.parent != <span class="keyword">null</span> &amp;&amp; <span class="keyword">this</span>.messageSource <span class="keyword">instanceof</span> HierarchicalMessageSource) &#123;</span><br><span class="line">				HierarchicalMessageSource hms = (HierarchicalMessageSource) <span class="keyword">this</span>.messageSource;</span><br><span class="line">				<span class="keyword">if</span> (hms.getParentMessageSource() == <span class="keyword">null</span>) &#123;</span><br><span class="line">					<span class="comment">// Only set parent context as parent MessageSource if no parent MessageSource</span></span><br><span class="line">					<span class="comment">// registered already.</span></span><br><span class="line">					hms.setParentMessageSource(getInternalParentMessageSource());</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">      <span class="comment">//。。。这里省略</span></span><br><span class="line">		&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>在debug时的结果，因为SpringBoot默认实现类Message，所以容器会加载SpringBoot配置好的国际化配置文件。如图中的basenameSet;<br>![IMAGE](resources/7517F683FBB61095E8482415D2C4E673.jpg =1189x338)</p>
+<p>在debug时的结果，因为SpringBoot默认实现类Message，所以容器会加载SpringBoot配置好的国际化配置文件。如图中的basenameSet;<br><img src="resources/7517F683FBB61095E8482415D2C4E673.jpg" alt="IMAGE"></p>
 <h3 id="onRefresh"><a href="#onRefresh" class="headerlink" title="onRefresh"></a>onRefresh</h3><p>在这一步，SpringBoot会根据应用类型来判断，如果是web应用，则会启动默认的web容器，如tomcat。<br>它回去找所有的类型为<code>ServletWebServerFactory</code>的类。然后获取第一个<code>getBeanFactory().getBean(beanNames[0], ServletWebServerFactory.class);</code>进行bean注入。这样通过注入的bean就能够启动web容器了。</p>
-<p>![IMAGE](resources/74F314A51E513D3A08C7F54609854583.jpg =1311x170)</p>
+<p><img src="resources/74F314A51E513D3A08C7F54609854583.jpg" alt="IMAGE"></p>
 <p>SpringBoot中默认实现有以上几种。</p>
 <h3 id="registerListeners-注册listeners"><a href="#registerListeners-注册listeners" class="headerlink" title="registerListeners 注册listeners"></a>registerListeners 注册listeners</h3><p>在这一步，注册类型为<code>ApplicationListener</code>的所有listeners;</p>
 <h3 id="finishBeanFactoryInitialization-完成所有非懒加载的bean的初始化"><a href="#finishBeanFactoryInitialization-完成所有非懒加载的bean的初始化" class="headerlink" title="finishBeanFactoryInitialization 完成所有非懒加载的bean的初始化"></a>finishBeanFactoryInitialization 完成所有非懒加载的bean的初始化</h3><h3 id="finishRefresh-完成刷新"><a href="#finishRefresh-完成刷新" class="headerlink" title="finishRefresh 完成刷新"></a>finishRefresh 完成刷新</h3><p>这步有以下几个操作。</p>
