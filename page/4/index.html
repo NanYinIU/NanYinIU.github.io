@@ -304,6 +304,196 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/05/29/2019-02-17-使用IDEA设置springboot热部署/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="NanYin">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NanYin的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/05/29/2019-02-17-使用IDEA设置springboot热部署/" itemprop="url">使用idea对spring boot应用进行热部署</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-29T12:00:00Z">
+                2019-05-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/工具/" itemprop="url" rel="index">
+                    <span itemprop="name">工具</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  197
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  1
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="使用idea对spring-boot应用进行热部署"><a href="#使用idea对spring-boot应用进行热部署" class="headerlink" title="使用idea对spring boot应用进行热部署"></a>使用idea对spring boot应用进行热部署</h1><h2 id="POM"><a href="#POM" class="headerlink" title="POM"></a>POM</h2><h3 id="在pom-xml中添加maven依赖"><a href="#在pom-xml中添加maven依赖" class="headerlink" title="在pom.xml中添加maven依赖"></a>在pom.xml中添加maven依赖</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;spring-boot-devtools&lt;/artifactId&gt;</span><br><span class="line">        &lt;optional&gt;true&lt;/optional&gt; &lt;!-- 这行必填 --&gt;</span><br><span class="line">        &lt;scope&gt;runtime&lt;/scope&gt;</span><br><span class="line"> &lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="并且在后面的插件配置中配置dev"><a href="#并且在后面的插件配置中配置dev" class="headerlink" title="并且在后面的插件配置中配置dev"></a>并且在后面的插件配置中配置dev</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;build&gt;</span><br><span class="line">    &lt;plugins&gt;</span><br><span class="line">        &lt;plugin&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-boot-maven-plugin&lt;/artifactId&gt;</span><br><span class="line">            &lt;configuration&gt;</span><br><span class="line">                &lt;!--如果没有该项配置，devtools不会起作用，即应用不会restart --&gt;</span><br><span class="line">                &lt;fork&gt;true&lt;/fork&gt;</span><br><span class="line">            &lt;/configuration&gt;</span><br><span class="line">        &lt;/plugin&gt;</span><br><span class="line">    &lt;/plugins&gt;</span><br><span class="line">&lt;/build&gt;</span><br></pre></td></tr></table></figure>
+
+<h2 id="IDEA"><a href="#IDEA" class="headerlink" title="IDEA"></a>IDEA</h2><h3 id="在IDEA中添加配置如下"><a href="#在IDEA中添加配置如下" class="headerlink" title="在IDEA中添加配置如下"></a>在IDEA中添加配置如下</h3><ol>
+<li>打开 setting ,搜索 <code>compiler</code> 后，把 <code>Build Project automaticial</code> 选项勾上</li>
+</ol>
+<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190531171258.png" alt="compiler"></p>
+<ol start="2">
+<li>使用  <code>ctrl+shift+A</code>  快捷键打开窗口，并搜索 <code>Registry...</code> 。勾选 <code>compiler.automake.allow.when.app.running</code> </li>
+</ol>
+<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190531171606.png" alt="running"></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+<div>
+      
+</div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/05/29/2019-01-30-利用springboot构建SpringData+JAP+RestFul应用/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2267,209 +2457,6 @@ public String toString() { return getRequestDescription(); }</code></pre><p>}</p
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/04/23/2019-04-08-悲观锁和乐观锁/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="NanYin">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NanYin的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/04/23/2019-04-08-悲观锁和乐观锁/" itemprop="url">悲观锁和乐观锁</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-04-23T12:00:00Z">
-                2019-04-23
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Java/" itemprop="url" rel="index">
-                    <span itemprop="name">Java</span>
-                  </a>
-                </span>
-
-                
-                
-                  ， 
-                
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Java/多线程/" itemprop="url" rel="index">
-                    <span itemprop="name">多线程</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  577
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  2
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="悲观锁和乐观锁"><a href="#悲观锁和乐观锁" class="headerlink" title="悲观锁和乐观锁"></a>悲观锁和乐观锁</h1><h2 id="悲观锁"><a href="#悲观锁" class="headerlink" title="悲观锁"></a>悲观锁</h2><p>悲观锁是总会先去想最坏的情况，每次线程拿数据的时候都会认为他会进行修改，适用于的场景是多写少读，这时使用悲观锁效率会高。程序中典型的悲观锁时synchronized和ReentrantLock </p>
-<h2 id="乐观锁"><a href="#乐观锁" class="headerlink" title="乐观锁"></a>乐观锁</h2><p>乐观锁是总会先去想好的情况，每次线程拿数据只会看一眼，并不会做修改操作，这时没有必要加锁，程序中的atom原子类使用cas+volatile+native方法实现乐观锁。 </p>
-<p>两种锁的机制，有各自的好处，不能说谁好谁坏，各有优点： </p>
-<p>悲观锁适用于多写少读的情况，而乐观锁适用于多读少写的情况，如果在多写的情况下使用乐观锁，会经常产生冲突，反而会降低性能。 </p>
-<h3 id="乐观锁常用的两种方式"><a href="#乐观锁常用的两种方式" class="headerlink" title="乐观锁常用的两种方式"></a>乐观锁常用的两种方式</h3><h4 id="版本号的控制"><a href="#版本号的控制" class="headerlink" title="版本号的控制"></a>版本号的控制</h4><p>每次读取数据的时候都会连同版本号一同读取，在当更新数据的时候，会比较读取到的版本号和数据库中的版本号是否一致，如果一致则更新，如果不一致则继续读取，更新数据。 </p>
-<h4 id="CAS操作（compareAndSwap）"><a href="#CAS操作（compareAndSwap）" class="headerlink" title="CAS操作（compareAndSwap）"></a>CAS操作（compareAndSwap）</h4><p>举个例子,在atomInteger类中涉及了CAS</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">public final native boolean compareAndSwapInt(Object o, long offset,</span><br><span class="line">                                                  int expected,</span><br><span class="line">                                                  int x)</span><br><span class="line">//这里是native方法 offset是偏移量先暂且不提，o是需要比较的值，expected是预期值，x是新值</span><br><span class="line">// 如果使用程序写出来就是大概这样：</span><br><span class="line">    int value;</span><br><span class="line">    public boolean fakeCAS(int expect,int newValue)&#123;</span><br><span class="line">        if(value == expect)&#123;</span><br><span class="line">            value = newValue;</span><br><span class="line">            return true;</span><br><span class="line">        &#125;else&#123;</span><br><span class="line">            return false;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
-<p><code>比较替换(compareAndSwap)</code>是一个原子操作，也是一个自旋操作，等待一个周期再次尝试。</p>
-<h4 id="CAS操作的缺点"><a href="#CAS操作的缺点" class="headerlink" title="CAS操作的缺点"></a>CAS操作的缺点</h4><ol>
-<li>ABA问题，何谓ABA：当两个线程读取到当前值为A，其中一个线程把值改为B后再把B改为A，这是另外一个线程使用cas操作读取到的值仍然是A，CAS会认为这个值从来没有变过，这就是ABA问题。也就是说遗失掉中间的过程，在链式的操作总更能体会到ABA问题的严重性。 </li>
-<li>自旋时间过长，消耗CPU资源。 </li>
-<li>只能对单个共享变量的原子性操作 </li>
-</ol>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-<div>
-      
-</div>
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2522,7 +2509,7 @@ public String toString() { return getRequestDescription(); }</code></pre><p>}</p
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">85</span>
+                  <span class="site-state-item-count">86</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2596,6 +2583,10 @@ public String toString() { return getRequestDescription(); }</code></pre><p>}</p
              
              
                <li>
+                 <a href="/2019/08/12/SpringBoot启动之refreshContext/" title target="_blank"></a>
+               </li>
+             
+               <li>
                  <a href="/2019/08/05/SpringBoot启动原理/" title="SpringBoot启动原理" target="_blank">SpringBoot启动原理</a>
                </li>
              
@@ -2609,10 +2600,6 @@ public String toString() { return getRequestDescription(); }</code></pre><p>}</p
              
                <li>
                  <a href="/2019/07/13/2019-07-13-SpringBoot的WEB开发/" title="SpringBoot的WEB开发之Hello-World" target="_blank">SpringBoot的WEB开发之Hello-World</a>
-               </li>
-             
-               <li>
-                 <a href="/2019/07/11/2019-07-11-使用Mysql的外键/" title="MySql使用外键（8.0）" target="_blank">MySql使用外键（8.0）</a>
                </li>
              
            </ul>
@@ -2661,7 +2648,7 @@ public String toString() { return getRequestDescription(); }</code></pre><p>}</p
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共87.4k字</span>
+  <span class="post-count">博客全站共88.4k字</span>
 </div>
 
 
