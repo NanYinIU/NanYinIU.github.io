@@ -98,7 +98,7 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190616105829.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190616112121.png">
-<meta property="og:updated_time" content="2019-06-19T14:35:05.000Z">
+<meta property="og:updated_time" content="2019-08-12T05:27:17.102Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="设计模式之访问者模式">
 <meta name="twitter:description" content="设计模式之访问者模式访问者模式是一种复杂的行为模式。表示要对对象结构的元素执行的操作。访问者允许对对象结构中的节点定义新操作，而无需更改其操作的元素的类。 适用于数据结构相对未定的系统，它把数据结构和作用于结构上的操作之间的耦合解脱开，使得操作集合可以相对自由地演化。 应用场景当遇到如下情况时，可以优先考虑使用访问者模式：  对象结构中包含许多具有不同接口的对象类，并且希望对依赖于其具体类的这些对">
@@ -467,14 +467,15 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">OperateStructure</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 定义结构体</span></span><br><span class="line">    <span class="keyword">private</span> List&lt;OperateNode&gt; list = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">add</span><span class="params">(OperateNode operateNode)</span></span>&#123;</span><br><span class="line">        list.add(operateNode);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//对结构体中的对象实现接收访问操作</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">action</span><span class="params">(Visitor visitor)</span></span>&#123;</span><br><span class="line">        <span class="keyword">for</span> (OperateNode operateNode : list)&#123;</span><br><span class="line">        <span class="comment">// 目的就是使用双重分派调用来实现</span></span><br><span class="line">        <span class="comment">// 节点接受访问者与访问者访问节点的操作</span></span><br><span class="line">            operateNode.accept(visitor);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <ul>
-<li><p>客户端调用</p>
+<li>客户端调用</li>
+</ul>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">App</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Visitor visitorA = <span class="keyword">new</span> VisitorA();</span><br><span class="line">        Visitor visitorB = <span class="keyword">new</span> VisitorB();</span><br><span class="line">        OperateStructure structure = <span class="keyword">new</span> OperateStructure();</span><br><span class="line">        structure.add(<span class="keyword">new</span> OperateNodeA(<span class="number">22</span>));</span><br><span class="line">        structure.add(<span class="keyword">new</span> OperateNodeB(<span class="number">22</span>));</span><br><span class="line">        structure.action(visitorA);</span><br><span class="line">        structure.action(visitorB);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>结果</p>
+
+<ul>
+<li>结果</li>
+</ul>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">本月该研发人员考勤为22天</span><br><span class="line">本月该实施人员考勤为24天</span><br><span class="line">本月该研发人员绩效为 :28.4</span><br><span class="line">本月该研发人员绩效为 :22.0</span><br></pre></td></tr></table></figure>
 
-</li>
-</ul>
 
       
     </div>
@@ -504,7 +505,7 @@
   <p><span>本文标题:</span><a href="/2019/06/15/2019-06-15-设计模式之访问者模式/">设计模式之访问者模式</a></p>
   <p><span>文章作者:</span><a href="/" title="访问 NanYin 的个人博客">NanYin</a></p>
   <p><span>发布时间:</span>2019年06月15日 - 12:06</p>
-  <p><span>最后更新:</span>2019年06月19日 - 22:06</p>
+  <p><span>最后更新:</span>2019年08月12日 - 13:08</p>
   <p><span>原始链接:</span><a href="/2019/06/15/2019-06-15-设计模式之访问者模式/" title="设计模式之访问者模式">https://nanyiniu.github.io/2019/06/15/2019-06-15-设计模式之访问者模式/</a>
     <span class="copy-path" title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="https://nanyiniu.github.io/2019/06/15/2019-06-15-设计模式之访问者模式/" aria-label="复制成功！"></i></span>
   </p>
@@ -648,7 +649,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">80</span>
+                  <span class="site-state-item-count">85</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -722,7 +723,7 @@
              
              
                <li>
-                 <a href="/2019/08/05/2019-08-05-SpringBoot启动原理/" title="SpringBoot的启动原理" target="_blank">SpringBoot的启动原理</a>
+                 <a href="/2019/08/05/SpringBoot启动原理/" title="SpringBoot启动原理" target="_blank">SpringBoot启动原理</a>
                </li>
              
                <li>
@@ -730,7 +731,7 @@
                </li>
              
                <li>
-                 <a href="/2019/07/15/2019-07-15-SpringBoot的WEB开发之国际化/" title="SpringBoot的WEB开发之国际化" target="_blank">SpringBoot的WEB开发之国际化</a>
+                 <a href="/2019/07/15/SpringBoot的WEB开发之国际化/" title="SpringBoot的WEB开发之国际化" target="_blank">SpringBoot的WEB开发之国际化</a>
                </li>
              
                <li>
@@ -803,7 +804,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共76.7k字</span>
+  <span class="post-count">博客全站共87.4k字</span>
 </div>
 
 
