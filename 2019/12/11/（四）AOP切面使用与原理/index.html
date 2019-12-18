@@ -1,0 +1,1364 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-bounce.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Java,Spring,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="NanYin的博客" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="SpringAOP的使用和源码分析前言现在来看（Aspect-oriented Programming） 面向切面编程aop，是和oop（Object-oriented Programming）是对编程结果的不同的思考的方向。在面向对象中，形成组合的组件是类（class）。而在面向切面，形成组合的组件是切面（Aspect）,切面能够对关注的地方模块化，横切多种不同的类型和对象（比如事务管理）。而这">
+<meta name="keywords" content="Java,Spring">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringAOP的使用和源码分析">
+<meta property="og:url" content="https://nanyiniu.github.io/2019/12/11/（四）AOP切面使用与原理/index.html">
+<meta property="og:site_name" content="NanYin的博客">
+<meta property="og:description" content="SpringAOP的使用和源码分析前言现在来看（Aspect-oriented Programming） 面向切面编程aop，是和oop（Object-oriented Programming）是对编程结果的不同的思考的方向。在面向对象中，形成组合的组件是类（class）。而在面向切面，形成组合的组件是切面（Aspect）,切面能够对关注的地方模块化，横切多种不同的类型和对象（比如事务管理）。而这">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20191117135450.jpg">
+<meta property="og:updated_time" content="2019-12-11T12:35:39.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SpringAOP的使用和源码分析">
+<meta name="twitter:description" content="SpringAOP的使用和源码分析前言现在来看（Aspect-oriented Programming） 面向切面编程aop，是和oop（Object-oriented Programming）是对编程结果的不同的思考的方向。在面向对象中，形成组合的组件是类（class）。而在面向切面，形成组合的组件是切面（Aspect）,切面能够对关注的地方模块化，横切多种不同的类型和对象（比如事务管理）。而这">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20191117135450.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://nanyiniu.github.io/2019/12/11/（四）AOP切面使用与原理/">
+
+
+
+
+
+  <title>SpringAOP的使用和源码分析 | NanYin的博客</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+<a href="https://github.com/NanYinIU" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewbox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">NanYin的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">记录生活点滴</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/12/11/（四）AOP切面使用与原理/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="NanYin">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NanYin的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">SpringAOP的使用和源码分析</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-12-11T12:00:00Z">
+                2019-12-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Spring/" itemprop="url" rel="index">
+                    <span itemprop="name">Spring</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  3.6k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  16
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="SpringAOP的使用和源码分析"><a href="#SpringAOP的使用和源码分析" class="headerlink" title="SpringAOP的使用和源码分析"></a>SpringAOP的使用和源码分析</h1><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>现在来看（Aspect-oriented Programming） 面向切面编程aop，是和oop（Object-oriented Programming）是对编程结果的不同的思考的方向。在面向对象中，形成组合的组件是类（class）。而在面向切面，形成组合的组件是切面（Aspect）,切面能够对关注的地方模块化，横切多种不同的类型和对象（比如事务管理）。而这个所谓的“关注的地方”，也可以在AOP中称为<strong>跨领域关注点</strong>。</p>
+<p>Spring提供 配置文件 和 @AspectJ注解 方式编写AOP，两种方式都支持各种的 Advice（通知），如果使用@AspectJ注解，仍然会通过Spring的进行织入。</p>
+<h2 id="AOP中关键字的概念"><a href="#AOP中关键字的概念" class="headerlink" title="AOP中关键字的概念"></a>AOP中关键字的概念</h2><h3 id="1-Aspect"><a href="#1-Aspect" class="headerlink" title="1.Aspect"></a>1.Aspect</h3><p>切面： 对多种不同的类的横切关注点，这个关注点被模块化为一个类，这个类就叫做切面（切面类），通过在普通类上标注 <code>@Aspect</code>注解来实现。</p>
+<h3 id="2-Join-point"><a href="#2-Join-point" class="headerlink" title="2.Join point"></a>2.Join point</h3><p>连接点：程序执行过程中能够执行通知（Advice）的点。</p>
+<h3 id="3-Advice"><a href="#3-Advice" class="headerlink" title="3.Advice"></a>3.Advice</h3><p>通知：通知指的是切面在指定的连接点处执行的操作，不同的通知类型包括：“around”, “before” and “after”</p>
+<h3 id="4-Pointcut"><a href="#4-Pointcut" class="headerlink" title="4.Pointcut"></a>4.Pointcut</h3><p>切点：切点会匹配通知所要织入的一个或者多个连接点，通知是与切点向关联的，并且在任何匹配到切点的地方执行在连接点上的操作。</p>
+<h3 id="5-Target-object"><a href="#5-Target-object" class="headerlink" title="5.Target object"></a>5.Target object</h3><p>目标对象：一个【被一个或多个切面进行通知】的对象叫做目标对象，也叫代理对象。</p>
+<h3 id="6-AOP-proxy"><a href="#6-AOP-proxy" class="headerlink" title="6.AOP proxy"></a>6.AOP proxy</h3><p>AOP代理：在Spring中，一个是JDK动态代理，一个是 CGLIB 代理。</p>
+<h3 id="7-Weaving"><a href="#7-Weaving" class="headerlink" title="7.Weaving"></a>7.Weaving</h3><p>织入：织入是将切面应用到目标对象来创建的代理对象过程</p>
+<h2 id="使用注解方式进行AOP的配置和使用"><a href="#使用注解方式进行AOP的配置和使用" class="headerlink" title="使用注解方式进行AOP的配置和使用"></a>使用注解方式进行AOP的配置和使用</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 1. 使用 <span class="doctag">@Aspect</span> 注解创建切面类</span></span><br><span class="line"><span class="comment"> * 2. 使用 <span class="doctag">@Pointcut</span> 注解注明切点（使用Aspect表达式）</span></span><br><span class="line"><span class="comment"> * 3. 声明通知（Before，After，Around，AfterReturning，AfterThrowing）具体含义可以参考Ref文档 5.4.4. Declaring Advice</span></span><br><span class="line"><span class="comment"> * 只是以上三步是不行的，因为没有开启Spring对注解版AOP的支持</span></span><br><span class="line"><span class="comment"> * 所以，需要使用 <span class="doctag">@EnableAspectJAutoProxy</span> 开启对<span class="doctag">@Aspect</span>注解的支持</span></span><br><span class="line"><span class="comment"> **/</span></span><br><span class="line"><span class="meta">@Aspect</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LogAspects</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Pointcut</span>(value=<span class="string">"within(com.nanyin.service.*)"</span>)</span><br><span class="line"><span class="comment">// 	@Pointcut("execution(public * (..))")</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">pointCut</span><span class="params">()</span></span>&#123;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Before</span>(<span class="string">"pointCut()"</span>)</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">logBefore</span><span class="params">(JoinPoint jp)</span></span>&#123;</span><br><span class="line">		System.out.println(jp.getSignature().getName());</span><br><span class="line">		System.out.println(<span class="string">"before..."</span>);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@After</span>(<span class="string">"pointCut()"</span>)</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">logAfter</span><span class="params">()</span></span>&#123;</span><br><span class="line">		System.out.println(<span class="string">"after..."</span>);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@AfterReturning</span>(<span class="string">"pointCut()"</span>)</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">logAfterReturn</span><span class="params">()</span></span>&#123;</span><br><span class="line">		System.out.println(<span class="string">"after return..."</span>);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@AfterThrowing</span>(value = <span class="string">"pointCut()"</span>,throwing = <span class="string">"ex"</span>)</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">logAfterThrowing</span><span class="params">(JoinPoint joinPoint,Exception ex)</span></span>&#123;</span><br><span class="line">		joinPoint.getSignature().getName();</span><br><span class="line">		System.out.println(<span class="string">"after throwing..."</span>);</span><br><span class="line">		System.out.println(ex.getMessage());</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// around在proceed 之前是在 before之前执行</span></span><br><span class="line">	<span class="comment">// around在proceed 之前是在 after之前执行</span></span><br><span class="line">	<span class="comment">// 可兼容before和after</span></span><br><span class="line">	<span class="meta">@Around</span>(<span class="string">"pointCut()"</span>)</span><br><span class="line">	<span class="function"><span class="keyword">public</span> Object <span class="title">logAround</span><span class="params">(ProceedingJoinPoint joinPoint)</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">		<span class="comment">// 方法开始</span></span><br><span class="line">		System.out.println(<span class="string">"around methods begin ..."</span>);</span><br><span class="line">		Object object = joinPoint.proceed();</span><br><span class="line">		System.out.println(<span class="string">"around methods end ..."</span>);</span><br><span class="line">		<span class="keyword">return</span> object;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 进行测试</span></span><br><span class="line"><span class="comment"> * </span></span><br><span class="line"><span class="comment"> **/</span></span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test1</span><span class="params">()</span></span>&#123;</span><br><span class="line">	AnnotationConfigApplicationContext applicationContext = <span class="keyword">new</span> AnnotationConfigApplicationContext(BasicConfig.class);</span><br><span class="line">	BasicService basicService = (BasicService) applicationContext.getBean(<span class="string">"basicService"</span>);</span><br><span class="line">	<span class="comment">// 因为切点包括这个basicService，所以执行hello就会触发AOP</span></span><br><span class="line">	basicService.hello();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 结果</span></span><br><span class="line">around methods begin ...</span><br><span class="line">hello</span><br><span class="line">before...</span><br><span class="line">hello world!!</span><br><span class="line">around methods end ...</span><br><span class="line">after...</span><br><span class="line">after <span class="keyword">return</span>...</span><br></pre></td></tr></table></figure>
+
+<h2 id="AOP代码原理分析"><a href="#AOP代码原理分析" class="headerlink" title="AOP代码原理分析"></a>AOP代码原理分析</h2><p>通过以上实践，可以看到如果需要使用Spring的AOP功能，需要先使用 <code>@EnableAspectJAutoProxy</code> 注解标注在配置类中，使 <code>@Aspect</code> 生效为一个切面类。</p>
+<h3 id="1-EnableAspectJAutoProxy-开启springAOP支持"><a href="#1-EnableAspectJAutoProxy-开启springAOP支持" class="headerlink" title="1. @EnableAspectJAutoProxy 开启springAOP支持"></a>1. @EnableAspectJAutoProxy 开启springAOP支持</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Target</span>(ElementType.TYPE) <span class="comment">//标注在类上</span></span><br><span class="line"><span class="meta">@Retention</span>(RetentionPolicy.RUNTIME)</span><br><span class="line"><span class="meta">@Documented</span></span><br><span class="line"><span class="meta">@Import</span>(AspectJAutoProxyRegistrar.class) <span class="comment">//引入 AspectJAutoProxyRegistrar</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> EnableAspectJAutoProxy &#123;</span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * 是否使用CGLIB进行代理，默认是false，即默认使用JDK动态代理</span></span><br><span class="line"><span class="comment">   **/</span></span><br><span class="line">  <span class="function"><span class="keyword">boolean</span> <span class="title">proxyTargetClass</span><span class="params">()</span> <span class="keyword">default</span> <span class="keyword">false</span></span>;</span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * 是否需要 代理应由AOP框架公开为&#123;ThreadLocal&#125;，以便通过&#123;AopContext&#125;类进行检索。</span></span><br><span class="line"><span class="comment">   **/</span></span><br><span class="line">  <span class="function"><span class="keyword">boolean</span> <span class="title">exposeProxy</span><span class="params">()</span> <span class="keyword">default</span> <span class="keyword">false</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>重要的是注解Import内引用的<code>AspectJAutoProxyRegistrar</code>类。这个类通过使用 <code>BeanDefinitionRegistry</code> 注册一个 <code>AnnotationAwareAspectJAutoProxyCreator</code>.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">registerBeanDefinitions</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">		AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry)</span> </span>&#123;</span><br><span class="line">	<span class="comment">//如果需要 注册AspectJ注解自动代理创建类 internalAutoProxyCreator</span></span><br><span class="line">	AopConfigUtils.registerAspectJAnnotationAutoProxyCreatorIfNecessary(registry);</span><br><span class="line"><span class="comment">// 	...</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">@Nullable</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> BeanDefinition <span class="title">registerOrEscalateApcAsRequired</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">		Class&lt;?&gt; cls, BeanDefinitionRegistry registry, @Nullable Object source)</span> </span>&#123;</span><br><span class="line"><span class="comment">//		cls=AnnotationAwareAspectJAutoProxyCreator</span></span><br><span class="line">	Assert.notNull(registry, <span class="string">"BeanDefinitionRegistry must not be null"</span>);</span><br><span class="line">	<span class="comment">// 是否存在internalAutoProxyCreator</span></span><br><span class="line">	<span class="keyword">if</span> (registry.containsBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME)) &#123;</span><br><span class="line">    <span class="comment">// ...	</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 获得一个 AnnotationAwareAspectJAutoProxyCreator 的 beanDefinition</span></span><br><span class="line">	RootBeanDefinition beanDefinition = <span class="keyword">new</span> RootBeanDefinition(cls);</span><br><span class="line">	beanDefinition.setSource(source);</span><br><span class="line">	beanDefinition.getPropertyValues().add(<span class="string">"order"</span>, Ordered.HIGHEST_PRECEDENCE);</span><br><span class="line">	beanDefinition.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);</span><br><span class="line">	<span class="comment">// 注册名为 org.springframework.aop.config.internalAutoProxyCreator 的类</span></span><br><span class="line">	<span class="comment">// 实际对应的是 AnnotationAwareAspectJAutoProxyCreator 类，而这个类是用来使@Aspect起作用的</span></span><br><span class="line">	registry.registerBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME, beanDefinition);</span><br><span class="line">	<span class="keyword">return</span> beanDefinition;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>为什么必须要使用 <code>@EnableAspectJAutoProxy</code> 注解 才能使 Spring AOP 起到作用，经过上面的分析就能够给出答案了，因为只有添加了 <code>@EnableAspectJAutoProxy</code> 这个注解，才能使解析 <code>@Aspect</code> 注解的 <strong>AnnotationAwareAspectJAutoProxyCreator</strong> 注册到容器中。</p>
+<p>那么 <strong>AnnotationAwareAspectJAutoProxyCreator</strong> 是如何工作的呢。。</p>
+<h3 id="2-AnnotationAwareAspectJAutoProxyCreator-实现AOP功能"><a href="#2-AnnotationAwareAspectJAutoProxyCreator-实现AOP功能" class="headerlink" title="2. AnnotationAwareAspectJAutoProxyCreator 实现AOP功能"></a>2. AnnotationAwareAspectJAutoProxyCreator 实现AOP功能</h3><h4 id="类结构初步分析"><a href="#类结构初步分析" class="headerlink" title="类结构初步分析"></a>类结构初步分析</h4><p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20191117135450.jpg" alt="图1"></p>
+<p>根据上面的图片可以看出 AnnotationAwareAspectJAutoProxyCreator 有两个顶级接口，分别是 BeanPostProcesser 和 Aware 接口。</p>
+<p>Aware 接口主要用于标记超级接口，用于指示bean有资格通过回调样式方法由Spring容器通知特定框架对象。</p>
+<p>BeanPostProcesser 可以通过实现 BeanPostProcesser 允许自定义修改新的bean实例。 其中包括两个后置处理器：1.<code>postProcessBeforeInitialization(Object bean, String beanName)</code>  2.<code>postProcessAfterInitialization(Object bean, String beanName)</code> 分别针对初始化前后的拦截处理。</p>
+<h5 id="a-AbstractAutoProxyCreator"><a href="#a-AbstractAutoProxyCreator" class="headerlink" title="a. AbstractAutoProxyCreator"></a>a. AbstractAutoProxyCreator</h5><p>在通过上面图片中所看到的 AbstractAutoProxyCreator 继承了 ProxyProcessorSupport 类</p>
+<table>
+<thead>
+<tr>
+<th>继承类/接口</th>
+<th>作用</th>
+<th>需要实现方法</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ProxyConfig类</td>
+<td>用于创建代理的配置的便利超类，保证所有的代理创建类有一致的属性</td>
+<td></td>
+</tr>
+<tr>
+<td>Ordered接口</td>
+<td>表示继承类是有序的</td>
+<td></td>
+</tr>
+<tr>
+<td>BeanClassLoaderAware接口</td>
+<td>使用指定的classLoader来加载Bean</td>
+<td>setBeanClassLoader(ClassLoader classLoader)</td>
+</tr>
+<tr>
+<td>AopInfrastructureBean接口</td>
+<td>标示该Bean是作为Spring AOP的基础组件进行使用，因此不会被代理，即使被PointCut指定到也不会被代理到</td>
+<td></td>
+</tr>
+<tr>
+<td>BeanFactoryAware</td>
+<td>使用指定的 BeanFactory 来实例化Bean</td>
+<td>void setBeanFactory(BeanFactory beanFactory)</td>
+</tr>
+</tbody></table>
+<h5 id="b-SmartInstantiationAwareBeanPostProcessor"><a href="#b-SmartInstantiationAwareBeanPostProcessor" class="headerlink" title="b. SmartInstantiationAwareBeanPostProcessor"></a>b. SmartInstantiationAwareBeanPostProcessor</h5><p>AbstractAutoProxyCreator -&gt; 实现自 <code>SmartInstantiationAwareBeanPostProcessor</code>  -&gt; 继承自 <code>InstantiationAwareBeanPostProcessor</code> -&gt; 继承自 <code>BeanPostProcessor</code>.</p>
+<ul>
+<li>InstantiationAwareBeanPostProcessor</li>
+</ul>
+<p>在这个接口中，不仅仅有继承于 BeanPostProcessor 的 <code>postProcessBeforeInitialization(Object bean, String beanName)</code>  和 <code>postProcessAfterInitialization(Object bean, String beanName)</code> 两个Bean初始化前后的处理方法，本身还定义了 <code>postProcessProperties</code> 和 <code>postProcessPropertyValues</code>方法。作用是在针对Bean的初始化后对属性进行后置处理。</p>
+<ul>
+<li>SmartInstantiationAwareBeanPostProcessor</li>
+</ul>
+<p>在这个接口中定义两个方法，分别为 <code>default Class&lt;?&gt; predictBeanType(Class&lt;?&gt; beanClass, String beanName)</code> 用来预测使用BeanPostProcessor的postProcessBeforeInstantiation方法的返回类型，默认为null。<code>default Constructor&lt;?&gt;[] determineCandidateConstructors(Class&lt;?&gt; beanClass, String beanName)</code> 用来决定使用哪个候选的构造器。</p>
+<h4 id="AbstractAutoProxyCreator类源码分析"><a href="#AbstractAutoProxyCreator类源码分析" class="headerlink" title="AbstractAutoProxyCreator类源码分析"></a>AbstractAutoProxyCreator类源码分析</h4><p>在 <code>AbstractAutoProxyCreator</code> 作为 <code>AnnotationAwareAspectJAutoProxyCreator</code> 的父类，起到了非常重要的作用。</p>
+<p>在 <code>AbstractAutoProxyCreator</code> 中，实现了 <code>BeanPostProcessor</code> 的初始化前后处理方法，用来针对每次初始化Bean前后对切面的识别判断和对符合条件的Bean进行通知的代理。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// postProcessBeforeInitialization ,BeanPostProcessor的实现方法。</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Object <span class="title">postProcessBeforeInstantiation</span><span class="params">(Class&lt;?&gt; beanClass, String beanName)</span> </span>&#123;</span><br><span class="line">	Object cacheKey = getCacheKey(beanClass, beanName); <span class="comment">//获得beanClass</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (!StringUtils.hasLength(beanName) || !<span class="keyword">this</span>.targetSourcedBeans.contains(beanName)) &#123;</span><br><span class="line">		<span class="keyword">if</span> (<span class="keyword">this</span>.advisedBeans.containsKey(cacheKey)) &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> (isInfrastructureClass(beanClass) || shouldSkip(beanClass, beanName)) &#123;</span><br><span class="line">		  <span class="comment">// 通过判断是否使用了@AspectJ注解定义的切面类还是 实现Advice、Pointcut、Advisor、AopInfrastructureBean</span></span><br><span class="line">			<span class="keyword">this</span>.advisedBeans.put(cacheKey, Boolean.FALSE); <span class="comment">//添加到advisedBeans里面，等待处理</span></span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">//如果不是基础设施的类</span></span><br><span class="line">	TargetSource targetSource = getCustomTargetSource(beanClass, beanName); <span class="comment">//获得targetSource</span></span><br><span class="line">	<span class="keyword">if</span> (targetSource != <span class="keyword">null</span>) &#123;</span><br><span class="line">		<span class="keyword">if</span> (StringUtils.hasLength(beanName)) &#123;</span><br><span class="line">			<span class="keyword">this</span>.targetSourcedBeans.add(beanName);</span><br><span class="line">		&#125;</span><br><span class="line">		Object[] specificInterceptors = getAdvicesAndAdvisorsForBean(beanClass, beanName, targetSource);</span><br><span class="line">		Object proxy = createProxy(beanClass, beanName, specificInterceptors, targetSource); <span class="comment">//创建代理类</span></span><br><span class="line">		<span class="keyword">this</span>.proxyTypes.put(cacheKey, proxy.getClass());</span><br><span class="line">		<span class="keyword">return</span> proxy;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在postProcessBeforeInstantiation实现类中，具体流程大致为 如果是Aspect切面类，则将类添加到advisedBeans中等待进行Advice的组装，如果不是切面类，则会先去判断是否自定义一个  customTargetSourceCreators 数组 ，如果定义了。则组装成自定义的代理类进行返回。</p>
+<h5 id="1-判断是否是个切面"><a href="#1-判断是否是个切面" class="headerlink" title="1. 判断是否是个切面"></a>1. 判断是否是个切面</h5><p>那么最主要的问题是如何进行判断是否是Aspect切面类呢。只有系统认为是切面类，才能进行接下来的组装Advice发通知的后续操作。否则就不能进行通知了。<br>所以关键点在于 <code>isInfrastructureClass</code> 方法。</p>
+<p>在 AnnotationAwareAspectJAutoProxyCreator 中存在 的isInfrastructureClass 实现方法。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">boolean</span> <span class="title">isInfrastructureClass</span><span class="params">(Class&lt;?&gt; beanClass)</span> </span>&#123;</span><br><span class="line">  <span class="comment">// 加上父类中的isInfrastructureClass判断规则</span></span><br><span class="line">	<span class="keyword">return</span> (<span class="keyword">super</span>.isInfrastructureClass(beanClass) ||</span><br><span class="line">			(<span class="keyword">this</span>.aspectJAdvisorFactory != <span class="keyword">null</span> &amp;&amp; <span class="keyword">this</span>.aspectJAdvisorFactory.isAspect(beanClass)));</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isAspect</span><span class="params">(Class&lt;?&gt; clazz)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">return</span> (hasAspectAnnotation(clazz) &amp;&amp; !compiledByAjc(clazz));</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 在这里判断是否存在 Aspect 注解</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">hasAspectAnnotation</span><span class="params">(Class&lt;?&gt; clazz)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> (AnnotationUtils.findAnnotation(clazz, Aspect.class) != <span class="keyword">null</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// AbstractAutoProxyCreator 中的方法</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">boolean</span> <span class="title">isInfrastructureClass</span><span class="params">(Class&lt;?&gt; beanClass)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">boolean</span> retVal = Advice.class.isAssignableFrom(beanClass) || <span class="comment">//是否实现 Advice</span></span><br><span class="line">			Pointcut.class.isAssignableFrom(beanClass) || <span class="comment">//是否实现 Pointcut</span></span><br><span class="line">			Advisor.class.isAssignableFrom(beanClass) || <span class="comment">//是否实现 Advisor</span></span><br><span class="line">			AopInfrastructureBean.class.isAssignableFrom(beanClass); <span class="comment">//是否实现 AopInfrastructureBean</span></span><br><span class="line">	<span class="keyword">if</span> (retVal &amp;&amp; logger.isTraceEnabled()) &#123;</span><br><span class="line">		logger.trace(<span class="string">"Did not attempt to auto-proxy infrastructure class ["</span> + beanClass.getName() + <span class="string">"]"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> retVal;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="2-进行代理"><a href="#2-进行代理" class="headerlink" title="2.进行代理"></a>2.进行代理</h5><p>真正的代理是发生在实现的 <code>beanPostProcessor</code> 的 <code>postProcessAfterInitialization</code></p>
+<p>在 <code>AbstractAutoProxyCreator</code> 中提供类一个初始化后置处理器 <code>postProcessAfterInitialization</code> 。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Object <span class="title">postProcessAfterInitialization</span><span class="params">(@Nullable Object bean, String beanName)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (bean != <span class="keyword">null</span>) &#123;</span><br><span class="line">		Object cacheKey = getCacheKey(bean.getClass(), beanName);</span><br><span class="line">		<span class="keyword">if</span> (<span class="keyword">this</span>.earlyProxyReferences.remove(cacheKey) != bean) &#123; <span class="comment">// 如果不存在</span></span><br><span class="line">		<span class="comment">// 如果需要进行代理的包装</span></span><br><span class="line">			<span class="keyword">return</span> wrapIfNecessary(bean, beanName, cacheKey);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> bean;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//如有必要，包装给定的bean，即是否有资格被代理</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> Object <span class="title">wrapIfNecessary</span><span class="params">(Object bean, String beanName, Object cacheKey)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (StringUtils.hasLength(beanName) &amp;&amp; <span class="keyword">this</span>.targetSourcedBeans.contains(beanName)) &#123;</span><br><span class="line">		<span class="comment">// 如果在 postProcessBeforeInitialization 中定义了targetSourcedBeans,则直接返回</span></span><br><span class="line">		<span class="keyword">return</span> bean;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> (Boolean.FALSE.equals(<span class="keyword">this</span>.advisedBeans.get(cacheKey))) &#123;</span><br><span class="line">		<span class="comment">// 如果已经添加到advisedBeans中也直接返回</span></span><br><span class="line">		<span class="keyword">return</span> bean;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 如果是一个基本配置Aspect类，则放到advisedBeans中。</span></span><br><span class="line">	<span class="keyword">if</span> (isInfrastructureClass(bean.getClass()) || shouldSkip(bean.getClass(), beanName)) &#123;</span><br><span class="line">		<span class="keyword">this</span>.advisedBeans.put(cacheKey, Boolean.FALSE);</span><br><span class="line">		<span class="keyword">return</span> bean;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 创建Advice，创建advice的过程先省略</span></span><br><span class="line">	Object[] specificInterceptors = getAdvicesAndAdvisorsForBean(bean.getClass(), beanName, <span class="keyword">null</span>);</span><br><span class="line">	<span class="comment">// Advice存在，则表示需要代理</span></span><br><span class="line">	<span class="keyword">if</span> (specificInterceptors != DO_NOT_PROXY) &#123;</span><br><span class="line">		<span class="keyword">this</span>.advisedBeans.put(cacheKey, Boolean.TRUE);</span><br><span class="line">		<span class="comment">// 创建代理</span></span><br><span class="line">		Object proxy = createProxy(</span><br><span class="line">				bean.getClass(), beanName, specificInterceptors, <span class="keyword">new</span> SingletonTargetSource(bean));</span><br><span class="line">		<span class="keyword">this</span>.proxyTypes.put(cacheKey, proxy.getClass());</span><br><span class="line">		<span class="comment">// 返回代理对象。</span></span><br><span class="line">		<span class="keyword">return</span> proxy;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">this</span>.advisedBeans.put(cacheKey, Boolean.FALSE);</span><br><span class="line">	<span class="keyword">return</span> bean;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="AOP对类的加载包装过程"><a href="#AOP对类的加载包装过程" class="headerlink" title="AOP对类的加载包装过程"></a>AOP对类的加载包装过程</h3><p>每次在创建Bean时，会通过createBean()方法来创建Bean，其中在真正的创建Bean之前执行了resolveBeforeInstantiation 去生成代理Bean。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">	Object bean = resolveBeforeInstantiation(beanName, mbdToUse);</span><br><span class="line">	<span class="keyword">if</span> (bean != <span class="keyword">null</span>) &#123;</span><br><span class="line">		<span class="keyword">return</span> bean;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">	<span class="comment">// 创建Bean</span></span><br><span class="line">	Object beanInstance = doCreateBean(beanName, mbdToUse, args);</span><br><span class="line">	<span class="keyword">if</span> (logger.isTraceEnabled()) &#123;</span><br><span class="line">		logger.trace(<span class="string">"Finished creating instance of bean '"</span> + beanName + <span class="string">"'"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> beanInstance;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 生成代理对象方法</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> Object <span class="title">resolveBeforeInstantiation</span><span class="params">(String beanName, RootBeanDefinition mbd)</span> </span>&#123;</span><br><span class="line">	Object bean = <span class="keyword">null</span>;</span><br><span class="line">	<span class="keyword">if</span> (!Boolean.FALSE.equals(mbd.beforeInstantiationResolved)) &#123;</span><br><span class="line">		<span class="comment">// Make sure bean class is actually resolved at this point.</span></span><br><span class="line">		<span class="keyword">if</span> (!mbd.isSynthetic() &amp;&amp; hasInstantiationAwareBeanPostProcessors()) &#123;</span><br><span class="line">			Class&lt;?&gt; targetType = determineTargetType(beanName, mbd);</span><br><span class="line">			<span class="keyword">if</span> (targetType != <span class="keyword">null</span>) &#123;</span><br><span class="line">				bean = applyBeanPostProcessorsBeforeInstantiation(targetType, beanName);</span><br><span class="line">				<span class="comment">// 。。。</span></span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		mbd.beforeInstantiationResolved = (bean != <span class="keyword">null</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> bean;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在这里真正执行了创建代理对象中的bean初始化前后方法。先执行了 <code>applyBeanPostProcessorsBeforeInstantiation</code> , 进行AOP切面类的识别。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Nullable</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> Object <span class="title">applyBeanPostProcessorsBeforeInstantiation</span><span class="params">(Class&lt;?&gt; beanClass, String beanName)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">for</span> (BeanPostProcessor bp : getBeanPostProcessors()) &#123;</span><br><span class="line">		<span class="keyword">if</span> (bp <span class="keyword">instanceof</span> InstantiationAwareBeanPostProcessor) &#123;</span><br><span class="line">			<span class="comment">// 对每一个Bean创建前都进行一次处理，前提是 这个类实现</span></span><br><span class="line">			<span class="comment">// InstantiationAwareBeanPostProcessor 接口。</span></span><br><span class="line">			InstantiationAwareBeanPostProcessor ibp = (InstantiationAwareBeanPostProcessor) bp;</span><br><span class="line">			<span class="comment">// 如果实现这个接口，则进行实例化前的后置处理。</span></span><br><span class="line">			Object result = ibp.postProcessBeforeInstantiation(beanClass, beanName);</span><br><span class="line">			<span class="keyword">if</span> (result != <span class="keyword">null</span>) &#123;</span><br><span class="line">				<span class="keyword">return</span> result;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在createBean方法时：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Initialize the bean instance.</span></span><br><span class="line">Object exposedObject = bean;</span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">	<span class="comment">// 填充Bean</span></span><br><span class="line">	populateBean(beanName, mbd, instanceWrapper);</span><br><span class="line">	<span class="comment">// 初始化Bean</span></span><br><span class="line">	exposedObject = initializeBean(beanName, exposedObject, mbd);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在 initializeBean 中才真正的执行继承 BeanPostProcessor 类的Bean初始化前后的CallBack方法。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (mbd == <span class="keyword">null</span> || !mbd.isSynthetic()) &#123;</span><br><span class="line">	wrappedBean = applyBeanPostProcessorsBeforeInitialization(wrappedBean, beanName);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">	invokeInitMethods(beanName, wrappedBean, mbd);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">catch</span> (Throwable ex) &#123;</span><br><span class="line">	<span class="keyword">throw</span> <span class="keyword">new</span> BeanCreationException(</span><br><span class="line">			(mbd != <span class="keyword">null</span> ? mbd.getResourceDescription() : <span class="keyword">null</span>),</span><br><span class="line">			beanName, <span class="string">"Invocation of init method failed"</span>, ex);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span> (mbd == <span class="keyword">null</span> || !mbd.isSynthetic()) &#123;</span><br><span class="line">	wrappedBean = applyBeanPostProcessorsAfterInitialization(wrappedBean, beanName);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>所以，综上，在 createbean 方法之前会执行对切面类的识别，也就是切面类的前置处理。但真正去执行所有的Bean的通知，都是在 initializeBean 中的  applyBeanPostProcessorsAfterInitialization 方法中执行的。</p>
+<h3 id="Spring创建代理的方式"><a href="#Spring创建代理的方式" class="headerlink" title="Spring创建代理的方式"></a>Spring创建代理的方式</h3><p>SpringAOP创建代理有两种方式，第一种：使用JDK动态代理。第二种：使用CGLIB代理。下面来针对代理方式的选择方式，查看源码一探究竟。</p>
+<p>在上一节中提到的在 <code>AbstractAutoProxyCreator</code> 中的在后置处理器中 <code>postProcessAfterInitialization</code> 的 <code>wrapIfNecessary</code>中进行了对Bean的代理包装处理.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 如果存在可用的通知，则对Bean进行代理</span></span><br><span class="line">Object[] specificInterceptors = getAdvicesAndAdvisorsForBean(bean.getClass(), beanName, <span class="keyword">null</span>);</span><br><span class="line"><span class="keyword">if</span> (specificInterceptors != DO_NOT_PROXY) &#123;</span><br><span class="line">	<span class="keyword">this</span>.advisedBeans.put(cacheKey, Boolean.TRUE);</span><br><span class="line">	<span class="comment">// 创建代理对象</span></span><br><span class="line">	Object proxy = createProxy(</span><br><span class="line">			bean.getClass(), beanName, specificInterceptors, <span class="keyword">new</span> SingletonTargetSource(bean));</span><br><span class="line">	<span class="keyword">this</span>.proxyTypes.put(cacheKey, proxy.getClass());</span><br><span class="line">	<span class="keyword">return</span> proxy;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在 <code>createProxy</code> 中决定了使用哪种方式（JDK动态代理、CGLIB代理）进行代理。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">protected</span> Object <span class="title">createProxy</span><span class="params">(Class&lt;?&gt; beanClass, @Nullable String beanName,</span></span></span><br><span class="line"><span class="function"><span class="params">		@Nullable Object[] specificInterceptors, TargetSource targetSource)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (<span class="keyword">this</span>.beanFactory <span class="keyword">instanceof</span> ConfigurableListableBeanFactory) &#123;</span><br><span class="line">		AutoProxyUtils.exposeTargetClass((ConfigurableListableBeanFactory) <span class="keyword">this</span>.beanFactory, beanName, beanClass);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	ProxyFactory proxyFactory = <span class="keyword">new</span> ProxyFactory();</span><br><span class="line">	proxyFactory.copyFrom(<span class="keyword">this</span>);<span class="comment">// 复制配置</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (!proxyFactory.isProxyTargetClass()) &#123;<span class="comment">//返回是否直接代理目标类以及任何接口。</span></span><br><span class="line">		<span class="keyword">if</span> (shouldProxyTargetClass(beanClass, beanName)) &#123;</span><br><span class="line">		<span class="comment">// 如果 proxy-target-class 标签属性返回true，则表明需要基于类的代理，</span></span><br><span class="line">		<span class="comment">// 反之则需要基于接口的代理</span></span><br><span class="line">			proxyFactory.setProxyTargetClass(<span class="keyword">true</span>); <span class="comment">//使用CGLIB代理（true）</span></span><br><span class="line">		&#125;<span class="keyword">else</span> &#123;</span><br><span class="line">			evaluateProxyInterfaces(beanClass, proxyFactory); <span class="comment">//检查是否实现了接口</span></span><br><span class="line">			<span class="comment">// 如果实现了接口，则设置interface，否则设置proxyTargetClass为true，但前提是</span></span><br><span class="line">			<span class="comment">// 用户没有自己设置proxyTargetClass属性</span></span><br><span class="line">			<span class="comment">/**</span></span><br><span class="line"><span class="comment">			 * if (hasReasonableProxyInterface) &#123;</span></span><br><span class="line"><span class="comment">			 * Must allow for introductions; can't just set interfaces to the target's interfaces only.</span></span><br><span class="line"><span class="comment">			 *	for (Class&lt;?&gt; ifc : targetInterfaces) &#123;</span></span><br><span class="line"><span class="comment">			 *		proxyFactory.addInterface(ifc);</span></span><br><span class="line"><span class="comment">			 *	&#125;</span></span><br><span class="line"><span class="comment">		     *&#125;else &#123;</span></span><br><span class="line"><span class="comment">			 *	proxyFactory.setProxyTargetClass(true);</span></span><br><span class="line"><span class="comment">			 *&#125;</span></span><br><span class="line"><span class="comment">			 */</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	Advisor[] advisors = buildAdvisors(beanName, specificInterceptors);</span><br><span class="line">	proxyFactory.addAdvisors(advisors);</span><br><span class="line">	proxyFactory.setTargetSource(targetSource);</span><br><span class="line">	customizeProxyFactory(proxyFactory);</span><br><span class="line"></span><br><span class="line">	proxyFactory.setFrozen(<span class="keyword">this</span>.freezeProxy);</span><br><span class="line">	<span class="keyword">if</span> (advisorsPreFiltered()) &#123;</span><br><span class="line">		proxyFactory.setPreFiltered(<span class="keyword">true</span>);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> proxyFactory.getProxy(getProxyClassLoader());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在这里设置了有关于proxyFactory的相关属性， 如是否继承接口的interface，和 ProxyTargetClass 。如果没有实现interface，则会自动将ProxyTargeClass为true，也就是说这两个属性是相对的。</p>
+<p>在最后的retrun的 <code>getProxy()</code> 方法最终会调用 <code>DefaultAopProxyFactory</code> 类中的 <code>createAopProxy</code> 方法决定使用哪中代理方式进行代理。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> AopProxy <span class="title">createAopProxy</span><span class="params">(AdvisedSupport config)</span> <span class="keyword">throws</span> AopConfigException </span>&#123;</span><br><span class="line">	<span class="comment">/*</span></span><br><span class="line"><span class="comment">	* 下面的三个条件简单分析一下：</span></span><br><span class="line"><span class="comment">	*</span></span><br><span class="line"><span class="comment">	*   条件1：config.isOptimize() - 是否需要优化</span></span><br><span class="line"><span class="comment">	*   条件2：config.isProxyTargetClass() - 检测 proxyTargetClass 的值，</span></span><br><span class="line"><span class="comment">	*   条件3：hasNoUserSuppliedProxyInterfaces(config) - 目标 bean 是否实现了接口</span></span><br><span class="line"><span class="comment">	*</span></span><br><span class="line"><span class="comment">	*/</span></span><br><span class="line">	<span class="keyword">if</span> (config.isOptimize() || config.isProxyTargetClass() || hasNoUserSuppliedProxyInterfaces(config)) &#123;</span><br><span class="line">		<span class="comment">// 如果设置了optimize 或者 proxyTargetClass 或者设置了进行代理的接口</span></span><br><span class="line">		Class&lt;?&gt; targetClass = config.getTargetClass();</span><br><span class="line">		<span class="keyword">if</span> (targetClass == <span class="keyword">null</span>) &#123;</span><br><span class="line">			<span class="keyword">throw</span> <span class="keyword">new</span> AopConfigException(<span class="string">"TargetSource cannot determine target class: "</span> +</span><br><span class="line">					<span class="string">"Either an interface or a target is required for proxy creation."</span>);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> (targetClass.isInterface() || Proxy.isProxyClass(targetClass)) &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">new</span> JdkDynamicAopProxy(config); <span class="comment">//如果代理的是接口，使用JDK动态代理</span></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">new</span> ObjenesisCglibAopProxy(config);<span class="comment">//否则使用CGlib代理</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span> &#123; <span class="comment">//否则都使用JDK进行代理</span></span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">new</span> JdkDynamicAopProxy(config);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>前面说的如果自己设置类proxyTargetClass属性为true，就不会判断是继承了interface。如果没有单独设置，则会先判断是否继承了接口，如果没有则会自动设置proxyTargetClass属性为true。</p>
+<p><em>所以得出结论：</em></p>
+<ol>
+<li><strong>如果设置了proxyTargetClass为true，则使用CGLIB代理。</strong></li>
+<li><strong>如果没有设置proxyTargetClass，如果是接口，则使用JDK动态代理。如果没有实现接口，则还是会使用CGLIB进行代理。</strong> </li>
+</ol>
+
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+        <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+      
+    </div>
+<div>
+      
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2019/12/11/（四）AOP切面使用与原理/">SpringAOP的使用和源码分析</a></p>
+  <p><span>文章作者:</span><a href="/" title="访问 NanYin 的个人博客">NanYin</a></p>
+  <p><span>发布时间:</span>2019年12月11日 - 12:12</p>
+  <p><span>最后更新:</span>2019年12月11日 - 20:12</p>
+  <p><span>原始链接:</span><a href="/2019/12/11/（四）AOP切面使用与原理/" title="SpringAOP的使用和源码分析">https://nanyiniu.github.io/2019/12/11/（四）AOP切面使用与原理/</a>
+    <span class="copy-path" title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="https://nanyiniu.github.io/2019/12/11/（四）AOP切面使用与原理/" aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+    $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+    });
+    });  
+</script>
+
+
+      
+</div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag"><i class="fa fa-tag"></i> Java</a>
+          
+            <a href="/tags/Spring/" rel="tag"><i class="fa fa-tag"></i> Spring</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/12/07/（三）自动装配/" rel="next" title="Spring中的自动装配">
+                <i class="fa fa-chevron-left"></i> Spring中的自动装配
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="lv-container" data-id="city" data-uid="MTAyMC80NDc5NC8yMTMxNQ=="></div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png" alt="NanYin">
+            
+              <p class="site-author-name" itemprop="name">NanYin</p>
+              <p class="site-description motion-element" itemprop="description">Was mich nicht umbringt, macht mich starker.</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">92</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/NanYinIU" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="1977713379@qq.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-block">
+           <div class="links-of-blogroll-title">
+             <!-- modify icon to fire by szw -->
+             <i class="fa fa-history fa-" aria-hidden="true"></i>
+             近期文章
+           </div>
+           <ul class="links-of-blogroll-list">
+             
+             
+               <li>
+                 <a href="/2019/12/11/（四）AOP切面使用与原理/" title="SpringAOP的使用和源码分析" target="_blank">SpringAOP的使用和源码分析</a>
+               </li>
+             
+               <li>
+                 <a href="/2019/12/07/（三）自动装配/" title="Spring中的自动装配" target="_blank">Spring中的自动装配</a>
+               </li>
+             
+               <li>
+                 <a href="/2019/12/05/（二）Bean的生命周期/" title="Bean的生命周期" target="_blank">Bean的生命周期</a>
+               </li>
+             
+               <li>
+                 <a href="/2019/12/01/（一） 将类加入到容器中的方式/" title="将类添加至容器中的四种方法" target="_blank">将类添加至容器中的四种方法</a>
+               </li>
+             
+               <li>
+                 <a href="/2019/08/15/2019-08-15-Spring的缓存/" title="Spring的缓存" target="_blank">Spring的缓存</a>
+               </li>
+             
+           </ul>
+         </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#SpringAOP的使用和源码分析"><span class="nav-number">1.</span> <span class="nav-text">SpringAOP的使用和源码分析</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AOP中关键字的概念"><span class="nav-number">1.2.</span> <span class="nav-text">AOP中关键字的概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-Aspect"><span class="nav-number">1.2.1.</span> <span class="nav-text">1.Aspect</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Join-point"><span class="nav-number">1.2.2.</span> <span class="nav-text">2.Join point</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Advice"><span class="nav-number">1.2.3.</span> <span class="nav-text">3.Advice</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-Pointcut"><span class="nav-number">1.2.4.</span> <span class="nav-text">4.Pointcut</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-Target-object"><span class="nav-number">1.2.5.</span> <span class="nav-text">5.Target object</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-AOP-proxy"><span class="nav-number">1.2.6.</span> <span class="nav-text">6.AOP proxy</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-Weaving"><span class="nav-number">1.2.7.</span> <span class="nav-text">7.Weaving</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用注解方式进行AOP的配置和使用"><span class="nav-number">1.3.</span> <span class="nav-text">使用注解方式进行AOP的配置和使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AOP代码原理分析"><span class="nav-number">1.4.</span> <span class="nav-text">AOP代码原理分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-EnableAspectJAutoProxy-开启springAOP支持"><span class="nav-number">1.4.1.</span> <span class="nav-text">1. @EnableAspectJAutoProxy 开启springAOP支持</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-AnnotationAwareAspectJAutoProxyCreator-实现AOP功能"><span class="nav-number">1.4.2.</span> <span class="nav-text">2. AnnotationAwareAspectJAutoProxyCreator 实现AOP功能</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#类结构初步分析"><span class="nav-number">1.4.2.1.</span> <span class="nav-text">类结构初步分析</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#a-AbstractAutoProxyCreator"><span class="nav-number">1.4.2.1.1.</span> <span class="nav-text">a. AbstractAutoProxyCreator</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#b-SmartInstantiationAwareBeanPostProcessor"><span class="nav-number">1.4.2.1.2.</span> <span class="nav-text">b. SmartInstantiationAwareBeanPostProcessor</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#AbstractAutoProxyCreator类源码分析"><span class="nav-number">1.4.2.2.</span> <span class="nav-text">AbstractAutoProxyCreator类源码分析</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-判断是否是个切面"><span class="nav-number">1.4.2.2.1.</span> <span class="nav-text">1. 判断是否是个切面</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-进行代理"><span class="nav-number">1.4.2.2.2.</span> <span class="nav-text">2.进行代理</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AOP对类的加载包装过程"><span class="nav-number">1.4.3.</span> <span class="nav-text">AOP对类的加载包装过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Spring创建代理的方式"><span class="nav-number">1.4.4.</span> <span class="nav-text">Spring创建代理的方式</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">NanYin</span>
+
+</div>
+
+
+  <span class="post-meta-divider">|</span>
+
+
+<div class="powered-by">
+<i class="fa fa-user-md"></i><span id="busuanzi_container_site_uv">
+  本站访客数:<span id="busuanzi_value_site_uv"></span>
+</span>
+</div>
+
+<span class="post-meta-divider">|</span>
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共97.6k字</span>
+</div>
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>

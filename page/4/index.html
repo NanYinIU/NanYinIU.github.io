@@ -19,7 +19,7 @@
     
     
   <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
-  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+  <link href="/lib/pace/pace-theme-bounce.min.css?v=1.0.2" rel="stylesheet">
 
 
 
@@ -290,6 +290,786 @@
           <div id="content" class="content">
             
   <section id="posts" class="posts-expand">
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/06/03/2019-06-03-设计模式之桥接模式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="NanYin">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NanYin的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/06/03/2019-06-03-设计模式之桥接模式/" itemprop="url">设计模式之桥接模式</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-06-03T12:00:00Z">
+                2019-06-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/设计模式/" itemprop="url" rel="index">
+                    <span itemprop="name">设计模式</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  600
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  2
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="设计模式之桥接模式"><a href="#设计模式之桥接模式" class="headerlink" title="设计模式之桥接模式"></a>设计模式之桥接模式</h1><p>目的在于将抽象与其实现分离，以便两者可以独立变化。独立变化的同时能够根据抽象类的对象关联从而能够将两个继承结构联动起来。就像在两个结构之间建立个桥梁一样进行通信，所以叫桥接模式。</p>
+<h2 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h2><ol>
+<li>如果想避免抽象类与实现的永久绑定，可以在运行时间选择和切换实现类。</li>
+<li>抽象类和接口都应该通过子类来进行拓展，在桥接模式中，可以使用子类来进行组合的同时能够独立拓展他们。</li>
+<li>接口的实现的变化对客户端无影响。</li>
+<li>如果想要在多个对象类中共享实现，并且避免让客户端感知到。</li>
+</ol>
+<h2 id="桥接模式结构图"><a href="#桥接模式结构图" class="headerlink" title="桥接模式结构图"></a>桥接模式结构图</h2><p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190603220348.png" alt="桥接模式"></p>
+<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><p>主要分为四部分，1.抽象类 2.抽象实现类 3.接口类 4.接口实现类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">// 抽象类与抽象实现类</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Shape</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    Colors colors;</span><br><span class="line"></span><br><span class="line">    Shape(Colors colors) &#123;</span><br><span class="line">        <span class="keyword">this</span>.colors = colors;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">buildShape</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 圆形实现类</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ShapeCircle</span> <span class="keyword">extends</span> <span class="title">Shape</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ShapeCircle</span><span class="params">(Colors colors)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(colors);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">buildShape</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"\n first step : build circle\n and second step:"</span>);</span><br><span class="line">        colors.paint();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//方形实现类</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ShapeSquare</span> <span class="keyword">extends</span> <span class="title">Shape</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ShapeSquare</span> <span class="params">(Colors colors)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(colors);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">buildShape</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"\n first step : build Square\n and second step:"</span>);</span><br><span class="line">        colors.paint();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>抽象方法中引用了Colors类变量，使用实现类中的buildShape方法实现具体功能。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Colors</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">paint</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ColorBlue</span> <span class="keyword">implements</span> <span class="title">Colors</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">paint</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">" print blue !!"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ColorRed</span> <span class="keyword">implements</span> <span class="title">Colors</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">paint</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">" paint inner with red !!"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>通过使用Color接口，实现类实现Colors中的paint方法实现Color</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">App</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Shape circle = <span class="keyword">new</span> ShapeCircle(<span class="keyword">new</span> ColorBlue());</span><br><span class="line">        circle.buildShape();</span><br><span class="line">        Shape square = <span class="keyword">new</span> ShapeSquare(<span class="keyword">new</span> ColorRed());</span><br><span class="line">        square.buildShape();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">结果：</span><br><span class="line"></span><br><span class="line"> first step : build circle</span><br><span class="line"> and second step:</span><br><span class="line"> print blue !!</span><br><span class="line"></span><br><span class="line"> first step : build Square</span><br><span class="line"> and second step:</span><br><span class="line"> paint red !!</span><br></pre></td></tr></table></figure>
+
+<p>上面的例子中，颜色和图形是两个独立不同的维度，两个可以分别变化。将两个维度设计为两个不同的继承的结构，在两个结构之间使用在抽象类中的关联来达到链接的目的，这个链接成为两个继承结构通信的桥梁。所以为桥接模式。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+<div>
+      
+</div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/06/02/2019-06-02-设计模式之原型模式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="NanYin">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NanYin的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/06/02/2019-06-02-设计模式之原型模式/" itemprop="url">设计模式之原型模式</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-06-02T12:00:00Z">
+                2019-06-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/设计模式/" itemprop="url" rel="index">
+                    <span itemprop="name">设计模式</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  328
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  1
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="设计模式之原型模式"><a href="#设计模式之原型模式" class="headerlink" title="设计模式之原型模式"></a>设计模式之原型模式</h1><p>使用原型实例指定要创建的对象类型，并通过复制此原型来创建新对象.实现方法:通过克隆方法,实现对现有对象的复制克隆.</p>
+<h2 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h2><ul>
+<li>当要在运行时指定要实例化的类时，例如，通过动态加载.</li>
+<li>避免构建与产品类层次结构相似的工厂类层次结构</li>
+<li>当一个类的实例可以只有几个不同的状态的组合之一时.组装相应数量的原型并克隆它们可能更方便，而不是手动实例化类，每次都有适当的状态.</li>
+<li>与对象创建相比,使用克隆成本更低</li>
+</ul>
+<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><p>直接由代码看结构,其实克隆的过程就是创建对象的过程</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 一个细胞</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Author</span> nanyin</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Date</span> 23:49 2019-06-01</span></span><br><span class="line"><span class="comment"> **/</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Cell</span> <span class="keyword">implements</span> <span class="title">Cloneable</span></span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setName</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Cell</span><span class="params">()</span></span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Cell</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> Cell <span class="title">clone</span><span class="params">()</span> <span class="keyword">throws</span> CloneNotSupportedException </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.clone();</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Cell(name);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>客户端程序:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">App</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testPrototype</span><span class="params">()</span></span>&#123;</span><br><span class="line">       Cell cell = <span class="keyword">new</span> Cell();</span><br><span class="line">       cell.setName(<span class="string">"org"</span>);</span><br><span class="line">       <span class="keyword">try</span>&#123;</span><br><span class="line">           Cell cloneCell = cell.clone();</span><br><span class="line">           Assert.assertEquals(<span class="string">"org"</span>,cloneCell.getName());<span class="comment">//pass</span></span><br><span class="line">           Assert.assertEquals(cell,cloneCell);<span class="comment">//not pass</span></span><br><span class="line">       &#125;<span class="keyword">catch</span> (CloneNotSupportedException e)&#123;</span><br><span class="line">           e.printStackTrace();</span><br><span class="line">       &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+<div>
+      
+</div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/06/02/2019-06-02-设计模式之适配器模式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="NanYin">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NanYin的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/06/02/2019-06-02-设计模式之适配器模式/" itemprop="url">设计模式之适配器模式</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-06-02T12:00:00Z">
+                2019-06-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/设计模式/" itemprop="url" rel="index">
+                    <span itemprop="name">设计模式</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  593
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  2
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="设计模式之适配器模式"><a href="#设计模式之适配器模式" class="headerlink" title="设计模式之适配器模式"></a>设计模式之适配器模式</h1><p>我们实际中会用到两个不同接口的类的通信,在不修改两个类的前提下,使用新的中间类来完成衔接的过程,这个中间件就是适配器.可以让两个完全不同的接口相互转化.</p>
+<p>适配器模式允许在适配器中包装其他不兼容的对象，以使其与另一个类兼容。</p>
+<p>就如同生活中买了港版的手机,但是附赠的是三脚插头，而大陆上用的是两脚的，需要一个适配器来将三角插头转换为两脚的。其中这个中间件就是适配器。</p>
+<h2 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h2><ul>
+<li>当你想要这个类，但是类中的接口与想用的接口并不匹配</li>
+<li>当想要去创建一个可重用的类，让它与不相关或不可预见的类合作，这个类不必要有兼容的接口</li>
+<li>当你需要一系列的子类的时候，如果想要调整这些子类的接口方法的时候，对每一个接口子类化的这种方法是不可行的。这时就可使用适配器适配这些子类的夫类。</li>
+</ul>
+<h2 id="结构图"><a href="#结构图" class="headerlink" title="结构图"></a>结构图</h2><p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190602120227.png" alt="适配器模式图"></p>
+<p>使用client调用适配器，适配器继承与三脚插头，依赖于二脚插头。这样就可以使用三脚插头的接口调用二脚插头的方法。</p>
+<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 三角插头</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Author</span> nanyin</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Date</span> 11:13 2019-06-02</span></span><br><span class="line"><span class="comment"> **/</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ThreeLeggedPlug</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">charge</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"use three legged plug"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 二脚插头</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Author</span> nanyin</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Date</span> 11:13 2019-06-02</span></span><br><span class="line"><span class="comment"> **/</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TwoLeggedPlug</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">fastCharge</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"use two legged plug for fast charge !"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//适配器 继承三角插头</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TwoLeggedPlugAdapter</span> <span class="keyword">extends</span> <span class="title">ThreeLeggedPlug</span> </span>&#123;</span><br><span class="line">    TwoLeggedPlug twoLeggedPlug;</span><br><span class="line">    <span class="comment">// 依赖于二脚插头</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">TwoLeggedPlugAdapter</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        twoLeggedPlug = <span class="keyword">new</span> TwoLeggedPlug();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//使用三角插头的charge方法，调用二脚插头的fastCharge方法</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">charge</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        twoLeggedPlug.fastCharge();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//某S9港版手机</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">S9Plus</span> <span class="keyword">extends</span> <span class="title">ThreeLeggedPlug</span> </span>&#123;</span><br><span class="line">    ThreeLeggedPlug threeLeggedPlug;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">S9Plus</span><span class="params">(ThreeLeggedPlug threeLeggedPlug)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.threeLeggedPlug = threeLeggedPlug;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">charge</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        threeLeggedPlug.charge();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//客户端方法</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">App</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testCharge</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 不使用适配器 使用类三角插头</span></span><br><span class="line">        ThreeLeggedPlug s9Plus = <span class="keyword">new</span> S9Plus(<span class="keyword">new</span> ThreeLeggedPlug());</span><br><span class="line">        s9Plus.charge();</span><br><span class="line">        <span class="comment">// 使用二脚插头的适配器</span></span><br><span class="line">        ThreeLeggedPlug s9PlusUseTwoLeggedPlug = <span class="keyword">new</span> S9Plus(<span class="keyword">new</span> TwoLeggedPlugAdapter());</span><br><span class="line">        s9PlusUseTwoLeggedPlug.charge();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">结果：</span><br><span class="line"></span><br><span class="line">use three legged plug</span><br><span class="line">use two legged plug for fast charge !</span><br><span class="line"></span><br><span class="line">Process finished with exit code 0</span><br></pre></td></tr></table></figure>
+
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+<div>
+      
+</div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/06/01/2019-06-01-设计模式之建造者模式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="NanYin">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NanYin的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/06/01/2019-06-01-设计模式之建造者模式/" itemprop="url">设计模式之建造者模式</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-06-01T12:00:00Z">
+                2019-06-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/设计模式/" itemprop="url" rel="index">
+                    <span itemprop="name">设计模式</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  651
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  2
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="设计模式之建造者模式"><a href="#设计模式之建造者模式" class="headerlink" title="设计模式之建造者模式"></a>设计模式之建造者模式</h1><p>将复杂对象的构造与其表示分开，以便相同的构造过程可以创建不同的表示。</p>
+<p>比如在玩游戏时的捏人物的时候,创建一个游戏任务最简单的方法时计算机自己生成一个固定的游戏任务,但是想自己构建这个人物细节的时候,这种情况下,人物的生成时一步一步生成的.再当所有类型都选择完成后,才能够创建这个人物.</p>
+<h2 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h2><ul>
+<li>对象足够复杂,创建这个对象的方法应与创建这个对象的组件和组装方式分开.</li>
+<li>当构造对象时要求对这个对象具有不同的行为.</li>
+</ul>
+<h2 id="建造者模式结构"><a href="#建造者模式结构" class="headerlink" title="建造者模式结构"></a>建造者模式结构</h2><p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190601231729.png" alt="建造者模式类图"></p>
+<p>上图为建造者模式类图:其中CharacterBuilder 和 Characters 中的属性相同,CharacterBuilder 存在的目的就是多种构造不同行为的Characters .</p>
+<p>具体可以看下面代码实例</p>
+<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><p>角色实体</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Characters</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 角色构造器内有多个角色属性</span></span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> age;</span><br><span class="line">    <span class="keyword">private</span> String sex;</span><br><span class="line">    <span class="keyword">private</span> String skill;</span><br><span class="line">    <span class="keyword">private</span> String weapon;</span><br><span class="line">    <span class="comment">// 使用构造器来构造实体 其中实体属性有builder中来</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Characters</span><span class="params">(CharacterBuilder builder)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name = builder.getName();</span><br><span class="line">        <span class="keyword">this</span>.age = builder.getAge();</span><br><span class="line">        <span class="keyword">this</span>.sex = builder.getSex();</span><br><span class="line">        <span class="keyword">this</span>.skill = builder.getSkill();</span><br><span class="line">        <span class="keyword">this</span>.weapon = builder.getWeapon();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">showCharacterBoard</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"人物 ： "</span> + <span class="keyword">this</span>.name + <span class="string">" 年龄 ："</span> + <span class="keyword">this</span>.age + <span class="string">" 性别："</span> + <span class="keyword">this</span>.sex + <span class="string">" 技能："</span> +<span class="keyword">this</span>.skill + <span class="string">" 武器："</span> + <span class="keyword">this</span>.weapon);</span><br><span class="line">    &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>角色构建器</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CharacterBuilder</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 与角色实体保持相同的属性 </span></span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> age;</span><br><span class="line">    <span class="keyword">private</span> String sex;</span><br><span class="line">    <span class="keyword">private</span> String skill;</span><br><span class="line">    <span class="keyword">private</span> String weapon;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getAge</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> age;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getSex</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> sex;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getSkill</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> skill;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getWeapon</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> weapon;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//构造基本属性的构造器</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> CharacterBuilder <span class="title">buildBasicAttributes</span><span class="params">(String name , <span class="keyword">int</span> age, String sex)</span></span>&#123;</span><br><span class="line">        <span class="comment">//保证姓名不能为空</span></span><br><span class="line">        <span class="keyword">if</span>(name == <span class="keyword">null</span> || <span class="string">""</span>.equals(name))&#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"name can not be empty "</span>);</span><br><span class="line">        &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">this</span>.name = name;</span><br><span class="line">            <span class="keyword">this</span>.age = age;</span><br><span class="line">            <span class="keyword">this</span>.sex = sex;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> CharacterBuilder <span class="title">buildSkill</span><span class="params">(String skill)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.skill = skill;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> CharacterBuilder <span class="title">billdWeapon</span><span class="params">(String weapon)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.weapon = weapon;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//生成角色实体</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Characters <span class="title">build</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Characters(<span class="keyword">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>客户端类:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">App</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testBuildCharacter</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="comment">// 链式调用,最后使用build方法新建一个角色实体</span></span><br><span class="line">        Characters characters = <span class="keyword">new</span> CharacterBuilder()</span><br><span class="line">                .buildBasicAttributes(<span class="string">"jack"</span>,<span class="number">18</span>,<span class="string">"man"</span>)</span><br><span class="line">                .buildSkill(<span class="string">"Emission laser"</span>)</span><br><span class="line">                .billdWeapon(<span class="string">"Laser Cannon"</span>)</span><br><span class="line">                .build();</span><br><span class="line">                <span class="comment">//打印角色属性面板</span></span><br><span class="line">        characters.showCharacterBoard();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>输出结果:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Connected to the target VM, address: &apos;127.0.0.1:57347&apos;, transport: &apos;socket&apos;</span><br><span class="line">人物 ： jack 年龄 ：18 性别：man 技能：Emission laser 武器：Laser Cannon</span><br><span class="line">Disconnected from the target VM, address: &apos;127.0.0.1:57347&apos;, transport: &apos;socket&apos;</span><br></pre></td></tr></table></figure>
+
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+<div>
+      
+</div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
     
       
 
@@ -1322,204 +2102,6 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/05/27/2019-05-28-设计模式之策略模式/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="NanYin">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NanYin的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/05/27/2019-05-28-设计模式之策略模式/" itemprop="url">设计模式之策略模式</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-27T12:00:00Z">
-                2019-05-27
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/设计模式/" itemprop="url" rel="index">
-                    <span itemprop="name">设计模式</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  596
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  2
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="java设计模式之策略模式"><a href="#java设计模式之策略模式" class="headerlink" title="java设计模式之策略模式"></a>java设计模式之策略模式</h1><p>如果存在一种行为在多种情况下的实现，一般情况下可能会使用<code>if...else if...else..</code>来实现。但是每增加一种情况就要增加一种if判断，这样不符合java设计的规范，这时，就可以使用策略模式来替换这种繁琐的if..else</p>
-<p>策略设计模式是行为设计模式的一种.当使用多种算法解决一个特殊的任务的时候,客户端决定使用哪种具体算法进行特定的实现.</p>
-<h2 id="哪种情况会使用策略模式"><a href="#哪种情况会使用策略模式" class="headerlink" title="哪种情况会使用策略模式"></a>哪种情况会使用策略模式</h2><p>以下情况可以使用策略模式: </p>
-<ol>
-<li>许多相关类只有行为上有所不同,策略模式可以通过相同的行为方法来配置这些类.</li>
-<li>当需要使用到算法的变种的时候,当定义不同的行为参数,如果使用类的层次结构实现的时候,可以使用策略模式(当使用方法层次结构的时候就是多态)</li>
-<li>客户端不用清楚算法的细节实现,只需关注接口.避免暴露具体的类的实现、特殊算法的数据结构.</li>
-<li>一个类定义了多种不同的行为,并且使用杂乱的条件进行判断具体使用哪一个条件,这时候就可以使用策略模式来代替,对不同的策略形成不同的类.可以清晰的表达出类的作用与实现的行为方式.</li>
-</ol>
-<h2 id="策略模式结构"><a href="#策略模式结构" class="headerlink" title="策略模式结构"></a>策略模式结构</h2><p><img src="https://i.loli.net/2019/05/27/5cebf32d8658d41858.png" alt="策略模式类图"></p>
-<p>如上图定义一个总的Traffic接口,里面有一个go()方法.使用car和walk分别来实现接口,并且实现接口中的go方法.</p>
-<p>Context类是环境类,持有一个TrafficStrategy的引用,隐藏具体的策略接口的实现,让客户端专注于方法的调用.</p>
-<h2 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">TrafficStrategy</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">go</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WalkStrategy</span> <span class="keyword">implements</span> <span class="title">TrafficStrategy</span></span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">go</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"i am walking"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CarStrategy</span> <span class="keyword">implements</span> <span class="title">TrafficStrategy</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">go</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"i am driving"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>context类</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Context</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> TrafficStrategy trafficStrategy;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Context</span><span class="params">(TrafficStrategy trafficStrategy)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.trafficStrategy = trafficStrategy;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> TrafficStrategy <span class="title">getTrafficStrategy</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> trafficStrategy;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setTrafficStrategy</span><span class="params">(TrafficStrategy trafficStrategy)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.trafficStrategy = trafficStrategy;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doStrategy</span><span class="params">()</span></span>&#123;</span><br><span class="line">        trafficStrategy.go();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>App客户端类</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">App</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Context context = <span class="keyword">new</span> Context(<span class="keyword">new</span> CarStrategy());</span><br><span class="line">        context.doStrategy();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-<div>
-      
-</div>
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/05/27/2019-05-27-设计模式之责任链模式/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1731,714 +2313,11 @@ public String toString() { return getRequestDescription(); }</code></pre><p>}</p
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/05/05/2019-05-05-Spring_Framework重点学习 2/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="NanYin">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NanYin的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/05/05/2019-05-05-Spring_Framework重点学习 2/" itemprop="url">Spring重点知识学习</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-05T12:00:00Z">
-                2019-05-05
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  2.3k
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  8
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Spring-Framework"><a href="#Spring-Framework" class="headerlink" title="Spring Framework"></a>Spring Framework</h1><p>使用spring可以轻易的创建一个企业级应用,它使用Java语言所有的企业级环境中的所有东西,spring是开源的,拥有庞大而活跃的社区来提供持续的支持.</p>
-<h2 id="Spring-Core"><a href="#Spring-Core" class="headerlink" title="Spring Core"></a>Spring Core</h2><p>spring分为多个模块,其中core为其中的一个,里面包含spring的核心技术点</p>
-<h3 id="IOC容器-控制反转"><a href="#IOC容器-控制反转" class="headerlink" title="IOC容器(控制反转)"></a>IOC容器(控制反转)</h3><p>IOC也被成为依赖注入,这是由一个对象定义他所依赖的关系的过程.当创建这个bean的时候也同时创建这些依赖供其使用.这样的整个过程就是反转控制的过程,比如说建房子,以前需要砖,瓦,水泥才能建造房子,如果不实用ioc时,就是自己去造砖,造瓦,然后使用.<br>现在使用ioc容器,只需要把砖,瓦,水泥写到清单上,ioc容器自动把这些准备好供使用,省去来自己制造的过程.</p>
-<p><code>org.springframework.beans</code> 和 <code>org.springframework.context</code> 是spring实现IOC容器的基础.<code>BeanFactory</code>接口是能够管理任何对象的高级的配置接口,<code>ApplicationContext</code>是BeanFactory的子接口.因为:</p>
-<ul>
-<li>更容易和Spring 的AOP特性相结合</li>
-<li>消息资源处理,用于国际化问题</li>
-<li>事件发布</li>
-<li>用于特定的上下文比如web应用程序的<code>WebApplicationContext</code></li>
-</ul>
-<p>简单来说就是<code>BeanFactory</code>提供了基本的功能,而<code>ApplicationContext</code>提供了更多的企业定制化的功能.</p>
-<p><code>ApplicationContext</code>代表了IOC容器,提供了初始化、配置、组装beans.通过配置元数据来获取有关初始化..等的指令.这里所指的配置元数据可以通过配置文件,注解或者java代码来实现.通过配置元数据来体现对象和其依赖.</p>
-<p>下图为官网提供的spring工作的简化图:</p>
-<p><img src="https://docs.spring.io/spring/docs/current/spring-framework-reference/images/container-magic.png" alt="IOC容器"></p>
-<h3 id="SpringBean的生命周期"><a href="#SpringBean的生命周期" class="headerlink" title="SpringBean的生命周期"></a>SpringBean的生命周期</h3><p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190531170713.png" alt="生命周期"><br>生命周期大概包含这几个阶段:</p>
-<ol>
-<li>实例化Bean对象,这时还未进行依赖注入,最后将bean加入到beanwapper中.</li>
-<li>设置对象属性.Spring根据BeanDefinition中的信息进行依赖注入.并且通过BeanWrapper提供的设置属性的接口完成依赖注入。</li>
-<li>注入Aware接口,检测是否是想相关Aware接口,并装配相关接口的方法.</li>
-<li>BeanPostProcessor 此时bean已经成功被构造,通过实现这个接口来自定义前置和后置的处理规则.</li>
-<li>调用initialzingBean和int-methods,这时对象成功被初始化</li>
-<li>最后调用disposableBean的afterpropertiesSet方法和destroy-methods来实现指定对象销毁.</li>
-</ol>
-<h3 id="Spring-AOP"><a href="#Spring-AOP" class="headerlink" title="Spring AOP"></a>Spring AOP</h3><p>AOP的意思是面向切面编程,在理解面向切面前,不得不说面向对象.什么是面向对象,面向对象编程就是将事务对象化,依据对象进行层级化,面向对象通过封装继承多态的方式实现了对象层次结构,但是实际应用时可能会遇到需要横向的进行业务处理,典型的就如日志,因为在实际代码编写时,不能每次在写方法前后都加入相同的代码,这样即浪费时间,又导致代码冗余.所以面向切面编程必不可少.</p>
-<p>AOP将多个相同的业务代码整合,形成一个通用的<code>“切面”</code>,通过切面可以分割出<code>“核心关注点”</code>和<code>“横切关注点”</code>,核心关注点就是实际的核心业务关注的代码逻辑部分,横切关注点就是公共的代码的实现.</p>
-<p>其中AOP中有几个比较关键的概念:</p>
-<ol>
-<li>横切关注点:对哪些方法进行拦截,拦截后如何处理.这些关注点叫做横切关注点</li>
-<li>切面:切面就是对横切关注点的抽象,就如同类对事物的抽象类似</li>
-<li>连接点(joinpoint):被拦截到的点,可以通过连接点获取被拦截的参数等信息</li>
-<li>切入点:连接点进行拦截的定义</li>
-<li>织入:横切的过程叫做织入</li>
-</ol>
-<h4 id="简单的代码实现-注解"><a href="#简单的代码实现-注解" class="headerlink" title="简单的代码实现(注解)"></a>简单的代码实现(注解)</h4><p>下面代码使用注解的方式实现的Spring AOP,配置文件同理,需要配置切面(主要是切点和通知方法)</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="comment">// 标志为AOP @Aspect</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ServiceLog</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Logger logger = LoggerFactory.getLogger(ServiceLog.class);</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    HttpSession httpSession;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 前置通知 切入点前执行</span></span><br><span class="line">    <span class="meta">@Before</span>(<span class="string">"execution(* com.nanyin.jreact.service.serviceImpl..*.*(..))"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handelServiceMethodBefore</span><span class="params">(JoinPoint joinpoint)</span></span>&#123; <span class="comment">//JoinPoint 为连接点,通过连接点可获取参数等</span></span><br><span class="line">        <span class="keyword">try</span>&#123;</span><br><span class="line">            String username = (String) httpSession.getAttribute(<span class="string">"user"</span>);</span><br><span class="line">            BaseUtil.setUser(Optional.ofNullable(username).orElse(<span class="string">"空 "</span>));</span><br><span class="line">        &#125;<span class="keyword">catch</span> (Exception e)&#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 后置通知 切入点后执行</span></span><br><span class="line">    <span class="meta">@After</span>(<span class="string">"execution(* com.nanyin.jreact.service.serviceImpl..*.*(..))"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handelServiceMethodAfter</span><span class="params">(JoinPoint joinpoint)</span></span>&#123;</span><br><span class="line">        <span class="keyword">try</span>&#123;</span><br><span class="line">            String username = (String) httpSession.getAttribute(<span class="string">"user"</span>);</span><br><span class="line">            BaseUtil.setUser(Optional.ofNullable(username).orElse(<span class="string">"空 "</span>));</span><br><span class="line">        &#125;<span class="keyword">catch</span> (Exception e)&#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="JDK动态代理和CGLIB代理"><a href="#JDK动态代理和CGLIB代理" class="headerlink" title="JDK动态代理和CGLIB代理"></a>JDK动态代理和CGLIB代理</h4><p>两者都可以实现AOP代理功能,但是jdk代理需要代理类和委托类都实现系统的接口,但是实际应用的时候这种情况非常少,这时候会自动使用CGLIB实现动态代理</p>
-<h3 id="Spring事务管理"><a href="#Spring事务管理" class="headerlink" title="Spring事务管理"></a>Spring事务管理</h3><p>事务包含四个基本特性,也就是常说的ACID,分别为原子性,一致性,隔离性,持久性</p>
-<h4 id="事务的接口"><a href="#事务的接口" class="headerlink" title="事务的接口"></a>事务的接口</h4><ol>
-<li>PlatformTransactionManager： （平台）事务管理器</li>
-</ol>
-<blockquote>
-<p>spring 不直接管理事务,而是实现不同的事务管理器,将事务交给框架处理,如为ibaits 和 hibernate 有不同的实现.</p>
-</blockquote>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 事务管理器 xml 配置 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"transactionManager"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">class</span>=<span class="string">"org.springframework.jdbc.datasource.DataSourceTransactionManager"</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 数据源 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"dataSource"</span> <span class="attr">ref</span>=<span class="string">"dataSource"</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<ol start="2">
-<li>TransactionDefinition： 事务定义信息(事务隔离级别、传播行为、超时、只读、回滚规则)</li>
-</ol>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">TransactionDefinition</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 返回事务的传播行为</span></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">getPropagationBehavior</span><span class="params">()</span></span>; </span><br><span class="line">    <span class="comment">// 返回事务的隔离级别，事务管理器根据它来控制另外一个事务可以看到本事务内的哪些数据</span></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">getIsolationLevel</span><span class="params">()</span></span>; </span><br><span class="line">    <span class="comment">//返回事务的名字</span></span><br><span class="line">    <span class="function">String <span class="title">getName</span><span class="params">()</span>；</span></span><br><span class="line"><span class="function">    <span class="comment">// 返回事务必须在多少秒内完成</span></span></span><br><span class="line"><span class="function">    <span class="keyword">int</span> <span class="title">getTimeout</span><span class="params">()</span></span>;  </span><br><span class="line">    <span class="comment">// 返回是否优化为只读事务。</span></span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">isReadOnly</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ol start="3">
-<li>TransactionStatus： 用来记录事务运行状态</li>
-</ol>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">TransactionStatus</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">isNewTransaction</span><span class="params">()</span></span>; <span class="comment">// 是否是新的事物</span></span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">hasSavepoint</span><span class="params">()</span></span>; <span class="comment">// 是否有恢复点</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">setRollbackOnly</span><span class="params">()</span></span>;  <span class="comment">// 设置为只回滚</span></span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">isRollbackOnly</span><span class="params">()</span></span>; <span class="comment">// 是否为只回滚</span></span><br><span class="line">    <span class="keyword">boolean</span> isCompleted; <span class="comment">// 是否已完成</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="自定义注解"><a href="#自定义注解" class="headerlink" title="自定义注解"></a>自定义注解</h3><h4 id="构造注解"><a href="#构造注解" class="headerlink" title="构造注解"></a>构造注解</h4><p>注解使用<code>@interface</code>来标识为一个注解,具体使用可以参考如下:</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @Target原注解的意义是表明作用域，比如type就是表示要标注到类接口上</span></span><br><span class="line"><span class="meta">@Target</span>(&#123;ElementType.TYPE&#125;)</span><br><span class="line"><span class="comment">// 表示作用域</span></span><br><span class="line"><span class="meta">@Retention</span>(RetentionPolicy.RUNTIME)</span><br><span class="line"><span class="comment">// 表明其他注解能够继承该注解</span></span><br><span class="line"><span class="meta">@Inherited</span></span><br><span class="line"><span class="comment">// javadoc会包含</span></span><br><span class="line"><span class="meta">@Documented</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> TableDescription &#123;</span><br><span class="line">    <span class="function">String <span class="title">description</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>其中该注解的作用就是1.标注在类接口上2.作用在运行时,能够通过反射得到接口中的内容3.能够让其他注解继承该注解4.能够生成javaddoc文档</p>
-<p>下面来重点关注第一个和第二个元注解:</p>
-<ol>
-<li>@Target是这个注解的作用域，ElementType.METHOD是这个注解的作用域的列表，METHOD是方法声明，除此之外，还有：CONSTRUCTOR（构造方法声明）,FIELD（字段声明）,LOCAL VARIABLE（局部变量声明）,METHOD（方法声明）,PACKAGE（包声明）,PARAMETER（参数声明）,TYPE（类接口）</li>
-<li>@Retention是它的生命周期，前面不是说注解按照运行机制有一个分类嘛，RUNTIME就是在运行时存在，可以通过反射读取。除此之外，还有: SOURCE（只在源码显示，编译时丢弃）,CLASS（编译时记录到class中，运行时忽略）,RUNTIME（运行时存在，可以通过反射读取）</li>
-</ol>
-<h4 id="如何使用自定义注解"><a href="#如何使用自定义注解" class="headerlink" title="如何使用自定义注解"></a>如何使用自定义注解</h4><ul>
-<li>添加注解</li>
-</ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="meta">@Table</span>(name = <span class="string">"person"</span>)</span><br><span class="line"><span class="comment">// 这里使用到了上面的自定义注解TableDescription</span></span><br><span class="line"><span class="meta">@TableDescription</span>(description = <span class="string">"this is person table"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Id</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">long</span> id;</span><br><span class="line">    <span class="meta">@Column</span>(name = <span class="string">"name"</span>,length = <span class="number">128</span>)</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Column</span>(name = <span class="string">"age"</span>,length = <span class="number">3</span>)</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">short</span> age;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>获得注解内容</li>
-</ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testAnn</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">try</span>&#123;</span><br><span class="line">    <span class="comment">// 反射获取类</span></span><br><span class="line">        Class clazz = Class.forName(<span class="string">"com.nanyin.jreact.entry.Person"</span>);</span><br><span class="line">        Boolean exist = clazz.isAnnotationPresent(TableDescription.class);</span><br><span class="line">        <span class="keyword">if</span>(exist)&#123;</span><br><span class="line">           <span class="comment">//如果注解在类中存在</span></span><br><span class="line">           TableDescription tableDescription = (TableDescription) clazz.getAnnotation(TableDescription.class);</span><br><span class="line">           <span class="comment">// 获得注解内容</span></span><br><span class="line">            System.out.println(tableDescription.description());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;<span class="keyword">catch</span> (ClassNotFoundException c)&#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>上面只是简单的掩饰注解的用法,但实际上业务会比这难上许多.</p>
-<h3 id="springMVC-工作流程"><a href="#springMVC-工作流程" class="headerlink" title="springMVC 工作流程"></a>springMVC 工作流程</h3><p>先上一张图:来自<a href="https://www.cnblogs.com/xiaoxi/p/6164383.html" target="_blank" rel="noopener">https://www.cnblogs.com/xiaoxi/p/6164383.html</a><br><img src="https://i.loli.net/2019/05/12/5cd7cf13c933c.jpg" alt="SpringMvc工作原理"></p>
-<p>由图中可以看到SpringMvc中最重要的起到中枢的是<code>DispatcherServlet</code>(前端控制器).</p>
-<ol>
-<li>在DispatcherServlet接受到客户端请求后,使用 <code>handlerMapping</code> 进行映射处理.在生成处理器映射器之后, 返回一个handler,如果有拦截器的化还生成拦截器.交给 <code>DispatcherServlet</code> 进行下一步处理.</li>
-<li>第二步交给 <code>handlerAdatper</code> (处理器适器) <code>HandlerAdapter</code> 经过适配调用具体的处理器( <code>Controller</code> ，也叫后端控制器)。Controller执行完成返回ModelAndView。</li>
-<li>第三步,DispatcherServlet将最终的结果交给 <code>viewResolver</code> 试图解析器进行视图解析</li>
-<li>DispatcherServlet 根据返回的view进行视图渲染,最终返回给客户端用户.</li>
-</ol>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-<div>
-      
-</div>
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/05/05/2019-05-05-Spring_Framework重点学习/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="NanYin">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NanYin的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/05/05/2019-05-05-Spring_Framework重点学习/" itemprop="url">Spring重点知识学习</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-05T12:00:00Z">
-                2019-05-05
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Spring/" itemprop="url" rel="index">
-                    <span itemprop="name">Spring</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  2.3k
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  8
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Spring-Framework"><a href="#Spring-Framework" class="headerlink" title="Spring Framework"></a>Spring Framework</h1><p>使用spring可以轻易的创建一个企业级应用,它使用Java语言所有的企业级环境中的所有东西,spring是开源的,拥有庞大而活跃的社区来提供持续的支持.</p>
-<h2 id="Spring-Core"><a href="#Spring-Core" class="headerlink" title="Spring Core"></a>Spring Core</h2><p>spring分为多个模块,其中core为其中的一个,里面包含spring的核心技术点</p>
-<h3 id="IOC容器-控制反转"><a href="#IOC容器-控制反转" class="headerlink" title="IOC容器(控制反转)"></a>IOC容器(控制反转)</h3><p>IOC也被成为依赖注入,这是由一个对象定义他所依赖的关系的过程.当创建这个bean的时候也同时创建这些依赖供其使用.这样的整个过程就是反转控制的过程,比如说建房子,以前需要砖,瓦,水泥才能建造房子,如果不实用ioc时,就是自己去造砖,造瓦,然后使用.<br>现在使用ioc容器,只需要把砖,瓦,水泥写到清单上,ioc容器自动把这些准备好供使用,省去来自己制造的过程.</p>
-<p><code>org.springframework.beans</code> 和 <code>org.springframework.context</code> 是spring实现IOC容器的基础.<code>BeanFactory</code>接口是能够管理任何对象的高级的配置接口,<code>ApplicationContext</code>是BeanFactory的子接口.因为:</p>
-<ul>
-<li>更容易和Spring 的AOP特性相结合</li>
-<li>消息资源处理,用于国际化问题</li>
-<li>事件发布</li>
-<li>用于特定的上下文比如web应用程序的<code>WebApplicationContext</code></li>
-</ul>
-<p>简单来说就是<code>BeanFactory</code>提供了基本的功能,而<code>ApplicationContext</code>提供了更多的企业定制化的功能.</p>
-<p><code>ApplicationContext</code>代表了IOC容器,提供了初始化、配置、组装beans.通过配置元数据来获取有关初始化..等的指令.这里所指的配置元数据可以通过配置文件,注解或者java代码来实现.通过配置元数据来体现对象和其依赖.</p>
-<p>下图为官网提供的spring工作的简化图:</p>
-<p><img src="https://docs.spring.io/spring/docs/current/spring-framework-reference/images/container-magic.png" alt="IOC容器"></p>
-<h3 id="SpringBean的生命周期"><a href="#SpringBean的生命周期" class="headerlink" title="SpringBean的生命周期"></a>SpringBean的生命周期</h3><p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190531170713.png" alt="生命周期"><br>生命周期大概包含这几个阶段:</p>
-<ol>
-<li>实例化Bean对象,这时还未进行依赖注入,最后将bean加入到beanwapper中.</li>
-<li>设置对象属性.Spring根据BeanDefinition中的信息进行依赖注入.并且通过BeanWrapper提供的设置属性的接口完成依赖注入。</li>
-<li>注入Aware接口,检测是否是想相关Aware接口,并装配相关接口的方法.</li>
-<li>BeanPostProcessor 此时bean已经成功被构造,通过实现这个接口来自定义前置和后置的处理规则.</li>
-<li>调用initialzingBean和int-methods,这时对象成功被初始化</li>
-<li>最后调用disposableBean的afterpropertiesSet方法和destroy-methods来实现指定对象销毁.</li>
-</ol>
-<h3 id="Spring-AOP"><a href="#Spring-AOP" class="headerlink" title="Spring AOP"></a>Spring AOP</h3><p>AOP的意思是面向切面编程,在理解面向切面前,不得不说面向对象.什么是面向对象,面向对象编程就是将事务对象化,依据对象进行层级化,面向对象通过封装继承多态的方式实现了对象层次结构,但是实际应用时可能会遇到需要横向的进行业务处理,典型的就如日志,因为在实际代码编写时,不能每次在写方法前后都加入相同的代码,这样即浪费时间,又导致代码冗余.所以面向切面编程必不可少.</p>
-<p>AOP将多个相同的业务代码整合,形成一个通用的<code>“切面”</code>,通过切面可以分割出<code>“核心关注点”</code>和<code>“横切关注点”</code>,核心关注点就是实际的核心业务关注的代码逻辑部分,横切关注点就是公共的代码的实现.</p>
-<p>其中AOP中有几个比较关键的概念:</p>
-<ol>
-<li>横切关注点:对哪些方法进行拦截,拦截后如何处理.这些关注点叫做横切关注点</li>
-<li>切面:切面就是对横切关注点的抽象,就如同类对事物的抽象类似</li>
-<li>连接点(joinpoint):被拦截到的点,可以通过连接点获取被拦截的参数等信息</li>
-<li>切入点:连接点进行拦截的定义</li>
-<li>织入:横切的过程叫做织入</li>
-</ol>
-<h4 id="简单的代码实现-注解"><a href="#简单的代码实现-注解" class="headerlink" title="简单的代码实现(注解)"></a>简单的代码实现(注解)</h4><p>下面代码使用注解的方式实现的Spring AOP,配置文件同理,需要配置切面(主要是切点和通知方法)</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="comment">// 标志为AOP @Aspect</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ServiceLog</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Logger logger = LoggerFactory.getLogger(ServiceLog.class);</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    HttpSession httpSession;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 前置通知 切入点前执行</span></span><br><span class="line">    <span class="meta">@Before</span>(<span class="string">"execution(* com.nanyin.jreact.service.serviceImpl..*.*(..))"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handelServiceMethodBefore</span><span class="params">(JoinPoint joinpoint)</span></span>&#123; <span class="comment">//JoinPoint 为连接点,通过连接点可获取参数等</span></span><br><span class="line">        <span class="keyword">try</span>&#123;</span><br><span class="line">            String username = (String) httpSession.getAttribute(<span class="string">"user"</span>);</span><br><span class="line">            BaseUtil.setUser(Optional.ofNullable(username).orElse(<span class="string">"空 "</span>));</span><br><span class="line">        &#125;<span class="keyword">catch</span> (Exception e)&#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 后置通知 切入点后执行</span></span><br><span class="line">    <span class="meta">@After</span>(<span class="string">"execution(* com.nanyin.jreact.service.serviceImpl..*.*(..))"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handelServiceMethodAfter</span><span class="params">(JoinPoint joinpoint)</span></span>&#123;</span><br><span class="line">        <span class="keyword">try</span>&#123;</span><br><span class="line">            String username = (String) httpSession.getAttribute(<span class="string">"user"</span>);</span><br><span class="line">            BaseUtil.setUser(Optional.ofNullable(username).orElse(<span class="string">"空 "</span>));</span><br><span class="line">        &#125;<span class="keyword">catch</span> (Exception e)&#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="JDK动态代理和CGLIB代理"><a href="#JDK动态代理和CGLIB代理" class="headerlink" title="JDK动态代理和CGLIB代理"></a>JDK动态代理和CGLIB代理</h4><p>两者都可以实现AOP代理功能,但是jdk代理需要代理类和委托类都实现系统的接口,但是实际应用的时候这种情况非常少,这时候会自动使用CGLIB实现动态代理</p>
-<h3 id="Spring事务管理"><a href="#Spring事务管理" class="headerlink" title="Spring事务管理"></a>Spring事务管理</h3><p>事务包含四个基本特性,也就是常说的ACID,分别为原子性,一致性,隔离性,持久性</p>
-<h4 id="事务的接口"><a href="#事务的接口" class="headerlink" title="事务的接口"></a>事务的接口</h4><ol>
-<li>PlatformTransactionManager： （平台）事务管理器</li>
-</ol>
-<blockquote>
-<p>spring 不直接管理事务,而是实现不同的事务管理器,将事务交给框架处理,如为ibaits 和 hibernate 有不同的实现.</p>
-</blockquote>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 事务管理器 xml 配置 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"transactionManager"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">class</span>=<span class="string">"org.springframework.jdbc.datasource.DataSourceTransactionManager"</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 数据源 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"dataSource"</span> <span class="attr">ref</span>=<span class="string">"dataSource"</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<ol start="2">
-<li>TransactionDefinition： 事务定义信息(事务隔离级别、传播行为、超时、只读、回滚规则)</li>
-</ol>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">TransactionDefinition</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 返回事务的传播行为</span></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">getPropagationBehavior</span><span class="params">()</span></span>; </span><br><span class="line">    <span class="comment">// 返回事务的隔离级别，事务管理器根据它来控制另外一个事务可以看到本事务内的哪些数据</span></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">getIsolationLevel</span><span class="params">()</span></span>; </span><br><span class="line">    <span class="comment">//返回事务的名字</span></span><br><span class="line">    <span class="function">String <span class="title">getName</span><span class="params">()</span>；</span></span><br><span class="line"><span class="function">    <span class="comment">// 返回事务必须在多少秒内完成</span></span></span><br><span class="line"><span class="function">    <span class="keyword">int</span> <span class="title">getTimeout</span><span class="params">()</span></span>;  </span><br><span class="line">    <span class="comment">// 返回是否优化为只读事务。</span></span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">isReadOnly</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ol start="3">
-<li>TransactionStatus： 用来记录事务运行状态</li>
-</ol>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">TransactionStatus</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">isNewTransaction</span><span class="params">()</span></span>; <span class="comment">// 是否是新的事物</span></span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">hasSavepoint</span><span class="params">()</span></span>; <span class="comment">// 是否有恢复点</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">setRollbackOnly</span><span class="params">()</span></span>;  <span class="comment">// 设置为只回滚</span></span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">isRollbackOnly</span><span class="params">()</span></span>; <span class="comment">// 是否为只回滚</span></span><br><span class="line">    <span class="keyword">boolean</span> isCompleted; <span class="comment">// 是否已完成</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="自定义注解"><a href="#自定义注解" class="headerlink" title="自定义注解"></a>自定义注解</h3><h4 id="构造注解"><a href="#构造注解" class="headerlink" title="构造注解"></a>构造注解</h4><p>注解使用<code>@interface</code>来标识为一个注解,具体使用可以参考如下:</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @Target原注解的意义是表明作用域，比如type就是表示要标注到类接口上</span></span><br><span class="line"><span class="meta">@Target</span>(&#123;ElementType.TYPE&#125;)</span><br><span class="line"><span class="comment">// 表示作用域</span></span><br><span class="line"><span class="meta">@Retention</span>(RetentionPolicy.RUNTIME)</span><br><span class="line"><span class="comment">// 表明其他注解能够继承该注解</span></span><br><span class="line"><span class="meta">@Inherited</span></span><br><span class="line"><span class="comment">// javadoc会包含</span></span><br><span class="line"><span class="meta">@Documented</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> TableDescription &#123;</span><br><span class="line">    <span class="function">String <span class="title">description</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>其中该注解的作用就是1.标注在类接口上2.作用在运行时,能够通过反射得到接口中的内容3.能够让其他注解继承该注解4.能够生成javaddoc文档</p>
-<p>下面来重点关注第一个和第二个元注解:</p>
-<ol>
-<li>@Target是这个注解的作用域，ElementType.METHOD是这个注解的作用域的列表，METHOD是方法声明，除此之外，还有：CONSTRUCTOR（构造方法声明）,FIELD（字段声明）,LOCAL VARIABLE（局部变量声明）,METHOD（方法声明）,PACKAGE（包声明）,PARAMETER（参数声明）,TYPE（类接口）</li>
-<li>@Retention是它的生命周期，前面不是说注解按照运行机制有一个分类嘛，RUNTIME就是在运行时存在，可以通过反射读取。除此之外，还有: SOURCE（只在源码显示，编译时丢弃）,CLASS（编译时记录到class中，运行时忽略）,RUNTIME（运行时存在，可以通过反射读取）</li>
-</ol>
-<h4 id="如何使用自定义注解"><a href="#如何使用自定义注解" class="headerlink" title="如何使用自定义注解"></a>如何使用自定义注解</h4><ul>
-<li>添加注解</li>
-</ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="meta">@Table</span>(name = <span class="string">"person"</span>)</span><br><span class="line"><span class="comment">// 这里使用到了上面的自定义注解TableDescription</span></span><br><span class="line"><span class="meta">@TableDescription</span>(description = <span class="string">"this is person table"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Id</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">long</span> id;</span><br><span class="line">    <span class="meta">@Column</span>(name = <span class="string">"name"</span>,length = <span class="number">128</span>)</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Column</span>(name = <span class="string">"age"</span>,length = <span class="number">3</span>)</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">short</span> age;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>获得注解内容</li>
-</ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testAnn</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">try</span>&#123;</span><br><span class="line">    <span class="comment">// 反射获取类</span></span><br><span class="line">        Class clazz = Class.forName(<span class="string">"com.nanyin.jreact.entry.Person"</span>);</span><br><span class="line">        Boolean exist = clazz.isAnnotationPresent(TableDescription.class);</span><br><span class="line">        <span class="keyword">if</span>(exist)&#123;</span><br><span class="line">           <span class="comment">//如果注解在类中存在</span></span><br><span class="line">           TableDescription tableDescription = (TableDescription) clazz.getAnnotation(TableDescription.class);</span><br><span class="line">           <span class="comment">// 获得注解内容</span></span><br><span class="line">            System.out.println(tableDescription.description());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;<span class="keyword">catch</span> (ClassNotFoundException c)&#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>上面只是简单的掩饰注解的用法,但实际上业务会比这难上许多.</p>
-<h3 id="springMVC-工作流程"><a href="#springMVC-工作流程" class="headerlink" title="springMVC 工作流程"></a>springMVC 工作流程</h3><p>先上一张图:来自<a href="https://www.cnblogs.com/xiaoxi/p/6164383.html" target="_blank" rel="noopener">https://www.cnblogs.com/xiaoxi/p/6164383.html</a><br><img src="https://i.loli.net/2019/05/12/5cd7cf13c933c.jpg" alt="SpringMvc工作原理"></p>
-<p>由图中可以看到SpringMvc中最重要的起到中枢的是<code>DispatcherServlet</code>(前端控制器).</p>
-<ol>
-<li>在DispatcherServlet接受到客户端请求后,使用 <code>handlerMapping</code> 进行映射处理.在生成处理器映射器之后, 返回一个handler,如果有拦截器的化还生成拦截器.交给 <code>DispatcherServlet</code> 进行下一步处理.</li>
-<li>第二步交给 <code>handlerAdatper</code> (处理器适器) <code>HandlerAdapter</code> 经过适配调用具体的处理器( <code>Controller</code> ，也叫后端控制器)。Controller执行完成返回ModelAndView。</li>
-<li>第三步,DispatcherServlet将最终的结果交给 <code>viewResolver</code> 试图解析器进行视图解析</li>
-<li>DispatcherServlet 根据返回的view进行视图渲染,最终返回给客户端用户.</li>
-</ol>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-<div>
-      
-</div>
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/04/29/2019-04-29-Hibernate重点总结/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="NanYin">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NanYin的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/04/29/2019-04-29-Hibernate重点总结/" itemprop="url">Hibernate重点知识总结</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-04-29T12:00:00Z">
-                2019-04-29
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Hibernate/" itemprop="url" rel="index">
-                    <span itemprop="name">Hibernate</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  1.4k
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  4
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Hibernate重点知识总结"><a href="#Hibernate重点知识总结" class="headerlink" title="Hibernate重点知识总结"></a>Hibernate重点知识总结</h1><h2 id="Hibernate的三种状态"><a href="#Hibernate的三种状态" class="headerlink" title="Hibernate的三种状态"></a>Hibernate的三种状态</h2><ol>
-<li>瞬时态(transient):当实体还未和session关联,如new Person(“1”);</li>
-<li>持久态(persistent): 通过get或者load得到的实体类,这时的状态都是持久态.</li>
-<li>游离态(detached): 当通过get或者load得到持久态的对象后,执行删除delete时,这时已经脱离session.因delete而变为游离态可有save或者saveOrUpate转化为持久态.或则当session关闭后,session中的对象就变为游离态.</li>
-</ol>
-<h2 id="hibernate中update和saveOrUpdate的区别"><a href="#hibernate中update和saveOrUpdate的区别" class="headerlink" title="hibernate中update和saveOrUpdate的区别"></a>hibernate中update和saveOrUpdate的区别</h2><p>update只能是对象有主键时起作用,而saveOrUpdate则在对象没有主键时执行插入操作.对应的update操作只能操作游离态的对象,而不能对瞬时态的对象操作.而saveOrUpdate则两种状态的对象都可以操作.</p>
-<h2 id="hibernate中的update和merge方法的区别"><a href="#hibernate中的update和merge方法的区别" class="headerlink" title="hibernate中的update和merge方法的区别"></a>hibernate中的update和merge方法的区别</h2><p>当执行update方法的时候,一个session中具有与当前update相同的持久化标识(identifier)的实例,使用upate操作后会报错,而使用merge后把处理自由态的po对象A的属性copy到session当中处于持久态的po的属性中，执行完成后原来是持久状态还是持久态，而我们提供的A还是自由态。</p>
-<h2 id="hibernate中get和load的区别"><a href="#hibernate中get和load的区别" class="headerlink" title="hibernate中get和load的区别"></a>hibernate中get和load的区别</h2><p>一句话，hibernate对于load方法认为该数据在数据库中一定存在，可以放心的使用代理来延迟加载，如果在使用过程中发现了问题，只能抛异常；而对于get方法，hibernate一定要获取到真实的数据，否则返回null。</p>
-<h2 id="hibernate中list和iterator的区别"><a href="#hibernate中list和iterator的区别" class="headerlink" title="hibernate中list和iterator的区别"></a>hibernate中list和iterator的区别</h2><p>(1)、List方式是1次性把所有的数据全部取到内存中，构造一个超大的结果集，主要的时间开销是这一步，这一步的时间开销要远远超过JDBC和 Iterator方式下构造结果集的时间开销，并且内存开销也很惊人；而对结果集的遍历操作，速度则是非常的惊人（经过测试，30万记录的内 存遍历不到100ms，由于这一步不受JDBC影响，因此结果可信）。因此，List方式适合于对结果集进行反复多次操作的情况，例如分页显示，往后往前 遍历，跳到第一行，跳到最后一行等等。</p>
-<p>(2)、Iterator方式只取记录id到内存中，并没有把所有数据取到内存中，因此构造结果集的时间开销很小，比JDBC和List方式都要少，并且内 存开销也小很多。而对结果集的遍历的操作的时候，Iterator仍然要访问数据库，所有主要的时间开销都花在这里。因此，Iterator方式适合于只 对结果集进行1次遍历操作的情况，并且Iterator方式特别适合于从超大结果集中取少量数据，这种情况Iterator性能非常好。</p>
-<p>总结: list把数据一次加载到内存,再进行遍历操作就非常快了.而Iterator方式只会把id放到内存中,但是再次遍历时仍然要访问数据库查询数据,适合一次遍历的情况.</p>
-<h2 id="hibernate中的inverse属性"><a href="#hibernate中的inverse属性" class="headerlink" title="hibernate中的inverse属性"></a>hibernate中的inverse属性</h2><p>设置inverse=“false”为主控方,由主控方类维护对象间的关系.比如再many-to-one的关系中,再one的一方设置<code>inverse=&quot;true&quot;</code>这样能够提高效率,比如班级里一个老师多个学生,老师记住多个学生比较困难,而学生记住一个老师很容易.同理one-to-many.再多对多的关系中,再任意一方设置<code>inverse=&#39;true&#39;</code>即可.</p>
-<h2 id="hibernate中的cascade属性"><a href="#hibernate中的cascade属性" class="headerlink" title="hibernate中的cascade属性"></a>hibernate中的cascade属性</h2><p>级联操作：指当主控方执行某项操作时，是否要对被关联方也执行相同的操作。</p>
-<h2 id="什么情况下懒加载能够有效的提高效率"><a href="#什么情况下懒加载能够有效的提高效率" class="headerlink" title="什么情况下懒加载能够有效的提高效率"></a>什么情况下懒加载能够有效的提高效率</h2><p>懒加载是当用到对象的时候再从数据库加载数据,持久化来使用.从这句话中就可以理解为,因为及联的关系,一个表的数据可能会带出多张表的数据,这时候使用懒加载就能够实现效率的提高,没必要一次性把所有数据都加载出来,而是用时加载.hibernate默认是使用懒加载的,当然可以使用lazy=false来禁用懒加载.</p>
-<h2 id="什么是hibernate的二级缓存"><a href="#什么是hibernate的二级缓存" class="headerlink" title="什么是hibernate的二级缓存"></a>什么是hibernate的二级缓存</h2><p>缓存就是将以前的数据存放到内存中,当查询数据的时候,现在内存中查询,是否有这个对象,如果没有再从数据库中查询对象,这样大大的提高了查询的效率.</p>
-<p>Hibenate的session就是一级缓存,当查询数据的时候都会先从session中查询对象是否存在,不存在才从数据库查询.但是session是非线程安全的,多线程共享的情况下会出现问题.并且session是表示的是一段会话,表示的是一次事务,基于以上两点,所以在一次事务完成后,session就应立即关闭.所以这里说的一级缓存意义不大.</p>
-<p>Hibernate的二级缓存其实就是使用外部缓存,如Echache或者redis等,使用配置文件配置缓存策略等.</p>
-<h2 id="Hibernate中使用hibernateTemplate的好处有哪些"><a href="#Hibernate中使用hibernateTemplate的好处有哪些" class="headerlink" title="Hibernate中使用hibernateTemplate的好处有哪些?"></a>Hibernate中使用hibernateTemplate的好处有哪些?</h2><ol>
-<li>HibernateTemplate简化了与Hibernate Session的交互</li>
-<li>常见的函数简化为单个方法调用。</li>
-<li>异常会自动捕获并转换为运行时异常</li>
-<li>session 自动关闭</li>
-</ol>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-<div>
-      
-</div>
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/3/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/5/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/3/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/5/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2486,7 +2365,7 @@ public String toString() { return getRequestDescription(); }</code></pre><p>}</p
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">88</span>
+                  <span class="site-state-item-count">92</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2560,23 +2439,23 @@ public String toString() { return getRequestDescription(); }</code></pre><p>}</p
              
              
                <li>
+                 <a href="/2019/12/11/（四）AOP切面使用与原理/" title="SpringAOP的使用和源码分析" target="_blank">SpringAOP的使用和源码分析</a>
+               </li>
+             
+               <li>
+                 <a href="/2019/12/07/（三）自动装配/" title="Spring中的自动装配" target="_blank">Spring中的自动装配</a>
+               </li>
+             
+               <li>
+                 <a href="/2019/12/05/（二）Bean的生命周期/" title="Bean的生命周期" target="_blank">Bean的生命周期</a>
+               </li>
+             
+               <li>
+                 <a href="/2019/12/01/（一） 将类加入到容器中的方式/" title="将类添加至容器中的四种方法" target="_blank">将类添加至容器中的四种方法</a>
+               </li>
+             
+               <li>
                  <a href="/2019/08/15/2019-08-15-Spring的缓存/" title="Spring的缓存" target="_blank">Spring的缓存</a>
-               </li>
-             
-               <li>
-                 <a href="/2019/08/13/2019-08-13-SpringBoot的自定义starter开发/" title="SpringBoot的自定义starter开发" target="_blank">SpringBoot的自定义starter开发</a>
-               </li>
-             
-               <li>
-                 <a href="/2019/08/05/SpringBoot启动之refreshContext/" title="SpringBoot启动之refreshContext" target="_blank">SpringBoot启动之refreshContext</a>
-               </li>
-             
-               <li>
-                 <a href="/2019/08/05/SpringBoot启动原理/" title="SpringBoot启动原理" target="_blank">SpringBoot启动原理</a>
-               </li>
-             
-               <li>
-                 <a href="/2019/07/17/2019-07-17-SpringBoot错误处理机制/" title="SpringBoot的错误处理机制" target="_blank">SpringBoot的错误处理机制</a>
                </li>
              
            </ul>
@@ -2625,7 +2504,7 @@ public String toString() { return getRequestDescription(); }</code></pre><p>}</p
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共91.6k字</span>
+  <span class="post-count">博客全站共97.6k字</span>
 </div>
 
 
@@ -2677,8 +2556,6 @@ public String toString() { return getRequestDescription(); }</code></pre><p>}</p
   
 
 
-  
-
 
 
 
@@ -2717,11 +2594,6 @@ public String toString() { return getRequestDescription(); }</code></pre><p>}</p
   
   
     <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
   
 
 
@@ -3117,5 +2989,5 @@ public String toString() { return getRequestDescription(); }</code></pre><p>}</p
 
   
 
-</body>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
 </html>
