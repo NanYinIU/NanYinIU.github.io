@@ -304,6 +304,435 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/10/04/2018-10-04-ArrayList的源码查看/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="NanYin">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NanYin的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/10/04/2018-10-04-ArrayList的源码查看/" itemprop="url">ArrayList的源码查看</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-04T15:00:00Z">
+                2018-10-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  973
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  4
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
+
+<ul>
+<li><a href="#arraylist的源码查看">ArrayList的源码查看</a><ul>
+<li><a href="#结构源码">结构源码</a></li>
+<li><a href="#常用方法源码">常用方法源码</a></li>
+</ul>
+</li>
+</ul>
+<!-- /TOC -->
+
+<h1 id="ArrayList的源码查看"><a href="#ArrayList的源码查看" class="headerlink" title="ArrayList的源码查看"></a>ArrayList的源码查看</h1><h2 id="结构源码"><a href="#结构源码" class="headerlink" title="结构源码"></a>结构源码</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 没有参数的情况下 */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">ArrayList</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 设置默认的内容为&#123;&#125;</span></span><br><span class="line">    <span class="keyword">this</span>.elementData = DEFAULTCAPACITY_EMPTY_ELEMENTDATA;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/* 默认是拥有默认容量（10）的空的 array list */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Object[] DEFAULTCAPACITY_EMPTY_ELEMENTDATA = &#123;&#125;;</span><br><span class="line"><span class="comment">/* 这个默认的容量是定义好的10  */</span></span><br><span class="line"> <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> DEFAULT_CAPACITY = <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 当参数是容量的大小的时候  */</span></span><br><span class="line"> <span class="function"><span class="keyword">public</span> <span class="title">ArrayList</span><span class="params">(<span class="keyword">int</span> initialCapacity)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (initialCapacity &gt; <span class="number">0</span>) &#123;</span><br><span class="line">      <span class="comment">/* 如果自定义初始容量大小*/</span></span><br><span class="line">        <span class="keyword">this</span>.elementData = <span class="keyword">new</span> Object[initialCapacity];</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (initialCapacity == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">this</span>.elementData = EMPTY_ELEMENTDATA;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="comment">/* 如果参数小于0 报参数异常的错误（IllegalArgumentException） */</span></span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"Illegal Capacity: "</span>+</span><br><span class="line">                                           initialCapacity);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/* 当参数是一个Collection结构的时候 */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">ArrayList</span><span class="params">(Collection&lt;? extends E&gt; c)</span> </span>&#123;</span><br><span class="line">     elementData = c.toArray();</span><br><span class="line">     <span class="keyword">if</span> ((size = elementData.length) != <span class="number">0</span>) &#123;</span><br><span class="line">         <span class="comment">// c.toArray might (incorrectly) not return Object[] (see 6260652)</span></span><br><span class="line">         <span class="keyword">if</span> (elementData.getClass() != Object[].class)</span><br><span class="line">         <span class="comment">/* 如果不是object类型的话 转换成object类型 */</span></span><br><span class="line">             elementData = Arrays.copyOf(elementData, size, Object[].class);</span><br><span class="line">     &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">         <span class="comment">// replace with empty array.</span></span><br><span class="line">         <span class="keyword">this</span>.elementData = EMPTY_ELEMENTDATA;</span><br><span class="line">     &#125;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="常用方法源码"><a href="#常用方法源码" class="headerlink" title="常用方法源码"></a>常用方法源码</h2><p>在看源码之前先通过下面这张图片了解以下如果新建一个ArrayList后添加一个元素的大致过程：</p>
+<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/ArrayList%E6%B7%BB%E5%8A%A0%E8%BF%87%E7%A8%8B%E5%88%86%E6%9E%90.png" alt="过程图"></p>
+<ul>
+<li>add 添加方法</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 只有一个参数的添加 */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">add</span><span class="params">(E e)</span> </span>&#123;</span><br><span class="line">    <span class="comment">/* 扩充容量 */</span></span><br><span class="line">    ensureCapacityInternal(size + <span class="number">1</span>);  <span class="comment">// Increments modCount!!</span></span><br><span class="line">    <span class="comment">/* ArrayList其实就是个数组 将新add的值放到数组的最后面 */</span></span><br><span class="line">    elementData[size++] = e;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">ensureCapacityInternal</span><span class="params">(<span class="keyword">int</span> minCapacity)</span> </span>&#123;</span><br><span class="line">      ensureExplicitCapacity(calculateCapacity(elementData, minCapacity));</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">calculateCapacity</span><span class="params">(Object[] elementData, <span class="keyword">int</span> minCapacity)</span> </span>&#123;</span><br><span class="line">  <span class="comment">/* 如果是空的话返回 默认或当前 */</span></span><br><span class="line">    <span class="keyword">if</span> (elementData == DEFAULTCAPACITY_EMPTY_ELEMENTDATA) &#123;</span><br><span class="line">    <span class="comment">// 如果elementData == &#123;&#125;时，返回给出的值和默认的DEFAULT_CAPACITY其中大的那个</span></span><br><span class="line">        <span class="keyword">return</span> Math.max(DEFAULT_CAPACITY, minCapacity);</span><br><span class="line">     &#125;</span><br><span class="line">    <span class="keyword">return</span> minCapacity;</span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">ensureExplicitCapacity</span><span class="params">(<span class="keyword">int</span> minCapacity)</span> </span>&#123;</span><br><span class="line">  <span class="comment">/* The number of times this list has been &lt;i&gt;structurally modified&lt;/i&gt;. */</span></span><br><span class="line">  <span class="comment">// 这个modCount 指的是数据结构改变的次数（比如添加、移除元素）</span></span><br><span class="line">    modCount++;</span><br><span class="line">    <span class="comment">// overflow-conscious code</span></span><br><span class="line">    <span class="keyword">if</span> (minCapacity - elementData.length &gt; <span class="number">0</span>)</span><br><span class="line">    <span class="comment">/* 如果当前的容量大于给定的长度的时候 需要扩充 */</span></span><br><span class="line">        grow(minCapacity);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">grow</span><span class="params">(<span class="keyword">int</span> minCapacity)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// overflow-conscious code</span></span><br><span class="line">    <span class="keyword">int</span> oldCapacity = elementData.length; <span class="comment">// 原长度</span></span><br><span class="line">    <span class="keyword">int</span> newCapacity = oldCapacity + (oldCapacity &gt;&gt; <span class="number">1</span>); <span class="comment">//新长度 右移运算。长度为1.5倍的原长度</span></span><br><span class="line">    <span class="keyword">if</span> (newCapacity - minCapacity &lt; <span class="number">0</span>)</span><br><span class="line">        newCapacity = minCapacity;</span><br><span class="line">   <span class="keyword">if</span> (newCapacity - MAX_ARRAY_SIZE &gt; <span class="number">0</span>)</span><br><span class="line">        newCapacity = hugeCapacity(minCapacity);</span><br><span class="line">    <span class="comment">// minCapacity is usually close to size, so this is a win:</span></span><br><span class="line">    <span class="comment">// 使用Arrays.copyof方法进行最终扩容，所以ArrayList添加元素时比较耗费性能。</span></span><br><span class="line">    elementData = Arrays.copyOf(elementData, newCapacity);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>remove 移除元素方法</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> E <span class="title">remove</span><span class="params">(<span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//如果超出 则抛出IndexOutOfBoundsException异常</span></span><br><span class="line">    rangeCheck(index);</span><br><span class="line"></span><br><span class="line">    modCount++;</span><br><span class="line">    E oldValue = elementData(index);</span><br><span class="line">    <span class="comment">/* 想要移除元素后面元素的个数*/</span></span><br><span class="line">    <span class="keyword">int</span> numMoved = size - index - <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">if</span> (numMoved &gt; <span class="number">0</span>)</span><br><span class="line">    <span class="comment">/* arraycopy是个native方法 相当于把index+1位置上的元素挪到index位置上 */</span></span><br><span class="line">        System.arraycopy(elementData, index+<span class="number">1</span>, elementData, index,</span><br><span class="line">                         numMoved);</span><br><span class="line">    elementData[--size] = <span class="keyword">null</span>; <span class="comment">//清空元素，利于GC </span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> oldValue;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 只会移除第一个符合条件的条目 */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">remove</span><span class="params">(Object o)</span> </span>&#123;</span><br><span class="line">      <span class="keyword">if</span> (o == <span class="keyword">null</span>) &#123;</span><br><span class="line">          <span class="keyword">for</span> (<span class="keyword">int</span> index = <span class="number">0</span>; index &lt; size; index++)</span><br><span class="line">              <span class="keyword">if</span> (elementData[index] == <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="comment">/* 这个fastRemove方法和上面的方法大相径庭  */</span></span><br><span class="line">                  fastRemove(index);</span><br><span class="line">                  <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">              &#125;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          <span class="keyword">for</span> (<span class="keyword">int</span> index = <span class="number">0</span>; index &lt; size; index++)</span><br><span class="line">              <span class="keyword">if</span> (o.equals(elementData[index])) &#123;</span><br><span class="line">                  fastRemove(index);</span><br><span class="line">                  <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">              &#125;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>contain 是否包含</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">contains</span><span class="params">(Object o)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">return</span> indexOf(o) &gt;= <span class="number">0</span>;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">indexOf</span><span class="params">(Object o)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">if</span> (o == <span class="keyword">null</span>) &#123;</span><br><span class="line">           <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; size; i++)</span><br><span class="line">               <span class="keyword">if</span> (elementData[i]==<span class="keyword">null</span>)</span><br><span class="line">                   <span class="keyword">return</span> i;</span><br><span class="line">       &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">         <span class="comment">/* 内部就是for循环一个一个判断的 */</span></span><br><span class="line">           <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; size; i++)</span><br><span class="line">               <span class="keyword">if</span> (o.equals(elementData[i]))</span><br><span class="line">                   <span class="keyword">return</span> i;</span><br><span class="line">                         &#125;</span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>get 方法</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> E <span class="title">get</span><span class="params">(<span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">    rangeCheck(index);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> elementData(index);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/* 本质就是返回数组位置的元素 */</span></span><br><span class="line"><span class="function">E <span class="title">elementData</span><span class="params">(<span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> (E) elementData[index];</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>因为get方法是直接根据index获取数组对应位置的元素，所以ArrayList在检索元素上比较快。而在插入和移除元素时，使用的是copyOf方法，也就是将原数组元素拷贝到目标数组的方式。所以在插入和移除元素时就会显得吃力些。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+<div>
+      
+</div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/07/25/2018-07-25-stackOverFlow上的热门问题/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="NanYin">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NanYin的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/07/25/2018-07-25-stackOverFlow上的热门问题/" itemprop="url">整理并学习stackOverFlow上的热门回答</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-25T15:00:00Z">
+                2018-07-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  1.2k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  4
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="基础Java知识"><a href="#基础Java知识" class="headerlink" title="基础Java知识"></a>基础Java知识</h1><p>平常没事的时候会逛逛stackOverFlow,上面有很多非常基础的问题，并且回答者讲解的非常的透彻，我想通过整理上面的热门回答来梳理一下自己的Java基础知识。</p>
+<h2 id="热门"><a href="#热门" class="headerlink" title="热门"></a>热门</h2><h3 id="什么是NullPointerExpection-如何去尽可能的避免"><a href="#什么是NullPointerExpection-如何去尽可能的避免" class="headerlink" title="什么是NullPointerExpection,如何去尽可能的避免"></a>什么是NullPointerExpection,如何去尽可能的避免</h3><p>当你声明一个引用变量(对象)的时候，实际上是创建一个指向该对象的指针。参考如下代码</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> x ;</span><br><span class="line">x = <span class="number">10</span> ;</span><br></pre></td></tr></table></figure>
+
+<p>在例子中，我们声明了变量 <code>x</code> 。因为是原始类型，系统会默认付给变量<code>x</code>初始值是0。但是第二行使用<code>x=10</code>，将数值10付给变量x，实际过程是将10写入变量x所指向的内存位置。<br>然而，当我们声明一个引用类型，对于int来说也就是其包装类型。会出现不一样的情形。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Integer num;</span><br><span class="line">num = <span class="keyword">new</span> Integer(<span class="number">10</span>);</span><br></pre></td></tr></table></figure>
+
+<p>当你创建num的时候，系统不会默认创建一个默认值，因为他引用对象，然而，他会包含一个指针，这个指针虽然存在，但是他没有初始值，所以java会将变量的指针指向空(null)。<br>在第二行使用new关键字实例化了num，这时，会将变量num指针指向这个实例对象。</p>
+<p>在当用到这个变量之前未给变量做实例化时，也就是变量的指针还指向空时，运行后会出现NullPointerExpection 这个问题。</p>
+<p>可能觉得在实际codeing的时候不会出现上面的问题，但是实际上，每个方法的引用对象如果不判断传进来的值是否非空，都可能会出现这个问题</p>
+<p>错误的示范：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doSomething</span><span class="params">(SomeObject obj)</span> </span>&#123;</span><br><span class="line">   <span class="comment">//do something to obj</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 调用的时候 传递null值时,会出现空指针异常</span></span><br><span class="line">doSomething(<span class="keyword">null</span>);</span><br></pre></td></tr></table></figure>
+
+<p>正确的示范：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doSomething</span><span class="params">(SomeObject obj)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(obj != <span class="keyword">null</span>) &#123;</span><br><span class="line">       <span class="comment">//do something</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">       <span class="comment">//do something else</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>尽量在每次开发的过程当中，仔细斟酌变量是否可能为空，当可能为空时一定要做这种判断来预防空指针。保证代码的健壮性。</p>
+<h3 id="如何比较字符串"><a href="#如何比较字符串" class="headerlink" title="如何比较字符串"></a>如何比较字符串</h3><p>在当使用 <code>==</code> 比较字符串是可能会出现bug，这时可以用equals解决。所以引出一个问题，什么时候使用 <code>==</code> 什么时候使用equals</p>
+<p>主要有两方面的差异：</p>
+<ol>
+<li><p><code>==</code> 是比较对象引用，也就是真正的比较两个对象或者变量的地址是否是相同的。而equals比较的是值是否相等。</p>
+</li>
+<li><p><code>==</code> 没有非空的判断，而equals如果比较的对象如果是空则会出现异常，所以一般使用equals的方法都是使用已知的非空对象.equals(Object) 如 <code>&quot;hello&quot;.equals(x)</code></p>
+</li>
+</ol>
+<p>equals是Object的方法，大部分类中也重写了equals方法，所以在比较对象的时候应该使用equals,而当比较基本数据类型如int的时候可以使用 <code>==</code></p>
+<h3 id="Java是传值还是传引用"><a href="#Java是传值还是传引用" class="headerlink" title="Java是传值还是传引用"></a>Java是传值还是传引用</h3><p><strong>Java是传值的</strong> 。但是，通常我们定位值的时候称他为 “引用” 。具一个非常典型的例子</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    Dog aDog = <span class="keyword">new</span> Dog(<span class="string">"Max"</span>);</span><br><span class="line">    <span class="comment">// we pass the object to foo</span></span><br><span class="line">    foo(aDog);</span><br><span class="line">    <span class="comment">// aDog variable is still pointing to the "Max" dog when foo(...) returns</span></span><br><span class="line">    aDog.getName().equals(<span class="string">"Max"</span>); <span class="comment">// true</span></span><br><span class="line">    aDog.getName().equals(<span class="string">"Fifi"</span>); <span class="comment">// false</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">foo</span><span class="params">(Dog d)</span> </span>&#123;</span><br><span class="line">    d.getName().equals(<span class="string">"Max"</span>); <span class="comment">// true</span></span><br><span class="line">    <span class="comment">// change d inside of foo() to point to a new Dog instance "Fifi"</span></span><br><span class="line">    d = <span class="keyword">new</span> Dog(<span class="string">"Fifi"</span>);</span><br><span class="line">    d.getName().equals(<span class="string">"Fifi"</span>); <span class="comment">// true</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>虽然foo方法内改变了传进来的aDog的值，注意这里是 <code>值</code>，所以在调用完foo方法之后再去判断变量aDog的时候他的引用到的值没有变，变的只是当时传进去的值而不是变量的应用，所以可以说，对象的引用是按值传递的。如果这样还是迷糊的话，<br>还可以逆向来想，如果是传引用的话，在当foo方法改变了aDog的时候，也就是说明改变了aDog所引用到的真正的这个值。这样是不能成立。</p>
+<p>所以不管怎么想：Java是传值的！！</p>
+<h3 id="怎样快速打印出array数组内的值"><a href="#怎样快速打印出array数组内的值" class="headerlink" title="怎样快速打印出array数组内的值"></a>怎样快速打印出array数组内的值</h3><p>因为array并没有实现toString()方法，所以当使用array.toString()的时候会打印出类似 <code>[I@17f052a3</code> 的地址信息，在jdk1.5之后可以使用</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span>[] x = <span class="keyword">new</span> <span class="keyword">int</span>[]&#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>&#125;;</span><br><span class="line">String arrayString = Arrays.toString(x);</span><br><span class="line">System.out.println(arrayString);</span><br><span class="line"><span class="comment">//结果： [1, 2, 3, 4, 5]</span></span><br></pre></td></tr></table></figure>
+
+<p>这样的方式可以非常方便的打印出数组内所有元素,嵌套数组可以使用deepToString方法。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">System.out.println(Arrays.toString(deepArray));</span><br><span class="line"><span class="comment">//output: [[Ljava.lang.String;@106d69c, [Ljava.lang.String;@52e922]</span></span><br><span class="line">System.out.println(Arrays.deepToString(deepArray));</span><br><span class="line">结果：[[John, Mary], [Alice, Bob]]</span><br></pre></td></tr></table></figure>
+
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+<div>
+      
+</div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/07/13/2018-07-15-idea快捷键/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1617,222 +2046,6 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/06/24/2018-06-27-bash_11_bash命令篇（三）/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="NanYin">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NanYin的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/24/2018-06-27-bash_11_bash命令篇（三）/" itemprop="url">bash学习记录（十二）命令篇（3）</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-24T15:00:00Z">
-                2018-06-24
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Bash/" itemprop="url" rel="index">
-                    <span itemprop="name">Bash</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  556
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  2
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="bash命令篇（三）"><a href="#bash命令篇（三）" class="headerlink" title="bash命令篇（三）"></a>bash命令篇（三）</h1><h2 id="bash中的关于通信的命令"><a href="#bash中的关于通信的命令" class="headerlink" title="bash中的关于通信的命令"></a>bash中的关于通信的命令</h2><ol>
-<li>host 通过ip或者域名搜索互联网的主机地址（使用DNS）</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ host www.baidu.com</span><br><span class="line">www.baidu.com has address 61.135.169.125</span><br><span class="line">www.baidu.com has address 61.135.169.121</span><br><span class="line">www.baidu.com is an alias for www.a.shifen.com.</span><br><span class="line">www.baidu.com is an alias for www.a.shifen.com.</span><br></pre></td></tr></table></figure>
-
-<ol start="2">
-<li>nslookup 向上寻找name server</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">$ nslookup  -sil 66.97.104.180 </span><br><span class="line">Server:		127.0.1.1</span><br><span class="line">Address:	127.0.1.1#53</span><br><span class="line"></span><br><span class="line">Non-authoritative answer:</span><br><span class="line">180.104.97.66.in-addr.arpa	name = 66-97-104-180.dynamic.bugtusselwireless.com.</span><br><span class="line"></span><br><span class="line">Authoritative answers can be found from:</span><br><span class="line">104.97.66.in-addr.arpa	nameserver = ns2.bugnet.net.</span><br><span class="line">104.97.66.in-addr.arpa	nameserver = ns1.bugnet.net.</span><br><span class="line">ns1.bugnet.net	internet address = 204.11.133.241</span><br><span class="line">ns2.bugnet.net	internet address = 204.11.133.244</span><br></pre></td></tr></table></figure>
-
-<ol start="3">
-<li><p>ping 熟知的ping命令，常用来探测与另一个主机是否有网络链接</p>
-</li>
-<li><p>ftp 从远程主机下载或者上传给远程主机的协议。</p>
-</li>
-<li><p>telnt 链接远程主机的协议</p>
-</li>
-<li><p>wget 使用非交互式的从网站web或者ftp站点下载文件。</p>
-</li>
-<li><p>rcp 远程拷贝，在两台不同的机器间拷贝。</p>
-</li>
-<li><p>ssh <code>secure shell</code> 他代替了telnt rcp等命令。</p>
-</li>
-<li><p>scp <code>secure cp</code> 他用来代替rcp命令，需要登录授权的远程拷贝文件的命令。</p>
-<p> 这里只是简略的谈谈常见的关于机器交互的命令，这些都是熟能生巧的东西，最重要的是要上手练习。</p>
-</li>
-</ol>
-<h2 id="数学运算符"><a href="#数学运算符" class="headerlink" title="数学运算符"></a>数学运算符</h2><ol>
-<li><p>dc：dc是使用逆波兰表示法进行计算，如 11 +   ，3 6 *</p>
-</li>
-<li><p>bc：bc是现代linux下比较常见处理复杂运算的命令那个，可以计算浮点数。</p>
-</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">$bc -l -q</span><br><span class="line">4/3                   /*未指定精度默认保留整数*/</span><br><span class="line">scale=5               /*指定精度为5*/</span><br><span class="line">4/3</span><br><span class="line">1.33333</span><br><span class="line">ibase=2               /*指定进制转换的输入机制为二进制，输出默认为是十进制*/</span><br><span class="line">10</span><br><span class="line">4^2                   /*指数运算，注：指数不能为浮点数*/</span><br><span class="line">4*a(1)                /*计算π值，a()是个函数：arctan()，好吧，老师教的都被狗吃了，π值是等于四倍的arctan(1)么？*/</span><br><span class="line">3.14159265358979323844</span><br><span class="line">quit                  /*退出*/</span><br></pre></td></tr></table></figure>
-
-<ol start="3">
-<li>let: 表达式可以应用在let命令当中。</li>
-</ol>
-<h3 id="其实在我使用linux系统的几年里，感觉命令不能死记硬背，多用自然就会掌握了。但是有些比较冷门的命令还是背下来比较好-。"><a href="#其实在我使用linux系统的几年里，感觉命令不能死记硬背，多用自然就会掌握了。但是有些比较冷门的命令还是背下来比较好-。" class="headerlink" title="其实在我使用linux系统的几年里，感觉命令不能死记硬背，多用自然就会掌握了。但是有些比较冷门的命令还是背下来比较好 - -。"></a>其实在我使用linux系统的几年里，感觉命令不能死记硬背，多用自然就会掌握了。但是有些比较冷门的命令还是背下来比较好 - -。</h3>
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-<div>
-      
-</div>
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/06/24/2018-06-28-bash_12_bash管理员命令/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2086,7 +2299,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/06/23/2018-06-23-关于elementryOS挂起之后唤醒时黑屏问题/">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/06/24/2018-06-27-bash_11_bash命令篇（三）/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="NanYin">
@@ -2105,7 +2318,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/06/23/2018-06-23-关于elementryOS挂起之后唤醒时黑屏问题/" itemprop="url">关于ElementryOS图形界面挂起之后唤醒后出现黑屏问题</a></h1>
+                <a class="post-title-link" href="/2018/06/24/2018-06-27-bash_11_bash命令篇（三）/" itemprop="url">bash学习记录（十二）命令篇（3）</a></h1>
         
 
         <div class="post-meta">
@@ -2117,190 +2330,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-23T12:00:00Z">
-                2018-06-23
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Linux/" itemprop="url" rel="index">
-                    <span itemprop="name">Linux</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  101
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  1
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="关于ElementryOS图形界面挂起之后唤醒后出现黑屏问题"><a href="#关于ElementryOS图形界面挂起之后唤醒后出现黑屏问题" class="headerlink" title="关于ElementryOS图形界面挂起之后唤醒后出现黑屏问题"></a>关于ElementryOS图形界面挂起之后唤醒后出现黑屏问题</h1><p>这两天在ElementryOs上踩到了坑，为了以后少踩点这种坑，打算以后将这种小问题也写下来。</p>
-<p>如何解决：安装  <code>xserver-xorg</code></p>
-<p>在ElementryOS的终端中使用 <code>$ sudo apt-get install xserver-xorg</code>  我使用这个方法可以解决问题</p>
-<p>解决时间：2018-6-23 版本：ElementryOS Loki 0.4</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-<div>
-      
-</div>
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/06/19/2018-06-19-bash_09-bash命令篇（一）/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="NanYin">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NanYin的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/19/2018-06-19-bash_09-bash命令篇（一）/" itemprop="url">bash学习记录（十）命令篇（1）</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-19T15:00:00Z">
-                2018-06-19
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-24T15:00:00Z">
+                2018-06-24
               </time>
             
 
@@ -2353,7 +2384,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  1.1k
+                  556
                 </span>
               
 
@@ -2369,7 +2400,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  4
+                  2
                 </span>
               
             </div>
@@ -2392,49 +2423,45 @@
       
         
           
-            <h1 id="Bash中的命令"><a href="#Bash中的命令" class="headerlink" title="Bash中的命令"></a>Bash中的命令</h1><h2 id="内建命令"><a href="#内建命令" class="headerlink" title="内建命令"></a>内建命令</h2><p>内建命令是bash工具集中自带的命令，好处是执行速度比外部命令要快，因为内建命令一般直接执行命令，而外部命令一般要分支出一个子进程。</p>
-<h3 id="I-O操作"><a href="#I-O操作" class="headerlink" title="I/O操作"></a>I/O操作</h3><ul>
-<li><code>echo</code> 当然是最熟悉的echo命令进行输出了。但是需要注意的是在使用 echo `command ` 的时候echo会默认将取消输出的所有换行。</li>
-</ul>
-<p>再当使用 echo “`command`“的时候可以避免换行符的缺失。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;`ll`&quot;</span><br><span class="line">total 12K</span><br><span class="line">drwxr-xr-x 2 nanyin nanyin 4.0K Jun 19 21:18 bash</span><br><span class="line">drwxr-xr-x 3 nanyin nanyin 4.0K Jun 18 21:16 git</span><br><span class="line">-rw-r--r-- 1 nanyin nanyin 1.1K Jun 19 21:31 总结.txt</span><br></pre></td></tr></table></figure>
+            <h1 id="bash命令篇（三）"><a href="#bash命令篇（三）" class="headerlink" title="bash命令篇（三）"></a>bash命令篇（三）</h1><h2 id="bash中的关于通信的命令"><a href="#bash中的关于通信的命令" class="headerlink" title="bash中的关于通信的命令"></a>bash中的关于通信的命令</h2><ol>
+<li>host 通过ip或者域名搜索互联网的主机地址（使用DNS）</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ host www.baidu.com</span><br><span class="line">www.baidu.com has address 61.135.169.125</span><br><span class="line">www.baidu.com has address 61.135.169.121</span><br><span class="line">www.baidu.com is an alias for www.a.shifen.com.</span><br><span class="line">www.baidu.com is an alias for www.a.shifen.com.</span><br></pre></td></tr></table></figure>
 
-<ul>
-<li><code>printf</code> 在C中使用的printf 能够格式化输出内容。</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># 基本使用</span><br><span class="line">printf format-string... parameter...</span><br><span class="line"># 例子</span><br><span class="line">declare -r PI=3.1415926535</span><br><span class="line">printf &quot;pi to 2 decimal is  %1.2f&quot; $PI # pi to 2 decimal is  3.14%</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>nslookup 向上寻找name server</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">$ nslookup  -sil 66.97.104.180 </span><br><span class="line">Server:		127.0.1.1</span><br><span class="line">Address:	127.0.1.1#53</span><br><span class="line"></span><br><span class="line">Non-authoritative answer:</span><br><span class="line">180.104.97.66.in-addr.arpa	name = 66-97-104-180.dynamic.bugtusselwireless.com.</span><br><span class="line"></span><br><span class="line">Authoritative answers can be found from:</span><br><span class="line">104.97.66.in-addr.arpa	nameserver = ns2.bugnet.net.</span><br><span class="line">104.97.66.in-addr.arpa	nameserver = ns1.bugnet.net.</span><br><span class="line">ns1.bugnet.net	internet address = 204.11.133.241</span><br><span class="line">ns2.bugnet.net	internet address = 204.11.133.244</span><br></pre></td></tr></table></figure>
 
-<ul>
-<li><code>read</code> 读取参数的命令，可以通过这个命令读取输入参数。通常情况下，在输入read数据期间输入\会抑制换行符。 -r选项会导致输入的\被字面解释。同样read命令有很多参数可以使用</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;please input a value:&quot;</span><br><span class="line">read var1</span><br><span class="line">echo &quot;input var1 is $var1&quot;</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li><p>ping 熟知的ping命令，常用来探测与另一个主机是否有网络链接</p>
+</li>
+<li><p>ftp 从远程主机下载或者上传给远程主机的协议。</p>
+</li>
+<li><p>telnt 链接远程主机的协议</p>
+</li>
+<li><p>wget 使用非交互式的从网站web或者ftp站点下载文件。</p>
+</li>
+<li><p>rcp 远程拷贝，在两台不同的机器间拷贝。</p>
+</li>
+<li><p>ssh <code>secure shell</code> 他代替了telnt rcp等命令。</p>
+</li>
+<li><p>scp <code>secure cp</code> 他用来代替rcp命令，需要登录授权的远程拷贝文件的命令。</p>
+<p> 这里只是简略的谈谈常见的关于机器交互的命令，这些都是熟能生巧的东西，最重要的是要上手练习。</p>
+</li>
+</ol>
+<h2 id="数学运算符"><a href="#数学运算符" class="headerlink" title="数学运算符"></a>数学运算符</h2><ol>
+<li><p>dc：dc是使用逆波兰表示法进行计算，如 11 +   ，3 6 *</p>
+</li>
+<li><p>bc：bc是现代linux下比较常见处理复杂运算的命令那个，可以计算浮点数。</p>
+</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">$bc -l -q</span><br><span class="line">4/3                   /*未指定精度默认保留整数*/</span><br><span class="line">scale=5               /*指定精度为5*/</span><br><span class="line">4/3</span><br><span class="line">1.33333</span><br><span class="line">ibase=2               /*指定进制转换的输入机制为二进制，输出默认为是十进制*/</span><br><span class="line">10</span><br><span class="line">4^2                   /*指数运算，注：指数不能为浮点数*/</span><br><span class="line">4*a(1)                /*计算π值，a()是个函数：arctan()，好吧，老师教的都被狗吃了，π值是等于四倍的arctan(1)么？*/</span><br><span class="line">3.14159265358979323844</span><br><span class="line">quit                  /*退出*/</span><br></pre></td></tr></table></figure>
 
-<p>当read 后面不跟任何值的话他默认给 $REPLY 赋值，之后可以取这个值作为read进来的值。</p>
-<p>在当输入内容后面加上 <code>/</code> 的话会起到输入时候的换行的作用，而使用 -r 参数会将 <code>/</code>按照原样输出出来</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;input var1 is $var1&quot;</span><br><span class="line">echo &quot;Enter a string terminated by a \\, then press &lt;ENTER&gt;.&quot;</span><br><span class="line">echo &quot;Then, enter a second string (no \\ this time), and again press &lt;ENTER&gt;.&quot;</span><br><span class="line">read</span><br><span class="line">echo &quot;the default value is $REPLY&quot;</span><br><span class="line"># 当read后面不写具体值的时候会把值付给 REPLY</span><br></pre></td></tr></table></figure>
-
-<p>read有很多有用的参数可以调用，实现复杂的输入功能。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">read -s -n1 -p &quot;Hit a key &quot; keypress</span><br><span class="line"># read 有很多非常有意思的参数，比如 -s的意思就是不要回显输入</span><br><span class="line"># -n1 的意思是输入指定数量的字符</span><br><span class="line"># -p 是先输出前面的提示。</span><br><span class="line">echo; echo &quot;Keypress was &quot;\&quot;$keypress\&quot;&quot;.&quot;</span><br></pre></td></tr></table></figure>
-
-<p>read也可以使用文件作为输入的源</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;文件temp_file中内容有两行 一行是hello world 第二行是 Hello World&quot;</span><br><span class="line">read var1 var2 &lt; temp_file</span><br><span class="line">echo &quot;var1 is $var1 var2 is $var2&quot;</span><br><span class="line">echo &quot;这里显然输出的第一行的内容&quot;</span><br><span class="line">echo &quot;---------------------------&quot;</span><br><span class="line">echo &quot;其实还能自定义IFS分割符然后根据规则自定义文件输入&quot;</span><br><span class="line">echo &quot;all users in the list:&quot;</span><br><span class="line">OIFS=$IFS ; IFS=:</span><br><span class="line">while read name passwd uid gid fullname ignore</span><br><span class="line">do</span><br><span class="line">	echo &quot;$name ($fullname)&quot;</span><br><span class="line">done &lt; /etc/passwd</span><br><span class="line">IFS=$OIFS</span><br></pre></td></tr></table></figure>
-
-<h3 id="文件系统操作"><a href="#文件系统操作" class="headerlink" title="文件系统操作"></a>文件系统操作</h3><p>操作文件系统的命令有很多但是都非常的常用也非常的简单。这里不做具体的说明其中举一两个非常常见的。</p>
-<p>cd : 切换目录</p>
-<p>pwd ： 查看当前工作目录</p>
-<h3 id="变量操作"><a href="#变量操作" class="headerlink" title="变量操作"></a>变量操作</h3><p>let 是能够进行简单变量运算的命令 比如</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">let a=1+2</span><br><span class="line">echo $a</span><br><span class="line">let b=&quot;2+3&quot;</span><br><span class="line">echo $b</span><br></pre></td></tr></table></figure>
-
-<p>eval 命令是能够将字符串转换成成命令。并且可以多次调用以去评估是否是命令去执行</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"> command_string=&quot;ps ax&quot;</span><br><span class="line"> process=&quot;ps ax&quot;</span><br><span class="line"> eval &quot;$command_string&quot; | grep &quot;$process&quot;</span><br><span class="line"># 26973 pts/3    R+     0:00 grep --color ps ax</span><br><span class="line"># 26974 pts/3    R+     0:00 ps ax</span><br><span class="line"></span><br><span class="line">a=&apos;$b&apos;</span><br><span class="line">b=&apos;$c&apos;</span><br><span class="line">c=d</span><br><span class="line">echo $a             # $b</span><br><span class="line">                    # First level.</span><br><span class="line">eval echo $a        # $c</span><br><span class="line">                    # Second level.</span><br><span class="line">eval eval echo $a   # d</span><br><span class="line">                    # Third level.</span><br></pre></td></tr></table></figure>
-
-<p>set和unset命令，一看就知道是设置和取消变量的意思。</p>
-<p>export 命令一般使用在设置环境变量上，如在/etc/profile文件中设置JAVA_HOME</p>
-<p>declare和typeset命令指定和/或限制变量的属性。</p>
-<p>getopts 是能够定义属性的 比如 在解压tar包的时候使用<code>-xvf</code><br>之类的命令的时候就是使用getopts来达到不同的 -a -b 之类的实现。这个命令一般出现在case 或者while循环中</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">while getopts &quot;:abcde:fg&quot; Option</span><br><span class="line"># Initial declaration.</span><br><span class="line"># a, b, c, d, e, f, and g are the options (flags) expected.</span><br><span class="line"># The : after option &apos;e&apos; shows it will have an argument passed with it.</span><br><span class="line"># e参数后面的的表示会有参数传递给他</span><br><span class="line">do</span><br><span class="line">  case $Option in</span><br><span class="line">    a ) # Do something with variable &apos;a&apos;.</span><br><span class="line">    b ) # Do something with variable &apos;b&apos;.</span><br><span class="line">    ...</span><br><span class="line">    e)  # Do something with &apos;e&apos;, and also with $OPTARG,</span><br><span class="line">        # which is the associated argument passed with option &apos;e&apos;.</span><br><span class="line">    ...</span><br><span class="line">    g ) # Do something with variable &apos;g&apos;.</span><br><span class="line">  esac</span><br><span class="line">done</span><br><span class="line">shift $(($OPTIND - 1))</span><br><span class="line"># Move argument pointer to next.</span><br></pre></td></tr></table></figure>
-
-
+<ol start="3">
+<li>let: 表达式可以应用在let命令当中。</li>
+</ol>
+<h3 id="其实在我使用linux系统的几年里，感觉命令不能死记硬背，多用自然就会掌握了。但是有些比较冷门的命令还是背下来比较好-。"><a href="#其实在我使用linux系统的几年里，感觉命令不能死记硬背，多用自然就会掌握了。但是有些比较冷门的命令还是背下来比较好-。" class="headerlink" title="其实在我使用linux系统的几年里，感觉命令不能死记硬背，多用自然就会掌握了。但是有些比较冷门的命令还是背下来比较好 - -。"></a>其实在我使用linux系统的几年里，感觉命令不能死记硬背，多用自然就会掌握了。但是有些比较冷门的命令还是背下来比较好 - -。</h3>
           
         
       
@@ -2527,7 +2554,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">93</span>
+                  <span class="site-state-item-count">95</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2601,7 +2628,15 @@
              
              
                <li>
-                 <a href="/2019/12/18/1.使用静态方法代替构造函数/" title="「Effective Java读书笔记」 1.使用静态方法代替构造函数" target="_blank">「Effective Java读书笔记」 1.使用静态方法代替构造函数</a>
+                 <a href="/2019/12/20/2.当构造方法参数过多时使用Builder模式/" title="二、当构造方法参数过多时使用builder模式" target="_blank">二、当构造方法参数过多时使用builder模式</a>
+               </li>
+             
+               <li>
+                 <a href="/2019/12/19/Spring从零开始之源码分析（一）/" title="Spring从零开始源码分析（一）" target="_blank">Spring从零开始源码分析（一）</a>
+               </li>
+             
+               <li>
+                 <a href="/2019/12/18/1.使用静态方法代替构造函数/" title="一、使用静态方法代替构造函数" target="_blank">一、使用静态方法代替构造函数</a>
                </li>
              
                <li>
@@ -2610,14 +2645,6 @@
              
                <li>
                  <a href="/2019/12/07/（三）自动装配/" title="Spring中的自动装配" target="_blank">Spring中的自动装配</a>
-               </li>
-             
-               <li>
-                 <a href="/2019/12/05/（二）Bean的生命周期/" title="Bean的生命周期" target="_blank">Bean的生命周期</a>
-               </li>
-             
-               <li>
-                 <a href="/2019/12/01/（一） 将类加入到容器中的方式/" title="将类添加至容器中的四种方法" target="_blank">将类添加至容器中的四种方法</a>
                </li>
              
            </ul>
@@ -2666,7 +2693,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共98.8k字</span>
+  <span class="post-count">博客全站共101k字</span>
 </div>
 
 
