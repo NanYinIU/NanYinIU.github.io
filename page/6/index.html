@@ -304,6 +304,427 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/04/24/2019-04-24-JVM相关知识整理/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="NanYin">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NanYin的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/04/24/2019-04-24-JVM相关知识整理/" itemprop="url">JVM基本知识整理</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-04-24T12:00:00Z">
+                2019-04-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/JVM/" itemprop="url" rel="index">
+                    <span itemprop="name">JVM</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  1.7k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  5
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="java内存空间"><a href="#java内存空间" class="headerlink" title="java内存空间"></a>java内存空间</h1><p><img src="https://i.loli.net/2019/05/12/5cd7c7e477235.jpg" alt="内存空间"></p>
+<p>其中如图中所展示的，按功能分了大致分为两类，一类为线程共享的JAVA堆和元数据区和直接内存，另一类是线程私有的虚拟机栈，方法区栈和程序计数器。 </p>
+<p>下面针对这几种区域来详细将这几个区域分别的作用是什么。 </p>
+<h2 id="程序计数器"><a href="#程序计数器" class="headerlink" title="程序计数器"></a>程序计数器</h2><p>程序计数器是一块较小的内存空间，可以看作是当前线程执行程序的字节码的的行号的指示器。字节码解释器工作时通过改变程序计数器的值来改变将要选取的下一个指令。并且由于每个线程执行的运行的指令不同，每个线程有个字的程序计数器，并且互不干扰。所以程序计数器被称作是线程私有的。这种线程私有的区域有着很明显的特征就是生命周期和当前线程的周期保持一致。并且需要注意的是程序计数器是内存中唯一一个不会出现<code>outOfMemory</code>的区域。 </p>
+<p> 程序计数器有两个作用： </p>
+<p> A: 字节码解释器通过读取程序计数器的值来选取下一条将要执行的语句。 </p>
+<p>B:在多线程切换的情况下，记录当前线程执行的位置，方便于切换回时进程运行的位置。 </p>
+<h2 id="虚拟机栈"><a href="#虚拟机栈" class="headerlink" title="虚拟机栈"></a>虚拟机栈</h2><p>Java内存可以粗糙的分为堆内存和栈内存，所谓的堆就是图中的java堆（<code>Heap</code>），而所谓的栈就是指的虚拟机栈（<code>VM Stack</code>）的局部变量表。虚拟机栈是由一个个栈针构成的，可以想为一个方法为一个栈针，随着方法的被调用完成（完成的条件有两个，一个是return，另外一个是发生异常），对应着方法的栈针出栈。栈针中都包含：局部变量表，操作数栈，动态链接和方法出口。<strong>局部变量表主要存放了编译器可知的各种数据类型</strong>（boolean、byte、char、short、int、float、long、double）、<strong>对象引用</strong>（reference类型，它不同于对象本身，可能是一个指向对象起始地址的引用指针，也可能是指向一个代表对象的句柄或其他与此对象相关的位置） </p>
+<p><img src="https://i.loli.net/2019/05/12/5cd7cb63399f3.jpg" alt="虚拟机栈结构"></p>
+<h2 id="本地方法栈"><a href="#本地方法栈" class="headerlink" title="本地方法栈"></a>本地方法栈</h2><p>本地方法栈同样是线程私有的,区别是java虚拟机栈是用于java字节码的,而本地方法栈是用来执行Native方法的.结构都和虚拟机栈的结构相同. </p>
+<h2 id="Java堆"><a href="#Java堆" class="headerlink" title="Java堆"></a>Java堆</h2><p>Java堆是整个虚拟机中最大的一块区域,是线程共享的区域,再虚拟机启动时创建,该块存在的唯一目的就是存放类的事例和数组. </p>
+<h2 id="方法区"><a href="#方法区" class="headerlink" title="方法区"></a>方法区</h2><p>和Java堆一样都是线程共享的区域,主要用于存放已经被虚拟机加载的类信息,常量,静态变量和已经被编译后的代码等数据.方法区和永久代的关系很像Java中接口和类的关系，类实现了接口，而永久代就是HotSpot虚拟机对虚拟机规范中方法区的一种实现方式。 也就是说，永久代是HotSpot的概念，方法区是Java虚拟机规范中的定义，是一种规范，而永久代是一种实现，一个是标准一个是实现，其他的虚拟机实现并没有永久带这一说法。 </p>
+<h2 id="运行时常量池"><a href="#运行时常量池" class="headerlink" title="运行时常量池"></a>运行时常量池</h2><p>原来的运行时常量池是方法区的一部分,而在1.7之后,讲运行时常量池放到堆(Heap)中开辟了一个区域专门用来放运行时常量池.运行时常量池中遥遥包括两部分,一部分是实际存在的字面量,所谓字面量包括[1.文本字符串,2.被声明为final的常量,基本数据类型…..],另一部分是符号引用,包含[类和结构的名称,字段的名称,方法的名称]</p>
+<p><img src="https://i.loli.net/2019/05/12/5cd7cbf57ba27.jpg" alt="运行时常量池"></p>
+<h2 id="元数据区"><a href="#元数据区" class="headerlink" title="元数据区"></a>元数据区</h2><p>替代了永久代,使用的是直接内存,什么是直接内存,它有能够干什么? 首先直接内存区域不是虚拟机运行时数据区的一部分,也不是虚拟机定义的一部分,但是经常会使用到.</p>
+<blockquote>
+<p>JDK1.4 中新加入的 <strong>NIO(New Input/Output) 类</strong>，引入了一种基于<strong>通道（Channel）</strong> 与<strong>缓存区（Buffer）</strong> 的 I/O 方式，它可以直接使用 Native 函数库直接分配堆外内存，然后通过一个存储在 Java 堆中的 DirectByteBuffer 对象作为这块内存的引用进行操作。这样就能在一些场景中显著提高性能，因为<strong>避免了在 Java 堆和 Native 堆之间来回复制数据</strong>。</p>
+</blockquote>
+<p>本机直接内存的分配不会收到 Java 堆的限制，但是，既然是内存就会受到本机总内存大小以及处理器寻址空间的限制。</p>
+<h1 id="对象的创建过程"><a href="#对象的创建过程" class="headerlink" title="对象的创建过程"></a>对象的创建过程</h1><p><img src="https://i.loli.net/2019/05/12/5cd7cbf57ba27.jpg" alt="对象的创建过程"></p>
+<p>对象的创建过程分为上图中的5步 </p>
+<ol>
+<li>类加载检查:当虚拟机遇到new的时候,会检查这个类是否存在,是否被加载,解释和初始化过,如果没有则进行类的初始化过程. </li>
+<li>分配内存:再进行类加载检查后,会在堆内存中为新的对象分配内存,分配的规则有两种,一种是指针碰撞,另一种是空闲列表,针对不同的垃圾回收器会使用不同的方法.第一种方法指针碰撞的原理大致为它会将分配过的内存和未分配的内存间建立一个指针,当分配内存的时候,向为分配内存的地方移动新的对象的大小的位置,适用于比较规整的内存空间.第二种方法是维护一个分配内存的列表,每次分配内存都想列表中添加相关记录,表明这些对象在哪. </li>
+<li>初始化零值:保证在分配完内存后,为分配的内存区域初始化为零值 </li>
+<li>设置对象头:虚拟机对对象的各种设置信息,保存在对象头中. </li>
+<li>执行init方法:在执行init方法前,从虚拟机的角度来看其实对象已经生成了,但是在程序员的角度对象并没有生成,只有在init方法执行过后,对象才算生成. </li>
+</ol>
+<h1 id="对象的定位方式"><a href="#对象的定位方式" class="headerlink" title="对象的定位方式"></a>对象的定位方式</h1><p>Java虚拟机定位对象的方式主要有两种,一是使用句柄,二是直接使用指针.</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+<div>
+      
+</div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/04/23/2019-04-08-悲观锁和乐观锁/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="NanYin">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NanYin的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/04/23/2019-04-08-悲观锁和乐观锁/" itemprop="url">悲观锁和乐观锁</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-04-23T12:00:00Z">
+                2019-04-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/多线程/" itemprop="url" rel="index">
+                    <span itemprop="name">多线程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  577
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  2
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="悲观锁和乐观锁"><a href="#悲观锁和乐观锁" class="headerlink" title="悲观锁和乐观锁"></a>悲观锁和乐观锁</h1><h2 id="悲观锁"><a href="#悲观锁" class="headerlink" title="悲观锁"></a>悲观锁</h2><p>悲观锁是总会先去想最坏的情况，每次线程拿数据的时候都会认为他会进行修改，适用于的场景是多写少读，这时使用悲观锁效率会高。程序中典型的悲观锁时synchronized和ReentrantLock </p>
+<h2 id="乐观锁"><a href="#乐观锁" class="headerlink" title="乐观锁"></a>乐观锁</h2><p>乐观锁是总会先去想好的情况，每次线程拿数据只会看一眼，并不会做修改操作，这时没有必要加锁，程序中的atom原子类使用cas+volatile+native方法实现乐观锁。 </p>
+<p>两种锁的机制，有各自的好处，不能说谁好谁坏，各有优点： </p>
+<p>悲观锁适用于多写少读的情况，而乐观锁适用于多读少写的情况，如果在多写的情况下使用乐观锁，会经常产生冲突，反而会降低性能。 </p>
+<h3 id="乐观锁常用的两种方式"><a href="#乐观锁常用的两种方式" class="headerlink" title="乐观锁常用的两种方式"></a>乐观锁常用的两种方式</h3><h4 id="版本号的控制"><a href="#版本号的控制" class="headerlink" title="版本号的控制"></a>版本号的控制</h4><p>每次读取数据的时候都会连同版本号一同读取，在当更新数据的时候，会比较读取到的版本号和数据库中的版本号是否一致，如果一致则更新，如果不一致则继续读取，更新数据。 </p>
+<h4 id="CAS操作（compareAndSwap）"><a href="#CAS操作（compareAndSwap）" class="headerlink" title="CAS操作（compareAndSwap）"></a>CAS操作（compareAndSwap）</h4><p>举个例子,在atomInteger类中涉及了CAS</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">public final native boolean compareAndSwapInt(Object o, long offset,</span><br><span class="line">                                                  int expected,</span><br><span class="line">                                                  int x)</span><br><span class="line">//这里是native方法 offset是偏移量先暂且不提，o是需要比较的值，expected是预期值，x是新值</span><br><span class="line">// 如果使用程序写出来就是大概这样：</span><br><span class="line">    int value;</span><br><span class="line">    public boolean fakeCAS(int expect,int newValue)&#123;</span><br><span class="line">        if(value == expect)&#123;</span><br><span class="line">            value = newValue;</span><br><span class="line">            return true;</span><br><span class="line">        &#125;else&#123;</span><br><span class="line">            return false;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>比较替换(compareAndSwap)</code>是一个原子操作，也是一个自旋操作，等待一个周期再次尝试。</p>
+<h4 id="CAS操作的缺点"><a href="#CAS操作的缺点" class="headerlink" title="CAS操作的缺点"></a>CAS操作的缺点</h4><ol>
+<li>ABA问题，何谓ABA：当两个线程读取到当前值为A，其中一个线程把值改为B后再把B改为A，这是另外一个线程使用cas操作读取到的值仍然是A，CAS会认为这个值从来没有变过，这就是ABA问题。也就是说遗失掉中间的过程，在链式的操作总更能体会到ABA问题的严重性。 </li>
+<li>自旋时间过长，消耗CPU资源。 </li>
+<li>只能对单个共享变量的原子性操作 </li>
+</ol>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+<div>
+      
+</div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/04/23/2019-04-23-线程池代码解析/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1020,376 +1441,6 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/01/29/2019-01-29-基本Llinux命令(必须掌握)/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="NanYin">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NanYin的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/01/29/2019-01-29-基本Llinux命令(必须掌握)/" itemprop="url">Linux常用命令整理</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-29T12:00:00Z">
-                2019-01-29
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Linux/" itemprop="url" rel="index">
-                    <span itemprop="name">Linux</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  1.4k
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  5
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="linux中必须掌握的基本命令"><a href="#linux中必须掌握的基本命令" class="headerlink" title="linux中必须掌握的基本命令"></a>linux中必须掌握的基本命令</h1><p>在开始前，我推荐安装 <a href="https://github.com/tldr-pages/tldr" target="_blank" rel="noopener">trdr（too long dont read）</a>工具，用来简化man命令，来实现查看命令含义和用法的作用。</p>
-<h2 id="一-、系统工作命令"><a href="#一-、系统工作命令" class="headerlink" title="一 、系统工作命令"></a>一 、系统工作命令</h2><ol>
-<li><p><code>echo</code></p>
-<p><code>echo</code>命令一般用于shell中打印变量或者字符串的作用，主要用来显示和提醒。</p>
-<ul>
-<li>输出一段信息 如：<code>echo &quot;hello world&quot;</code> 其中<code>&quot;</code>不是必须的 </li>
-<li>输出一段带环境变量的信息 如：<code>echo &quot;My Path is $PATH&quot;</code> </li>
-<li>输出并不带换行符号 如：<code>echo  -n &quot;Hello World&quot;</code></li>
-<li>输出一段激活转依字符 如： <code>echo -e &quot;Column 1 \t Column 2&quot;</code></li>
-</ul>
-</li>
-<li><p><code>date</code> </p>
-<p><code>date</code> 命令主要用来设置和打印系统时间。</p>
-<ul>
-<li>输出默认时区格式的事件 <code>date +&quot;%c&quot;</code></li>
-<li>输出当前事件按照UTC和iso格式输出 <code>date -u +&quot;%Y-%m-%dT%H:%M:%SZ&quot;</code></li>
-<li>输出事件戳 <code>date +&quot;%s&quot;</code></li>
-</ul>
-</li>
-<li><p><code>reboot</code> 命令主要用来重启系统</p>
-<ul>
-<li>重启系统 <code>reboot</code></li>
-<li>强制重启 <code>reboot -f</code></li>
-</ul>
-</li>
-<li><p><code>poweroff</code> 命令用户关机</p>
-</li>
-<li><p><code>wget</code> 命令 用于从web中下载文件，支持 <code>http</code>,<code>https</code>,<code>ftp</code></p>
-<ul>
-<li>获取URL中的内容到<code>foo</code>中 <code>wget https://example.com/foo</code></li>
-<li>获取URL中的内容到bar中 <code>wget -O bar https://example.com/foo</code></li>
-<li>继续未完成的下载 <code>wget -c https://example.com</code></li>
-<li>后台下载 <code>wget -q https://example.com</code></li>
-</ul>
-</li>
-<li><p><code>ps</code>命令主要用于查看正在运行的进程的信息</p>
-<ul>
-<li>打印全部正在执行的进程 <code>ps aux</code></li>
-<li>打印全部正在执行的进程并且伴有完整的命令串 <code>ps auxww</code></li>
-<li>通过 <code>grep</code> 管道过滤 <code>ps aux | grep &quot;tomcat&quot;</code></li>
-<li>得到进程的父进程<code>pid</code> :<code>ps -o ppid= -p pid</code> </li>
-</ul>
-</li>
-<li><p><code>top</code>命令 主要用户动态的实时的显示正在运行的程序</p>
-<ul>
-<li><code>top -i</code> 不显示空闲或者是僵尸进程</li>
-<li><code>top -u $user</code> 显示指定用户的进程 </li>
-<li><code>top -p PID</code> 只显示指定进程PID</li>
-<li><code>top -p $(pgrep -d &#39;,&#39; process_name)</code> 通过进程名来查询</li>
-</ul>
-</li>
-<li><p><code>pidof</code> 命令主要用于查找指定进程的id号</p>
-<ul>
-<li><code>pidof -s</code> 进返回一个进程号</li>
-<li><code>pidof</code> -c 仅显示具有相同root目录下的进程</li>
-</ul>
-</li>
-</ol>
-<h2 id="二、系统状态"><a href="#二、系统状态" class="headerlink" title="二、系统状态"></a>二、系统状态</h2><ol>
-<li><code>ifconfig</code> 命令主要用于网络接口的查看和配置</li>
-</ol>
-<ul>
-<li><code>Ifconfig eth0</code> 查看etho0接口网络设置</li>
-<li><code>ifconfig -a</code> 查看所有接口的详细信息</li>
-<li><code>ifconfig eth0 down</code> 关闭接口eth0</li>
-<li><code>ifconfig eth0 ipaddr</code> 设置端口ip地址</li>
-</ul>
-<ol start="2">
-<li><code>uname</code> 打印出现当前机器和系统的相关信息</li>
-</ol>
-<ul>
-<li><code>uname -n</code> 打印当前的<code>hostname</code></li>
-<li><code>uname -a</code> 打印当前可用的系统的信息，包括硬件软件。</li>
-</ul>
-<ol start="3">
-<li><code>who</code> 打印哪些用户登录再这台机器上</li>
-</ol>
-<ul>
-<li><code>who</code> 显示<code>username</code>等比较全的信息</li>
-<li><code>who am i</code> 打印出当前用户 </li>
-</ul>
-<ol start="4">
-<li><code>last</code> 用于查看当前用户最近的登录信息</li>
-</ol>
-<h2 id="三、文件和目录"><a href="#三、文件和目录" class="headerlink" title="三、文件和目录"></a>三、文件和目录</h2><ol>
-<li><p><code>pwd</code> 用于打印当前目录</p>
-</li>
-<li><p><code>cd</code> 用于切换目录</p>
-</li>
-<li><p><code>ls</code> 用于罗列目录下的文件或者文件夹</p>
-</li>
-</ol>
-<ul>
-<li><code>ls -l</code>按行罗列文件或文件夹</li>
-<li><code>ls -a</code> 显示所有文件，包括隐藏的文件。</li>
-<li><code>ls -lh</code> 按照大小排泄排列</li>
-</ul>
-<ol start="4">
-<li><code>touch</code> 命令主要用于改变文件的访问时间和修改时间。</li>
-</ol>
-<ul>
-<li><code>touch filename</code> 以当前时间创建文件</li>
-<li><code>touch -t yyyy-mm-dd filename</code> 以某一时间来改变文件时间</li>
-</ul>
-<ol start="5">
-<li><code>mkdir</code> 命令主要用于创建文件</li>
-</ol>
-<ul>
-<li><code>mkdir dir</code> 创建文件夹</li>
-<li><code>mkdir -p /path/dir</code> 创建指定路径下的文件</li>
-</ul>
-<ol start="6">
-<li><code>cp</code> 命令主要用于文件的复制</li>
-</ol>
-<ul>
-<li><code>cp path/to/file.ext path/to/copy.ext</code> 复制文件到另一个地址</li>
-<li><code>cp path/to/file.ext path/to/target_parent_directory</code> 复制文件到指定地址，并且保持文件名不变</li>
-<li><code>cp -r path/to/directory path/to/copy</code> 递归的复制整个文件夹及其中的内容到指定目录</li>
-<li><code>cp -i *.txt path/to/target_directory</code> 以交互的模式复制文件到指定文件夹中</li>
-</ul>
-<ol start="7">
-<li><code>mv</code> 命令主要用于移动文件</li>
-</ol>
-<ul>
-<li><code>mv source target</code> 移动文件</li>
-<li><code>mv -f</code> 强制移动，覆盖现有文件时不要提示</li>
-</ul>
-<ol start="8">
-<li><code>rm</code>命令主要用于删除文件</li>
-</ol>
-<ul>
-<li><code>rm path/to/file path/to/another/file</code> 删除特定文件夹中的文件</li>
-<li><code>rm -r path/to/directory</code> 递归删除文件夹及文件夹中的文件</li>
-<li><code>rm -rf</code> 递归删除，并且不要提示信息</li>
-</ul>
-<ol start="9">
-<li><code>dd</code> 命令主要用于转化和复制文件,制作usb镜像</li>
-</ol>
-<ul>
-<li>Clone a drive to another drive with 4MB block and ignore error <code>dd if=/dev/source_drive of=/dev/dest_drive bs=4m conv=noerror</code></li>
-</ul>
-<ol start="10">
-<li><code>file</code>命令主要用于确定文件类型</li>
-</ol>
-<ul>
-<li><code>file filename</code> 输出文件类型</li>
-<li><code>file -s filename</code> 用于特殊的文件或者设备文件。</li>
-</ul>
-<h2 id="四、文本编辑命令"><a href="#四、文本编辑命令" class="headerlink" title="四、文本编辑命令"></a>四、文本编辑命令</h2><ol>
-<li><code>cat</code> 打印和串联文件</li>
-</ol>
-<ul>
-<li><code>cat file</code> 打印文件内容到标准输出</li>
-<li><code>cat file1 file2  &gt; targetFile</code> 将多个文件内容串联到目标文件中</li>
-<li><code>cat -n file</code> 打印出行数到标准输出</li>
-</ul>
-<ol start="2">
-<li><code>more</code> 用于互动的阅读文件内容，可以上下滚动</li>
-</ol>
-<ul>
-<li><code>more file</code> 打开文件，<code>&lt;space&gt;</code>用于移动到下一页，<code>/</code>用于搜索文件内容， <code>q</code>用于退出当前界面</li>
-</ul>
-<ol start="3">
-<li><code>head</code> 输出文件开始的部分</li>
-</ol>
-<ul>
-<li><code>head -n count_of_line filename</code> 查看文件的前n行</li>
-<li><code>head -c number_of_byte filename</code> 查看文件的前n个字节</li>
-</ul>
-<ol start="4">
-<li><code>tail</code> 输出文件最后的部分</li>
-</ol>
-<ul>
-<li><code>tail -n num file</code>打印出文件最后num行 </li>
-<li><code>tail -n +num file</code> 打印出文件从num开始的几行</li>
-<li><code>tail -f file</code> 保持阅读状态直到 <code>Ctrl + c</code></li>
-</ul>
-<ol start="5">
-<li><code>wc</code>命令用于统计文件的单词，字节，行数 </li>
-</ol>
-<ul>
-<li><code>wc -l filename</code> 统计文件的行数</li>
-<li><code>wc -w filename</code> 统计文件的字数</li>
-<li><code>wc -c filename</code> 统计文件的字节数</li>
-</ul>
-<ol start="6">
-<li><code>显示文件的状态</code> </li>
-</ol>
-<ul>
-<li><code>stat filename</code> 显示文件的属性比如大小，权限等。</li>
-<li><code>stat -x filename</code>格式化显示文件的详细属性信息。</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-<div>
-      
-</div>
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/01/29/2019-01-29-基本Llinux命令(必须掌握) 2/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1738,7 +1789,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/01/04/2019-01-04-Ubuntu配置全过程 2/">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/01/29/2019-01-29-基本Llinux命令(必须掌握)/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="NanYin">
@@ -1757,7 +1808,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/01/04/2019-01-04-Ubuntu配置全过程 2/" itemprop="url">Ubuntu18.04 配置全过程</a></h1>
+                <a class="post-title-link" href="/2019/01/29/2019-01-29-基本Llinux命令(必须掌握)/" itemprop="url">Linux常用命令整理</a></h1>
         
 
         <div class="post-meta">
@@ -1769,8 +1820,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-04T12:00:00Z">
-                2019-01-04
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-29T12:00:00Z">
+                2019-01-29
               </time>
             
 
@@ -1779,6 +1830,28 @@
             
           </span>
 
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
           
 
           
@@ -1801,7 +1874,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  2.1k
+                  1.4k
                 </span>
               
 
@@ -1817,7 +1890,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  9
+                  5
                 </span>
               
             </div>
@@ -1840,160 +1913,198 @@
       
         
           
-            <h1 id="Ubuntu18-04-配置全过程"><a href="#Ubuntu18-04-配置全过程" class="headerlink" title="Ubuntu18.04 配置全过程"></a>Ubuntu18.04 配置全过程</h1><p>因为最近在弄win10双系统，又因为PopOs在装机的时候设置grub比较麻烦，所以换成最新的Ubuntu稳定版来做成win/ubunut双系统。</p>
-<h2 id="安装问题"><a href="#安装问题" class="headerlink" title="安装问题"></a>安装问题</h2><p>在装机的需要使用grub做启动引导。所以设置保留BIOS启动区域而不是挂载/boot。亲身经历，UEFI启动模式下，Ubuntu的引导挂载应该是biosgrub，否则出错。导致无法家在grub。</p>
-<h2 id="界面配置"><a href="#界面配置" class="headerlink" title="界面配置"></a>界面配置</h2><h3 id="安装gnome-tweak-tool"><a href="#安装gnome-tweak-tool" class="headerlink" title="安装gnome-tweak-tool"></a>安装gnome-tweak-tool</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install gnome-tweak-tool</span><br></pre></td></tr></table></figure>
-
-<p>如果需要更改shell则需要安装：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install gnome-shell-extensions</span><br></pre></td></tr></table></figure>
-
-<p>这样就能轻松愉快的使用gnome-tewak-tool了。</p>
-<h3 id="主题方案"><a href="#主题方案" class="headerlink" title="主题方案"></a>主题方案</h3><h4 id="主界面"><a href="#主界面" class="headerlink" title="主界面"></a>主界面</h4><p>因为前一阵使用Pop!_OS发现它默认的主题非常好看，所以下载Popos默认的主题，然后在gnome-tweak-tool中设置好就ok了，<a href="https://github.com/pop-os/gtk-theme" target="_blank" rel="noopener">这里是PopOs的gtk主题地址</a>。但是发现PopOs默认的输入法输入框是默认米黄色的，打字的时候不太显眼，所以在基础上添加了如下代码。添加方法：</p>
-<ol>
-<li>根据说明下载Pop-theme</li>
+            <h1 id="linux中必须掌握的基本命令"><a href="#linux中必须掌握的基本命令" class="headerlink" title="linux中必须掌握的基本命令"></a>linux中必须掌握的基本命令</h1><p>在开始前，我推荐安装 <a href="https://github.com/tldr-pages/tldr" target="_blank" rel="noopener">trdr（too long dont read）</a>工具，用来简化man命令，来实现查看命令含义和用法的作用。</p>
+<h2 id="一-、系统工作命令"><a href="#一-、系统工作命令" class="headerlink" title="一 、系统工作命令"></a>一 、系统工作命令</h2><ol>
+<li><p><code>echo</code></p>
+<p><code>echo</code>命令一般用于shell中打印变量或者字符串的作用，主要用来显示和提醒。</p>
+<ul>
+<li>输出一段信息 如：<code>echo &quot;hello world&quot;</code> 其中<code>&quot;</code>不是必须的 </li>
+<li>输出一段带环境变量的信息 如：<code>echo &quot;My Path is $PATH&quot;</code> </li>
+<li>输出并不带换行符号 如：<code>echo  -n &quot;Hello World&quot;</code></li>
+<li>输出一段激活转依字符 如： <code>echo -e &quot;Column 1 \t Column 2&quot;</code></li>
+</ul>
+</li>
+<li><p><code>date</code> </p>
+<p><code>date</code> 命令主要用来设置和打印系统时间。</p>
+<ul>
+<li>输出默认时区格式的事件 <code>date +&quot;%c&quot;</code></li>
+<li>输出当前事件按照UTC和iso格式输出 <code>date -u +&quot;%Y-%m-%dT%H:%M:%SZ&quot;</code></li>
+<li>输出事件戳 <code>date +&quot;%s&quot;</code></li>
+</ul>
+</li>
+<li><p><code>reboot</code> 命令主要用来重启系统</p>
+<ul>
+<li>重启系统 <code>reboot</code></li>
+<li>强制重启 <code>reboot -f</code></li>
+</ul>
+</li>
+<li><p><code>poweroff</code> 命令用户关机</p>
+</li>
+<li><p><code>wget</code> 命令 用于从web中下载文件，支持 <code>http</code>,<code>https</code>,<code>ftp</code></p>
+<ul>
+<li>获取URL中的内容到<code>foo</code>中 <code>wget https://example.com/foo</code></li>
+<li>获取URL中的内容到bar中 <code>wget -O bar https://example.com/foo</code></li>
+<li>继续未完成的下载 <code>wget -c https://example.com</code></li>
+<li>后台下载 <code>wget -q https://example.com</code></li>
+</ul>
+</li>
+<li><p><code>ps</code>命令主要用于查看正在运行的进程的信息</p>
+<ul>
+<li>打印全部正在执行的进程 <code>ps aux</code></li>
+<li>打印全部正在执行的进程并且伴有完整的命令串 <code>ps auxww</code></li>
+<li>通过 <code>grep</code> 管道过滤 <code>ps aux | grep &quot;tomcat&quot;</code></li>
+<li>得到进程的父进程<code>pid</code> :<code>ps -o ppid= -p pid</code> </li>
+</ul>
+</li>
+<li><p><code>top</code>命令 主要用户动态的实时的显示正在运行的程序</p>
+<ul>
+<li><code>top -i</code> 不显示空闲或者是僵尸进程</li>
+<li><code>top -u $user</code> 显示指定用户的进程 </li>
+<li><code>top -p PID</code> 只显示指定进程PID</li>
+<li><code>top -p $(pgrep -d &#39;,&#39; process_name)</code> 通过进程名来查询</li>
+</ul>
+</li>
+<li><p><code>pidof</code> 命令主要用于查找指定进程的id号</p>
+<ul>
+<li><code>pidof -s</code> 进返回一个进程号</li>
+<li><code>pidof</code> -c 仅显示具有相同root目录下的进程</li>
+</ul>
+</li>
 </ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo add-apt-repository ppa:system76/pop</span><br><span class="line">sudo apt update</span><br><span class="line">sudo apt install pop-theme</span><br></pre></td></tr></table></figure>
-
+<h2 id="二、系统状态"><a href="#二、系统状态" class="headerlink" title="二、系统状态"></a>二、系统状态</h2><ol>
+<li><code>ifconfig</code> 命令主要用于网络接口的查看和配置</li>
+</ol>
+<ul>
+<li><code>Ifconfig eth0</code> 查看etho0接口网络设置</li>
+<li><code>ifconfig -a</code> 查看所有接口的详细信息</li>
+<li><code>ifconfig eth0 down</code> 关闭接口eth0</li>
+<li><code>ifconfig eth0 ipaddr</code> 设置端口ip地址</li>
+</ul>
 <ol start="2">
-<li>定位到 <code>/usr/share/themes/Pop/gnome-shell/</code> 的gnome-shell.css和Pop.css 将IBus的界面代码替换成如下代码</li>
+<li><code>uname</code> 打印出现当前机器和系统的相关信息</li>
 </ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line">.candidate-popup-content &#123;</span><br><span class="line">  padding: 8px;</span><br><span class="line">  spacing: 0;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.candidate-index &#123;</span><br><span class="line">  padding: 0 4px 0 0;</span><br><span class="line">  color: rgba(255, 255, 255, 0.5);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.candidate-box:selected .candidate-index &#123;</span><br><span class="line">  color: rgba(255, 255, 255, 0.5);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.candidate-box &#123;</span><br><span class="line">  transition-duration: 0ms;</span><br><span class="line">  min-height: 28px;</span><br><span class="line">  padding: 0 8px;</span><br><span class="line">  border-radius: 8px;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.candidate-box:hover &#123;</span><br><span class="line">  background-color: rgba(255, 255, 255, 0.06);</span><br><span class="line">  color: rgba(255, 255, 255, 0.9);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.candidate-box:active &#123;</span><br><span class="line">background-color: rgba(255, 255, 255, 0.1);</span><br><span class="line">  color: rgba(255, 255, 255, 0.9);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.candidate-box:selected &#123;</span><br><span class="line">  background-color: #0046DB;</span><br><span class="line">  color: rgba(255, 255, 255, 0.85);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.candidate-page-button-box &#123;</span><br><span class="line">  height: 28px;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.vertical .candidate-page-button-box &#123;</span><br><span class="line">  padding-top: 0;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.horizontal .candidate-page-button-box &#123;</span><br><span class="line">  padding-left: 0;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.candidate-page-button &#123;</span><br><span class="line">  min-width: 28px;</span><br><span class="line">  min-height: 28px;</span><br><span class="line">  padding: 0;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.candidate-page-button-previous &#123;</span><br><span class="line">  border-radius: 8px;</span><br><span class="line">  border-right-width: 0;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.candidate-page-button-next &#123;</span><br><span class="line">  border-radius: 8px;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.candidate-page-button-icon &#123;</span><br><span class="line">  icon-size: 1.23077em;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>最后成品：</p>
-<p><img src="https://wx4.sinaimg.cn/large/006tNc79gy1g2dt15yse2j318u0miagk.jpg" alt="输入法"></p>
+<ul>
+<li><code>uname -n</code> 打印当前的<code>hostname</code></li>
+<li><code>uname -a</code> 打印当前可用的系统的信息，包括硬件软件。</li>
+</ul>
 <ol start="3">
-<li>应用程序窗口用的是 macOS High Sierra  主题，仿照MAC的窗口。比较漂亮。<a href="https://www.gnome-look.org/p/1013714/" target="_blank" rel="noopener">macOS High Sierra 主题</a>，下载下来后解压后放到 <code>/usr/share/themes</code> 下，之后就能在gnome-tweak-tool中看到了，设置完成后可以看到如下效果。</li>
+<li><code>who</code> 打印哪些用户登录再这台机器上</li>
 </ol>
-<p><img src="https://wx4.sinaimg.cn/large/006tNc79gy1g2dt17ye4jj31900u01dj.jpg" alt="主题"></p>
-<h4 id="gdm主题"><a href="#gdm主题" class="headerlink" title="gdm主题"></a>gdm主题</h4><p>gdm主题选用类似MAC登陆的主题，界面美观，而且还有毛玻璃效果。<a href="https://www.gnome-look.org/p/1207015/" target="_blank" rel="noopener">High Ubunterra</a>下载后解压之后，直接命令行执行./install.sh。之后直接右键设置后，直接将锁屏界面直接设置好。其实主要目的的就是将 <code>/usr/share/gnome-shell/theme</code> 中的ubuntu.css替换掉。</p>
-<h4 id="grub主题"><a href="#grub主题" class="headerlink" title="grub主题"></a>grub主题</h4><p>grub的主题比较少，推荐的就是<a href="https://www.gnome-look.org/p/1000140/" target="_blank" rel="noopener">Breeze GRUB2 theme</a> 是一款比较漂亮美观的主题。具体成果界面可以点击链接地址查看。</p>
-<p>普通主题需要作如下顺序的操作，但是 Breeze Grub2 theme 有脚本，直接执行解压后的脚本程序，就ok了。</p>
-<ol>
-<li>创建grub的主题文件夹</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo mkdir /boot/grub/themes</span><br></pre></td></tr></table></figure>
-
-<ol start="2">
-<li>将主题包移动到这个目录下</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo cp 主题包名 /boot/grub/themes/</span><br></pre></td></tr></table></figure>
-
-<ol start="3">
-<li>修改主题的配置文件</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo vim /etc/grub.d/00_header</span><br></pre></td></tr></table></figure>
-
+<ul>
+<li><code>who</code> 显示<code>username</code>等比较全的信息</li>
+<li><code>who am i</code> 打印出当前用户 </li>
+</ul>
 <ol start="4">
-<li>在配置文件中添加</li>
+<li><code>last</code> 用于查看当前用户最近的登录信息</li>
 </ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">GRUB_THEME=&quot;/boot/grub/themes/主题包名/theme.txt&quot;</span><br><span class="line">GRUB_GFXMODE=&quot;1920x1080x32&quot;</span><br></pre></td></tr></table></figure>
-
+<h2 id="三、文件和目录"><a href="#三、文件和目录" class="headerlink" title="三、文件和目录"></a>三、文件和目录</h2><ol>
+<li><p><code>pwd</code> 用于打印当前目录</p>
+</li>
+<li><p><code>cd</code> 用于切换目录</p>
+</li>
+<li><p><code>ls</code> 用于罗列目录下的文件或者文件夹</p>
+</li>
+</ol>
+<ul>
+<li><code>ls -l</code>按行罗列文件或文件夹</li>
+<li><code>ls -a</code> 显示所有文件，包括隐藏的文件。</li>
+<li><code>ls -lh</code> 按照大小排泄排列</li>
+</ul>
+<ol start="4">
+<li><code>touch</code> 命令主要用于改变文件的访问时间和修改时间。</li>
+</ol>
+<ul>
+<li><code>touch filename</code> 以当前时间创建文件</li>
+<li><code>touch -t yyyy-mm-dd filename</code> 以某一时间来改变文件时间</li>
+</ul>
 <ol start="5">
-<li>最后执行 update-grub 命令</li>
+<li><code>mkdir</code> 命令主要用于创建文件</li>
 </ol>
-<h3 id="gnome拓展推荐"><a href="#gnome拓展推荐" class="headerlink" title="gnome拓展推荐"></a>gnome拓展推荐</h3><p>我没有什么特殊的拓展安装，在Ubuntu系统下，一般安装如下拓展。</p>
-<ol>
-<li><p>User themes 可以使用用户目录下的主题</p>
-</li>
-<li><p>removeable Drive Menu 当插入移除设备的时候在上方有状态图标提醒。</p>
-</li>
-<li><p>Caffeine 可以关闭屏保和自动挂起，很好用。</p>
-</li>
-<li><p>Dash To Dock 如果你不喜欢ubuntu的侧边dock可以尝试这个dock，比较美观的dock，可以设置在侧边或者在底下。</p>
-</li>
-<li><p>openWeather 可以在顶部栏中查看天气，点击可以查看最近天气，需要手动添加地址。</p>
-</li>
-<li><p>ClipBord Indicator 是可以记录粘贴板的内容，有时可以避免重复复制的操作。</p>
-</li>
+<ul>
+<li><code>mkdir dir</code> 创建文件夹</li>
+<li><code>mkdir -p /path/dir</code> 创建指定路径下的文件</li>
+</ul>
+<ol start="6">
+<li><code>cp</code> 命令主要用于文件的复制</li>
 </ol>
-<p>推荐的有这几个，但是gnome-shell拓展可谓非常的多，并且大多数都非常好用，可以去 <a href="https://extensions.gnome.org/" target="_blank" rel="noopener">gnome extensions 官网</a> 看一看，看有没有更适合自己的。</p>
-<h3 id="配置Vim和终端"><a href="#配置Vim和终端" class="headerlink" title="配置Vim和终端"></a>配置Vim和终端</h3><h4 id="配置vim"><a href="#配置vim" class="headerlink" title="配置vim"></a>配置vim</h4><p>我vim使用的是vundle插件管理器，首先要安装vundle.</p>
-<p>首先要下载git</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install git</span><br></pre></td></tr></table></figure>
-
-<p>然后安装vundle</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vi</span><br></pre></td></tr></table></figure>
-
-<p>将如下配置替换到.vimrc 中，首先要进行备份哦！！！</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line">set nocompatible &quot; be iMproved, required</span><br><span class="line">filetype off &quot; required</span><br><span class="line">set number</span><br><span class="line">let mapleader=&quot;,&quot;</span><br><span class="line">set rtp+=~/.vim/bundle/Vundle.vim</span><br><span class="line">call vundle#begin()</span><br><span class="line"></span><br><span class="line">Plugin &apos;VundleVim/Vundle.vim&apos;</span><br><span class="line">Plugin &apos;scrooloose/nerdtree&apos;</span><br><span class="line">Plugin &apos;kien/ctrlp.vim&apos;</span><br><span class="line">Plugin &apos;junegunn/fzf&apos;</span><br><span class="line">Plugin &apos;Shougo/neocomplete.vim&apos;</span><br><span class="line">Plugin &apos;vim-airline/vim-airline&apos;</span><br><span class="line">Plugin &apos;vim-airline/vim-airline-themes&apos;</span><br><span class="line">Plugin &apos;terryma/vim-smooth-scroll&apos;</span><br><span class="line">Plugin &apos;terryma/vim-expand-region&apos;</span><br><span class="line">Plugin &apos;tpope/vim-commentary&apos;</span><br><span class="line">Plugin &apos;tpope/vim-surround&apos;</span><br><span class="line">Plugin &apos;godlygeek/tabular&apos;</span><br><span class="line">Plugin &apos;plasticboy/vim-markdown&apos;</span><br><span class="line">Plugin &apos;tpope/vim-fugitive&apos;</span><br><span class="line">Plugin &apos;airblade/vim-gitgutter&apos;</span><br><span class="line">Plugin &apos;justinmk/vim-sneak&apos;</span><br><span class="line">Plugin &apos;powerline/fonts&apos;</span><br><span class="line">Plugin &apos;scrooloose/nerdcommenter&apos; </span><br><span class="line">Plugin &apos;suan/vim-instant-markdown&apos;</span><br><span class="line">Plugin &apos;mzlogin/vim-markdown-toc&apos;</span><br><span class="line">call vundle#end()            &quot; required</span><br><span class="line">filetype plugin indent on</span><br><span class="line">&quot; let g:airline_powerline_fonts = 1</span><br><span class="line">map &lt;C-n&gt; :NERDTreeToggle&lt;CR&gt;</span><br><span class="line">&quot; smooth-scroll</span><br><span class="line">function SmoothScroll(up)</span><br><span class="line">    if a:up</span><br><span class="line">        let scrollaction=&quot;^Y&quot;</span><br><span class="line">    else</span><br><span class="line">        let scrollaction=&quot;^E&quot;</span><br><span class="line">    endif</span><br><span class="line">    exec &quot;normal &quot; . scrollaction</span><br><span class="line">    redraw</span><br><span class="line">    let counter=1</span><br><span class="line">    while counter&lt;&amp;scroll</span><br><span class="line">        let counter+=1</span><br><span class="line">        sleep 10m</span><br><span class="line">        redraw</span><br><span class="line">        exec &quot;normal &quot; . scrollaction</span><br><span class="line">    endwhile</span><br><span class="line">endfunction</span><br><span class="line">noremap &lt;silent&gt; &lt;c-u&gt; :call smooth_scroll#up(&amp;scroll, 15, 2)&lt;CR&gt;</span><br><span class="line">noremap &lt;silent&gt; &lt;c-d&gt; :call smooth_scroll#down(&amp;scroll, 15, 2)&lt;CR&gt;</span><br><span class="line">noremap &lt;silent&gt; &lt;c-b&gt; :call smooth_scroll#up(&amp;scroll*2, 10, 4)&lt;CR&gt;</span><br><span class="line">noremap &lt;silent&gt; &lt;c-f&gt; :call smooth_scroll#down(&amp;scroll*2, 10, 4)&lt;CR&gt;</span><br><span class="line">set mouse= </span><br><span class="line">map &lt;ScrollWheelUp&gt; &lt;C-Y&gt;</span><br><span class="line">map &lt;ScrollWheelDown&gt; &lt;C-E&gt;</span><br><span class="line">&quot;高亮错误</span><br><span class="line">&quot; let g:syntastic_enable_highlighting=1</span><br><span class="line">&quot; 快速选中</span><br><span class="line">&quot; let g:expand_region_use_select_mode = 1</span><br><span class="line">&quot; map w &lt;Plug&gt;(expand_region_expand)</span><br><span class="line">&quot; map W &lt;Plug&gt;(expand_region_shrink)</span><br><span class="line">&quot; markdown setting</span><br><span class="line">let g:vim_markdown_toc_autofit = 1</span><br><span class="line">let g:vim_markdown_autowrite = 1</span><br><span class="line">let g:vim_markdown_folding_disabled = 1</span><br><span class="line">set updatetime=100</span><br><span class="line">let g:gitgutter_grep=&apos;&apos;</span><br><span class="line">let g:gitgutter_terminal_reports_focus=0</span><br></pre></td></tr></table></figure>
-
-<p>最后在vim中使用<code>:PluginInstall</code> 安装插件。具体的插件的作用以后会专门写一篇来介绍。也可自行百度。</p>
-<h4 id="配置终端"><a href="#配置终端" class="headerlink" title="配置终端"></a>配置终端</h4><p>我使用的是zsh，首先安装zsh</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install zsh</span><br></pre></td></tr></table></figure>
-
-<p>然后配置将zsh为默认</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo chsh -s /bin/zsh</span><br></pre></td></tr></table></figure>
-
-<p>最后使用著名的oh-my-zsh 来装点B吧。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sh -c &quot;$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)&quot;</span><br></pre></td></tr></table></figure>
-
-<h3 id="配置git环境和github连接"><a href="#配置git环境和github连接" class="headerlink" title="配置git环境和github连接"></a>配置git环境和github连接</h3><p>安装好git后，配置git</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git config --global user.name &quot;你的github用户名&quot;</span><br><span class="line">git config --global user.email &quot;你的github邮箱地址&quot;</span><br></pre></td></tr></table></figure>
-
-<p>生成密钥，一路enter就可以</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen -t rsa -C &quot;你自己的github对应的邮箱地址&quot;</span><br></pre></td></tr></table></figure>
-
-<p>将文件中生成的密钥复制到github上的配置中去</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim ~/.ssh/id_rsa.pub</span><br></pre></td></tr></table></figure>
-
-<p>检查是否配置成功</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh -T git@github.com</span><br></pre></td></tr></table></figure>
-
-<h3 id="配置Java开发环境"><a href="#配置Java开发环境" class="headerlink" title="配置Java开发环境"></a>配置Java开发环境</h3><h4 id="JDK"><a href="#JDK" class="headerlink" title="JDK"></a>JDK</h4><ol>
-<li>在<a href="https://www.oracle.com/technetwork/java/javase/downloads/index.html" target="_blank" rel="noopener">官网</a>下载jdk源码,并在解压前创建 <code>/usr/local/java</code> 文件夹</li>
+<ul>
+<li><code>cp path/to/file.ext path/to/copy.ext</code> 复制文件到另一个地址</li>
+<li><code>cp path/to/file.ext path/to/target_parent_directory</code> 复制文件到指定地址，并且保持文件名不变</li>
+<li><code>cp -r path/to/directory path/to/copy</code> 递归的复制整个文件夹及其中的内容到指定目录</li>
+<li><code>cp -i *.txt path/to/target_directory</code> 以交互的模式复制文件到指定文件夹中</li>
+</ul>
+<ol start="7">
+<li><code>mv</code> 命令主要用于移动文件</li>
 </ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkdir /usr/local/java</span><br></pre></td></tr></table></figure>
-
+<ul>
+<li><code>mv source target</code> 移动文件</li>
+<li><code>mv -f</code> 强制移动，覆盖现有文件时不要提示</li>
+</ul>
+<ol start="8">
+<li><code>rm</code>命令主要用于删除文件</li>
+</ol>
+<ul>
+<li><code>rm path/to/file path/to/another/file</code> 删除特定文件夹中的文件</li>
+<li><code>rm -r path/to/directory</code> 递归删除文件夹及文件夹中的文件</li>
+<li><code>rm -rf</code> 递归删除，并且不要提示信息</li>
+</ul>
+<ol start="9">
+<li><code>dd</code> 命令主要用于转化和复制文件,制作usb镜像</li>
+</ol>
+<ul>
+<li>Clone a drive to another drive with 4MB block and ignore error <code>dd if=/dev/source_drive of=/dev/dest_drive bs=4m conv=noerror</code></li>
+</ul>
+<ol start="10">
+<li><code>file</code>命令主要用于确定文件类型</li>
+</ol>
+<ul>
+<li><code>file filename</code> 输出文件类型</li>
+<li><code>file -s filename</code> 用于特殊的文件或者设备文件。</li>
+</ul>
+<h2 id="四、文本编辑命令"><a href="#四、文本编辑命令" class="headerlink" title="四、文本编辑命令"></a>四、文本编辑命令</h2><ol>
+<li><code>cat</code> 打印和串联文件</li>
+</ol>
+<ul>
+<li><code>cat file</code> 打印文件内容到标准输出</li>
+<li><code>cat file1 file2  &gt; targetFile</code> 将多个文件内容串联到目标文件中</li>
+<li><code>cat -n file</code> 打印出行数到标准输出</li>
+</ul>
 <ol start="2">
-<li>将文件解压到刚创建的文件夹中，也可以解压到当前文件夹下，然后移动到刚才创建的文件夹下。</li>
+<li><code>more</code> 用于互动的阅读文件内容，可以上下滚动</li>
 </ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">tar -xzvf jdk1.8.0_191.tar.gz </span><br><span class="line"></span><br><span class="line">mv jdk1.8.0_191 /usr/local/java/</span><br></pre></td></tr></table></figure>
-
+<ul>
+<li><code>more file</code> 打开文件，<code>&lt;space&gt;</code>用于移动到下一页，<code>/</code>用于搜索文件内容， <code>q</code>用于退出当前界面</li>
+</ul>
 <ol start="3">
-<li>使用vim编辑<code>/etc/profile</code> 文件,在结尾处添加如下内容</li>
+<li><code>head</code> 输出文件开始的部分</li>
 </ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">export JAVA_HOME=/usr/local/java/jdk1.8.0_191 </span><br><span class="line">export PATH=$JAVA_HOME/bin:$PATH </span><br><span class="line">export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar</span><br></pre></td></tr></table></figure>
-
+<ul>
+<li><code>head -n count_of_line filename</code> 查看文件的前n行</li>
+<li><code>head -c number_of_byte filename</code> 查看文件的前n个字节</li>
+</ul>
 <ol start="4">
-<li>执行 <code>source /etc/profile</code> 刷新配置文件，然后使用 <code>java -version</code>来查看是否成功。</li>
+<li><code>tail</code> 输出文件最后的部分</li>
 </ol>
-<p><img src="https://wx3.sinaimg.cn/large/006tNc79gy1g2dt166451j318s03waav.jpg" alt="java"></p>
-<h4 id="Maven"><a href="#Maven" class="headerlink" title="Maven"></a>Maven</h4><ol>
-<li><p>在<a href="http://maven.apache.org/download.cgi" target="_blank" rel="noopener">官网</a> 下载源码包，同样解压前创建 <code>/usr/local/maven</code>文件夹</p>
-</li>
-<li><p>将文件解压到<code>/usr/local/maven</code>中。</p>
-</li>
-<li><p>使用vim编辑 <code>/etc/profile</code>文件，在末尾添加如下内容</p>
-</li>
+<ul>
+<li><code>tail -n num file</code>打印出文件最后num行 </li>
+<li><code>tail -n +num file</code> 打印出文件从num开始的几行</li>
+<li><code>tail -f file</code> 保持阅读状态直到 <code>Ctrl + c</code></li>
+</ul>
+<ol start="5">
+<li><code>wc</code>命令用于统计文件的单词，字节，行数 </li>
 </ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">export MAVEN_HOME=/usr/local/maven/apache-maven-3.6.0</span><br><span class="line">export PATH=$MAVEN_HOME/bin:$PATH</span><br></pre></td></tr></table></figure>
-
-<ol start="4">
-<li><p>同样使用<code>source /etc/profile</code> 命令刷新配置文件，使用<code>mvn -v</code> 命令查看是否安装成功。 </p>
-</li>
-<li><p>配置阿里maven镜像</p>
-</li>
+<ul>
+<li><code>wc -l filename</code> 统计文件的行数</li>
+<li><code>wc -w filename</code> 统计文件的字数</li>
+<li><code>wc -c filename</code> 统计文件的字节数</li>
+</ul>
+<ol start="6">
+<li><code>显示文件的状态</code> </li>
 </ol>
-<p>编辑 <code>/usr/local/maven/apache-maven-3.6.0/conf/setting.xml</code>，在<code>&lt;mirrors&gt;&lt;/mirrors&gt;</code>标签内添加如下内容</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;mirror&gt;</span><br><span class="line">      &lt;id&gt;alimaven&lt;/id&gt;</span><br><span class="line">      &lt;name&gt;aliyun maven&lt;/name&gt;</span><br><span class="line">  　　&lt;url&gt;http://maven.aliyun.com/nexus/content/groups/public/&lt;/url&gt;</span><br><span class="line">      &lt;mirrorOf&gt;central&lt;/mirrorOf&gt;        </span><br><span class="line">    &lt;/mirror&gt;</span><br></pre></td></tr></table></figure>
-
-<p><img src="https://wx1.sinaimg.cn/large/006tNc79gy1g2dt176wswj319k068di3.jpg" alt="maven"></p>
-<h3 id="Mysql安装和数据库管理软件推荐"><a href="#Mysql安装和数据库管理软件推荐" class="headerlink" title="Mysql安装和数据库管理软件推荐"></a>Mysql安装和数据库管理软件推荐</h3><ol>
-<li>进入<a href="https://dev.mysql.com/downloads/repo/apt/" target="_blank" rel="noopener">官网</a>下载ubuntu的deb包，直接使用命令安装</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo dpkg -i mysql-apt-config_0.8.11-1_all.deb</span><br></pre></td></tr></table></figure>
-
-<ol start="2">
-<li>刷新源列表</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get update</span><br></pre></td></tr></table></figure>
-
-<ol start="3">
-<li>安装mysql</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install mysql-server mysql-client</span><br></pre></td></tr></table></figure>
-
-<p>其中会让你输入密码，输入就行了。</p>
+<ul>
+<li><code>stat filename</code> 显示文件的属性比如大小，权限等。</li>
+<li><code>stat -x filename</code>格式化显示文件的详细属性信息。</li>
+</ul>
 
           
         
@@ -2669,7 +2780,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/12/29/2018-12-18-Pop!_Os的Ibus输入法上方panel图标消失的问题/">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/01/04/2019-01-04-Ubuntu配置全过程 2/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="NanYin">
@@ -2688,7 +2799,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/12/29/2018-12-18-Pop!_Os的Ibus输入法上方panel图标消失的问题/" itemprop="url">Ubuntu系的IBUS输入法上方panel的输入法图标消失问题</a></h1>
+                <a class="post-title-link" href="/2019/01/04/2019-01-04-Ubuntu配置全过程 2/" itemprop="url">Ubuntu18.04 配置全过程</a></h1>
         
 
         <div class="post-meta">
@@ -2700,8 +2811,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-28T22:05:00Z">
-                2018-12-28
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-04T12:00:00Z">
+                2019-01-04
               </time>
             
 
@@ -2710,28 +2821,6 @@
             
           </span>
 
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Linux/" itemprop="url" rel="index">
-                    <span itemprop="name">Linux</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
           
 
           
@@ -2754,7 +2843,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  86
+                  2.1k
                 </span>
               
 
@@ -2770,7 +2859,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  1
+                  9
                 </span>
               
             </div>
@@ -2793,212 +2882,160 @@
       
         
           
-            <h1 id="Ubuntu系的IBUS输入法上方panel的输入法图标消失问题"><a href="#Ubuntu系的IBUS输入法上方panel的输入法图标消失问题" class="headerlink" title="Ubuntu系的IBUS输入法上方panel的输入法图标消失问题"></a>Ubuntu系的IBUS输入法上方panel的输入法图标消失问题</h1><p>最近迷上了Pop!_Os，基于Ubuntu的发行版，非常简洁，开箱即用。和ubuntu相同，ibus的输入法图标有时消失，在这里总结以下，方便后面再出现问题的时候查阅。</p>
-<p>打开终端输入：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ibus-daemon -drx</span><br></pre></td></tr></table></figure>
+            <h1 id="Ubuntu18-04-配置全过程"><a href="#Ubuntu18-04-配置全过程" class="headerlink" title="Ubuntu18.04 配置全过程"></a>Ubuntu18.04 配置全过程</h1><p>因为最近在弄win10双系统，又因为PopOs在装机的时候设置grub比较麻烦，所以换成最新的Ubuntu稳定版来做成win/ubunut双系统。</p>
+<h2 id="安装问题"><a href="#安装问题" class="headerlink" title="安装问题"></a>安装问题</h2><p>在装机的需要使用grub做启动引导。所以设置保留BIOS启动区域而不是挂载/boot。亲身经历，UEFI启动模式下，Ubuntu的引导挂载应该是biosgrub，否则出错。导致无法家在grub。</p>
+<h2 id="界面配置"><a href="#界面配置" class="headerlink" title="界面配置"></a>界面配置</h2><h3 id="安装gnome-tweak-tool"><a href="#安装gnome-tweak-tool" class="headerlink" title="安装gnome-tweak-tool"></a>安装gnome-tweak-tool</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install gnome-tweak-tool</span><br></pre></td></tr></table></figure>
 
-<p>解决！！</p>
+<p>如果需要更改shell则需要安装：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install gnome-shell-extensions</span><br></pre></td></tr></table></figure>
 
-          
-        
-      
-    </div>
-    
-    
-    
+<p>这样就能轻松愉快的使用gnome-tewak-tool了。</p>
+<h3 id="主题方案"><a href="#主题方案" class="headerlink" title="主题方案"></a>主题方案</h3><h4 id="主界面"><a href="#主界面" class="headerlink" title="主界面"></a>主界面</h4><p>因为前一阵使用Pop!_OS发现它默认的主题非常好看，所以下载Popos默认的主题，然后在gnome-tweak-tool中设置好就ok了，<a href="https://github.com/pop-os/gtk-theme" target="_blank" rel="noopener">这里是PopOs的gtk主题地址</a>。但是发现PopOs默认的输入法输入框是默认米黄色的，打字的时候不太显眼，所以在基础上添加了如下代码。添加方法：</p>
+<ol>
+<li>根据说明下载Pop-theme</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo add-apt-repository ppa:system76/pop</span><br><span class="line">sudo apt update</span><br><span class="line">sudo apt install pop-theme</span><br></pre></td></tr></table></figure>
 
-    <div>
-      
-    </div>
-<div>
-      
-</div>
-    
+<ol start="2">
+<li>定位到 <code>/usr/share/themes/Pop/gnome-shell/</code> 的gnome-shell.css和Pop.css 将IBus的界面代码替换成如下代码</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line">.candidate-popup-content &#123;</span><br><span class="line">  padding: 8px;</span><br><span class="line">  spacing: 0;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.candidate-index &#123;</span><br><span class="line">  padding: 0 4px 0 0;</span><br><span class="line">  color: rgba(255, 255, 255, 0.5);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.candidate-box:selected .candidate-index &#123;</span><br><span class="line">  color: rgba(255, 255, 255, 0.5);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.candidate-box &#123;</span><br><span class="line">  transition-duration: 0ms;</span><br><span class="line">  min-height: 28px;</span><br><span class="line">  padding: 0 8px;</span><br><span class="line">  border-radius: 8px;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.candidate-box:hover &#123;</span><br><span class="line">  background-color: rgba(255, 255, 255, 0.06);</span><br><span class="line">  color: rgba(255, 255, 255, 0.9);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.candidate-box:active &#123;</span><br><span class="line">background-color: rgba(255, 255, 255, 0.1);</span><br><span class="line">  color: rgba(255, 255, 255, 0.9);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.candidate-box:selected &#123;</span><br><span class="line">  background-color: #0046DB;</span><br><span class="line">  color: rgba(255, 255, 255, 0.85);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.candidate-page-button-box &#123;</span><br><span class="line">  height: 28px;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.vertical .candidate-page-button-box &#123;</span><br><span class="line">  padding-top: 0;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.horizontal .candidate-page-button-box &#123;</span><br><span class="line">  padding-left: 0;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.candidate-page-button &#123;</span><br><span class="line">  min-width: 28px;</span><br><span class="line">  min-height: 28px;</span><br><span class="line">  padding: 0;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.candidate-page-button-previous &#123;</span><br><span class="line">  border-radius: 8px;</span><br><span class="line">  border-right-width: 0;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.candidate-page-button-next &#123;</span><br><span class="line">  border-radius: 8px;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.candidate-page-button-icon &#123;</span><br><span class="line">  icon-size: 1.23077em;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-    
+<p>最后成品：</p>
+<p><img src="https://wx4.sinaimg.cn/large/006tNc79gy1g2dt15yse2j318u0miagk.jpg" alt="输入法"></p>
+<ol start="3">
+<li>应用程序窗口用的是 macOS High Sierra  主题，仿照MAC的窗口。比较漂亮。<a href="https://www.gnome-look.org/p/1013714/" target="_blank" rel="noopener">macOS High Sierra 主题</a>，下载下来后解压后放到 <code>/usr/share/themes</code> 下，之后就能在gnome-tweak-tool中看到了，设置完成后可以看到如下效果。</li>
+</ol>
+<p><img src="https://wx4.sinaimg.cn/large/006tNc79gy1g2dt17ye4jj31900u01dj.jpg" alt="主题"></p>
+<h4 id="gdm主题"><a href="#gdm主题" class="headerlink" title="gdm主题"></a>gdm主题</h4><p>gdm主题选用类似MAC登陆的主题，界面美观，而且还有毛玻璃效果。<a href="https://www.gnome-look.org/p/1207015/" target="_blank" rel="noopener">High Ubunterra</a>下载后解压之后，直接命令行执行./install.sh。之后直接右键设置后，直接将锁屏界面直接设置好。其实主要目的的就是将 <code>/usr/share/gnome-shell/theme</code> 中的ubuntu.css替换掉。</p>
+<h4 id="grub主题"><a href="#grub主题" class="headerlink" title="grub主题"></a>grub主题</h4><p>grub的主题比较少，推荐的就是<a href="https://www.gnome-look.org/p/1000140/" target="_blank" rel="noopener">Breeze GRUB2 theme</a> 是一款比较漂亮美观的主题。具体成果界面可以点击链接地址查看。</p>
+<p>普通主题需要作如下顺序的操作，但是 Breeze Grub2 theme 有脚本，直接执行解压后的脚本程序，就ok了。</p>
+<ol>
+<li>创建grub的主题文件夹</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo mkdir /boot/grub/themes</span><br></pre></td></tr></table></figure>
 
-    
+<ol start="2">
+<li>将主题包移动到这个目录下</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo cp 主题包名 /boot/grub/themes/</span><br></pre></td></tr></table></figure>
 
-    <footer class="post-footer">
-      
+<ol start="3">
+<li>修改主题的配置文件</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo vim /etc/grub.d/00_header</span><br></pre></td></tr></table></figure>
 
-      
+<ol start="4">
+<li>在配置文件中添加</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">GRUB_THEME=&quot;/boot/grub/themes/主题包名/theme.txt&quot;</span><br><span class="line">GRUB_GFXMODE=&quot;1920x1080x32&quot;</span><br></pre></td></tr></table></figure>
 
-      
+<ol start="5">
+<li>最后执行 update-grub 命令</li>
+</ol>
+<h3 id="gnome拓展推荐"><a href="#gnome拓展推荐" class="headerlink" title="gnome拓展推荐"></a>gnome拓展推荐</h3><p>我没有什么特殊的拓展安装，在Ubuntu系统下，一般安装如下拓展。</p>
+<ol>
+<li><p>User themes 可以使用用户目录下的主题</p>
+</li>
+<li><p>removeable Drive Menu 当插入移除设备的时候在上方有状态图标提醒。</p>
+</li>
+<li><p>Caffeine 可以关闭屏保和自动挂起，很好用。</p>
+</li>
+<li><p>Dash To Dock 如果你不喜欢ubuntu的侧边dock可以尝试这个dock，比较美观的dock，可以设置在侧边或者在底下。</p>
+</li>
+<li><p>openWeather 可以在顶部栏中查看天气，点击可以查看最近天气，需要手动添加地址。</p>
+</li>
+<li><p>ClipBord Indicator 是可以记录粘贴板的内容，有时可以避免重复复制的操作。</p>
+</li>
+</ol>
+<p>推荐的有这几个，但是gnome-shell拓展可谓非常的多，并且大多数都非常好用，可以去 <a href="https://extensions.gnome.org/" target="_blank" rel="noopener">gnome extensions 官网</a> 看一看，看有没有更适合自己的。</p>
+<h3 id="配置Vim和终端"><a href="#配置Vim和终端" class="headerlink" title="配置Vim和终端"></a>配置Vim和终端</h3><h4 id="配置vim"><a href="#配置vim" class="headerlink" title="配置vim"></a>配置vim</h4><p>我vim使用的是vundle插件管理器，首先要安装vundle.</p>
+<p>首先要下载git</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install git</span><br></pre></td></tr></table></figure>
 
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
+<p>然后安装vundle</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vi</span><br></pre></td></tr></table></figure>
 
+<p>将如下配置替换到.vimrc 中，首先要进行备份哦！！！</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line">set nocompatible &quot; be iMproved, required</span><br><span class="line">filetype off &quot; required</span><br><span class="line">set number</span><br><span class="line">let mapleader=&quot;,&quot;</span><br><span class="line">set rtp+=~/.vim/bundle/Vundle.vim</span><br><span class="line">call vundle#begin()</span><br><span class="line"></span><br><span class="line">Plugin &apos;VundleVim/Vundle.vim&apos;</span><br><span class="line">Plugin &apos;scrooloose/nerdtree&apos;</span><br><span class="line">Plugin &apos;kien/ctrlp.vim&apos;</span><br><span class="line">Plugin &apos;junegunn/fzf&apos;</span><br><span class="line">Plugin &apos;Shougo/neocomplete.vim&apos;</span><br><span class="line">Plugin &apos;vim-airline/vim-airline&apos;</span><br><span class="line">Plugin &apos;vim-airline/vim-airline-themes&apos;</span><br><span class="line">Plugin &apos;terryma/vim-smooth-scroll&apos;</span><br><span class="line">Plugin &apos;terryma/vim-expand-region&apos;</span><br><span class="line">Plugin &apos;tpope/vim-commentary&apos;</span><br><span class="line">Plugin &apos;tpope/vim-surround&apos;</span><br><span class="line">Plugin &apos;godlygeek/tabular&apos;</span><br><span class="line">Plugin &apos;plasticboy/vim-markdown&apos;</span><br><span class="line">Plugin &apos;tpope/vim-fugitive&apos;</span><br><span class="line">Plugin &apos;airblade/vim-gitgutter&apos;</span><br><span class="line">Plugin &apos;justinmk/vim-sneak&apos;</span><br><span class="line">Plugin &apos;powerline/fonts&apos;</span><br><span class="line">Plugin &apos;scrooloose/nerdcommenter&apos; </span><br><span class="line">Plugin &apos;suan/vim-instant-markdown&apos;</span><br><span class="line">Plugin &apos;mzlogin/vim-markdown-toc&apos;</span><br><span class="line">call vundle#end()            &quot; required</span><br><span class="line">filetype plugin indent on</span><br><span class="line">&quot; let g:airline_powerline_fonts = 1</span><br><span class="line">map &lt;C-n&gt; :NERDTreeToggle&lt;CR&gt;</span><br><span class="line">&quot; smooth-scroll</span><br><span class="line">function SmoothScroll(up)</span><br><span class="line">    if a:up</span><br><span class="line">        let scrollaction=&quot;^Y&quot;</span><br><span class="line">    else</span><br><span class="line">        let scrollaction=&quot;^E&quot;</span><br><span class="line">    endif</span><br><span class="line">    exec &quot;normal &quot; . scrollaction</span><br><span class="line">    redraw</span><br><span class="line">    let counter=1</span><br><span class="line">    while counter&lt;&amp;scroll</span><br><span class="line">        let counter+=1</span><br><span class="line">        sleep 10m</span><br><span class="line">        redraw</span><br><span class="line">        exec &quot;normal &quot; . scrollaction</span><br><span class="line">    endwhile</span><br><span class="line">endfunction</span><br><span class="line">noremap &lt;silent&gt; &lt;c-u&gt; :call smooth_scroll#up(&amp;scroll, 15, 2)&lt;CR&gt;</span><br><span class="line">noremap &lt;silent&gt; &lt;c-d&gt; :call smooth_scroll#down(&amp;scroll, 15, 2)&lt;CR&gt;</span><br><span class="line">noremap &lt;silent&gt; &lt;c-b&gt; :call smooth_scroll#up(&amp;scroll*2, 10, 4)&lt;CR&gt;</span><br><span class="line">noremap &lt;silent&gt; &lt;c-f&gt; :call smooth_scroll#down(&amp;scroll*2, 10, 4)&lt;CR&gt;</span><br><span class="line">set mouse= </span><br><span class="line">map &lt;ScrollWheelUp&gt; &lt;C-Y&gt;</span><br><span class="line">map &lt;ScrollWheelDown&gt; &lt;C-E&gt;</span><br><span class="line">&quot;高亮错误</span><br><span class="line">&quot; let g:syntastic_enable_highlighting=1</span><br><span class="line">&quot; 快速选中</span><br><span class="line">&quot; let g:expand_region_use_select_mode = 1</span><br><span class="line">&quot; map w &lt;Plug&gt;(expand_region_expand)</span><br><span class="line">&quot; map W &lt;Plug&gt;(expand_region_shrink)</span><br><span class="line">&quot; markdown setting</span><br><span class="line">let g:vim_markdown_toc_autofit = 1</span><br><span class="line">let g:vim_markdown_autowrite = 1</span><br><span class="line">let g:vim_markdown_folding_disabled = 1</span><br><span class="line">set updatetime=100</span><br><span class="line">let g:gitgutter_grep=&apos;&apos;</span><br><span class="line">let g:gitgutter_terminal_reports_focus=0</span><br></pre></td></tr></table></figure>
 
-    
-      
+<p>最后在vim中使用<code>:PluginInstall</code> 安装插件。具体的插件的作用以后会专门写一篇来介绍。也可自行百度。</p>
+<h4 id="配置终端"><a href="#配置终端" class="headerlink" title="配置终端"></a>配置终端</h4><p>我使用的是zsh，首先安装zsh</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install zsh</span><br></pre></td></tr></table></figure>
 
-  
+<p>然后配置将zsh为默认</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo chsh -s /bin/zsh</span><br></pre></td></tr></table></figure>
 
-  
-  
-  
+<p>最后使用著名的oh-my-zsh 来装点B吧。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sh -c &quot;$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)&quot;</span><br></pre></td></tr></table></figure>
 
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/11/09/2018-11-08-String和StringBuffer和StringBuilder的联系和区别/">
+<h3 id="配置git环境和github连接"><a href="#配置git环境和github连接" class="headerlink" title="配置git环境和github连接"></a>配置git环境和github连接</h3><p>安装好git后，配置git</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git config --global user.name &quot;你的github用户名&quot;</span><br><span class="line">git config --global user.email &quot;你的github邮箱地址&quot;</span><br></pre></td></tr></table></figure>
 
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="NanYin">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
-    </span>
+<p>生成密钥，一路enter就可以</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen -t rsa -C &quot;你自己的github对应的邮箱地址&quot;</span><br></pre></td></tr></table></figure>
 
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NanYin的博客">
-    </span>
+<p>将文件中生成的密钥复制到github上的配置中去</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim ~/.ssh/id_rsa.pub</span><br></pre></td></tr></table></figure>
 
-    
-      <header class="post-header">
+<p>检查是否配置成功</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh -T git@github.com</span><br></pre></td></tr></table></figure>
 
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/11/09/2018-11-08-String和StringBuffer和StringBuilder的联系和区别/" itemprop="url">String、StringBuffer、StringBuilder的区别和关系</a></h1>
-        
+<h3 id="配置Java开发环境"><a href="#配置Java开发环境" class="headerlink" title="配置Java开发环境"></a>配置Java开发环境</h3><h4 id="JDK"><a href="#JDK" class="headerlink" title="JDK"></a>JDK</h4><ol>
+<li>在<a href="https://www.oracle.com/technetwork/java/javase/downloads/index.html" target="_blank" rel="noopener">官网</a>下载jdk源码,并在解压前创建 <code>/usr/local/java</code> 文件夹</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkdir /usr/local/java</span><br></pre></td></tr></table></figure>
 
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-08T22:05:00Z">
-                2018-11-08
-              </time>
-            
+<ol start="2">
+<li>将文件解压到刚创建的文件夹中，也可以解压到当前文件夹下，然后移动到刚才创建的文件夹下。</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">tar -xzvf jdk1.8.0_191.tar.gz </span><br><span class="line"></span><br><span class="line">mv jdk1.8.0_191 /usr/local/java/</span><br></pre></td></tr></table></figure>
 
-            
+<ol start="3">
+<li>使用vim编辑<code>/etc/profile</code> 文件,在结尾处添加如下内容</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">export JAVA_HOME=/usr/local/java/jdk1.8.0_191 </span><br><span class="line">export PATH=$JAVA_HOME/bin:$PATH </span><br><span class="line">export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar</span><br></pre></td></tr></table></figure>
 
-            
-          </span>
+<ol start="4">
+<li>执行 <code>source /etc/profile</code> 刷新配置文件，然后使用 <code>java -version</code>来查看是否成功。</li>
+</ol>
+<p><img src="https://wx3.sinaimg.cn/large/006tNc79gy1g2dt166451j318s03waav.jpg" alt="java"></p>
+<h4 id="Maven"><a href="#Maven" class="headerlink" title="Maven"></a>Maven</h4><ol>
+<li><p>在<a href="http://maven.apache.org/download.cgi" target="_blank" rel="noopener">官网</a> 下载源码包，同样解压前创建 <code>/usr/local/maven</code>文件夹</p>
+</li>
+<li><p>将文件解压到<code>/usr/local/maven</code>中。</p>
+</li>
+<li><p>使用vim编辑 <code>/etc/profile</code>文件，在末尾添加如下内容</p>
+</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">export MAVEN_HOME=/usr/local/maven/apache-maven-3.6.0</span><br><span class="line">export PATH=$MAVEN_HOME/bin:$PATH</span><br></pre></td></tr></table></figure>
 
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Java/" itemprop="url" rel="index">
-                    <span itemprop="name">Java</span>
-                  </a>
-                </span>
+<ol start="4">
+<li><p>同样使用<code>source /etc/profile</code> 命令刷新配置文件，使用<code>mvn -v</code> 命令查看是否安装成功。 </p>
+</li>
+<li><p>配置阿里maven镜像</p>
+</li>
+</ol>
+<p>编辑 <code>/usr/local/maven/apache-maven-3.6.0/conf/setting.xml</code>，在<code>&lt;mirrors&gt;&lt;/mirrors&gt;</code>标签内添加如下内容</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;mirror&gt;</span><br><span class="line">      &lt;id&gt;alimaven&lt;/id&gt;</span><br><span class="line">      &lt;name&gt;aliyun maven&lt;/name&gt;</span><br><span class="line">  　　&lt;url&gt;http://maven.aliyun.com/nexus/content/groups/public/&lt;/url&gt;</span><br><span class="line">      &lt;mirrorOf&gt;central&lt;/mirrorOf&gt;        </span><br><span class="line">    &lt;/mirror&gt;</span><br></pre></td></tr></table></figure>
 
-                
-                
-              
-            </span>
-          
+<p><img src="https://wx1.sinaimg.cn/large/006tNc79gy1g2dt176wswj319k068di3.jpg" alt="maven"></p>
+<h3 id="Mysql安装和数据库管理软件推荐"><a href="#Mysql安装和数据库管理软件推荐" class="headerlink" title="Mysql安装和数据库管理软件推荐"></a>Mysql安装和数据库管理软件推荐</h3><ol>
+<li>进入<a href="https://dev.mysql.com/downloads/repo/apt/" target="_blank" rel="noopener">官网</a>下载ubuntu的deb包，直接使用命令安装</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo dpkg -i mysql-apt-config_0.8.11-1_all.deb</span><br></pre></td></tr></table></figure>
 
-          
-            
-          
+<ol start="2">
+<li>刷新源列表</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get update</span><br></pre></td></tr></table></figure>
 
-          
-          
+<ol start="3">
+<li>安装mysql</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install mysql-server mysql-client</span><br></pre></td></tr></table></figure>
 
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  675
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  2
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="String、StringBuffer、StringBuilder的区别和关系"><a href="#String、StringBuffer、StringBuilder的区别和关系" class="headerlink" title="String、StringBuffer、StringBuilder的区别和关系"></a>String、StringBuffer、StringBuilder的区别和关系</h1><p><code>String</code>声明后是一个常量，而<code>Stringbuffer</code>和<code>StringBuilder</code>是数据结构是变量，所以比String在连接字符时效率高。</p>
-<p>并且StringBuffer和StringBuilder的区别是StringBuffer是线程安全的(synchronized) ，而StringBuilder是非线程安全的，所以速度大致排行为：StringBuilder&gt;StringBuffer&gt;String</p>
-<p>以上只是基于印象或者说是死记硬背的东西，没有看源码是否真的是这样的。下面就来看看String,StringBuilder,StringBuffer的源码来真正的记住。</p>
-<h2 id="String"><a href="#String" class="headerlink" title="String"></a>String</h2><p>String中的concat方法实现了字符串的拼接。</p>
-<h3 id="实例变量"><a href="#实例变量" class="headerlink" title="实例变量"></a>实例变量</h3><p>String类中有两个实例变量，分别为value和hash</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** The value is used for character storage. */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">char</span> value[];</span><br><span class="line"></span><br><span class="line"><span class="comment">/** Cache the hash code for the string */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">int</span> hash; <span class="comment">// Default to 0</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="构造方法"><a href="#构造方法" class="headerlink" title="构造方法"></a>构造方法</h3><p>String的构造方法很多，但是都比较简单，下面来说比较常用的几种。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 当新建一个String对象的时候，会默认付一个空的字符序列,请注意，由于字符串是不可变的，因此不必使用此构造函数</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">String</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.value = <span class="string">""</span>.value;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="comment">// 这个构造方法,会默认新建一个值为original的字符串。同上，如果字符串不可变的，就没必要这样声明。</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">String</span><span class="params">(String original)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.value = original.value;</span><br><span class="line">        <span class="keyword">this</span>.hash = original.hash;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="comment">// 使用copyof方法用来复制一个新的字符数组，后续修改字符数组，不会影响到新建的字符串</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">String</span><span class="params">(<span class="keyword">char</span> value[])</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.value = Arrays.copyOf(value, value.length);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="concat方法"><a href="#concat方法" class="headerlink" title="concat方法"></a>concat方法</h3><p>为什么说String的效率低，就体现在concat拼接字符串的时候每次都要返回一个新的String对象。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"> <span class="function"><span class="keyword">public</span> String <span class="title">concat</span><span class="params">(String str)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> otherLen = str.length();</span><br><span class="line">        <span class="keyword">if</span> (otherLen == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> len = value.length;</span><br><span class="line">        <span class="keyword">char</span> buf[] = Arrays.copyOf(value, len + otherLen);</span><br><span class="line">        str.getChars(buf, len);</span><br><span class="line"><span class="comment">// 	返回一个新建的String对象</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> String(buf, <span class="keyword">true</span>);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="StringBuilder"><a href="#StringBuilder" class="headerlink" title="StringBuilder"></a>StringBuilder</h2><p>StringBuilder继承了AbstractStringBuilder，其中的实例变量和String中的基本相同，</p>
-<h3 id="构造方法-1"><a href="#构造方法-1" class="headerlink" title="构造方法"></a>构造方法</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">StringBuilder</span><span class="params">(<span class="keyword">int</span> capacity)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(capacity);</span><br><span class="line">    &#125;</span><br><span class="line"><span class="comment">// 调用父类的构造方法</span></span><br><span class="line">AbstractStringBuilder(<span class="keyword">int</span> capacity) &#123;</span><br><span class="line">        value = <span class="keyword">new</span> <span class="keyword">char</span>[capacity];</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="append方法"><a href="#append方法" class="headerlink" title="append方法"></a>append方法</h3><p>可以看到，并没有新建对象，只是在改变对象中的内容。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> StringBuilder <span class="title">append</span><span class="params">(String str)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.append(str);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="comment">// append调用的还是父类的append方法</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> AbstractStringBuilder <span class="title">append</span><span class="params">(String str)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (str == <span class="keyword">null</span>)</span><br><span class="line">            <span class="keyword">return</span> appendNull();</span><br><span class="line">        <span class="keyword">int</span> len = str.length();</span><br><span class="line">        ensureCapacityInternal(count + len);</span><br><span class="line">        str.getChars(<span class="number">0</span>, len, value, count);</span><br><span class="line"><span class="comment">//	把value扩容后再把str加进去</span></span><br><span class="line">        count += len;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="StringBuffer"><a href="#StringBuffer" class="headerlink" title="StringBuffer"></a>StringBuffer</h2><p>和StringBuilder一样，也是继承了AbstractStringBuilder类，但是看一个append这个方法的源码就能够知道有什么区别了</p>
-<h3 id="append方法-1"><a href="#append方法-1" class="headerlink" title="append方法"></a>append方法</h3><p>添加了synchronized关键字，使得变为线程安全的，但是代价就是效率不如StringBuilder高。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> StringBuffer <span class="title">append</span><span class="params">(String str)</span> </span>&#123;</span><br><span class="line">    toStringCache = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">super</span>.append(str);</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<p>其中会让你输入密码，输入就行了。</p>
 
           
         
@@ -3092,7 +3129,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">95</span>
+                  <span class="site-state-item-count">97</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -3166,6 +3203,14 @@
              
              
                <li>
+                 <a href="/2019/12/22/3.使用私有构造方法或枚举实现单例/" title="三、使用私有构造方法或枚举实现Singleton" target="_blank">三、使用私有构造方法或枚举实现Singleton</a>
+               </li>
+             
+               <li>
+                 <a href="/2019/12/21/Spring从零开始之源码分析（二）/" title="Spring从零开始源码分析（二）" target="_blank">Spring从零开始源码分析（二）</a>
+               </li>
+             
+               <li>
                  <a href="/2019/12/20/2.当构造方法参数过多时使用Builder模式/" title="二、当构造方法参数过多时使用builder模式" target="_blank">二、当构造方法参数过多时使用builder模式</a>
                </li>
              
@@ -3175,14 +3220,6 @@
              
                <li>
                  <a href="/2019/12/18/1.使用静态方法代替构造函数/" title="一、使用静态方法代替构造函数" target="_blank">一、使用静态方法代替构造函数</a>
-               </li>
-             
-               <li>
-                 <a href="/2019/12/11/（四）AOP切面使用与原理/" title="SpringAOP的使用和源码分析" target="_blank">SpringAOP的使用和源码分析</a>
-               </li>
-             
-               <li>
-                 <a href="/2019/12/07/（三）自动装配/" title="Spring中的自动装配" target="_blank">Spring中的自动装配</a>
                </li>
              
            </ul>
@@ -3231,7 +3268,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共101k字</span>
+  <span class="post-count">博客全站共104.6k字</span>
 </div>
 
 
