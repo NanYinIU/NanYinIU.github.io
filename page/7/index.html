@@ -1745,199 +1745,6 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/10/16/2018-10-15-Enum类及相关拓展/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="NanYin">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NanYin的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/10/16/2018-10-15-Enum类及相关拓展/" itemprop="url">Enum枚举类分析和相关拓展</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-15T22:05:00Z">
-                2018-10-15
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Java/" itemprop="url" rel="index">
-                    <span itemprop="name">Java</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  484
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  2
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Enum枚举类分析和相关拓展"><a href="#Enum枚举类分析和相关拓展" class="headerlink" title="Enum枚举类分析和相关拓展"></a>Enum枚举类分析和相关拓展</h1><p>其实我认为使用枚举类就是对使用常量的扩充，例如类中使用类型，分类相同的类变量的时候，可以考虑使用枚举类来替换掉。</p>
-<p>参考了网上的文章，大致有两个好处，第一是确定传入的参数类型。而不是形参是int类型，随便一个int类型就能够满足。第二是对比static静态变量更能够确定变量的意义。下面举一个例子来看。</p>
-<h2 id="Enum类实例"><a href="#Enum类实例" class="headerlink" title="Enum类实例"></a>Enum类实例</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 列举简单的行驶工具 */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">enum</span> trafficTool &#123;</span><br><span class="line">    BIKE,CAR,BUS,TRAIN,AIRPLANE</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TrafficToolTest</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">chooseTool</span><span class="params">(TrafficTool trafficTool)</span></span>&#123;</span><br><span class="line">        <span class="keyword">switch</span> (trafficTool)&#123;</span><br><span class="line">            <span class="keyword">case</span> BIKE:</span><br><span class="line">                System.out.println(<span class="string">"自行车"</span>);<span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> CAR:</span><br><span class="line">                System.out.println(<span class="string">"汽车"</span>);<span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        TrafficToolTest trafficToolTest = <span class="keyword">new</span> TrafficToolTest();</span><br><span class="line">        trafficToolTest.chooseTool(TrafficTool.BIKE);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>和普通的类一样，同样也可以添加构造方法</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">SPRING(<span class="string">"春天"</span>),SUMMER(<span class="string">"夏天"</span>),FALL(<span class="string">"秋天"</span>),WINTER(<span class="string">"冬天"</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> String name;</span><br><span class="line"></span><br><span class="line">SeasonEnum(String name)&#123;</span><br><span class="line">    <span class="keyword">this</span>.name = name;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function">String <span class="title">getName</span><span class="params">()</span></span>&#123;</span><br><span class="line">   <span class="keyword">return</span> name;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>也可以继承</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">enum</span> SeasonEnum &#123;</span><br><span class="line">    SPRING(<span class="string">"春天"</span>) &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> String <span class="title">comm</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">"这是春天"</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,SUMMER(<span class="string">"夏天"</span>) &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> String <span class="title">comm</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">"这是夏天"</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,FALL(<span class="string">"秋天"</span>) &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> String <span class="title">comm</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">"这是冬天"</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,WINTER(<span class="string">"冬天"</span>) &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> String <span class="title">comm</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">"这是冬天"</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> String name;</span><br><span class="line"></span><br><span class="line">    SeasonEnum(String name)&#123;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function">String <span class="title">getName</span><span class="params">()</span></span>&#123;</span><br><span class="line">       <span class="keyword">return</span> name;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> String <span class="title">comm</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>以上是枚举类的基本使用。</p>
-<h2 id="EnumMap-和-EnumSet"><a href="#EnumMap-和-EnumSet" class="headerlink" title="EnumMap 和 EnumSet"></a><code>EnumMap</code> 和 <code>EnumSet</code></h2><p><code>public class EnumMap&lt;K extends Enum&lt;K&gt;, V&gt; extends AbstractMap&lt;K, V&gt;</code> 这是关于EnumMap的继承关系。<br>可以发现这是key为枚举类的一个Map。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 简单创建，以后就可以实现枚举类的多种复用 */</span></span><br><span class="line">EnumMap&lt;SeasonEnum,Integer&gt; enumIntegerEnumMap = <span class="keyword">new</span> EnumMap&lt;SeasonEnum, Integer&gt;(SeasonEnum.class);</span><br><span class="line">Set&lt;SeasonEnum&gt; set = enumIntegerEnumMap.keySet();</span><br><span class="line">enumIntegerEnumMap.put(SeasonEnum.SPRING,<span class="number">1</span>);</span><br><span class="line">System.out.println(enumIntegerEnumMap.get(SeasonEnum.SPRING));</span><br></pre></td></tr></table></figure>
-
-<p><code>EnumSet</code> 相对于 <code>EnumMap</code> 等同于 <code>hashSet</code> 相对于 <code>HashMap</code> 的存在，很好理解。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-<div>
-      
-</div>
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/10/16/2018-10-15-HashSet和HashTable的源码分析/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2094,6 +1901,199 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/* 其实大致和HashMap是类似的也是使用Entry作为基本结构 */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> V <span class="title">put</span><span class="params">(K key, V value)</span> </span>&#123;</span><br><span class="line">     <span class="comment">// Make sure the value is not null</span></span><br><span class="line">     <span class="keyword">if</span> (value == <span class="keyword">null</span>) &#123;</span><br><span class="line">         <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException();</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="comment">// Makes sure the key is not already in the hashtable.</span></span><br><span class="line">     Entry&lt;?,?&gt; tab[] = table;</span><br><span class="line">     <span class="keyword">int</span> hash = key.hashCode();</span><br><span class="line">     <span class="comment">/* 这里的0x7FFFFFFF 是32-bit的int的最大值 */</span></span><br><span class="line">     <span class="keyword">int</span> index = (hash &amp; <span class="number">0x7FFFFFFF</span>) % tab.length;</span><br><span class="line">     <span class="meta">@SuppressWarnings</span>(<span class="string">"unchecked"</span>)</span><br><span class="line">     Entry&lt;K,V&gt; entry = (Entry&lt;K,V&gt;)tab[index];</span><br><span class="line">     <span class="comment">/* 如果这个entry存在，也就是键值重复 */</span></span><br><span class="line">     <span class="keyword">for</span>(; entry != <span class="keyword">null</span> ; entry = entry.next) &#123;</span><br><span class="line">         <span class="keyword">if</span> ((entry.hash == hash) &amp;&amp; entry.key.equals(key)) &#123;</span><br><span class="line">             V old = entry.value;</span><br><span class="line">             entry.value = value;</span><br><span class="line">             <span class="keyword">return</span> old;</span><br><span class="line">         &#125;</span><br><span class="line">     &#125;</span><br><span class="line">    <span class="comment">/* 否则添加Entry节点 */</span></span><br><span class="line">     addEntry(hash, key, value, index);</span><br><span class="line">     <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line"> <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">addEntry</span><span class="params">(<span class="keyword">int</span> hash, K key, V value, <span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">    modCount++;</span><br><span class="line"></span><br><span class="line">    Entry&lt;?,?&gt; tab[] = table;</span><br><span class="line">    <span class="keyword">if</span> (count &gt;= threshold) &#123;</span><br><span class="line">      <span class="comment">/* 如果当前count大于阈值的大小 重新生成table size和hash值 */</span></span><br><span class="line">        <span class="comment">// Rehash the table if the threshold is exceeded</span></span><br><span class="line">        rehash();</span><br><span class="line"></span><br><span class="line">        tab = table;</span><br><span class="line">        hash = key.hashCode();</span><br><span class="line">        index = (hash &amp; <span class="number">0x7FFFFFFF</span>) % tab.length;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Creates the new entry.</span></span><br><span class="line">    <span class="meta">@SuppressWarnings</span>(<span class="string">"unchecked"</span>)</span><br><span class="line">    Entry&lt;K,V&gt; e = (Entry&lt;K,V&gt;) tab[index];</span><br><span class="line">    tab[index] = <span class="keyword">new</span> Entry&lt;&gt;(hash, key, value, e);</span><br><span class="line">    count++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>通过上面的代码可以看出HashTable和HashMap的结构还是有差异的，HashMap是纵向的列表当出现相同的hash值的时候，扩展出横向列表，当横向的列表到达一定的长度的时候，这个横向的链表就会自动整理成红黑树的形式，而hashTable不存在横向的这种结构的，当count&gt;=阈值的时候就会把Hash重置，使之不会出现hash值重复的情况。可以说hashTable比较hashMap的结构更简单，但是效率会比HashMap的低。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+<div>
+      
+</div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/10/16/2018-10-15-Enum类及相关拓展/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="NanYin">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NanYin的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/10/16/2018-10-15-Enum类及相关拓展/" itemprop="url">Enum枚举类分析和相关拓展</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-15T22:05:00Z">
+                2018-10-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  484
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  2
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Enum枚举类分析和相关拓展"><a href="#Enum枚举类分析和相关拓展" class="headerlink" title="Enum枚举类分析和相关拓展"></a>Enum枚举类分析和相关拓展</h1><p>其实我认为使用枚举类就是对使用常量的扩充，例如类中使用类型，分类相同的类变量的时候，可以考虑使用枚举类来替换掉。</p>
+<p>参考了网上的文章，大致有两个好处，第一是确定传入的参数类型。而不是形参是int类型，随便一个int类型就能够满足。第二是对比static静态变量更能够确定变量的意义。下面举一个例子来看。</p>
+<h2 id="Enum类实例"><a href="#Enum类实例" class="headerlink" title="Enum类实例"></a>Enum类实例</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 列举简单的行驶工具 */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">enum</span> trafficTool &#123;</span><br><span class="line">    BIKE,CAR,BUS,TRAIN,AIRPLANE</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TrafficToolTest</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">chooseTool</span><span class="params">(TrafficTool trafficTool)</span></span>&#123;</span><br><span class="line">        <span class="keyword">switch</span> (trafficTool)&#123;</span><br><span class="line">            <span class="keyword">case</span> BIKE:</span><br><span class="line">                System.out.println(<span class="string">"自行车"</span>);<span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> CAR:</span><br><span class="line">                System.out.println(<span class="string">"汽车"</span>);<span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        TrafficToolTest trafficToolTest = <span class="keyword">new</span> TrafficToolTest();</span><br><span class="line">        trafficToolTest.chooseTool(TrafficTool.BIKE);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>和普通的类一样，同样也可以添加构造方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">SPRING(<span class="string">"春天"</span>),SUMMER(<span class="string">"夏天"</span>),FALL(<span class="string">"秋天"</span>),WINTER(<span class="string">"冬天"</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> String name;</span><br><span class="line"></span><br><span class="line">SeasonEnum(String name)&#123;</span><br><span class="line">    <span class="keyword">this</span>.name = name;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function">String <span class="title">getName</span><span class="params">()</span></span>&#123;</span><br><span class="line">   <span class="keyword">return</span> name;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>也可以继承</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">enum</span> SeasonEnum &#123;</span><br><span class="line">    SPRING(<span class="string">"春天"</span>) &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> String <span class="title">comm</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">"这是春天"</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,SUMMER(<span class="string">"夏天"</span>) &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> String <span class="title">comm</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">"这是夏天"</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,FALL(<span class="string">"秋天"</span>) &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> String <span class="title">comm</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">"这是冬天"</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,WINTER(<span class="string">"冬天"</span>) &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> String <span class="title">comm</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">"这是冬天"</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> String name;</span><br><span class="line"></span><br><span class="line">    SeasonEnum(String name)&#123;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function">String <span class="title">getName</span><span class="params">()</span></span>&#123;</span><br><span class="line">       <span class="keyword">return</span> name;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> String <span class="title">comm</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>以上是枚举类的基本使用。</p>
+<h2 id="EnumMap-和-EnumSet"><a href="#EnumMap-和-EnumSet" class="headerlink" title="EnumMap 和 EnumSet"></a><code>EnumMap</code> 和 <code>EnumSet</code></h2><p><code>public class EnumMap&lt;K extends Enum&lt;K&gt;, V&gt; extends AbstractMap&lt;K, V&gt;</code> 这是关于EnumMap的继承关系。<br>可以发现这是key为枚举类的一个Map。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 简单创建，以后就可以实现枚举类的多种复用 */</span></span><br><span class="line">EnumMap&lt;SeasonEnum,Integer&gt; enumIntegerEnumMap = <span class="keyword">new</span> EnumMap&lt;SeasonEnum, Integer&gt;(SeasonEnum.class);</span><br><span class="line">Set&lt;SeasonEnum&gt; set = enumIntegerEnumMap.keySet();</span><br><span class="line">enumIntegerEnumMap.put(SeasonEnum.SPRING,<span class="number">1</span>);</span><br><span class="line">System.out.println(enumIntegerEnumMap.get(SeasonEnum.SPRING));</span><br></pre></td></tr></table></figure>
+
+<p><code>EnumSet</code> 相对于 <code>EnumMap</code> 等同于 <code>hashSet</code> 相对于 <code>HashMap</code> 的存在，很好理解。</p>
 
           
         
