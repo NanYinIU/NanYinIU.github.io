@@ -304,7 +304,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/05/29/2019-02-17-使用IDEA设置springboot热部署/">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/05/30/2019-05-30-设计模式之单例模式/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="NanYin">
@@ -323,7 +323,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/05/29/2019-02-17-使用IDEA设置springboot热部署/" itemprop="url">使用idea对spring boot应用进行热部署</a></h1>
+                <a class="post-title-link" href="/2019/05/30/2019-05-30-设计模式之单例模式/" itemprop="url">设计模式之单例模式</a></h1>
         
 
         <div class="post-meta">
@@ -335,8 +335,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-29T12:00:00Z">
-                2019-05-29
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-30T12:00:00Z">
+                2019-05-30
               </time>
             
 
@@ -358,8 +358,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/工具/" itemprop="url" rel="index">
-                    <span itemprop="name">工具</span>
+                  <a href="/categories/设计模式/" itemprop="url" rel="index">
+                    <span itemprop="name">设计模式</span>
                   </a>
                 </span>
 
@@ -389,7 +389,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  197
+                  861
                 </span>
               
 
@@ -405,7 +405,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  1
+                  3
                 </span>
               
             </div>
@@ -428,18 +428,25 @@
       
         
           
-            <h1 id="使用idea对spring-boot应用进行热部署"><a href="#使用idea对spring-boot应用进行热部署" class="headerlink" title="使用idea对spring boot应用进行热部署"></a>使用idea对spring boot应用进行热部署</h1><h2 id="POM"><a href="#POM" class="headerlink" title="POM"></a>POM</h2><h3 id="在pom-xml中添加maven依赖"><a href="#在pom-xml中添加maven依赖" class="headerlink" title="在pom.xml中添加maven依赖"></a>在pom.xml中添加maven依赖</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;spring-boot-devtools&lt;/artifactId&gt;</span><br><span class="line">        &lt;optional&gt;true&lt;/optional&gt; &lt;!-- 这行必填 --&gt;</span><br><span class="line">        &lt;scope&gt;runtime&lt;/scope&gt;</span><br><span class="line"> &lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+            <h1 id="单例模式"><a href="#单例模式" class="headerlink" title="单例模式"></a>单例模式</h1><p>意在保证一个类只有一个实例,并提供一个全局访问点.</p>
+<p>通过将类的构造器私有化,只向外提供一个单独的创建唯一对象的方法来实现一个类只创建一个对象.主要有三种实现 1. 饿汉模式 2. 懒汉模式 3.使用枚举实现单例.下面通过具体实例来分析如何在多线程的情况下仍能满足单例模式创建对象.</p>
+<h2 id="饿汉模式"><a href="#饿汉模式" class="headerlink" title="饿汉模式"></a>饿汉模式</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Singleton</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Singleton</span><span class="params">()</span></span>&#123;&#125;;</span><br><span class="line">    <span class="comment">//1. 使用静态变量</span></span><br><span class="line"><span class="comment">//    private static Singleton singleton = new Singleton();</span></span><br><span class="line">    <span class="comment">//2.使用静态代码块 未使用时造成内存空间浪费</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Singleton singleton;</span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        singleton = <span class="keyword">new</span> Singleton();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> Singleton <span class="title">newInstance</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> singleton;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h3 id="并且在后面的插件配置中配置dev"><a href="#并且在后面的插件配置中配置dev" class="headerlink" title="并且在后面的插件配置中配置dev"></a>并且在后面的插件配置中配置dev</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;build&gt;</span><br><span class="line">    &lt;plugins&gt;</span><br><span class="line">        &lt;plugin&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-boot-maven-plugin&lt;/artifactId&gt;</span><br><span class="line">            &lt;configuration&gt;</span><br><span class="line">                &lt;!--如果没有该项配置，devtools不会起作用，即应用不会restart --&gt;</span><br><span class="line">                &lt;fork&gt;true&lt;/fork&gt;</span><br><span class="line">            &lt;/configuration&gt;</span><br><span class="line">        &lt;/plugin&gt;</span><br><span class="line">    &lt;/plugins&gt;</span><br><span class="line">&lt;/build&gt;</span><br></pre></td></tr></table></figure>
+<p>这种方式不会影响到多线程的线程安全问题，因为类的装载机制在初始化对象的时候是保证不会有第二个线程进入的。但是有个很大的弊端是他不是<code>lazy-loading</code>的，这回产生资源的浪费，比如创建完对象后，自始至终没用过。所以不推荐使用</p>
+<h2 id="懒汉模式"><a href="#懒汉模式" class="headerlink" title="懒汉模式"></a>懒汉模式</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Singleton</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">Singleton</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Singleton singleton;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 普通的线程不安全的</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Singleton <span class="title">newInstance</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(singleton == <span class="keyword">null</span>)&#123;</span><br><span class="line">            singleton = <span class="keyword">new</span> Singleton();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> singleton;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//2.静态内部类 一方面能够达到lazy-loading的效果，另一方面能够保证线程安全，因为jvm保证初始化的时候别的线程是不能进入的</span></span><br><span class="line">   <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">newSingleton</span></span>&#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Singleton INSTANCE = <span class="keyword">new</span> Singleton();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Singleton <span class="title">newInstanceInnerClass</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> newSingleton.INSTANCE;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h2 id="IDEA"><a href="#IDEA" class="headerlink" title="IDEA"></a>IDEA</h2><h3 id="在IDEA中添加配置如下"><a href="#在IDEA中添加配置如下" class="headerlink" title="在IDEA中添加配置如下"></a>在IDEA中添加配置如下</h3><ol>
-<li>打开 setting ,搜索 <code>compiler</code> 后，把 <code>Build Project automaticial</code> 选项勾上</li>
-</ol>
-<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190531171258.png" alt="compiler"></p>
-<ol start="2">
-<li>使用  <code>ctrl+shift+A</code>  快捷键打开窗口，并搜索 <code>Registry...</code> 。勾选 <code>compiler.automake.allow.when.app.running</code> </li>
-</ol>
-<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190531171606.png" alt="running"></p>
+<p>上面代码的第一种是不能保证线程安全的，多线程下会导致失效。而第二种使用静态内部类的方式实现能够实现线程安全得宜于类的加载机制，类似饿汉模式。但同时具有<code>lazy-Loading</code>的特性。是常用的单例模式用法。</p>
+<h3 id="double-check双重锁"><a href="#double-check双重锁" class="headerlink" title="double-check双重锁"></a><code>double-check</code>双重锁</h3><p>双重锁结构只是为了满足多线程安全而建立的,是一种特殊的懒汉模式,思想同懒汉模式相同.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DoubleCheck</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">DoubleCheck</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> DoubleCheck doubleCheck; <span class="comment">//使用volatile保证原子性，防止重排序</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> DoubleCheck <span class="title">newInstance</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(doubleCheck == <span class="keyword">null</span>)&#123;</span><br><span class="line">            <span class="comment">// 当两个线程同时到这步 a先进同步块，在a进入后获得instance后，b获得锁，进入同步块，</span></span><br><span class="line">            <span class="comment">// 这时候下一个判断就起到作用了，这时候的doubleCheck不为空，</span></span><br><span class="line">            <span class="comment">// 直接return，否则又️新建了一个对象</span></span><br><span class="line">            <span class="keyword">synchronized</span> (DoubleCheck.class)&#123;</span><br><span class="line">                <span class="keyword">if</span>(doubleCheck == <span class="keyword">null</span>)&#123;</span><br><span class="line">                    doubleCheck = <span class="keyword">new</span> DoubleCheck();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> doubleCheck;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>实际上double-check也是懒汉模式的一种，能够保证线程安全。很完美。。</p>
+<h2 id="使用枚举创建单例"><a href="#使用枚举创建单例" class="headerlink" title="使用枚举创建单例"></a>使用枚举创建单例</h2><p>在stackoverflow中有一个问题<a href="https://stackoverflow.com/questions/70689/what-is-an-efficient-way-to-implement-a-singleton-pattern-in-java" target="_blank" rel="noopener">What is an efficient way to implement a singleton pattern in Java?</a></p>
+<p>这里的回答引用到了Effective Java 作者 Joshua Bloch对于单例的处理方式:使用枚举</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">enum</span> SingletonEnum &#123;</span><br><span class="line">    INSTANCE;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> String[] favoriteSongs =</span><br><span class="line">            &#123; <span class="string">"Hound Dog"</span>, <span class="string">"Heartbreak Hotel"</span> &#125;;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">printFavorites</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(Arrays.toString(favoriteSongs));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这种方法等同与使用public的构造方法,并且比上面的更加简洁,并且即使面对复杂的反射与序列化也能够保证单一的实例.虽然现实代码中应用的较少,但是这种使用枚举类型是创建单例的最佳方法.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testEnum</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	SingletonEnum singletonEnum = SingletonEnum.INSTANCE;</span><br><span class="line">	SingletonEnum singletonEnumCopy = SingletonEnum.INSTANCE;</span><br><span class="line">	Assert.assertEquals(singletonEnum, singletonEnumCopy); <span class="comment">//通过</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 
           
         
@@ -658,6 +665,196 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ReactDOM.render(&lt;AppRouter /&gt;, document.getElementById(&apos;root&apos;));</span><br></pre></td></tr></table></figure>
 
 <p>这样可以访问localhost:3000的时候可以访问到Index文件内容。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+<div>
+      
+</div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/05/29/2019-02-17-使用IDEA设置springboot热部署/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="NanYin">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NanYin的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/05/29/2019-02-17-使用IDEA设置springboot热部署/" itemprop="url">使用idea对spring boot应用进行热部署</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-29T12:00:00Z">
+                2019-05-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/工具/" itemprop="url" rel="index">
+                    <span itemprop="name">工具</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  197
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  1
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="使用idea对spring-boot应用进行热部署"><a href="#使用idea对spring-boot应用进行热部署" class="headerlink" title="使用idea对spring boot应用进行热部署"></a>使用idea对spring boot应用进行热部署</h1><h2 id="POM"><a href="#POM" class="headerlink" title="POM"></a>POM</h2><h3 id="在pom-xml中添加maven依赖"><a href="#在pom-xml中添加maven依赖" class="headerlink" title="在pom.xml中添加maven依赖"></a>在pom.xml中添加maven依赖</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;spring-boot-devtools&lt;/artifactId&gt;</span><br><span class="line">        &lt;optional&gt;true&lt;/optional&gt; &lt;!-- 这行必填 --&gt;</span><br><span class="line">        &lt;scope&gt;runtime&lt;/scope&gt;</span><br><span class="line"> &lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="并且在后面的插件配置中配置dev"><a href="#并且在后面的插件配置中配置dev" class="headerlink" title="并且在后面的插件配置中配置dev"></a>并且在后面的插件配置中配置dev</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;build&gt;</span><br><span class="line">    &lt;plugins&gt;</span><br><span class="line">        &lt;plugin&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-boot-maven-plugin&lt;/artifactId&gt;</span><br><span class="line">            &lt;configuration&gt;</span><br><span class="line">                &lt;!--如果没有该项配置，devtools不会起作用，即应用不会restart --&gt;</span><br><span class="line">                &lt;fork&gt;true&lt;/fork&gt;</span><br><span class="line">            &lt;/configuration&gt;</span><br><span class="line">        &lt;/plugin&gt;</span><br><span class="line">    &lt;/plugins&gt;</span><br><span class="line">&lt;/build&gt;</span><br></pre></td></tr></table></figure>
+
+<h2 id="IDEA"><a href="#IDEA" class="headerlink" title="IDEA"></a>IDEA</h2><h3 id="在IDEA中添加配置如下"><a href="#在IDEA中添加配置如下" class="headerlink" title="在IDEA中添加配置如下"></a>在IDEA中添加配置如下</h3><ol>
+<li>打开 setting ,搜索 <code>compiler</code> 后，把 <code>Build Project automaticial</code> 选项勾上</li>
+</ol>
+<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190531171258.png" alt="compiler"></p>
+<ol start="2">
+<li>使用  <code>ctrl+shift+A</code>  快捷键打开窗口，并搜索 <code>Registry...</code> 。勾选 <code>compiler.automake.allow.when.app.running</code> </li>
+</ol>
+<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190531171606.png" alt="running"></p>
 
           
         
@@ -1349,7 +1546,7 @@ public String toString() { return getRequestDescription(); }</code></pre><p>}</p
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/05/05/2019-05-05-Spring_Framework重点学习/">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/05/05/2019-05-05-Spring_Framework重点学习 2/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="NanYin">
@@ -1368,7 +1565,7 @@ public String toString() { return getRequestDescription(); }</code></pre><p>}</p
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/05/05/2019-05-05-Spring_Framework重点学习/" itemprop="url">Spring重点知识学习</a></h1>
+                <a class="post-title-link" href="/2019/05/05/2019-05-05-Spring_Framework重点学习 2/" itemprop="url">Spring重点知识学习</a></h1>
         
 
         <div class="post-meta">
@@ -1390,28 +1587,6 @@ public String toString() { return getRequestDescription(); }</code></pre><p>}</p
             
           </span>
 
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Spring/" itemprop="url" rel="index">
-                    <span itemprop="name">Spring</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
           
 
           
@@ -1611,7 +1786,7 @@ public String toString() { return getRequestDescription(); }</code></pre><p>}</p
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/05/05/2019-05-05-Spring_Framework重点学习 2/">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/05/05/2019-05-05-Spring_Framework重点学习/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="NanYin">
@@ -1630,7 +1805,7 @@ public String toString() { return getRequestDescription(); }</code></pre><p>}</p
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/05/05/2019-05-05-Spring_Framework重点学习 2/" itemprop="url">Spring重点知识学习</a></h1>
+                <a class="post-title-link" href="/2019/05/05/2019-05-05-Spring_Framework重点学习/" itemprop="url">Spring重点知识学习</a></h1>
         
 
         <div class="post-meta">
@@ -1652,6 +1827,28 @@ public String toString() { return getRequestDescription(); }</code></pre><p>}</p
             
           </span>
 
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Spring/" itemprop="url" rel="index">
+                    <span itemprop="name">Spring</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
           
 
           
@@ -2239,224 +2436,6 @@ public String toString() { return getRequestDescription(); }</code></pre><p>}</p
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/04/24/2019-04-24-JVM相关知识整理/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="NanYin">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NanYin的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/04/24/2019-04-24-JVM相关知识整理/" itemprop="url">JVM基本知识整理</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-04-24T12:00:00Z">
-                2019-04-24
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Java/" itemprop="url" rel="index">
-                    <span itemprop="name">Java</span>
-                  </a>
-                </span>
-
-                
-                
-                  ， 
-                
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Java/JVM/" itemprop="url" rel="index">
-                    <span itemprop="name">JVM</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  1.7k
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  5
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="java内存空间"><a href="#java内存空间" class="headerlink" title="java内存空间"></a>java内存空间</h1><p><img src="https://i.loli.net/2019/05/12/5cd7c7e477235.jpg" alt="内存空间"></p>
-<p>其中如图中所展示的，按功能分了大致分为两类，一类为线程共享的JAVA堆和元数据区和直接内存，另一类是线程私有的虚拟机栈，方法区栈和程序计数器。 </p>
-<p>下面针对这几种区域来详细将这几个区域分别的作用是什么。 </p>
-<h2 id="程序计数器"><a href="#程序计数器" class="headerlink" title="程序计数器"></a>程序计数器</h2><p>程序计数器是一块较小的内存空间，可以看作是当前线程执行程序的字节码的的行号的指示器。字节码解释器工作时通过改变程序计数器的值来改变将要选取的下一个指令。并且由于每个线程执行的运行的指令不同，每个线程有个字的程序计数器，并且互不干扰。所以程序计数器被称作是线程私有的。这种线程私有的区域有着很明显的特征就是生命周期和当前线程的周期保持一致。并且需要注意的是程序计数器是内存中唯一一个不会出现<code>outOfMemory</code>的区域。 </p>
-<p> 程序计数器有两个作用： </p>
-<p> A: 字节码解释器通过读取程序计数器的值来选取下一条将要执行的语句。 </p>
-<p>B:在多线程切换的情况下，记录当前线程执行的位置，方便于切换回时进程运行的位置。 </p>
-<h2 id="虚拟机栈"><a href="#虚拟机栈" class="headerlink" title="虚拟机栈"></a>虚拟机栈</h2><p>Java内存可以粗糙的分为堆内存和栈内存，所谓的堆就是图中的java堆（<code>Heap</code>），而所谓的栈就是指的虚拟机栈（<code>VM Stack</code>）的局部变量表。虚拟机栈是由一个个栈针构成的，可以想为一个方法为一个栈针，随着方法的被调用完成（完成的条件有两个，一个是return，另外一个是发生异常），对应着方法的栈针出栈。栈针中都包含：局部变量表，操作数栈，动态链接和方法出口。<strong>局部变量表主要存放了编译器可知的各种数据类型</strong>（boolean、byte、char、short、int、float、long、double）、<strong>对象引用</strong>（reference类型，它不同于对象本身，可能是一个指向对象起始地址的引用指针，也可能是指向一个代表对象的句柄或其他与此对象相关的位置） </p>
-<p><img src="https://i.loli.net/2019/05/12/5cd7cb63399f3.jpg" alt="虚拟机栈结构"></p>
-<h2 id="本地方法栈"><a href="#本地方法栈" class="headerlink" title="本地方法栈"></a>本地方法栈</h2><p>本地方法栈同样是线程私有的,区别是java虚拟机栈是用于java字节码的,而本地方法栈是用来执行Native方法的.结构都和虚拟机栈的结构相同. </p>
-<h2 id="Java堆"><a href="#Java堆" class="headerlink" title="Java堆"></a>Java堆</h2><p>Java堆是整个虚拟机中最大的一块区域,是线程共享的区域,再虚拟机启动时创建,该块存在的唯一目的就是存放类的事例和数组. </p>
-<h2 id="方法区"><a href="#方法区" class="headerlink" title="方法区"></a>方法区</h2><p>和Java堆一样都是线程共享的区域,主要用于存放已经被虚拟机加载的类信息,常量,静态变量和已经被编译后的代码等数据.方法区和永久代的关系很像Java中接口和类的关系，类实现了接口，而永久代就是HotSpot虚拟机对虚拟机规范中方法区的一种实现方式。 也就是说，永久代是HotSpot的概念，方法区是Java虚拟机规范中的定义，是一种规范，而永久代是一种实现，一个是标准一个是实现，其他的虚拟机实现并没有永久带这一说法。 </p>
-<h2 id="运行时常量池"><a href="#运行时常量池" class="headerlink" title="运行时常量池"></a>运行时常量池</h2><p>原来的运行时常量池是方法区的一部分,而在1.7之后,讲运行时常量池放到堆(Heap)中开辟了一个区域专门用来放运行时常量池.运行时常量池中遥遥包括两部分,一部分是实际存在的字面量,所谓字面量包括[1.文本字符串,2.被声明为final的常量,基本数据类型…..],另一部分是符号引用,包含[类和结构的名称,字段的名称,方法的名称]</p>
-<p><img src="https://i.loli.net/2019/05/12/5cd7cbf57ba27.jpg" alt="运行时常量池"></p>
-<h2 id="元数据区"><a href="#元数据区" class="headerlink" title="元数据区"></a>元数据区</h2><p>替代了永久代,使用的是直接内存,什么是直接内存,它有能够干什么? 首先直接内存区域不是虚拟机运行时数据区的一部分,也不是虚拟机定义的一部分,但是经常会使用到.</p>
-<blockquote>
-<p>JDK1.4 中新加入的 <strong>NIO(New Input/Output) 类</strong>，引入了一种基于<strong>通道（Channel）</strong> 与<strong>缓存区（Buffer）</strong> 的 I/O 方式，它可以直接使用 Native 函数库直接分配堆外内存，然后通过一个存储在 Java 堆中的 DirectByteBuffer 对象作为这块内存的引用进行操作。这样就能在一些场景中显著提高性能，因为<strong>避免了在 Java 堆和 Native 堆之间来回复制数据</strong>。</p>
-</blockquote>
-<p>本机直接内存的分配不会收到 Java 堆的限制，但是，既然是内存就会受到本机总内存大小以及处理器寻址空间的限制。</p>
-<h1 id="对象的创建过程"><a href="#对象的创建过程" class="headerlink" title="对象的创建过程"></a>对象的创建过程</h1><p><img src="https://i.loli.net/2019/05/12/5cd7cbf57ba27.jpg" alt="对象的创建过程"></p>
-<p>对象的创建过程分为上图中的5步 </p>
-<ol>
-<li>类加载检查:当虚拟机遇到new的时候,会检查这个类是否存在,是否被加载,解释和初始化过,如果没有则进行类的初始化过程. </li>
-<li>分配内存:再进行类加载检查后,会在堆内存中为新的对象分配内存,分配的规则有两种,一种是指针碰撞,另一种是空闲列表,针对不同的垃圾回收器会使用不同的方法.第一种方法指针碰撞的原理大致为它会将分配过的内存和未分配的内存间建立一个指针,当分配内存的时候,向为分配内存的地方移动新的对象的大小的位置,适用于比较规整的内存空间.第二种方法是维护一个分配内存的列表,每次分配内存都想列表中添加相关记录,表明这些对象在哪. </li>
-<li>初始化零值:保证在分配完内存后,为分配的内存区域初始化为零值 </li>
-<li>设置对象头:虚拟机对对象的各种设置信息,保存在对象头中. </li>
-<li>执行init方法:在执行init方法前,从虚拟机的角度来看其实对象已经生成了,但是在程序员的角度对象并没有生成,只有在init方法执行过后,对象才算生成. </li>
-</ol>
-<h1 id="对象的定位方式"><a href="#对象的定位方式" class="headerlink" title="对象的定位方式"></a>对象的定位方式</h1><p>Java虚拟机定位对象的方式主要有两种,一是使用句柄,二是直接使用指针.</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-<div>
-      
-</div>
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2509,7 +2488,7 @@ public String toString() { return getRequestDescription(); }</code></pre><p>}</p
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">96</span>
+                  <span class="site-state-item-count">97</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2583,6 +2562,10 @@ public String toString() { return getRequestDescription(); }</code></pre><p>}</p
              
              
                <li>
+                 <a href="/2020/03/05/SpringBoot整合JPA使用/" title="SpringBoot整合JPA使用" target="_blank">SpringBoot整合JPA使用</a>
+               </li>
+             
+               <li>
                  <a href="/2020/01/17/Spring从零开始之源码分析（四）/" title="Spring的Bean的实例化" target="_blank">Spring的Bean的实例化</a>
                </li>
              
@@ -2596,10 +2579,6 @@ public String toString() { return getRequestDescription(); }</code></pre><p>}</p
              
                <li>
                  <a href="/2019/12/11/（四）AOP切面使用与原理/" title="SpringAOP的使用和源码分析" target="_blank">SpringAOP的使用和源码分析</a>
-               </li>
-             
-               <li>
-                 <a href="/2019/12/07/（三）自动装配/" title="Spring中的自动装配" target="_blank">Spring中的自动装配</a>
                </li>
              
            </ul>
@@ -2648,7 +2627,7 @@ public String toString() { return getRequestDescription(); }</code></pre><p>}</p
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共108.3k字</span>
+  <span class="post-count">博客全站共111.7k字</span>
 </div>
 
 
