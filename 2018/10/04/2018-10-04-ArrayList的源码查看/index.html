@@ -88,19 +88,19 @@
 
 
 
-<meta name="description" content="ArrayList的源码查看 结构源码 常用方法源码      ArrayList的源码查看结构源码123456789101112131415161718192021222324252627282930313233343536/* 没有参数的情况下 */public ArrayList() &amp;#123;    // 设置默认的内容为&amp;#123;&amp;#125;    this.elementDa">
+<meta name="description" content="ArrayList的源码   变量 含义 默认值    DEFAULT_CAPACITY 默认的List初始化容量 10   EMPTY_ELEMENTDATA 空实例的空数组内容 {}   DEFAULTCAPACITY_EMPTY_ELEMENTDATA 共享的空数组实例，用于默认大小的空实例。 {}   elementData 存储ArrayList内容的数组缓冲区,默认时 elementD">
 <meta name="keywords" content="Java,基础">
 <meta property="og:type" content="article">
 <meta property="og:title" content="ArrayList的源码查看">
 <meta property="og:url" content="https://nanyiniu.github.io/2018/10/04/2018-10-04-ArrayList的源码查看/index.html">
 <meta property="og:site_name" content="NanYin的博客">
-<meta property="og:description" content="ArrayList的源码查看 结构源码 常用方法源码      ArrayList的源码查看结构源码123456789101112131415161718192021222324252627282930313233343536/* 没有参数的情况下 */public ArrayList() &amp;#123;    // 设置默认的内容为&amp;#123;&amp;#125;    this.elementDa">
+<meta property="og:description" content="ArrayList的源码   变量 含义 默认值    DEFAULT_CAPACITY 默认的List初始化容量 10   EMPTY_ELEMENTDATA 空实例的空数组内容 {}   DEFAULTCAPACITY_EMPTY_ELEMENTDATA 共享的空数组实例，用于默认大小的空实例。 {}   elementData 存储ArrayList内容的数组缓冲区,默认时 elementD">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/ArrayList%E6%B7%BB%E5%8A%A0%E8%BF%87%E7%A8%8B%E5%88%86%E6%9E%90.png">
-<meta property="og:updated_time" content="2019-12-11T06:51:42.899Z">
+<meta property="og:updated_time" content="2020-03-19T02:16:21.150Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ArrayList的源码查看">
-<meta name="twitter:description" content="ArrayList的源码查看 结构源码 常用方法源码      ArrayList的源码查看结构源码123456789101112131415161718192021222324252627282930313233343536/* 没有参数的情况下 */public ArrayList() &amp;#123;    // 设置默认的内容为&amp;#123;&amp;#125;    this.elementDa">
+<meta name="twitter:description" content="ArrayList的源码   变量 含义 默认值    DEFAULT_CAPACITY 默认的List初始化容量 10   EMPTY_ELEMENTDATA 空实例的空数组内容 {}   DEFAULTCAPACITY_EMPTY_ELEMENTDATA 共享的空数组实例，用于默认大小的空实例。 {}   elementData 存储ArrayList内容的数组缓冲区,默认时 elementD">
 <meta name="twitter:image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/ArrayList%E6%B7%BB%E5%8A%A0%E8%BF%87%E7%A8%8B%E5%88%86%E6%9E%90.png">
 
 
@@ -389,7 +389,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  973
+                  1.5k
                 </span>
               
 
@@ -405,7 +405,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  4
+                  6
                 </span>
               
             </div>
@@ -426,18 +426,46 @@
       
 
       
-        <!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
+        <h1 id="ArrayList的源码"><a href="#ArrayList的源码" class="headerlink" title="ArrayList的源码"></a>ArrayList的源码</h1><table>
+<thead>
+<tr>
+<th>变量</th>
+<th>含义</th>
+<th>默认值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>DEFAULT_CAPACITY</td>
+<td>默认的List初始化容量</td>
+<td>10</td>
+</tr>
+<tr>
+<td>EMPTY_ELEMENTDATA</td>
+<td>空实例的空数组内容</td>
+<td>{}</td>
+</tr>
+<tr>
+<td>DEFAULTCAPACITY_EMPTY_ELEMENTDATA</td>
+<td>共享的空数组实例，用于默认大小的空实例。</td>
+<td>{}</td>
+</tr>
+<tr>
+<td>elementData</td>
+<td>存储ArrayList内容的数组缓冲区,默认时 elementData == DEL</td>
+<td>[]</td>
+</tr>
+<tr>
+<td>size</td>
+<td>elementData数组大小</td>
+<td></td>
+</tr>
+</tbody></table>
+<p>其中 <strong>elementData数组是ArrayList的存储结构,也就是说ArrayList使用数组存储元素</strong>, 但同时是使用transient进行修饰的,也就是不能序列化的,但实际上ArrayList实现了Serializable接口,那么这么做的原因时什么?</p>
+<p>因为ArrayList具有自动扩容机制,元素到一定的大小就会自动扩容,这就会导致ArrayList中的元素一定不是满的,也就是说如果当前ArrayList的大小时50,实际元素可能远远小于50,此时就没有将全部elementData都序列化的必要了.</p>
+<p>所以,ArrayList提供了一个writeObject方法,专门对elementData进行序列化.里面使用对小于size的所有元素进行序列化,就避免了上面阐述的问题.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;size; i++) &#123;</span><br><span class="line">    s.writeObject(elementData[i]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<ul>
-<li><a href="#arraylist的源码查看">ArrayList的源码查看</a><ul>
-<li><a href="#结构源码">结构源码</a></li>
-<li><a href="#常用方法源码">常用方法源码</a></li>
-</ul>
-</li>
-</ul>
-<!-- /TOC -->
-
-<h1 id="ArrayList的源码查看"><a href="#ArrayList的源码查看" class="headerlink" title="ArrayList的源码查看"></a>ArrayList的源码查看</h1><h2 id="结构源码"><a href="#结构源码" class="headerlink" title="结构源码"></a>结构源码</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 没有参数的情况下 */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">ArrayList</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 设置默认的内容为&#123;&#125;</span></span><br><span class="line">    <span class="keyword">this</span>.elementData = DEFAULTCAPACITY_EMPTY_ELEMENTDATA;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/* 默认是拥有默认容量（10）的空的 array list */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Object[] DEFAULTCAPACITY_EMPTY_ELEMENTDATA = &#123;&#125;;</span><br><span class="line"><span class="comment">/* 这个默认的容量是定义好的10  */</span></span><br><span class="line"> <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> DEFAULT_CAPACITY = <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 当参数是容量的大小的时候  */</span></span><br><span class="line"> <span class="function"><span class="keyword">public</span> <span class="title">ArrayList</span><span class="params">(<span class="keyword">int</span> initialCapacity)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (initialCapacity &gt; <span class="number">0</span>) &#123;</span><br><span class="line">      <span class="comment">/* 如果自定义初始容量大小*/</span></span><br><span class="line">        <span class="keyword">this</span>.elementData = <span class="keyword">new</span> Object[initialCapacity];</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (initialCapacity == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">this</span>.elementData = EMPTY_ELEMENTDATA;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="comment">/* 如果参数小于0 报参数异常的错误（IllegalArgumentException） */</span></span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"Illegal Capacity: "</span>+</span><br><span class="line">                                           initialCapacity);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/* 当参数是一个Collection结构的时候 */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">ArrayList</span><span class="params">(Collection&lt;? extends E&gt; c)</span> </span>&#123;</span><br><span class="line">     elementData = c.toArray();</span><br><span class="line">     <span class="keyword">if</span> ((size = elementData.length) != <span class="number">0</span>) &#123;</span><br><span class="line">         <span class="comment">// c.toArray might (incorrectly) not return Object[] (see 6260652)</span></span><br><span class="line">         <span class="keyword">if</span> (elementData.getClass() != Object[].class)</span><br><span class="line">         <span class="comment">/* 如果不是object类型的话 转换成object类型 */</span></span><br><span class="line">             elementData = Arrays.copyOf(elementData, size, Object[].class);</span><br><span class="line">     &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">         <span class="comment">// replace with empty array.</span></span><br><span class="line">         <span class="keyword">this</span>.elementData = EMPTY_ELEMENTDATA;</span><br><span class="line">     &#125;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<h2 id="构造函数源码"><a href="#构造函数源码" class="headerlink" title="构造函数源码"></a>构造函数源码</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 没有参数的情况下 */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">ArrayList</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 设置默认的内容为&#123;&#125;</span></span><br><span class="line">    <span class="keyword">this</span>.elementData = DEFAULTCAPACITY_EMPTY_ELEMENTDATA;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/* 默认是拥有默认容量（10）的空的 array list */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Object[] DEFAULTCAPACITY_EMPTY_ELEMENTDATA = &#123;&#125;;</span><br><span class="line"><span class="comment">/* 这个默认的容量是定义好的10  */</span></span><br><span class="line"> <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> DEFAULT_CAPACITY = <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 当参数是容量的大小的时候  */</span></span><br><span class="line"> <span class="function"><span class="keyword">public</span> <span class="title">ArrayList</span><span class="params">(<span class="keyword">int</span> initialCapacity)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (initialCapacity &gt; <span class="number">0</span>) &#123;</span><br><span class="line">      <span class="comment">/* 如果自定义初始容量大小*/</span></span><br><span class="line">        <span class="keyword">this</span>.elementData = <span class="keyword">new</span> Object[initialCapacity];</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (initialCapacity == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">this</span>.elementData = EMPTY_ELEMENTDATA;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="comment">/* 如果参数小于0 报参数异常的错误（IllegalArgumentException） */</span></span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"Illegal Capacity: "</span>+</span><br><span class="line">                                           initialCapacity);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/* 当参数是一个Collection结构的时候 */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">ArrayList</span><span class="params">(Collection&lt;? extends E&gt; c)</span> </span>&#123;</span><br><span class="line">     elementData = c.toArray();</span><br><span class="line">     <span class="keyword">if</span> ((size = elementData.length) != <span class="number">0</span>) &#123;</span><br><span class="line">         <span class="comment">// c.toArray might (incorrectly) not return Object[] (see 6260652)</span></span><br><span class="line">         <span class="keyword">if</span> (elementData.getClass() != Object[].class)</span><br><span class="line">         <span class="comment">/* 如果不是object类型的话 转换成object类型 */</span></span><br><span class="line">             elementData = Arrays.copyOf(elementData, size, Object[].class);</span><br><span class="line">     &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">         <span class="comment">// replace with empty array.</span></span><br><span class="line">         <span class="keyword">this</span>.elementData = EMPTY_ELEMENTDATA;</span><br><span class="line">     &#125;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
 
 <h2 id="常用方法源码"><a href="#常用方法源码" class="headerlink" title="常用方法源码"></a>常用方法源码</h2><p>在看源码之前先通过下面这张图片了解以下如果新建一个ArrayList后添加一个元素的大致过程：</p>
 <p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/ArrayList%E6%B7%BB%E5%8A%A0%E8%BF%87%E7%A8%8B%E5%88%86%E6%9E%90.png" alt="过程图"></p>
@@ -461,7 +489,15 @@
 </ul>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> E <span class="title">get</span><span class="params">(<span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">    rangeCheck(index);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> elementData(index);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/* 本质就是返回数组位置的元素 */</span></span><br><span class="line"><span class="function">E <span class="title">elementData</span><span class="params">(<span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> (E) elementData[index];</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
 
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>因为get方法是直接根据index获取数组对应位置的元素，所以ArrayList在检索元素上比较快。而在插入和移除元素时，使用的是copyOf方法，也就是将原数组元素拷贝到目标数组的方式。所以在插入和移除元素时就会显得吃力些。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ol>
+<li>有序性,可重复性 —&gt; 因为内部使用数组实现,所以元素能够保证有序性且能够添加重复的元素</li>
+<li>访问快 —&gt; ArrayList实现了 RandomAccess 接口,能够通过get实现快速的随机访问.因为ArrayList其中内部存储是使用数组实现的,元素是连续的,通过下标就能够得到对应元素,所以检索会比较快.</li>
+<li>插入删除慢 —&gt; 插入和移除元素时，在扩容时,使用的是copyOf方法，也就是将原数组元素拷贝到目标数组的方式,效率低下.</li>
+<li>非线程安全 —&gt; ArrayList是非线程安全的,Vector是ArrayList的线程安全版本.在多线程时,可使用Vector代替ArrayList.</li>
+</ol>
+<blockquote>
+<p>RandomAccess 只是一个标记接口,其中并没有实现方法,他的作用只是用来标记该结构支持随机访问.也就是说实现了这个接口的集合是支持 快速随机访问 策略的.举例来讲就是 ArrayList 的访问是随机访问,而 LinkedList的访问则是顺序访问的.<br>随机访问在使用fori循环时要比使用迭代器访问元素时效率高.</p>
+</blockquote>
 
       
     </div>
@@ -491,7 +527,7 @@
   <p><span>本文标题:</span><a href="/2018/10/04/2018-10-04-ArrayList的源码查看/">ArrayList的源码查看</a></p>
   <p><span>文章作者:</span><a href="/" title="访问 NanYin 的个人博客">NanYin</a></p>
   <p><span>发布时间:</span>2018年10月04日 - 15:10</p>
-  <p><span>最后更新:</span>2019年12月11日 - 14:12</p>
+  <p><span>最后更新:</span>2020年03月19日 - 10:03</p>
   <p><span>原始链接:</span><a href="/2018/10/04/2018-10-04-ArrayList的源码查看/" title="ArrayList的源码查看">https://nanyiniu.github.io/2018/10/04/2018-10-04-ArrayList的源码查看/</a>
     <span class="copy-path" title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="https://nanyiniu.github.io/2018/10/04/2018-10-04-ArrayList的源码查看/" aria-label="复制成功！"></i></span>
   </p>
@@ -747,7 +783,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#ArrayList的源码查看"><span class="nav-number">1.</span> <span class="nav-text">ArrayList的源码查看</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#结构源码"><span class="nav-number">1.1.</span> <span class="nav-text">结构源码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常用方法源码"><span class="nav-number">1.2.</span> <span class="nav-text">常用方法源码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">1.3.</span> <span class="nav-text">总结</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#ArrayList的源码"><span class="nav-number">1.</span> <span class="nav-text">ArrayList的源码</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#构造函数源码"><span class="nav-number">1.1.</span> <span class="nav-text">构造函数源码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常用方法源码"><span class="nav-number">1.2.</span> <span class="nav-text">常用方法源码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">1.3.</span> <span class="nav-text">总结</span></a></li></ol></li></ol></div>
             
 
           </div>
@@ -790,7 +826,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共112.1k字</span>
+  <span class="post-count">博客全站共112.6k字</span>
 </div>
 
 
