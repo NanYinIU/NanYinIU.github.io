@@ -304,6 +304,205 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/06/01/2019-06-01-设计模式之建造者模式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="NanYin">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NanYin的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/06/01/2019-06-01-设计模式之建造者模式/" itemprop="url">设计模式之建造者模式</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-06-01T12:00:00Z">
+                2019-06-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/设计模式/" itemprop="url" rel="index">
+                    <span itemprop="name">设计模式</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  651
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  2
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="设计模式之建造者模式"><a href="#设计模式之建造者模式" class="headerlink" title="设计模式之建造者模式"></a>设计模式之建造者模式</h1><p>将复杂对象的构造与其表示分开，以便相同的构造过程可以创建不同的表示。</p>
+<p>比如在玩游戏时的捏人物的时候,创建一个游戏任务最简单的方法时计算机自己生成一个固定的游戏任务,但是想自己构建这个人物细节的时候,这种情况下,人物的生成时一步一步生成的.再当所有类型都选择完成后,才能够创建这个人物.</p>
+<h2 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h2><ul>
+<li>对象足够复杂,创建这个对象的方法应与创建这个对象的组件和组装方式分开.</li>
+<li>当构造对象时要求对这个对象具有不同的行为.</li>
+</ul>
+<h2 id="建造者模式结构"><a href="#建造者模式结构" class="headerlink" title="建造者模式结构"></a>建造者模式结构</h2><p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190601231729.png" alt="建造者模式类图"></p>
+<p>上图为建造者模式类图:其中CharacterBuilder 和 Characters 中的属性相同,CharacterBuilder 存在的目的就是多种构造不同行为的Characters .</p>
+<p>具体可以看下面代码实例</p>
+<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><p>角色实体</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Characters</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 角色构造器内有多个角色属性</span></span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> age;</span><br><span class="line">    <span class="keyword">private</span> String sex;</span><br><span class="line">    <span class="keyword">private</span> String skill;</span><br><span class="line">    <span class="keyword">private</span> String weapon;</span><br><span class="line">    <span class="comment">// 使用构造器来构造实体 其中实体属性有builder中来</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Characters</span><span class="params">(CharacterBuilder builder)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name = builder.getName();</span><br><span class="line">        <span class="keyword">this</span>.age = builder.getAge();</span><br><span class="line">        <span class="keyword">this</span>.sex = builder.getSex();</span><br><span class="line">        <span class="keyword">this</span>.skill = builder.getSkill();</span><br><span class="line">        <span class="keyword">this</span>.weapon = builder.getWeapon();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">showCharacterBoard</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"人物 ： "</span> + <span class="keyword">this</span>.name + <span class="string">" 年龄 ："</span> + <span class="keyword">this</span>.age + <span class="string">" 性别："</span> + <span class="keyword">this</span>.sex + <span class="string">" 技能："</span> +<span class="keyword">this</span>.skill + <span class="string">" 武器："</span> + <span class="keyword">this</span>.weapon);</span><br><span class="line">    &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>角色构建器</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CharacterBuilder</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 与角色实体保持相同的属性 </span></span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> age;</span><br><span class="line">    <span class="keyword">private</span> String sex;</span><br><span class="line">    <span class="keyword">private</span> String skill;</span><br><span class="line">    <span class="keyword">private</span> String weapon;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getAge</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> age;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getSex</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> sex;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getSkill</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> skill;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getWeapon</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> weapon;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//构造基本属性的构造器</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> CharacterBuilder <span class="title">buildBasicAttributes</span><span class="params">(String name , <span class="keyword">int</span> age, String sex)</span></span>&#123;</span><br><span class="line">        <span class="comment">//保证姓名不能为空</span></span><br><span class="line">        <span class="keyword">if</span>(name == <span class="keyword">null</span> || <span class="string">""</span>.equals(name))&#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"name can not be empty "</span>);</span><br><span class="line">        &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">this</span>.name = name;</span><br><span class="line">            <span class="keyword">this</span>.age = age;</span><br><span class="line">            <span class="keyword">this</span>.sex = sex;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> CharacterBuilder <span class="title">buildSkill</span><span class="params">(String skill)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.skill = skill;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> CharacterBuilder <span class="title">billdWeapon</span><span class="params">(String weapon)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.weapon = weapon;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//生成角色实体</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Characters <span class="title">build</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Characters(<span class="keyword">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>客户端类:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">App</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testBuildCharacter</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="comment">// 链式调用,最后使用build方法新建一个角色实体</span></span><br><span class="line">        Characters characters = <span class="keyword">new</span> CharacterBuilder()</span><br><span class="line">                .buildBasicAttributes(<span class="string">"jack"</span>,<span class="number">18</span>,<span class="string">"man"</span>)</span><br><span class="line">                .buildSkill(<span class="string">"Emission laser"</span>)</span><br><span class="line">                .billdWeapon(<span class="string">"Laser Cannon"</span>)</span><br><span class="line">                .build();</span><br><span class="line">                <span class="comment">//打印角色属性面板</span></span><br><span class="line">        characters.showCharacterBoard();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>输出结果:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Connected to the target VM, address: &apos;127.0.0.1:57347&apos;, transport: &apos;socket&apos;</span><br><span class="line">人物 ： jack 年龄 ：18 性别：man 技能：Emission laser 武器：Laser Cannon</span><br><span class="line">Disconnected from the target VM, address: &apos;127.0.0.1:57347&apos;, transport: &apos;socket&apos;</span><br></pre></td></tr></table></figure>
+
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+<div>
+      
+</div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/06/01/2019-06-03-设计模式之组合模式/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -699,196 +898,6 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/05/29/2019-02-17-使用IDEA设置springboot热部署/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="NanYin">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NanYin的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/05/29/2019-02-17-使用IDEA设置springboot热部署/" itemprop="url">使用idea对spring boot应用进行热部署</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-29T12:00:00Z">
-                2019-05-29
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/工具/" itemprop="url" rel="index">
-                    <span itemprop="name">工具</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  197
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  1
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="使用idea对spring-boot应用进行热部署"><a href="#使用idea对spring-boot应用进行热部署" class="headerlink" title="使用idea对spring boot应用进行热部署"></a>使用idea对spring boot应用进行热部署</h1><h2 id="POM"><a href="#POM" class="headerlink" title="POM"></a>POM</h2><h3 id="在pom-xml中添加maven依赖"><a href="#在pom-xml中添加maven依赖" class="headerlink" title="在pom.xml中添加maven依赖"></a>在pom.xml中添加maven依赖</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;spring-boot-devtools&lt;/artifactId&gt;</span><br><span class="line">        &lt;optional&gt;true&lt;/optional&gt; &lt;!-- 这行必填 --&gt;</span><br><span class="line">        &lt;scope&gt;runtime&lt;/scope&gt;</span><br><span class="line"> &lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
-
-<h3 id="并且在后面的插件配置中配置dev"><a href="#并且在后面的插件配置中配置dev" class="headerlink" title="并且在后面的插件配置中配置dev"></a>并且在后面的插件配置中配置dev</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;build&gt;</span><br><span class="line">    &lt;plugins&gt;</span><br><span class="line">        &lt;plugin&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-boot-maven-plugin&lt;/artifactId&gt;</span><br><span class="line">            &lt;configuration&gt;</span><br><span class="line">                &lt;!--如果没有该项配置，devtools不会起作用，即应用不会restart --&gt;</span><br><span class="line">                &lt;fork&gt;true&lt;/fork&gt;</span><br><span class="line">            &lt;/configuration&gt;</span><br><span class="line">        &lt;/plugin&gt;</span><br><span class="line">    &lt;/plugins&gt;</span><br><span class="line">&lt;/build&gt;</span><br></pre></td></tr></table></figure>
-
-<h2 id="IDEA"><a href="#IDEA" class="headerlink" title="IDEA"></a>IDEA</h2><h3 id="在IDEA中添加配置如下"><a href="#在IDEA中添加配置如下" class="headerlink" title="在IDEA中添加配置如下"></a>在IDEA中添加配置如下</h3><ol>
-<li>打开 setting ,搜索 <code>compiler</code> 后，把 <code>Build Project automaticial</code> 选项勾上</li>
-</ol>
-<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190531171258.png" alt="compiler"></p>
-<ol start="2">
-<li>使用  <code>ctrl+shift+A</code>  快捷键打开窗口，并搜索 <code>Registry...</code> 。勾选 <code>compiler.automake.allow.when.app.running</code> </li>
-</ol>
-<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190531171606.png" alt="running"></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-<div>
-      
-</div>
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/05/29/2019-01-30-利用springboot构建SpringData+JAP+RestFul应用/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1053,6 +1062,196 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ReactDOM.render(&lt;AppRouter /&gt;, document.getElementById(&apos;root&apos;));</span><br></pre></td></tr></table></figure>
 
 <p>这样可以访问localhost:3000的时候可以访问到Index文件内容。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+<div>
+      
+</div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/05/29/2019-02-17-使用IDEA设置springboot热部署/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="NanYin">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NanYin的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/05/29/2019-02-17-使用IDEA设置springboot热部署/" itemprop="url">使用idea对spring boot应用进行热部署</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-29T12:00:00Z">
+                2019-05-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/工具/" itemprop="url" rel="index">
+                    <span itemprop="name">工具</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  197
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  1
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="使用idea对spring-boot应用进行热部署"><a href="#使用idea对spring-boot应用进行热部署" class="headerlink" title="使用idea对spring boot应用进行热部署"></a>使用idea对spring boot应用进行热部署</h1><h2 id="POM"><a href="#POM" class="headerlink" title="POM"></a>POM</h2><h3 id="在pom-xml中添加maven依赖"><a href="#在pom-xml中添加maven依赖" class="headerlink" title="在pom.xml中添加maven依赖"></a>在pom.xml中添加maven依赖</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;spring-boot-devtools&lt;/artifactId&gt;</span><br><span class="line">        &lt;optional&gt;true&lt;/optional&gt; &lt;!-- 这行必填 --&gt;</span><br><span class="line">        &lt;scope&gt;runtime&lt;/scope&gt;</span><br><span class="line"> &lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="并且在后面的插件配置中配置dev"><a href="#并且在后面的插件配置中配置dev" class="headerlink" title="并且在后面的插件配置中配置dev"></a>并且在后面的插件配置中配置dev</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;build&gt;</span><br><span class="line">    &lt;plugins&gt;</span><br><span class="line">        &lt;plugin&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-boot-maven-plugin&lt;/artifactId&gt;</span><br><span class="line">            &lt;configuration&gt;</span><br><span class="line">                &lt;!--如果没有该项配置，devtools不会起作用，即应用不会restart --&gt;</span><br><span class="line">                &lt;fork&gt;true&lt;/fork&gt;</span><br><span class="line">            &lt;/configuration&gt;</span><br><span class="line">        &lt;/plugin&gt;</span><br><span class="line">    &lt;/plugins&gt;</span><br><span class="line">&lt;/build&gt;</span><br></pre></td></tr></table></figure>
+
+<h2 id="IDEA"><a href="#IDEA" class="headerlink" title="IDEA"></a>IDEA</h2><h3 id="在IDEA中添加配置如下"><a href="#在IDEA中添加配置如下" class="headerlink" title="在IDEA中添加配置如下"></a>在IDEA中添加配置如下</h3><ol>
+<li>打开 setting ,搜索 <code>compiler</code> 后，把 <code>Build Project automaticial</code> 选项勾上</li>
+</ol>
+<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190531171258.png" alt="compiler"></p>
+<ol start="2">
+<li>使用  <code>ctrl+shift+A</code>  快捷键打开窗口，并搜索 <code>Registry...</code> 。勾选 <code>compiler.automake.allow.when.app.running</code> </li>
+</ol>
+<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190531171606.png" alt="running"></p>
 
           
         
@@ -2233,207 +2432,6 @@ public String toString() { return getRequestDescription(); }</code></pre><p>}</p
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/04/29/2019-04-29-Hibernate重点总结/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="NanYin">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NanYin的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/04/29/2019-04-29-Hibernate重点总结/" itemprop="url">Hibernate重点知识总结</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-04-29T12:00:00Z">
-                2019-04-29
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Hibernate/" itemprop="url" rel="index">
-                    <span itemprop="name">Hibernate</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  1.4k
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  4
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Hibernate重点知识总结"><a href="#Hibernate重点知识总结" class="headerlink" title="Hibernate重点知识总结"></a>Hibernate重点知识总结</h1><h2 id="Hibernate的三种状态"><a href="#Hibernate的三种状态" class="headerlink" title="Hibernate的三种状态"></a>Hibernate的三种状态</h2><ol>
-<li>瞬时态(transient):当实体还未和session关联,如new Person(“1”);</li>
-<li>持久态(persistent): 通过get或者load得到的实体类,这时的状态都是持久态.</li>
-<li>游离态(detached): 当通过get或者load得到持久态的对象后,执行删除delete时,这时已经脱离session.因delete而变为游离态可有save或者saveOrUpate转化为持久态.或则当session关闭后,session中的对象就变为游离态.</li>
-</ol>
-<h2 id="hibernate中update和saveOrUpdate的区别"><a href="#hibernate中update和saveOrUpdate的区别" class="headerlink" title="hibernate中update和saveOrUpdate的区别"></a>hibernate中update和saveOrUpdate的区别</h2><p>update只能是对象有主键时起作用,而saveOrUpdate则在对象没有主键时执行插入操作.对应的update操作只能操作游离态的对象,而不能对瞬时态的对象操作.而saveOrUpdate则两种状态的对象都可以操作.</p>
-<h2 id="hibernate中的update和merge方法的区别"><a href="#hibernate中的update和merge方法的区别" class="headerlink" title="hibernate中的update和merge方法的区别"></a>hibernate中的update和merge方法的区别</h2><p>当执行update方法的时候,一个session中具有与当前update相同的持久化标识(identifier)的实例,使用upate操作后会报错,而使用merge后把处理自由态的po对象A的属性copy到session当中处于持久态的po的属性中，执行完成后原来是持久状态还是持久态，而我们提供的A还是自由态。</p>
-<h2 id="hibernate中get和load的区别"><a href="#hibernate中get和load的区别" class="headerlink" title="hibernate中get和load的区别"></a>hibernate中get和load的区别</h2><p>一句话，hibernate对于load方法认为该数据在数据库中一定存在，可以放心的使用代理来延迟加载，如果在使用过程中发现了问题，只能抛异常；而对于get方法，hibernate一定要获取到真实的数据，否则返回null。</p>
-<h2 id="hibernate中list和iterator的区别"><a href="#hibernate中list和iterator的区别" class="headerlink" title="hibernate中list和iterator的区别"></a>hibernate中list和iterator的区别</h2><p>(1)、List方式是1次性把所有的数据全部取到内存中，构造一个超大的结果集，主要的时间开销是这一步，这一步的时间开销要远远超过JDBC和 Iterator方式下构造结果集的时间开销，并且内存开销也很惊人；而对结果集的遍历操作，速度则是非常的惊人（经过测试，30万记录的内 存遍历不到100ms，由于这一步不受JDBC影响，因此结果可信）。因此，List方式适合于对结果集进行反复多次操作的情况，例如分页显示，往后往前 遍历，跳到第一行，跳到最后一行等等。</p>
-<p>(2)、Iterator方式只取记录id到内存中，并没有把所有数据取到内存中，因此构造结果集的时间开销很小，比JDBC和List方式都要少，并且内 存开销也小很多。而对结果集的遍历的操作的时候，Iterator仍然要访问数据库，所有主要的时间开销都花在这里。因此，Iterator方式适合于只 对结果集进行1次遍历操作的情况，并且Iterator方式特别适合于从超大结果集中取少量数据，这种情况Iterator性能非常好。</p>
-<p>总结: list把数据一次加载到内存,再进行遍历操作就非常快了.而Iterator方式只会把id放到内存中,但是再次遍历时仍然要访问数据库查询数据,适合一次遍历的情况.</p>
-<h2 id="hibernate中的inverse属性"><a href="#hibernate中的inverse属性" class="headerlink" title="hibernate中的inverse属性"></a>hibernate中的inverse属性</h2><p>设置inverse=“false”为主控方,由主控方类维护对象间的关系.比如再many-to-one的关系中,再one的一方设置<code>inverse=&quot;true&quot;</code>这样能够提高效率,比如班级里一个老师多个学生,老师记住多个学生比较困难,而学生记住一个老师很容易.同理one-to-many.再多对多的关系中,再任意一方设置<code>inverse=&#39;true&#39;</code>即可.</p>
-<h2 id="hibernate中的cascade属性"><a href="#hibernate中的cascade属性" class="headerlink" title="hibernate中的cascade属性"></a>hibernate中的cascade属性</h2><p>级联操作：指当主控方执行某项操作时，是否要对被关联方也执行相同的操作。</p>
-<h2 id="什么情况下懒加载能够有效的提高效率"><a href="#什么情况下懒加载能够有效的提高效率" class="headerlink" title="什么情况下懒加载能够有效的提高效率"></a>什么情况下懒加载能够有效的提高效率</h2><p>懒加载是当用到对象的时候再从数据库加载数据,持久化来使用.从这句话中就可以理解为,因为及联的关系,一个表的数据可能会带出多张表的数据,这时候使用懒加载就能够实现效率的提高,没必要一次性把所有数据都加载出来,而是用时加载.hibernate默认是使用懒加载的,当然可以使用lazy=false来禁用懒加载.</p>
-<h2 id="什么是hibernate的二级缓存"><a href="#什么是hibernate的二级缓存" class="headerlink" title="什么是hibernate的二级缓存"></a>什么是hibernate的二级缓存</h2><p>缓存就是将以前的数据存放到内存中,当查询数据的时候,现在内存中查询,是否有这个对象,如果没有再从数据库中查询对象,这样大大的提高了查询的效率.</p>
-<p>Hibenate的session就是一级缓存,当查询数据的时候都会先从session中查询对象是否存在,不存在才从数据库查询.但是session是非线程安全的,多线程共享的情况下会出现问题.并且session是表示的是一段会话,表示的是一次事务,基于以上两点,所以在一次事务完成后,session就应立即关闭.所以这里说的一级缓存意义不大.</p>
-<p>Hibernate的二级缓存其实就是使用外部缓存,如Echache或者redis等,使用配置文件配置缓存策略等.</p>
-<h2 id="Hibernate中使用hibernateTemplate的好处有哪些"><a href="#Hibernate中使用hibernateTemplate的好处有哪些" class="headerlink" title="Hibernate中使用hibernateTemplate的好处有哪些?"></a>Hibernate中使用hibernateTemplate的好处有哪些?</h2><ol>
-<li>HibernateTemplate简化了与Hibernate Session的交互</li>
-<li>常见的函数简化为单个方法调用。</li>
-<li>异常会自动捕获并转换为运行时异常</li>
-<li>session 自动关闭</li>
-</ol>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-<div>
-      
-</div>
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2486,7 +2484,7 @@ public String toString() { return getRequestDescription(); }</code></pre><p>}</p
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">98</span>
+                  <span class="site-state-item-count">99</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2560,6 +2558,10 @@ public String toString() { return getRequestDescription(); }</code></pre><p>}</p
              
              
                <li>
+                 <a href="/2020/03/24/Lambda expression/" title="lambda表达式学习和应用" target="_blank">lambda表达式学习和应用</a>
+               </li>
+             
+               <li>
                  <a href="/2020/03/09/INSTR和FIND_IN_SET函数/" title="Mysql中的INSTR和FIND_IN_SET函数应用" target="_blank">Mysql中的INSTR和FIND_IN_SET函数应用</a>
                </li>
              
@@ -2573,10 +2575,6 @@ public String toString() { return getRequestDescription(); }</code></pre><p>}</p
              
                <li>
                  <a href="/2019/12/20/Spring从零学起之源码分析（三）/" title="Spring的Bean的注册" target="_blank">Spring的Bean的注册</a>
-               </li>
-             
-               <li>
-                 <a href="/2019/12/15/Spring从零开始之源码分析（二）/" title="Spring的核心Refresh" target="_blank">Spring的核心Refresh</a>
                </li>
              
            </ul>
@@ -2625,7 +2623,7 @@ public String toString() { return getRequestDescription(); }</code></pre><p>}</p
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共112.7k字</span>
+  <span class="post-count">博客全站共114.3k字</span>
 </div>
 
 

@@ -304,6 +304,289 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2020/03/24/Lambda expression/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="NanYin">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NanYin的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/03/24/Lambda expression/" itemprop="url">lambda表达式学习和应用</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-03-23T19:45:00Z">
+                2020-03-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  1.6k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  6
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Lambda表达式"><a href="#Lambda表达式" class="headerlink" title="Lambda表达式"></a>Lambda表达式</h1><p>Lamdba 表达式是Java 8 的新特性，也是Java 8 中最重要的的新功能。Lamdaba表达式促进了Java使用函数方式进行编程。</p>
+<p>在进行语法的讲解之前,需要了解和Lambda息息相关的<code>Function Interface</code>,可以说只有函数式接口的存在,才有lambda表达式的存在,换句话可以说lambda表达式是函数式接口的实现.</p>
+<h2 id="函数式接口"><a href="#函数式接口" class="headerlink" title="函数式接口"></a>函数式接口</h2><p>Function 接口具有单个功能，也就是有单个抽象方法.如 <code>Comparable</code> 接口只有一个方法 <code>compareTo</code> 用来进行比较。</p>
+<p>Java8定义了函数接口被用来拓展Lamdba表达式。在 <code>java.util.Function</code> 包下有非常多的函数接口。</p>
+<p>常用的接口包括；</p>
+<table>
+<thead>
+<tr>
+<th>接口</th>
+<th>抽象方法</th>
+<th>用法</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Function&lt;T,R&gt;</td>
+<td>R apply(T t);</td>
+<td>接受T类型参数,返回R类型结果</td>
+</tr>
+<tr>
+<td>Consumer<t></t></td>
+<td>void accept(T t);</td>
+<td>接受T类型参数,不返回结果</td>
+</tr>
+<tr>
+<td>Predicate<t></t></td>
+<td>boolean test(T t);</td>
+<td>接受T类型参数,返回Boolean结果</td>
+</tr>
+<tr>
+<td>Suppler<t></t></td>
+<td>T get();</td>
+<td>无参数,返回T类型结果</td>
+</tr>
+</tbody></table>
+<h3 id="定义函数接口"><a href="#定义函数接口" class="headerlink" title="定义函数接口"></a>定义函数接口</h3><ol>
+<li>使用 <code>@FunctionalInterface</code> 注解,该注解不是必须的,但是如果标注,则编译器会检查这个接口下是否只有单个抽象方法,如果不是会报错.</li>
+<li>新增default方法,是为了在现有的类库中中新增功能而不影响他们的实现类</li>
+<li>新增接口内static方法,可定义一个或者多个静态方法,和普通的静态方法没有区别,都是<code>接口名.方法名</code>进行调用</li>
+<li>在函数式接口的定义中是只允许有且只有一个抽象方法(必须)，但是可以有多个static方法和default方法。</li>
+</ol>
+<h2 id="Lambda语法"><a href="#Lambda语法" class="headerlink" title="Lambda语法"></a>Lambda语法</h2><p>一个Lambda表达式有如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">paramter -&gt; expression body</span><br></pre></td></tr></table></figure>
+
+<p>以下是lambda表达式的几个特性</p>
+<ul>
+<li><strong>可选的类型描述</strong> - 不需要声明参数的类型，编译器可根据参数的值进行推断</li>
+<li><strong>可选的参数两旁的括号</strong> - 声明单个参数的时候不需要使用括号，但是如何声明多个参数，括号还是必须的。</li>
+<li><strong>可选的大括号</strong> - 如果函数体中只有单行，则不需要在函数体两侧添加大括号</li>
+<li><strong>可选的返回值</strong> - 如果函数中只有单行，编译器自动返回这个单行的返回值</li>
+</ul>
+<p>下面根据实例来看上面的四个特性：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Java8Tester</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String args[])</span> </span>&#123;</span><br><span class="line">      GreetingService greetService1 = message -&gt; System.out.println(<span class="string">"Say:"</span>+message);</span><br><span class="line">      greetService1.sayMessage(<span class="string">"Hello!!"</span>);</span><br><span class="line">      MathOperation add = (<span class="keyword">int</span> a,<span class="keyword">int</span> b) -&gt; a+b;</span><br><span class="line">      MathOperation sub= (a,b) -&gt; a-b;</span><br><span class="line">      MathOperation muti = (a,b) -&gt; &#123;<span class="keyword">return</span> a*b;&#125;;</span><br><span class="line">      System.out.println(<span class="string">"add 函数结果："</span>+add.operation(<span class="number">2</span>,<span class="number">2</span>));</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="class"><span class="keyword">interface</span> <span class="title">GreetingService</span> </span>&#123;</span><br><span class="line">      <span class="function"><span class="keyword">void</span> <span class="title">sayMessage</span><span class="params">(String message)</span></span>;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="class"><span class="keyword">interface</span> <span class="title">MathOperation</span></span>&#123;</span><br><span class="line">       <span class="function"><span class="keyword">int</span> <span class="title">operation</span><span class="params">(<span class="keyword">int</span> a,<span class="keyword">int</span> b)</span></span>;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 结果：</span></span><br><span class="line">Say:Hello!!</span><br><span class="line">add 函数结果：<span class="number">4</span></span><br></pre></td></tr></table></figure>
+
+<p>通过上面的例子，可以得出以下重要的两点：</p>
+<ul>
+<li>Lambda 表达式主要用来定义功能接口的内联实现，如：一个接口里只有一个接口方法。在上面的例子里面我们使用了对MathOperation接口进行了多种实现。</li>
+<li>Lambda 表达式消除了对匿名类的需求，如<code>new Thread(new Runnable{..})</code> ,为Java提供了非常简单而强大的函数编程能力。</li>
+</ul>
+<h2 id="使用方法引用"><a href="#使用方法引用" class="headerlink" title="使用方法引用"></a>使用方法引用</h2><p>方法引用（Method Refrences）帮助通过方法名称指向方法。方法引用使用符号“::”表示。方法引用可以用爱指向如下类型的方法：</p>
+<ul>
+<li>静态方法</li>
+<li>实例方法</li>
+<li>构造方法使用new关键字（TreeSet::new）</li>
+</ul>
+<p>[方法引用]的格式是 类名::方法名</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Arrays.stream(objectArray).forEach(System.out::println);</span><br></pre></td></tr></table></figure>
+
+<h2 id="使用Lambda"><a href="#使用Lambda" class="headerlink" title="使用Lambda"></a>使用Lambda</h2><blockquote>
+<p>熟能生巧,常常练习肯定能记住</p>
+</blockquote>
+<h3 id="1-创建Thread"><a href="#1-创建Thread" class="headerlink" title="1. 创建Thread"></a>1. 创建Thread</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 不使用Lambda创建Thread</span></span><br><span class="line"><span class="comment">// 可以看出内部直接创建了Runnable的匿名类</span></span><br><span class="line"><span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"新建线程。。"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;).start();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 使用lambda创建Thread</span></span><br><span class="line"><span class="keyword">new</span> Thread(() -&gt; System.out.println(<span class="string">"使用Lambda新建线程。。"</span>)).start();</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-列表迭代"><a href="#2-列表迭代" class="headerlink" title="2. 列表迭代"></a>2. 列表迭代</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">List&lt;Integer&gt; list = Arrays.asList(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>);</span><br><span class="line"><span class="comment">// 不使用Lambda</span></span><br><span class="line"><span class="keyword">for</span> (Integer integer : list) &#123;</span><br><span class="line">    System.out.println(integer);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//使用Lambda</span></span><br><span class="line">list.forEach((s) -&gt; System.out.println(s));</span><br><span class="line"><span class="comment">//方法引用</span></span><br><span class="line">list.forEach(System.out::println);</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-Map-amp-Reduce"><a href="#3-Map-amp-Reduce" class="headerlink" title="3. Map&amp;Reduce"></a>3. Map&amp;Reduce</h3><ul>
+<li>使用Map处理列表内所有元素全部加2</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 不使用Lambda</span></span><br><span class="line"><span class="keyword">for</span> (Integer integer : list) &#123;</span><br><span class="line">    <span class="keyword">int</span> order = integer + <span class="number">2</span>;</span><br><span class="line">    System.out.println(order);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 使用Lambda</span></span><br><span class="line">list.stream().map((a) -&gt; a + <span class="number">2</span>).forEach(System.out::println);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>使用 Map + collect 完成对每个元素计算后返回新的结果列表</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">List&lt;Integer&gt; newList = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 不使用Lambda</span></span><br><span class="line"><span class="keyword">for</span> (Integer integer : list) &#123;</span><br><span class="line">    <span class="keyword">int</span> order = integer + <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">int</span> result = order / integer;</span><br><span class="line">    newList.add(result);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">for</span> (Integer integer : newList) &#123;</span><br><span class="line">    System.out.println(integer);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 使用Lambda</span></span><br><span class="line">newList = list.stream().map((a) -&gt; (a + <span class="number">2</span>)/a).collect(Collectors.toList());</span><br><span class="line">newList.forEach(System.out::println);</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-使用filter实现元素的过滤"><a href="#4-使用filter实现元素的过滤" class="headerlink" title="4. 使用filter实现元素的过滤"></a>4. 使用filter实现元素的过滤</h3><p>使用lambda,可直接使用filter进行元素的过滤</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 不使用lambda时</span></span><br><span class="line">List&lt;Integer&gt; list_1 = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line"><span class="keyword">for</span> (Integer integer : list) &#123;</span><br><span class="line">    <span class="keyword">if</span>(integer != <span class="number">3</span>)&#123;</span><br><span class="line">        list_1.add(integer);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// 使用 filter 进行过滤</span></span><br><span class="line">List&lt;Integer&gt; list_2 = list.stream().filter((a) -&gt; a!=<span class="number">3</span>).collect(Collectors.toList());</span><br><span class="line">list_2.forEach(System.out::println);</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-执行函数"><a href="#5-执行函数" class="headerlink" title="5. 执行函数"></a>5. 执行函数</h3><p>稍复杂的字符串处理,用lambda合适不过了,下面的例子,只将特定字符的字符串进行 toUpperCase</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">List&lt;String&gt; s = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">s.add(<span class="string">"hello "</span>);</span><br><span class="line">s.add(<span class="string">"world "</span>);</span><br><span class="line">s.add(<span class="string">"!! "</span>);</span><br><span class="line"></span><br><span class="line">List&lt;String&gt; s_1 = s.stream()</span><br><span class="line">        .filter(a -&gt; a.startsWith(<span class="string">"h"</span>) || a.startsWith(<span class="string">"w"</span>))</span><br><span class="line">        .map(String::toUpperCase)</span><br><span class="line">        .collect(Collectors.toList());</span><br><span class="line">s_1.forEach(System.out::println);</span><br></pre></td></tr></table></figure>
+
+<h3 id="6-算数运算"><a href="#6-算数运算" class="headerlink" title="6. 算数运算"></a>6. 算数运算</h3><p>支持使用min、max等直接实现Comparator进行运算,如:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Optional&lt;Integer&gt; min = list.stream().min(Integer::compareTo);</span><br></pre></td></tr></table></figure>
+
+<p>也支持使用 IntSummaryStatistics 状态,如:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">IntSummaryStatistics intSummaryStatistics = list.stream().mapToInt(x -&gt; x).summaryStatistics();</span><br><span class="line">System.out.println(<span class="string">"最大值："</span>+intSummaryStatistics.getMax());</span><br><span class="line">System.out.println(<span class="string">"最小值："</span>+intSummaryStatistics.getMin());</span><br><span class="line">System.out.println(<span class="string">"平均值："</span>+intSummaryStatistics.getAverage());</span><br><span class="line">System.out.println(<span class="string">"数量："</span>+intSummaryStatistics.getCount());</span><br></pre></td></tr></table></figure>
+
+<h3 id="7-自定义方法使用Function-Inteface实现复杂功能"><a href="#7-自定义方法使用Function-Inteface实现复杂功能" class="headerlink" title="7. 自定义方法使用Function Inteface实现复杂功能"></a>7. 自定义方法使用Function Inteface实现复杂功能</h3><p>Java 8 提供了三个常用的函数接口包括；</p>
+<ul>
+<li>Function&lt;T,R&gt;</li>
+<li>Predicate<t> 判断</t></li>
+<li>Consumer<t> 消费</t></li>
+</ul>
+<p>通过定义方法使用这三类接口,能完成更复杂的调用逻辑,在这里仅仅举一个小例子🌰</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">List&lt;Integer&gt; <span class="title">functionMethods2</span><span class="params">(List&lt;Integer&gt; a, Function&lt;List&lt;Integer&gt;, List&lt;Integer&gt;&gt; function)</span> </span>&#123;</span><br><span class="line">    a = a.stream()</span><br><span class="line">            .filter(demoFilter(<span class="number">2</span>))</span><br><span class="line">            .collect(Collectors.toList());</span><br><span class="line">    <span class="keyword">return</span> function.apply(a);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Predicate&lt;Integer&gt; <span class="title">demoFilter</span><span class="params">(Integer number)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (a) -&gt; !a.equals(number);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 客户端调用</span></span><br><span class="line">JavaTester javaTester = <span class="keyword">new</span> JavaTester();</span><br><span class="line">List&lt;Integer&gt; resList = javaTester.functionMethods2(list, a -&gt; &#123;</span><br><span class="line">        a.add(<span class="number">2</span>);</span><br><span class="line">        <span class="keyword">return</span> a;</span><br><span class="line">    &#125;);</span><br></pre></td></tr></table></figure>
+
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+<div>
+      
+</div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2020/03/09/INSTR和FIND_IN_SET函数/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2596,248 +2879,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/12/01/（一） 将类加入到容器中的方式/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="NanYin">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NanYin的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/12/01/（一） 将类加入到容器中的方式/" itemprop="url">将类添加至容器中的四种方法</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-12-01T12:00:00Z">
-                2019-12-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Spring/" itemprop="url" rel="index">
-                    <span itemprop="name">Spring</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  1.3k
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  5
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="将类添加至容器中的四种方法"><a href="#将类添加至容器中的四种方法" class="headerlink" title="将类添加至容器中的四种方法"></a>将类添加至容器中的四种方法</h1><p>在Spring中,有四种方法可以将现有的类的实例添加到容器中.在了解之前需要了解以下两种作用域.</p>
-<p>Spring在创建对象的时候共有四种作用域可选.分别为常用的<code>singleton</code>、<code>prototype</code>.和在web应用开发中的<code>request</code>和<code>session</code>.</p>
-<p>下面针对常用的<code>singleton</code>、<code>prototype</code>来了解bean的作用域(SCOPE)</p>
-<h2 id="Spring的作用域"><a href="#Spring的作用域" class="headerlink" title="Spring的作用域"></a>Spring的作用域</h2><h3 id="1-Singleton-单例"><a href="#1-Singleton-单例" class="headerlink" title="1. Singleton 单例"></a>1. Singleton 单例</h3><p>Singleton为Spring对象的默认的创建方式,也就是说Spring在创建Bean的时候默认是单例的.</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">/准备对象Person</span><br><span class="line"><span class="meta">@Configurable</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestConfig</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Person <span class="title">person</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"创建Bean实例！"</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Person(<span class="string">"li"</span>, <span class="string">"lei"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//测试</span></span><br><span class="line">ApplicationContext applicationContext = <span class="keyword">new</span> AnnotationConfigApplicationContext(TestConfig.class);</span><br><span class="line"><span class="comment">// 获取两次对象,并且在这是就会打印 「创建Bean实例」</span></span><br><span class="line">Person person = (Person) applicationContext.getBean(<span class="string">"person"</span>);</span><br><span class="line">Person person_copy = (Person) applicationContext.getBean(<span class="string">"person"</span>);</span><br><span class="line"><span class="comment">// 这里返回true,说明两个对象是相同的对象</span></span><br><span class="line">System.out.println(person == person_copy);</span><br></pre></td></tr></table></figure>
-
-<p>运行结果：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">创建Bean实例！</span><br><span class="line">容器创建成功。。接下来创建对象！</span><br><span class="line"><span class="keyword">true</span></span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>并且需要注意的时,在Spring创建Singleton对象的时候,是在容器创建后立即创建的.</p>
-</blockquote>
-<h3 id="2-prototype-原型"><a href="#2-prototype-原型" class="headerlink" title="2. prototype 原型"></a>2. prototype 原型</h3><p>同样上述的代码,在@Bean下面增加<code>@Scope(&quot;prototype&quot;)</code>后,会注意到结果的不同.运行时在进行结果的观察:</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">容器创建成功。。接下来创建对象！</span><br><span class="line">创建Bean实例！</span><br><span class="line">创建Bean实例！</span><br><span class="line"><span class="keyword">false</span></span><br></pre></td></tr></table></figure>
-
-<table>
-<thead>
-<tr>
-<th>类型</th>
-<th>是否单例</th>
-<th>创建时间</th>
-<th>是否销毁</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Singleton</td>
-<td>单例</td>
-<td>默认在容器启动时创建</td>
-<td>容器关闭后销毁</td>
-</tr>
-<tr>
-<td>prototype</td>
-<td>多实例</td>
-<td>在获取对象时创建</td>
-<td>不会调用销毁方法</td>
-</tr>
-</tbody></table>
-<h2 id="一、Configuration注解和Bean注解"><a href="#一、Configuration注解和Bean注解" class="headerlink" title="一、Configuration注解和Bean注解"></a>一、Configuration注解和Bean注解</h2><p>代替了原来的Spring配置文件,在类上标注<code>Configuration</code>注解说明这个类是Spring的配置类.</p>
-<p>在方法上使用<code>Bean</code>注解,则会将返回值作为实例添加到容器中,方法名称作为Bean的ID.</p>
-<p>一般使用这种方法将第三方的包中的类加入到容器中,如Shiro的配置类.</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">使用@Confiuration注解声明配置类</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Configurable</span></span><br><span class="line"><span class="meta">@ComponentScan</span>(<span class="string">"com.nanyin"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestConfig</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="meta">@Scope</span>(<span class="string">"prototype"</span>) <span class="comment">//声明多实例</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Person <span class="title">person</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"创建Bean实例！"</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Person(<span class="string">"li"</span>, <span class="string">"lei"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="二、componentScan包扫描注解"><a href="#二、componentScan包扫描注解" class="headerlink" title="二、componentScan包扫描注解"></a>二、componentScan包扫描注解</h2><p>在面对自己写的<code>@Component</code>,<code>@Service</code>,<code>@Controller</code>,<code>@Repository</code>则不需要使用第一个中的使用@Bean注解一个一个的添加到配置类中,只需要配置<code>@ComponentSacn</code>就行了.它会自动扫描路径下的所有这些注解的类加入到容器中.</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configurable</span></span><br><span class="line"><span class="meta">@ComponentScan</span>(<span class="string">"com.nanyin"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestConfig</span> </span>&#123;</span><br><span class="line">   </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="三、import注解"><a href="#三、import注解" class="headerlink" title="三、import注解"></a>三、import注解</h2><h3 id="1-直接导入-Configuration配置类"><a href="#1-直接导入-Configuration配置类" class="headerlink" title="1. 直接导入@Configuration配置类"></a>1. 直接导入@Configuration配置类</h3><p>能够使用<code>@Import(value=xxx.class)</code> 其中value是数组,可以一次性导入多个配置类.批量的导入配置文件中的所有声明的bean.</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 新的实体</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Dog</span> </span>&#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Configurable</span></span><br><span class="line"><span class="comment">// 需要导入TestConfig中配置的所有bean</span></span><br><span class="line"><span class="meta">@Import</span>(value=TestConfig.class)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ImportConfig</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Dog <span class="title">dog</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"创建Bean实例！"</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Dog();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Configurable</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestConfig</span> </span>&#123;</span><br><span class="line">  <span class="comment">// 这里配置了一个person</span></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Person <span class="title">person</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"创建Bean实例！"</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Person(<span class="string">"li"</span>, <span class="string">"lei"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 测试</span></span><br><span class="line"> <span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">importTest</span><span class="params">()</span></span>&#123;</span><br><span class="line">    ApplicationContext applicationContext = <span class="keyword">new</span> AnnotationConfigApplicationContext(ImportConfig.class);</span><br><span class="line">    String[] names = applicationContext.getBeanDefinitionNames();</span><br><span class="line">    <span class="comment">// 打印出所有添加到容器中的名称</span></span><br><span class="line">    <span class="keyword">for</span> (String temp :</span><br><span class="line">            names) &#123;</span><br><span class="line">        System.out.println(temp);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">结果:</span><br><span class="line">importConfig</span><br><span class="line">person</span><br><span class="line">com.nanyin.config.TestConfig</span><br><span class="line">dog</span><br></pre></td></tr></table></figure>
-
-<p>导入了<code>TestConfig</code>配置类和其中的person实例</p>
-<h3 id="2-使用importSelector自定义导入"><a href="#2-使用importSelector自定义导入" class="headerlink" title="2. 使用importSelector自定义导入"></a>2. 使用importSelector自定义导入</h3><p>除了使用 <code>@import</code> 直接导入指定的类外,还可以导入 继承<code>importSelector</code>接口的类,并且在实现类中进行自定义操作.</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyImportSelector</span> <span class="keyword">implements</span> <span class="title">ImportSelector</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> String[] selectImports(AnnotationMetadata importingClassMetadata) &#123;</span><br><span class="line">      <span class="comment">// 可以通过importingClassMetadata获取类注解上的所有信息</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> String[]&#123;Dog.class.getName()&#125;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Configurable</span></span><br><span class="line"><span class="comment">// @Import 可以导入数组(多个) class,如上面提到的 TestConfig配置类,这里把MyImportSelector也添加进去</span></span><br><span class="line"><span class="meta">@Import</span>(value=&#123;TestConfig.class,MyImportSelector.class&#125;)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ImportConfig</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">importTest</span><span class="params">()</span></span>&#123;</span><br><span class="line">    ApplicationContext applicationContext = <span class="keyword">new</span> AnnotationConfigApplicationContext(ImportConfig.class);</span><br><span class="line">    String[] names = applicationContext.getBeanDefinitionNames();</span><br><span class="line">    <span class="keyword">for</span> (String temp :</span><br><span class="line">            names) &#123;</span><br><span class="line">        System.out.println(temp);</span><br><span class="line">    &#125;</span><br><span class="line">    ((AnnotationConfigApplicationContext) applicationContext).close();;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//执行测试后</span></span><br><span class="line"><span class="comment">// importConfig</span></span><br><span class="line"><span class="comment">// person</span></span><br><span class="line"><span class="comment">// com.nanyin.config.TestConfig</span></span><br><span class="line"><span class="comment">// com.nanyin.entity.Dog</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="3-使用-importBeanDefinitionRegister"><a href="#3-使用-importBeanDefinitionRegister" class="headerlink" title="3. 使用 importBeanDefinitionRegister"></a>3. 使用 importBeanDefinitionRegister</h3><p>可以使用 <code>importBeanDefinitionRegister</code> 自定义注册bean,因为在接口中有BeanRegiest作为参数,通过参数调用Registe相关方法.</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyimportBeanDefinitionRegistrar</span> <span class="keyword">implements</span> <span class="title">ImportBeanDefinitionRegistrar</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">registerBeanDefinitions</span><span class="params">(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry)</span> </span>&#123;</span><br><span class="line">        AnnotatedGenericBeanDefinition beanDefinition = <span class="keyword">new</span> AnnotatedGenericBeanDefinition(Dog.class);</span><br><span class="line">        <span class="comment">// 前面字符串是ID,后面是BeanDefinition</span></span><br><span class="line">        registry.registerBeanDefinition(<span class="string">"dogx"</span>,beanDefinition);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Import</span>(MyimportBeanDefinitionRegistrar.class)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ImportConfig</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Dog <span class="title">dog</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"创建Bean实例！"</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Dog();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 结果通过 registry 注册了 dogx</span></span><br><span class="line"><span class="comment">// importConfig</span></span><br><span class="line"><span class="comment">// dog</span></span><br><span class="line"><span class="comment">// dogx</span></span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>后面的两种方法在SpringBoot源码中会经常看到,所以还是挺重要的.</p>
-</blockquote>
-<hr>
-<h2 id="四、使用FactoryBean注册bean"><a href="#四、使用FactoryBean注册bean" class="headerlink" title="四、使用FactoryBean注册bean"></a>四、使用FactoryBean注册bean</h2><p>用于创建复杂的bean时,会用到FactoryBean.</p>
-<p>如果继承 <code>FactoryBean</code> 接口实现,则这个就不能当作一个普通的bean使用了,他暴露出来的获取的对象是 <code>getObject()</code>方法获取的工厂中的对象,而不是他自身.默认创建的时FactoryBean的对象实例，而不是工厂实例，如果想获取工厂的实例，在getBean的时候在对象ID前加上<code>&amp;</code>符号。</p>
-<p>具体实例:</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyFactoryBean</span> <span class="keyword">implements</span> <span class="title">FactoryBean</span>&lt;<span class="title">Dog</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 返回的实例对象</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Dog <span class="title">getObject</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Dog();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 返回的类型</span></span><br><span class="line">    <span class="keyword">public</span> Class&lt;?&gt; getObjectType() &#123;</span><br><span class="line">        <span class="keyword">return</span> Dog.class;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 默认为true,如果时false则为多实例</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isSingleton</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-<div>
-      
-</div>
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2890,7 +2931,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">98</span>
+                  <span class="site-state-item-count">99</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2964,6 +3005,10 @@
              
              
                <li>
+                 <a href="/2020/03/24/Lambda expression/" title="lambda表达式学习和应用" target="_blank">lambda表达式学习和应用</a>
+               </li>
+             
+               <li>
                  <a href="/2020/03/09/INSTR和FIND_IN_SET函数/" title="Mysql中的INSTR和FIND_IN_SET函数应用" target="_blank">Mysql中的INSTR和FIND_IN_SET函数应用</a>
                </li>
              
@@ -2977,10 +3022,6 @@
              
                <li>
                  <a href="/2019/12/20/Spring从零学起之源码分析（三）/" title="Spring的Bean的注册" target="_blank">Spring的Bean的注册</a>
-               </li>
-             
-               <li>
-                 <a href="/2019/12/15/Spring从零开始之源码分析（二）/" title="Spring的核心Refresh" target="_blank">Spring的核心Refresh</a>
                </li>
              
            </ul>
@@ -3029,7 +3070,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共112.7k字</span>
+  <span class="post-count">博客全站共114.3k字</span>
 </div>
 
 

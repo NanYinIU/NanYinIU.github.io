@@ -497,6 +497,216 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/10/16/2018-10-15-HashSet和HashTable的源码分析/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="NanYin">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NanYin的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/10/16/2018-10-15-HashSet和HashTable的源码分析/" itemprop="url">HashSet和HashTable的的源码分析</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-15T22:05:00Z">
+                2018-10-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  786
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  3
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
+
+<ul>
+<li><a href="#hashset和hashtable的的源码分析">HashSet和HashTable的的源码分析</a><ul>
+<li><a href="#hashset">HashSet</a><ul>
+<li><a href="#hashset结构源码">HashSet结构源码</a></li>
+<li><a href="#hashset的基本方法">HashSet的基本方法</a></li>
+<li><a href="#hashset的iterator和contains方法">HashSet的Iterator和contains方法</a></li>
+</ul>
+</li>
+<li><a href="#hashtable">HashTable</a></li>
+</ul>
+</li>
+</ul>
+<!-- /TOC -->
+
+<h1 id="HashSet和HashTable的的源码分析"><a href="#HashSet和HashTable的的源码分析" class="headerlink" title="HashSet和HashTable的的源码分析"></a>HashSet和HashTable的的源码分析</h1><h2 id="HashSet"><a href="#HashSet" class="headerlink" title="HashSet"></a>HashSet</h2><p>HashSet其实就是使用HashMap来实现的，方法都是依靠Hash Map的方法。如hashSet构造，hashSet的添加等操作。这样能够实现hashset去重。因为hashMap的key不能重复。这样就能看上篇，当hashMap遇到key值重复的处理。</p>
+<h3 id="HashSet结构源码"><a href="#HashSet结构源码" class="headerlink" title="HashSet结构源码"></a>HashSet结构源码</h3><p>HashSet的结构就相当于HashMap只将key值put进去，但是Value值却为空的new Object。可以看作为只有key的HashMap.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 可以看到hashSet的这几个构造方法和HashMap息息相关 */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">transient</span> HashMap&lt;E,Object&gt; map;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">HashSet</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    map = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">HashSet</span><span class="params">(Collection&lt;? extends E&gt; c)</span> </span>&#123;</span><br><span class="line">    map = <span class="keyword">new</span> HashMap&lt;&gt;(Math.max((<span class="keyword">int</span>) (c.size()/.<span class="number">75f</span>) + <span class="number">1</span>, <span class="number">16</span>));</span><br><span class="line">    addAll(c);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">HashSet</span><span class="params">(<span class="keyword">int</span> initialCapacity, <span class="keyword">float</span> loadFactor)</span> </span>&#123;</span><br><span class="line">    map = <span class="keyword">new</span> HashMap&lt;&gt;(initialCapacity, loadFactor);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">HashSet</span><span class="params">(<span class="keyword">int</span> initialCapacity)</span> </span>&#123;</span><br><span class="line">    map = <span class="keyword">new</span> HashMap&lt;&gt;(initialCapacity);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">HashSet(<span class="keyword">int</span> initialCapacity, <span class="keyword">float</span> loadFactor, <span class="keyword">boolean</span> dummy) &#123;</span><br><span class="line">    map = <span class="keyword">new</span> LinkedHashMap&lt;&gt;(initialCapacity, loadFactor);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="HashSet的基本方法"><a href="#HashSet的基本方法" class="headerlink" title="HashSet的基本方法"></a>HashSet的基本方法</h3><p>add和remove和size等基本方法都是调用HashMap的</p>
+<p>如add方法:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">add</span><span class="params">(E e)</span> </span>&#123;</span><br><span class="line">  <span class="comment">/* 这里的PRESENT等于new Object() */</span></span><br><span class="line">       <span class="keyword">return</span> map.put(e, PRESENT)==<span class="keyword">null</span>;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="HashSet的Iterator和contains方法"><a href="#HashSet的Iterator和contains方法" class="headerlink" title="HashSet的Iterator和contains方法"></a>HashSet的Iterator和contains方法</h3><p>同样的也是调用的HashMap的基本方法，但是需要先得到Map的keySet集合</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Iterator&lt;E&gt; <span class="title">iterator</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> map.keySet().iterator();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">contains</span><span class="params">(Object o)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> map.containsKey(o);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="HashTable"><a href="#HashTable" class="headerlink" title="HashTable"></a>HashTable</h2><p>首先HashTable和HashMap的结构类似。但是有最重要的区别就是HashTable是synchronized的，也就是线程安全的。在他的基本方法前都有synchronized锁所限制。</p>
+<p>结构就不看了，只看一个Put方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/* 其实大致和HashMap是类似的也是使用Entry作为基本结构 */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> V <span class="title">put</span><span class="params">(K key, V value)</span> </span>&#123;</span><br><span class="line">     <span class="comment">// Make sure the value is not null</span></span><br><span class="line">     <span class="keyword">if</span> (value == <span class="keyword">null</span>) &#123;</span><br><span class="line">         <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException();</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="comment">// Makes sure the key is not already in the hashtable.</span></span><br><span class="line">     Entry&lt;?,?&gt; tab[] = table;</span><br><span class="line">     <span class="keyword">int</span> hash = key.hashCode();</span><br><span class="line">     <span class="comment">/* 这里的0x7FFFFFFF 是32-bit的int的最大值 */</span></span><br><span class="line">     <span class="keyword">int</span> index = (hash &amp; <span class="number">0x7FFFFFFF</span>) % tab.length;</span><br><span class="line">     <span class="meta">@SuppressWarnings</span>(<span class="string">"unchecked"</span>)</span><br><span class="line">     Entry&lt;K,V&gt; entry = (Entry&lt;K,V&gt;)tab[index];</span><br><span class="line">     <span class="comment">/* 如果这个entry存在，也就是键值重复 */</span></span><br><span class="line">     <span class="keyword">for</span>(; entry != <span class="keyword">null</span> ; entry = entry.next) &#123;</span><br><span class="line">         <span class="keyword">if</span> ((entry.hash == hash) &amp;&amp; entry.key.equals(key)) &#123;</span><br><span class="line">             V old = entry.value;</span><br><span class="line">             entry.value = value;</span><br><span class="line">             <span class="keyword">return</span> old;</span><br><span class="line">         &#125;</span><br><span class="line">     &#125;</span><br><span class="line">    <span class="comment">/* 否则添加Entry节点 */</span></span><br><span class="line">     addEntry(hash, key, value, index);</span><br><span class="line">     <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line"> <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">addEntry</span><span class="params">(<span class="keyword">int</span> hash, K key, V value, <span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">    modCount++;</span><br><span class="line"></span><br><span class="line">    Entry&lt;?,?&gt; tab[] = table;</span><br><span class="line">    <span class="keyword">if</span> (count &gt;= threshold) &#123;</span><br><span class="line">      <span class="comment">/* 如果当前count大于阈值的大小 重新生成table size和hash值 */</span></span><br><span class="line">        <span class="comment">// Rehash the table if the threshold is exceeded</span></span><br><span class="line">        rehash();</span><br><span class="line"></span><br><span class="line">        tab = table;</span><br><span class="line">        hash = key.hashCode();</span><br><span class="line">        index = (hash &amp; <span class="number">0x7FFFFFFF</span>) % tab.length;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Creates the new entry.</span></span><br><span class="line">    <span class="meta">@SuppressWarnings</span>(<span class="string">"unchecked"</span>)</span><br><span class="line">    Entry&lt;K,V&gt; e = (Entry&lt;K,V&gt;) tab[index];</span><br><span class="line">    tab[index] = <span class="keyword">new</span> Entry&lt;&gt;(hash, key, value, e);</span><br><span class="line">    count++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>通过上面的代码可以看出HashTable和HashMap的结构还是有差异的，HashMap是纵向的列表当出现相同的hash值的时候，扩展出横向列表，当横向的列表到达一定的长度的时候，这个横向的链表就会自动整理成红黑树的形式，而hashTable不存在横向的这种结构的，当count&gt;=阈值的时候就会把Hash重置，使之不会出现hash值重复的情况。可以说hashTable比较hashMap的结构更简单，但是效率会比HashMap的低。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+<div>
+      
+</div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/10/11/2018-10-10-hashmap的源码查看/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2255,195 +2465,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/07/01/2018-07-01-bash_13_bash中的输入输出/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="NanYin">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NanYin的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/07/01/2018-07-01-bash_13_bash中的输入输出/" itemprop="url">bash学习记录（十四）linux中的IO</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-01T15:00:00Z">
-                2018-07-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Bash/" itemprop="url" rel="index">
-                    <span itemprop="name">Bash</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  320
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  1
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="linux中的IO"><a href="#linux中的IO" class="headerlink" title="linux中的IO"></a>linux中的IO</h1><h2 id="分类"><a href="#分类" class="headerlink" title="分类"></a>分类</h2><p>linux中总有三种文件，一种时stdin（标准输入），stdout（标准输出），stderr（标准错误），可以重定向这些和其他任意文件，重定向的目的就是可以将文件中的任意内容作为输出或者输出源。</p>
-<h2 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h2><p>系统为每一个打开的文件分配一个文件描述符（FD），为标准输入stdin，标准输出stdout,标准错误stderr分别分配给0，1，2</p>
-<p>简单输入输出：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;helloworld&quot;  &gt; newfile1</span><br><span class="line">echo &quot;helloworld&quot; 1 &gt; newfile1 #等同于第一句</span><br><span class="line">echo &quot;helloworld&quot; 1 &gt;&gt; newfile1 #追加内容</span><br><span class="line"></span><br><span class="line">command &lt; newfile1 #标准输入 同理等同于cat 0 &lt; newfile1</span><br></pre></td></tr></table></figure>
-
-<p>使用标准输出和标准错误输出</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ls 2&gt; newfile #将错误信息输出到newfile中</span><br><span class="line">ls &gt; newfile 2&gt;1&amp; #将标准输入和标准输出一起输出到newfile中</span><br><span class="line"># 其中&amp;表示和的关系</span><br></pre></td></tr></table></figure>
-
-<p>绑定重定向</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ls &gt;&amp; m #把标准输出到文件描述符m中</span><br><span class="line">ls &lt; &amp;- #关闭标准输入</span><br><span class="line">n &lt; &amp;- #关闭输入文件描述符n</span><br><span class="line">n &gt; &amp;- #关闭输出文件描述符n</span><br><span class="line">1&gt;&amp;-, &gt;&amp;- # 关闭标准输出</span><br></pre></td></tr></table></figure>
-
-<h3 id="其实在linux-下一切都是文件。把所有都想成文件就好理解的多了。"><a href="#其实在linux-下一切都是文件。把所有都想成文件就好理解的多了。" class="headerlink" title="其实在linux 下一切都是文件。把所有都想成文件就好理解的多了。"></a>其实在linux 下一切都是文件。把所有都想成文件就好理解的多了。</h3>
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-<div>
-      
-</div>
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2496,7 +2517,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">98</span>
+                  <span class="site-state-item-count">99</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2570,6 +2591,10 @@
              
              
                <li>
+                 <a href="/2020/03/24/Lambda expression/" title="lambda表达式学习和应用" target="_blank">lambda表达式学习和应用</a>
+               </li>
+             
+               <li>
                  <a href="/2020/03/09/INSTR和FIND_IN_SET函数/" title="Mysql中的INSTR和FIND_IN_SET函数应用" target="_blank">Mysql中的INSTR和FIND_IN_SET函数应用</a>
                </li>
              
@@ -2583,10 +2608,6 @@
              
                <li>
                  <a href="/2019/12/20/Spring从零学起之源码分析（三）/" title="Spring的Bean的注册" target="_blank">Spring的Bean的注册</a>
-               </li>
-             
-               <li>
-                 <a href="/2019/12/15/Spring从零开始之源码分析（二）/" title="Spring的核心Refresh" target="_blank">Spring的核心Refresh</a>
                </li>
              
            </ul>
@@ -2635,7 +2656,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共112.7k字</span>
+  <span class="post-count">博客全站共114.3k字</span>
 </div>
 
 
