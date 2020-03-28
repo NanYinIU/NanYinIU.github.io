@@ -304,6 +304,207 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/07/10/2019-07-10-SpringBoot的日志/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="NanYin">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NanYin的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/07/10/2019-07-10-SpringBoot的日志/" itemprop="url">SpringBoot的日志使用</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-10T12:00:00Z">
+                2019-07-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/SpringBoot/" itemprop="url" rel="index">
+                    <span itemprop="name">SpringBoot</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  818
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  3
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="SpringBoot的日志使用"><a href="#SpringBoot的日志使用" class="headerlink" title="SpringBoot的日志使用"></a>SpringBoot的日志使用</h1><h2 id="SpringBoot的日志选择"><a href="#SpringBoot的日志选择" class="headerlink" title="SpringBoot的日志选择"></a>SpringBoot的日志选择</h2><p>SpringBoot默认使用SLF4j和logback用作日志。为什么是两个，为什么是这两个？</p>
+<h3 id="日志框架的大致分类"><a href="#日志框架的大致分类" class="headerlink" title="日志框架的大致分类"></a>日志框架的大致分类</h3><p>日志框架分为日志的门面框架和具体的实现框架，为什么需要门面框架，是因为不同的系统对日志的需求可能不同，系统一可能使用日志框架一，系统二还需要实现日志功能，如果还用日志框架一，则需要适配系统二进行api的调整。</p>
+<p>门面日志框架就为了解决这一问题。让调用框架的api统一，具体的实现可以随不同的系统进行调整。类似jdbc，操作接口需要进行统一。</p>
+<p>所以SpringBoot的日志使用分别是用来日志门面框架<code>SLF4j</code>和日志具体实现框架<code>logback</code>作为日志服务。</p>
+<h2 id="使用日志"><a href="#使用日志" class="headerlink" title="使用日志"></a>使用日志</h2><h3 id="简易使用SLF4j"><a href="#简易使用SLF4j" class="headerlink" title="简易使用SLF4j"></a>简易使用SLF4j</h3><p>参考<a href="https://www.slf4j.org/manual.html" target="_blank" rel="noopener">SLF4j官网</a>中的hello world程序：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 导入slf4j的jar包</span></span><br><span class="line"><span class="keyword">import</span> org.slf4j.Logger;</span><br><span class="line"><span class="keyword">import</span> org.slf4j.LoggerFactory;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloWorld</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    Logger logger = LoggerFactory.getLogger(HelloWorld.class);</span><br><span class="line">    logger.info(<span class="string">"Hello World"</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>下图表示了使用slf4j和各个日志实现框架的匹配。绿色的是适配层，深蓝色的是实现框架。比如使用logback作为实现框架，则需要导入slf4j的jar包和logback的相关jar包。但是如果使用log4j作为实现框架，还需导入中间的适配层jar包（中间绿色的）。</p>
+<p><img src="https://www.slf4j.org/images/concrete-bindings.png" alt="使用slf4j"></p>
+<p>在Springboot-logging-start中使用如下的jar包依赖：</p>
+<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190712095039.png" alt="jar包依赖"></p>
+<p>每一个实现框架都有各自的配置文件，使用slf4j后，配置文件还是使用具体实现的配置文件。</p>
+<h4 id="SpringBoot中的SLF4j"><a href="#SpringBoot中的SLF4j" class="headerlink" title="SpringBoot中的SLF4j"></a>SpringBoot中的SLF4j</h4><ol>
+<li>SpringBoot底层自动配置使用的是SLF4j和logback。</li>
+<li>SprintBoot使用中间包将其他日志框架转化为slf4j框架。</li>
+<li>引入其他日志框架时，需要把这个日志的jar包排除掉。否则与slf4j的jar包相冲突，上一条就是原因。</li>
+</ol>
+<p>在测试文件中测试SpringBoot的日志使用</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">Logger logger = LoggerFactory.getLogger(<span class="keyword">this</span>.getClass());</span><br><span class="line">   <span class="meta">@Test</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testLogger</span><span class="params">()</span></span>&#123;</span><br><span class="line">       <span class="comment">// 由低到高 日志的级别，日志框架可以根据配置文件调整输出的日志级别，</span></span><br><span class="line">       <span class="comment">// 只会输出相应日志级别及后面的高级别日志信息</span></span><br><span class="line">       logger.trace(<span class="string">"这是trace日志"</span>);</span><br><span class="line">       logger.debug(<span class="string">"这是debug日志"</span>);</span><br><span class="line">       <span class="comment">// SpringBoot默认使用的是info级别，</span></span><br><span class="line">       <span class="comment">// 可以使用日志的配置文件调整级别</span></span><br><span class="line">       logger.info(<span class="string">"这是info日志"</span>);</span><br><span class="line">       logger.warn(<span class="string">"这是warn日志"</span>);</span><br><span class="line">       logger.error(<span class="string">"这是error日志"</span>);</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<p>日志级别有<code>trace</code>, <code>debug</code>,<code>info</code>,<code>warn</code>,<code>error</code>五种日志级别。并且由低到高排序。指定日志级别，则系统会输出当前日志级别和更高的日志级别的日志。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 全局的日志记录级别</span></span><br><span class="line"><span class="comment">#logging:</span></span><br><span class="line"><span class="comment">#  level: trace</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 指定的包下的日志记录级别</span></span><br><span class="line"><span class="attr">logging:</span></span><br><span class="line"><span class="attr">  level:</span></span><br><span class="line">    <span class="string">com</span> <span class="string">:</span></span><br><span class="line">      <span class="string">nanyin</span> <span class="string">:</span> <span class="string">debug</span></span><br><span class="line"><span class="comment">#  pattern: 输出格式</span></span><br><span class="line"><span class="comment">#    file:</span></span><br><span class="line"><span class="comment">#    console:</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#  file: -- 这里用于指定日志记录的文件名，可以指定具体的路径，未指定则生成在当前项目下</span></span><br><span class="line"><span class="comment">#  path: -- 这里用于指定日志文件的路径，springboot会默认生成路径，默认文件名</span></span><br><span class="line"><span class="comment"># 这两个指定一个就好了，都指定则会默认使用file</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="使用自定义的配置文件"><a href="#使用自定义的配置文件" class="headerlink" title="使用自定义的配置文件"></a>使用自定义的配置文件</h4><h4 id="更换log4j2作为日志框架"><a href="#更换log4j2作为日志框架" class="headerlink" title="更换log4j2作为日志框架"></a>更换log4j2作为日志框架</h4>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+<div>
+      
+</div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/07/08/2019-07-08-SpringBoot的配置文件（拓展）/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2304,216 +2505,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/06/19/2019-06-24-设计模式之观察者模式/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="NanYin">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NanYin的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/06/19/2019-06-24-设计模式之观察者模式/" itemprop="url">设计模式之观察者模式</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-06-19T12:00:00Z">
-                2019-06-19
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/设计模式/" itemprop="url" rel="index">
-                    <span itemprop="name">设计模式</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  889
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  3
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="设计模式之观察者模式"><a href="#设计模式之观察者模式" class="headerlink" title="设计模式之观察者模式"></a>设计模式之观察者模式</h1><p>观察者模式是对象的行为模式，又叫“发布-订阅模式”。由名字就能够得知，观察这模式构造了一个发布者和订阅者。</p>
-<p>观察者模式定义对象之间的一对多依赖关系，以便当一个对象更改状态时，将自动通知和更新其所有依赖项。在观察者模式中，主动发生改变的是发布者称为主题，而被动收到发布者信息的订阅者称为观察者对象，可以根据需要添加/减少具体主题的观察者，实现主题和观察者之间的松耦合。</p>
-<h2 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h2><ul>
-<li><p>当设计中有两种不同方面的抽象，并且是有依赖关系的，这时将两个抽象分别封装到具体的类中，这样就能够独立的改变和重用这些对象。在观察者模式中两种抽象指的就是抽象主题和抽象观察者。</p>
-</li>
-<li><p>当一个对象需要更改时，涉及到更改其他类型的其他对象，并且这些对象的数量多且不确定的时候。</p>
-</li>
-<li><p>当一个对象改变时，其他对象能够得到这个对象已经改变的通知，而不必知道这些对象具体是什么。也就是说要达到这个改变的对象和通知的对象的松耦合。</p>
-<p>  <strong>所以综上:</strong><br>  当希望一个对象改变的同时，多个对象能够得到通知，一块进行变更时，可以使用观察者模式对系统设计</p>
-</li>
-</ul>
-<h2 id="模式结构"><a href="#模式结构" class="headerlink" title="模式结构"></a>模式结构</h2><p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190624203405.png" alt="观察者模式结构图"></p>
-<p>上图中：</p>
-<ol>
-<li><code>Weather</code>为<strong>抽象主题类</strong>，能够将观察者<code>Observer</code>构成一个<code>list</code>结构,从而能够达到<code>Weather</code>改变的时候可以循环表中的观察者，发送通知。并且作为抽象类实现了添加，移除观察者方法。</li>
-<li><code>BeijingWeather</code>为<strong>具体主题类</strong>，实现了<code>Weather</code>类。</li>
-<li><code>Observer</code>作为<strong>抽象观察者类</strong>，作为所有观察者的通用接口，其中定义<code>update</code>方法作为更新状态的接口。通过这个接口和<code>Weather</code>类交互来获取状态通知。</li>
-<li><code>WeatherObserverA</code>与<code>WeatherObserverB</code>作为<strong>具体观察者类</strong>，实现类观察者接口。统一接受通知并更新自身状态。</li>
-</ol>
-<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><h4 id="第一部分：抽象主题类"><a href="#第一部分：抽象主题类" class="headerlink" title="第一部分：抽象主题类"></a>第一部分：抽象主题类</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 状态枚举类</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">enum</span> WeatherState &#123;</span><br><span class="line">    SUNNY_DAY,</span><br><span class="line">    CLOUDY_DAY,</span><br><span class="line">    RAINY_DAY,</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 抽象主题类</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Weather</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">protected</span> WeatherState weatherState;</span><br><span class="line">    <span class="comment">// 观察者集合</span></span><br><span class="line">    <span class="keyword">private</span> List&lt;Observer&gt; observerList = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Weather <span class="title">addObserver</span><span class="params">(Observer observer)</span></span>&#123;</span><br><span class="line">        observerList.add(observer);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">removeObserver</span><span class="params">(Observer observer)</span></span>&#123;</span><br><span class="line">        observerList.remove(observer);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 通过主题更改从而在该主题上注册的观察者能够同时能到通知</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">notifyObserver</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">for</span> (Observer o:observerList</span><br><span class="line">             ) &#123;</span><br><span class="line">            o.update(<span class="keyword">this</span>.weatherState);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="第二部分：具体主题类"><a href="#第二部分：具体主题类" class="headerlink" title="第二部分：具体主题类"></a>第二部分：具体主题类</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BeijingWeather</span> <span class="keyword">extends</span> <span class="title">Weather</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    BeijingWeather(WeatherState weatherState) &#123;</span><br><span class="line">        <span class="keyword">this</span>.weatherState = weatherState;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//作为更新主题的接口</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">changeState</span><span class="params">(WeatherState we)</span></span>&#123;</span><br><span class="line">       <span class="keyword">this</span>.weatherState = we;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="第三部分：抽象观察者"><a href="#第三部分：抽象观察者" class="headerlink" title="第三部分：抽象观察者"></a>第三部分：抽象观察者</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Observer</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 更新接口</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">update</span><span class="params">(WeatherState weatherState)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="第四部分：-具体观察者"><a href="#第四部分：-具体观察者" class="headerlink" title="第四部分： 具体观察者"></a>第四部分： 具体观察者</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WeatherObserverA</span> <span class="keyword">implements</span> <span class="title">Observer</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">update</span><span class="params">(WeatherState weatherState)</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"observer A get new weather message is "</span> + weatherState.toString());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="最后调用"><a href="#最后调用" class="headerlink" title="最后调用"></a>最后调用</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">App</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 定义主题</span></span><br><span class="line">        Weather weather = <span class="keyword">new</span> BeijingWeather(WeatherState.SUNNY_DAY);</span><br><span class="line">        <span class="comment">//添加观察者</span></span><br><span class="line">        weather.addObserver(<span class="keyword">new</span> WeatherObserverA()).addObserver(<span class="keyword">new</span> WeatherObserverB());</span><br><span class="line">        <span class="comment">//通知所有观察者</span></span><br><span class="line">        weather.notifyObserver();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>结果：最后注册在主题上的所有观察者都收到了通知。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">observer A get new weather message is SUNNY_DAY</span><br><span class="line">observer B get new weather message is SUNNY_DAY</span><br></pre></td></tr></table></figure>
-
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-<div>
-      
-</div>
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2566,7 +2557,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">99</span>
+                  <span class="site-state-item-count">100</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2640,6 +2631,10 @@
              
              
                <li>
+                 <a href="/2020/03/28/位运算/" title="Java中的位运算" target="_blank">Java中的位运算</a>
+               </li>
+             
+               <li>
                  <a href="/2020/03/24/Lambda expression/" title="lambda表达式学习和应用" target="_blank">lambda表达式学习和应用</a>
                </li>
              
@@ -2653,10 +2648,6 @@
              
                <li>
                  <a href="/2020/01/17/Spring从零开始之源码分析（四）/" title="Spring的Bean的实例化" target="_blank">Spring的Bean的实例化</a>
-               </li>
-             
-               <li>
-                 <a href="/2019/12/20/Spring从零学起之源码分析（三）/" title="Spring的Bean的注册" target="_blank">Spring的Bean的注册</a>
                </li>
              
            </ul>
@@ -2705,7 +2696,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共114.3k字</span>
+  <span class="post-count">博客全站共115.3k字</span>
 </div>
 
 

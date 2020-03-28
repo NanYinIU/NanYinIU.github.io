@@ -304,6 +304,242 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2020/03/28/位运算/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="NanYin">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NanYin的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/03/28/位运算/" itemprop="url">Java中的位运算</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-03-28T12:00:00Z">
+                2020-03-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  1.1k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  4
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Java中的位运算"><a href="#Java中的位运算" class="headerlink" title="Java中的位运算"></a>Java中的位运算</h1><p>Java提供了多种位运算，包括 左移( &lt;&lt; )、右移( &gt;&gt; ) 、无符号右移( &gt;&gt;&gt; ) 、位与( &amp; ) 、位或( | )、位非( ~ )、位异或( ^ )，除了 ~ 为一元操作符，其他都为二元操作符。</p>
+<h2 id="左移和右移"><a href="#左移和右移" class="headerlink" title="左移和右移"></a>左移和右移</h2><h3 id="什么是左右移操作，产生的结果是什么"><a href="#什么是左右移操作，产生的结果是什么" class="headerlink" title="什么是左右移操作，产生的结果是什么"></a>什么是左右移操作，产生的结果是什么</h3><p>使用 符号 <code>&lt;&lt;</code> 对数字产生的影响就是左移，同理右移。下面通过例子来看左移（右移）的结果：</p>
+<p>在 <code>ArrayList</code> 中，使用了<code>grow()</code>方法进行List的扩容操作，其实，在<code>grow()</code>方法内部就使用到了右移操作。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">grow</span><span class="params">(<span class="keyword">int</span> minCapacity)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// overflow-conscious code</span></span><br><span class="line">        <span class="keyword">int</span> oldCapacity = elementData.length;</span><br><span class="line">        <span class="keyword">int</span> newCapacity = oldCapacity + (oldCapacity &gt;&gt; <span class="number">1</span>);</span><br><span class="line">        <span class="keyword">if</span> (newCapacity - minCapacity &lt; <span class="number">0</span>)</span><br><span class="line">            newCapacity = minCapacity;</span><br><span class="line">        <span class="keyword">if</span> (newCapacity - MAX_ARRAY_SIZE &gt; <span class="number">0</span>)</span><br><span class="line">            newCapacity = hugeCapacity(minCapacity);</span><br><span class="line">        <span class="comment">// minCapacity is usually close to size, so this is a win:</span></span><br><span class="line">        elementData = Arrays.copyOf(elementData, newCapacity);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>grow() 函数的作用就是对 List 进行倍数的扩容，这个倍数就是 <code>x + x &gt;&gt; 1</code> ,具体产生的结果用主函数进行测试。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">System.out.println(<span class="number">10</span>+(<span class="number">10</span>&gt;&gt;<span class="number">1</span>));</span><br></pre></td></tr></table></figure>
+
+<p>产生的结果为15.也就是说 <code>10&gt;&gt;1</code>的结果为5.那么计算过程是什么样的呢，才会产生这样的结果？</p>
+<h4 id="转化为二进制"><a href="#转化为二进制" class="headerlink" title="转化为二进制"></a>转化为二进制</h4><p>对位的运算，第一步一定是先转化为二进制，再对二进制进行计算。</p>
+<p>例子中的 10 转化为二进制为：</p>
+<p><code>0000 0000 0000 0000 0000 0000 0000 1010</code></p>
+<h4 id="进行为运算"><a href="#进行为运算" class="headerlink" title="进行为运算"></a>进行为运算</h4><p>如果是左移，则在右侧补0，同理如果是右移，则在左侧补0。</p>
+<p>比如上面的 10&gt;&gt;1 , 右移一位，则在左侧补一个0。</p>
+<p>结果为 <code>...... 0101</code> 结果为 5</p>
+<p>如果 10&lt;&lt;1 ,左移一位，则在右侧补一个0</p>
+<p>结果为 <code>......1 0100</code> 结果为 20</p>
+<h4 id="无符号左移右移"><a href="#无符号左移右移" class="headerlink" title="无符号左移右移"></a>无符号左移右移</h4><p>负数以原码的补码形式表达，如果是负数时，比如 -10 ，转化为二进制就是</p>
+<p><code>1111 1111 1111 1111 1111 1111 1111 1011</code></p>
+<p>也就是高位为1，与正数相反，同理，在进行移动时，也需要将原来的补0，调整为补1；</p>
+<p>如 -10&gt;&gt;1,右移一位，左侧补1</p>
+<p><code>1......1101</code> ,结果为 -5</p>
+<p>无符号则始终补0；</p>
+<p>综上：</p>
+<ol>
+<li>转化为二进制</li>
+<li>正数反向补0</li>
+<li>负数反向补1</li>
+<li>无符号反向补0</li>
+</ol>
+<h2 id="位与（-amp-）"><a href="#位与（-amp-）" class="headerlink" title="位与（&amp;）"></a>位与（&amp;）</h2><p>在HashMap中进行put元素的时候，会通过 <code>putVal()</code> 方法进行实际的计算和添加。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">final</span> V <span class="title">putVal</span><span class="params">(<span class="keyword">int</span> hash, K key, V value, <span class="keyword">boolean</span> onlyIfAbsent,</span></span></span><br><span class="line"><span class="function"><span class="params">                   <span class="keyword">boolean</span> evict)</span> </span>&#123;</span><br><span class="line">        Node&lt;K,V&gt;[] tab; Node&lt;K,V&gt; p; <span class="keyword">int</span> n, i;</span><br><span class="line">        <span class="keyword">if</span> ((tab = table) == <span class="keyword">null</span> || (n = tab.length) == <span class="number">0</span>)</span><br><span class="line">            n = (tab = resize()).length;</span><br><span class="line">            <span class="comment">// 使用 (n-1)&amp;hash 查找位置是否已经被占用</span></span><br><span class="line">        <span class="keyword">if</span> ((p = tab[i = (n - <span class="number">1</span>) &amp; hash]) == <span class="keyword">null</span>)</span><br><span class="line">            tab[i] = newNode(hash, key, value, <span class="keyword">null</span>);</span><br></pre></td></tr></table></figure>
+
+<p>这里使用 &amp; 的作用其实是为了保证 hash 的值不超过范围。数组具有2的幂数长度，以用&amp;替换昂贵的取模运算。</p>
+<p>运算规则：第一个数的的第n位和第二个数的第n位如果都是1，那么结果的第n为也为1，否则为0 简化描述规则:<strong>同一为一,否则为零</strong></p>
+<p>5转换为二进制：<code>0000 0000 0000 0000 0000 0000 0000 0101</code></p>
+<p>3转换为二进制：<code>0000 0000 0000 0000 0000 0000 0000 0011</code></p>
+<p>结果：<code>0000 0000 0000 0000 0000 0000 0000 0001</code></p>
+<p>转化为10进制为 1</p>
+<p>可以作用为关闭（屏蔽）特定位的手段</p>
+<h2 id="位或（｜）"><a href="#位或（｜）" class="headerlink" title="位或（｜）"></a>位或（｜）</h2><p>运算规则：第一个数的的第n位于第二个数的第n位 只要有一个是1，那么结果的第n为也为1，否则为0. 简化规则描述: <strong>有一则一,否则为零</strong></p>
+<p>5转换为二进制：<code>0000 0000 0000 0000 0000 0000 0000 0101</code></p>
+<p>3转换为二进制：<code>0000 0000 0000 0000 0000 0000 0000 0011</code></p>
+<p>结果：<code>0000 0000 0000 0000 0000 0000 0000 0110</code></p>
+<p>转化为10进制为 7</p>
+<p>可以作为将特定位置为1的手段</p>
+<h2 id="异或（-）"><a href="#异或（-）" class="headerlink" title="异或（^）"></a>异或（^）</h2><p>运算规则：第一个数的的第n位于第二个数的第n位 <strong>相反</strong>，那么结果的第n为也为1，否则为0,简化规则描述: <strong>相反为一,否则为零</strong></p>
+<p>5转换为二进制：<code>0000 0000 0000 0000 0000 0000 0000 0101</code></p>
+<p>3转换为二进制：<code>0000 0000 0000 0000 0000 0000 0000 0011</code></p>
+<p>结果：<code>0000 0000 0000 0000 0000 0000 0000 0110</code></p>
+<p>转化为二进制为 7</p>
+<ol>
+<li>按位“异或”运算可以使特定的位取反</li>
+<li>直接交换两个变量的值</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">a^=b</span><br><span class="line">b^=a</span><br><span class="line">a^=b</span><br></pre></td></tr></table></figure>
+
+<p>这样a的值与b的值就形成了互换。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+<div>
+      
+</div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2020/03/24/Lambda expression/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2689,196 +2925,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/12/05/（二）Bean的生命周期/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="NanYin">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NanYin的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/12/05/（二）Bean的生命周期/" itemprop="url">Bean的生命周期</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-12-05T12:00:00Z">
-                2019-12-05
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Spring/" itemprop="url" rel="index">
-                    <span itemprop="name">Spring</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  545
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  2
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Bean的生命周期"><a href="#Bean的生命周期" class="headerlink" title="Bean的生命周期"></a>Bean的生命周期</h1><p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20191020160536.png" alt></p>
-<h2 id="Bean的初始化和销毁"><a href="#Bean的初始化和销毁" class="headerlink" title="Bean的初始化和销毁"></a>Bean的初始化和销毁</h2><h3 id="一、使用-Bean的初始化和销毁属性"><a href="#一、使用-Bean的初始化和销毁属性" class="headerlink" title="一、使用@Bean的初始化和销毁属性"></a>一、使用@Bean的初始化和销毁属性</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 在dog实例中指定init和destroy方法</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Dog</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"instance dog execute init method....."</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">destroy</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"instance dog execute destroy method....."</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 声明bean的时候指定 initMethod = "init",destroyMethod = "destroy"</span></span><br><span class="line"><span class="meta">@Configurable</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LifeCycleConfig</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Bean</span>(initMethod = <span class="string">"init"</span>,destroyMethod = <span class="string">"destroy"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> Dog <span class="title">dog</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"begin create dog"</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Dog();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 执行测试</span></span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">LifeCycleTest</span><span class="params">()</span></span>&#123;</span><br><span class="line">    ApplicationContext applicationContext = <span class="keyword">new</span> AnnotationConfigApplicationContext(LifeCycleConfig.class);</span><br><span class="line">    System.out.println(<span class="string">"instance has created !!!"</span>);</span><br><span class="line"><span class="comment">//        Dog dog = (Dog) applicationContext.getBean("dog");</span></span><br><span class="line">    ((AnnotationConfigApplicationContext) applicationContext).close();</span><br><span class="line">    System.out.println(<span class="string">"context has closed !!!"</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 测试结果:</span></span><br><span class="line"><span class="comment">// begin create dog</span></span><br><span class="line"><span class="comment">// instance dog execute init method.....</span></span><br><span class="line"><span class="comment">// instance has created !!!</span></span><br><span class="line"><span class="comment">// instance dog execute destroy method.....</span></span><br><span class="line"><span class="comment">// context has closed !!!</span></span><br></pre></td></tr></table></figure>
-
-<p>从测试结果来看当创建对象时,通过 <code>initMethod</code>,<code>destroyMethod</code>指定初始化和销毁方法时可行的.init方法在对象创建后执行.destroy在容器销毁前执行.</p>
-<h3 id="二、使用-InitializingBean-和-DisposableBean-接口指定"><a href="#二、使用-InitializingBean-和-DisposableBean-接口指定" class="headerlink" title="二、使用 InitializingBean 和 DisposableBean 接口指定"></a>二、使用 InitializingBean 和 DisposableBean 接口指定</h3><p>方法同上,不过需要对象类实现这两个接口</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Cat</span> <span class="keyword">implements</span> <span class="title">InitializingBean</span>, <span class="title">DisposableBean</span> </span>&#123;</span><br><span class="line"></span><br><span class="line"><span class="comment">//  接口中的destroy 方法,执行销毁bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">destroy</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"instance cat execute destroy method....."</span>);</span><br><span class="line">    &#125;</span><br><span class="line"><span class="comment">// 接口中的afterPropertiesSet方法,用来创建bean后的初始化</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">afterPropertiesSet</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"instance cat execute init method....."</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 不需要在bean注解中指定相关方法</span></span><br><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Cat <span class="title">cat</span><span class="params">()</span></span>&#123;</span><br><span class="line">    System.out.println(<span class="string">"begin create cat"</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> Cat();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//用同样的测试程序测试得到的结果如下:</span></span><br><span class="line"><span class="comment">// begin create cat</span></span><br><span class="line"><span class="comment">// instance dog execute init method.....</span></span><br><span class="line"><span class="comment">// instance has created !!!</span></span><br><span class="line"><span class="comment">// instance dog execute destroy method.....</span></span><br><span class="line"><span class="comment">// context has closed !!!</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="三、使用JSR标准的注解-PostConstruce-和-PreDestroy"><a href="#三、使用JSR标准的注解-PostConstruce-和-PreDestroy" class="headerlink" title="三、使用JSR标准的注解 @PostConstruce 和 @PreDestroy"></a>三、使用JSR标准的注解 @PostConstruce 和 @PreDestroy</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Bug</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@PostConstruct</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"instance Bug execute init method....."</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@PreDestroy</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">destroy</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"instance Bug execute destroy method....."</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="四、BeanPostProcessor自定义初始化前后方法"><a href="#四、BeanPostProcessor自定义初始化前后方法" class="headerlink" title="四、BeanPostProcessor自定义初始化前后方法"></a>四、BeanPostProcessor自定义初始化前后方法</h3><p>先自定义一个 MyBeanPostProcessor ，并将它放到容器中，在启动后，每次生成bean时，都会执行下面的 postProcessBeforeInitialization 和 postProcessAfterInitialization。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyBeanPostProcessor</span> <span class="keyword">implements</span> <span class="title">BeanPostProcessor</span> </span>&#123;</span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> Object <span class="title">postProcessBeforeInitialization</span><span class="params">(Object bean, String beanName)</span> <span class="keyword">throws</span> BeansException </span>&#123;</span><br><span class="line">		<span class="comment">// 根据BeanName和bean可以获取bean的类信息接下来就可以进行筛选，在初始化前进行相关操作</span></span><br><span class="line">		System.out.println(beanName);</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> Object <span class="title">postProcessAfterInitialization</span><span class="params">(Object bean, String beanName)</span> <span class="keyword">throws</span> BeansException </span>&#123;</span><br><span class="line">		System.out.println(beanName);</span><br><span class="line">		<span class="comment">// 同理初始化后</span></span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-<div>
-      
-</div>
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2931,7 +2977,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">99</span>
+                  <span class="site-state-item-count">100</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -3005,6 +3051,10 @@
              
              
                <li>
+                 <a href="/2020/03/28/位运算/" title="Java中的位运算" target="_blank">Java中的位运算</a>
+               </li>
+             
+               <li>
                  <a href="/2020/03/24/Lambda expression/" title="lambda表达式学习和应用" target="_blank">lambda表达式学习和应用</a>
                </li>
              
@@ -3018,10 +3068,6 @@
              
                <li>
                  <a href="/2020/01/17/Spring从零开始之源码分析（四）/" title="Spring的Bean的实例化" target="_blank">Spring的Bean的实例化</a>
-               </li>
-             
-               <li>
-                 <a href="/2019/12/20/Spring从零学起之源码分析（三）/" title="Spring的Bean的注册" target="_blank">Spring的Bean的注册</a>
                </li>
              
            </ul>
@@ -3070,7 +3116,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共114.3k字</span>
+  <span class="post-count">博客全站共115.3k字</span>
 </div>
 
 

@@ -304,6 +304,195 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/07/03/2018-07-03-bash_14_bash中的函数/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="NanYin">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NanYin的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/07/03/2018-07-03-bash_14_bash中的函数/" itemprop="url">bash学习记录（十五）bash中的函数定义与使用</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-03T15:00:00Z">
+                2018-07-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Bash/" itemprop="url" rel="index">
+                    <span itemprop="name">Bash</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  409
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  1
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="bash中的函数"><a href="#bash中的函数" class="headerlink" title="bash中的函数"></a>bash中的函数</h1><p>其实bash函数和bash脚本时一样的，函数的使用如同使用一段bash脚本块一样。但是定义为bash函数执行更快。</p>
+<h2 id="函数定义与调用"><a href="#函数定义与调用" class="headerlink" title="函数定义与调用"></a>函数定义与调用</h2><p>与很多脚本语言一样，使用 <code>function</code> 作为关键词来声明函数。下面来使用一段例子代码来说明函数的定义的格式。乍一看是不是和js有点像呢。。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">function hello()&#123;</span><br><span class="line">echo &quot;使用函数会输出这句话&quot;</span><br><span class="line">return 1</span><br><span class="line">&#125;</span><br><span class="line">hello #使用函数</span><br></pre></td></tr></table></figure>
+
+<h2 id="函数的参数传递"><a href="#函数的参数传递" class="headerlink" title="函数的参数传递"></a>函数的参数传递</h2><p>与编写bash相似，参数使用 <code>$+位置的形式获取</code> 如$1获取紧跟在调用函数后的第一个参数的值。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">function hello()&#123;</span><br><span class="line">echo &quot;使用函数会输出这句话&quot;</span><br><span class="line">echo &quot;输出第一个参数 $1&quot;</span><br><span class="line">return 1</span><br><span class="line">&#125;</span><br><span class="line">hello world</span><br><span class="line"># 输出结果 ‘ 输出第一个参数 world ’</span><br></pre></td></tr></table></figure>
+
+<h2 id="函数的返回值"><a href="#函数的返回值" class="headerlink" title="函数的返回值"></a>函数的返回值</h2><p>使用return来返回特定值 如上面的函数中使用到了 <code>return 1</code> ,在return后发生的语句都不能被执行。并且return的的值只能在1~256之间的数。使用$?来获取返回到值。</p>
+<h2 id="函数的嵌套"><a href="#函数的嵌套" class="headerlink" title="函数的嵌套"></a>函数的嵌套</h2><p>如同在Java js中使用函数类似，bash中的函数也允许使用嵌套结构。但是需要在外层函数调用内容函数。这是当然的了，因为在内部声明函数，却没有调用，这当然时不起作用的了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">function x1()&#123;</span><br><span class="line">        echo &quot;在函数x1中！&quot;</span><br><span class="line">        function x2()&#123;</span><br><span class="line">        echo &quot;在函数x2中！&quot;</span><br><span class="line">        &#125;</span><br><span class="line">        x2 # 这里需要调用内层函数</span><br><span class="line">&#125;</span><br><span class="line">x1</span><br><span class="line">#结果：</span><br><span class="line">#在函数x1中！</span><br><span class="line">#在函数x2中！</span><br></pre></td></tr></table></figure>
+
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+<div>
+      
+</div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/07/01/2018-07-01-bash_13_bash中的输入输出/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1605,209 +1794,6 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/06/12/2018-06-11-bash_07_bash中的循环和分支/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="NanYin">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NanYin的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/12/2018-06-11-bash_07_bash中的循环和分支/" itemprop="url">bash学习记录（七）循环和分支（1）</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-11T17:00:00Z">
-                2018-06-11
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Bash/" itemprop="url" rel="index">
-                    <span itemprop="name">Bash</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  699
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  3
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="循环和分支"><a href="#循环和分支" class="headerlink" title="循环和分支"></a>循环和分支</h1><h2 id="循环"><a href="#循环" class="headerlink" title="循环"></a>循环</h2><p>循环就是一块当条件为真的迭代的代码块。</p>
-<h3 id="for循环"><a href="#for循环" class="headerlink" title="for循环"></a>for循环</h3><p>for arg in [list] 这是最基础的循环形式。如果do和for在一行里，那么就需要在do前面加分号如：<code>for arg in list ;do</code></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">for arg in list</span><br><span class="line">do</span><br><span class="line">.. commend(s)</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
-
-<p>for循环有很多用法，举几个例子来了解一下for循环都能够干些什么吧。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"># for i in &quot;hello world !&quot; # 这样当作整个字符串</span><br><span class="line">for i in  hello world !</span><br><span class="line">do</span><br><span class="line">	echo $i</span><br><span class="line">done</span><br><span class="line"># 与命令结合</span><br><span class="line">if [ -e &quot;/bin/bash&quot; ]</span><br><span class="line">then</span><br><span class="line">	echo &quot;is exist&quot;</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line"># 输出当前目录下匹配文件的内容 类似使用find命令</span><br><span class="line">FILE=&quot;*txt&quot;</span><br><span class="line">for file in $FILE</span><br><span class="line">do</span><br><span class="line">	echo &quot;Contents of $file&quot;</span><br><span class="line">	echo &quot;------------------&quot;</span><br><span class="line">	cat &quot;$file&quot;</span><br><span class="line">	echo</span><br><span class="line">done</span><br><span class="line"></span><br><span class="line"># 如果in list内容缺失就表示使用 in $@ 也就是所有传进来的参数</span><br><span class="line">for a</span><br><span class="line">do</span><br><span class="line">	echo  &quot;$a&quot;</span><br><span class="line">done</span><br><span class="line">#通过使用命令来构造for循环的list</span><br><span class="line">for b in `ls`</span><br><span class="line">do</span><br><span class="line">	echo $b</span><br><span class="line">done</span><br><span class="line"></span><br><span class="line"># 使用for循环输出用户的信息</span><br><span class="line">PASSWORD_FILE=/etc/passwd</span><br><span class="line">n=1</span><br><span class="line">for name in $(awk &apos;BEGIN&#123;FS=&quot;:&quot;;&#125;&#123;print $1&#125;&apos;&lt; &quot;$PASSWORD_FILE&quot;)</span><br><span class="line">do</span><br><span class="line">	echo &quot;USER #$n=$name&quot;</span><br><span class="line">	let &quot;n+=1&quot;</span><br><span class="line">done</span><br><span class="line"></span><br><span class="line">#使用函数给for循环作值</span><br><span class="line">give_parm()&#123;</span><br><span class="line">	echo &quot;1 2 3 5 6&quot;</span><br><span class="line">&#125;</span><br><span class="line">for c in $(give_parm)</span><br><span class="line">do</span><br><span class="line">	echo $c</span><br><span class="line">done</span><br><span class="line"></span><br><span class="line"># 类C语言的for循环</span><br><span class="line">for (( ai=1;ai&lt;5;ai++))</span><br><span class="line">do</span><br><span class="line">	echo $ai</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
-
-<h3 id="while循环"><a href="#while循环" class="headerlink" title="while循环"></a>while循环</h3><p>while循环用来测试一个条件,并且一直循环直到条件为true也就是退出码为0的时候退出循环。一般while循环用在提前不知道循环次数的时候。while循环使用中括号把条件括起来，也可以使用双中括号。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">while [condition]</span><br><span class="line">do</span><br><span class="line">····commends</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
-
-<p>当while有多个条件的时候，只有最后一个参数会决定循环次数</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">while echo &quot;previous-variable = $previous&quot;</span><br><span class="line">      echo</span><br><span class="line">      previous=$var1</span><br><span class="line">      [ &quot;$var1&quot; != end ] # Keeps track of what $var1 was previously.</span><br><span class="line">      # Four conditions on *while*, but only the final one controls loop.</span><br><span class="line">      # The *last* exit status is the one that counts.</span><br><span class="line">do</span><br><span class="line">echo &quot;Input variable #1 (end to exit) &quot;</span><br><span class="line">  read var1</span><br><span class="line">  echo &quot;variable #1 = $var1&quot;</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
-
-<p>也有类似C语言的while条件。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">while (( a &lt;= LIMIT ))   #  Double parentheses,</span><br><span class="line">do                       # + and no &quot;$&quot; preceding variables.</span><br><span class="line">  echo -n &quot;$a &quot;</span><br><span class="line">  ((a += 1))             # let &quot;a+=1&quot; 算数运算</span><br><span class="line">  # Yes, indeed.</span><br><span class="line">  # Double parentheses permit incrementing a variable with C-like syntax.</span><br><span class="line">  # 双小括号允许递增一个变量使用类C的运算方式</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
-
-<p>同样的while后的条件可以是一个函数</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">condition ()</span><br><span class="line">&#123;</span><br><span class="line">  ((t++))</span><br><span class="line">  if [ $t -lt 5 ]</span><br><span class="line">  then</span><br><span class="line">    return 0  # true</span><br><span class="line">  else</span><br><span class="line">    return 1  # false</span><br><span class="line">  fi</span><br><span class="line">&#125;</span><br><span class="line">while condition</span><br><span class="line">#     ^^^^^^^^^</span><br><span class="line">#     Function call -- four loop iterations.</span><br><span class="line">do</span><br><span class="line">  echo &quot;Still going: t = $t&quot;</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
-
-<p>while可以和read命令进行结合，形成 <code>while read</code> 结构体，能够有效的读和处理文件。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">while read line</span><br><span class="line">do</span><br><span class="line">    echo $line #读取1.txt中的每一行</span><br><span class="line">done &lt; 1.txt</span><br></pre></td></tr></table></figure>
-
-<h3 id="until循环"><a href="#until循环" class="headerlink" title="until循环"></a>until循环</h3><p>until循环是和while循环正好相反，until会一直进行循环，直到条件变为false；</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">until [ condition-is-true ]</span><br><span class="line">do</span><br><span class="line"> command(s)...</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
-
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-<div>
-      
-</div>
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/06/12/2018-06-12-bash_08_bash中的循环和分支（二）/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2198,7 +2184,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/06/07/2018-06-06-正则表达式/">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/06/12/2018-06-11-bash_07_bash中的循环和分支/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="NanYin">
@@ -2217,7 +2203,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/06/07/2018-06-06-正则表达式/" itemprop="url">正则表达式的入门</a></h1>
+                <a class="post-title-link" href="/2018/06/12/2018-06-11-bash_07_bash中的循环和分支/" itemprop="url">bash学习记录（七）循环和分支（1）</a></h1>
         
 
         <div class="post-meta">
@@ -2229,8 +2215,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-06T17:00:00Z">
-                2018-06-06
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-11T17:00:00Z">
+                2018-06-11
               </time>
             
 
@@ -2252,8 +2238,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Linux/" itemprop="url" rel="index">
-                    <span itemprop="name">Linux</span>
+                  <a href="/categories/Bash/" itemprop="url" rel="index">
+                    <span itemprop="name">Bash</span>
                   </a>
                 </span>
 
@@ -2283,7 +2269,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  972
+                  699
                 </span>
               
 
@@ -2322,42 +2308,31 @@
       
         
           
-            <h1 id="正则表达式"><a href="#正则表达式" class="headerlink" title="正则表达式"></a>正则表达式</h1><p>最近会时常遇到编写正则表达式，所以现在写一篇正则表达式的文章来简单记录一下学习正则的过程。</p>
-<p>在这个网站有正则表达式的中文文档 -》 <a href="http://tool.oschina.net/uploads/apidocs/jquery/regexp.html" target="_blank" rel="noopener">正则表达式手册</a></p>
-<h2 id="特殊字符"><a href="#特殊字符" class="headerlink" title="特殊字符"></a>特殊字符</h2><p>一般使用反斜杠 \ 来转义特殊字符 如在正则中有特殊意义的* 或者. 如果要使用原意则需要使用\来进行转义 如 \*。下面介绍几个具体的实例。</p>
-<ol>
-<li>^ 匹配输入字符串的开始位置</li>
-<li>$ 匹配输入字符串的结束位置</li>
-<li>. 匹配除去换行符之外的所有字符</li>
-<li>* 匹配前面字符0次或者多次</li>
-<li>? 匹配前面大的字符0次或者1次</li>
-<li>+ 匹配前面字符一次或多次</li>
-<li>\w 匹配字母或者数字</li>
-<li>\s 匹配任意空白</li>
-<li>\d 匹配数字</li>
-<li>\b 匹配单词的开始或者结束</li>
-</ol>
-<p>一般使用 ^ 开头并且以 $ 结束，如验证5-12位数字的时候可以这样写 <code>^\d{5,12}$</code> 当字符串为 <code>&quot;hello world</code> 是，使用$时匹配到一处，而使用\b时会匹配到四处，分别为每个单词的开头和结尾。</p>
-<p>特殊字符非常重要，是正则表达式的基本。在上面的例子中使用到了重复，也就是{m,n} m和n是重复的次数，如果n存在，那么就重复m到n次如果不存在，就重复m次。</p>
-<h2 id="字符匹配"><a href="#字符匹配" class="headerlink" title="字符匹配"></a>字符匹配</h2><p><strong>当使用到非特殊字符的时候</strong>，可以使用中括号，如 [aeiou]用来表示其中的字符都可以匹配到。比如 字符串 <code>‘how hello’</code> 使用到正则表达式 <code>h[oe]</code> 这样可以提示匹配到两处</p>
-<p><strong>当需要使用与特殊字符相反的含义的时候</strong> 使用反斜杠+大写字符的格式来进行匹配。比如匹配非字母和数字的字符就应该使用<code>\W</code>(因为使用匹配字母和数字的特殊字符是\w)。非特殊字符的反义使用^号。如[^aeiou]表示原因字符意外的任意字符。</p>
-<p><strong>当想匹配多种情况的时候</strong>，比如我想匹配x或者y字符串那么就使用 x|y 来表示匹配x或者y。这样可以解决很多二义性的匹配串。</p>
-<h2 id="分组的匹配"><a href="#分组的匹配" class="headerlink" title="分组的匹配"></a>分组的匹配</h2><p>当想对一个字符串进行重复，那么可以使用分组的功能。使用小括号来实现。典型的ip地址的匹配就可以这样使用(\d{1,3}.){3}\d{1,3}</p>
-<p>使用 <code>\\+数字</code> 的形式 来实现重复那个分组的操作<br>如 <code>\b(\w+)\b\s+\1\b</code> 就可以匹配相同的字符串。</p>
-<h2 id="贪婪模式"><a href="#贪婪模式" class="headerlink" title="贪婪模式"></a>贪婪模式</h2><p>当使用?紧跟其他任何一个其他限制符之后比如. * 之后，匹配模式是非贪婪的，尽可能少的匹配搜素的所有字符串。比如搜多ppppppp字符串，使用‘o+?’会匹配到单个o</p>
-<h2 id="关于-的后续"><a href="#关于-的后续" class="headerlink" title="关于 的后续"></a>关于 的后续</h2><ul>
-<li><p>(?:pattern) 匹配pattern但不获取结果。这在使用|来组合一个模式的各个部分非常有用，比如常规匹配两种字符串“username|userManner”可以使用user(?:name|Manner)来简写。</p>
-</li>
-<li><p>(?=pattern) 正向肯定预查。比如windows(?=95|03|NT)能够匹配到windows95中的windows而不能匹配到windowsxp中的windows</p>
-</li>
-<li><p>(?!pattern) 正向否定预查。与上面的意思相似，就是能够匹配到非的指定条件。比如windows(?!95|03|NT`能够匹配到windowsxp中的windows而不能匹配到windows95中的windows</p>
-</li>
-<li><p>(?&lt;=pattern) 反向肯定预查。和第一个很相近，只不过方向不同。</p>
-</li>
-<li><p>(?&lt;!) 反向否定预查 。</p>
-</li>
-</ul>
-<p>这次的正则表达式就先总结到这里，以后肯定会遇到更多的关于正则的问题。有时间一定还要读读<a href="https://www.regular-expressions.info/" target="_blank" rel="noopener">英文的正则教程</a></p>
+            <h1 id="循环和分支"><a href="#循环和分支" class="headerlink" title="循环和分支"></a>循环和分支</h1><h2 id="循环"><a href="#循环" class="headerlink" title="循环"></a>循环</h2><p>循环就是一块当条件为真的迭代的代码块。</p>
+<h3 id="for循环"><a href="#for循环" class="headerlink" title="for循环"></a>for循环</h3><p>for arg in [list] 这是最基础的循环形式。如果do和for在一行里，那么就需要在do前面加分号如：<code>for arg in list ;do</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">for arg in list</span><br><span class="line">do</span><br><span class="line">.. commend(s)</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+
+<p>for循环有很多用法，举几个例子来了解一下for循环都能够干些什么吧。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"># for i in &quot;hello world !&quot; # 这样当作整个字符串</span><br><span class="line">for i in  hello world !</span><br><span class="line">do</span><br><span class="line">	echo $i</span><br><span class="line">done</span><br><span class="line"># 与命令结合</span><br><span class="line">if [ -e &quot;/bin/bash&quot; ]</span><br><span class="line">then</span><br><span class="line">	echo &quot;is exist&quot;</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line"># 输出当前目录下匹配文件的内容 类似使用find命令</span><br><span class="line">FILE=&quot;*txt&quot;</span><br><span class="line">for file in $FILE</span><br><span class="line">do</span><br><span class="line">	echo &quot;Contents of $file&quot;</span><br><span class="line">	echo &quot;------------------&quot;</span><br><span class="line">	cat &quot;$file&quot;</span><br><span class="line">	echo</span><br><span class="line">done</span><br><span class="line"></span><br><span class="line"># 如果in list内容缺失就表示使用 in $@ 也就是所有传进来的参数</span><br><span class="line">for a</span><br><span class="line">do</span><br><span class="line">	echo  &quot;$a&quot;</span><br><span class="line">done</span><br><span class="line">#通过使用命令来构造for循环的list</span><br><span class="line">for b in `ls`</span><br><span class="line">do</span><br><span class="line">	echo $b</span><br><span class="line">done</span><br><span class="line"></span><br><span class="line"># 使用for循环输出用户的信息</span><br><span class="line">PASSWORD_FILE=/etc/passwd</span><br><span class="line">n=1</span><br><span class="line">for name in $(awk &apos;BEGIN&#123;FS=&quot;:&quot;;&#125;&#123;print $1&#125;&apos;&lt; &quot;$PASSWORD_FILE&quot;)</span><br><span class="line">do</span><br><span class="line">	echo &quot;USER #$n=$name&quot;</span><br><span class="line">	let &quot;n+=1&quot;</span><br><span class="line">done</span><br><span class="line"></span><br><span class="line">#使用函数给for循环作值</span><br><span class="line">give_parm()&#123;</span><br><span class="line">	echo &quot;1 2 3 5 6&quot;</span><br><span class="line">&#125;</span><br><span class="line">for c in $(give_parm)</span><br><span class="line">do</span><br><span class="line">	echo $c</span><br><span class="line">done</span><br><span class="line"></span><br><span class="line"># 类C语言的for循环</span><br><span class="line">for (( ai=1;ai&lt;5;ai++))</span><br><span class="line">do</span><br><span class="line">	echo $ai</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+
+<h3 id="while循环"><a href="#while循环" class="headerlink" title="while循环"></a>while循环</h3><p>while循环用来测试一个条件,并且一直循环直到条件为true也就是退出码为0的时候退出循环。一般while循环用在提前不知道循环次数的时候。while循环使用中括号把条件括起来，也可以使用双中括号。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">while [condition]</span><br><span class="line">do</span><br><span class="line">····commends</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+
+<p>当while有多个条件的时候，只有最后一个参数会决定循环次数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">while echo &quot;previous-variable = $previous&quot;</span><br><span class="line">      echo</span><br><span class="line">      previous=$var1</span><br><span class="line">      [ &quot;$var1&quot; != end ] # Keeps track of what $var1 was previously.</span><br><span class="line">      # Four conditions on *while*, but only the final one controls loop.</span><br><span class="line">      # The *last* exit status is the one that counts.</span><br><span class="line">do</span><br><span class="line">echo &quot;Input variable #1 (end to exit) &quot;</span><br><span class="line">  read var1</span><br><span class="line">  echo &quot;variable #1 = $var1&quot;</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+
+<p>也有类似C语言的while条件。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">while (( a &lt;= LIMIT ))   #  Double parentheses,</span><br><span class="line">do                       # + and no &quot;$&quot; preceding variables.</span><br><span class="line">  echo -n &quot;$a &quot;</span><br><span class="line">  ((a += 1))             # let &quot;a+=1&quot; 算数运算</span><br><span class="line">  # Yes, indeed.</span><br><span class="line">  # Double parentheses permit incrementing a variable with C-like syntax.</span><br><span class="line">  # 双小括号允许递增一个变量使用类C的运算方式</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+
+<p>同样的while后的条件可以是一个函数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">condition ()</span><br><span class="line">&#123;</span><br><span class="line">  ((t++))</span><br><span class="line">  if [ $t -lt 5 ]</span><br><span class="line">  then</span><br><span class="line">    return 0  # true</span><br><span class="line">  else</span><br><span class="line">    return 1  # false</span><br><span class="line">  fi</span><br><span class="line">&#125;</span><br><span class="line">while condition</span><br><span class="line">#     ^^^^^^^^^</span><br><span class="line">#     Function call -- four loop iterations.</span><br><span class="line">do</span><br><span class="line">  echo &quot;Still going: t = $t&quot;</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+
+<p>while可以和read命令进行结合，形成 <code>while read</code> 结构体，能够有效的读和处理文件。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">while read line</span><br><span class="line">do</span><br><span class="line">    echo $line #读取1.txt中的每一行</span><br><span class="line">done &lt; 1.txt</span><br></pre></td></tr></table></figure>
+
+<h3 id="until循环"><a href="#until循环" class="headerlink" title="until循环"></a>until循环</h3><p>until循环是和while循环正好相反，until会一直进行循环，直到条件变为false；</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">until [ condition-is-true ]</span><br><span class="line">do</span><br><span class="line"> command(s)...</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+
 
           
         
@@ -2451,7 +2426,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">99</span>
+                  <span class="site-state-item-count">100</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2525,6 +2500,10 @@
              
              
                <li>
+                 <a href="/2020/03/28/位运算/" title="Java中的位运算" target="_blank">Java中的位运算</a>
+               </li>
+             
+               <li>
                  <a href="/2020/03/24/Lambda expression/" title="lambda表达式学习和应用" target="_blank">lambda表达式学习和应用</a>
                </li>
              
@@ -2538,10 +2517,6 @@
              
                <li>
                  <a href="/2020/01/17/Spring从零开始之源码分析（四）/" title="Spring的Bean的实例化" target="_blank">Spring的Bean的实例化</a>
-               </li>
-             
-               <li>
-                 <a href="/2019/12/20/Spring从零学起之源码分析（三）/" title="Spring的Bean的注册" target="_blank">Spring的Bean的注册</a>
                </li>
              
            </ul>
@@ -2590,7 +2565,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共114.3k字</span>
+  <span class="post-count">博客全站共115.3k字</span>
 </div>
 
 
