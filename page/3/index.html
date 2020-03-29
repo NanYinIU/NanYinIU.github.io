@@ -304,6 +304,203 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/07/11/2019-07-11-使用Mysql的外键/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="NanYin">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NanYin的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/07/11/2019-07-11-使用Mysql的外键/" itemprop="url">MySql使用外键（8.0）</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-11T15:00:00Z">
+                2019-07-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/MYSQL/" itemprop="url" rel="index">
+                    <span itemprop="name">MYSQL</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  794
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  3
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="使用外键约束"><a href="#使用外键约束" class="headerlink" title="使用外键约束"></a>使用外键约束</h1><p>Mysql默认使用的是innoDB引擎，该引擎是支持外键的，下面来说说如何创建外键及各种外键使用的效果。</p>
+<h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><p>需要注意的是外键不支持虚拟构造出的列上。</p>
+<p>MySql支持外键，允许跨表交叉引用相关数据，有助于帮助保持数据的一致性。在create和alter表中的语句如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">-- 中括号内是非必写的</span><br><span class="line">[CONSTRAINT [symbol]] FOREIGN KEY</span><br><span class="line">    [index_name] (col_name, ...)</span><br><span class="line">    REFERENCES tbl_name (col_name,...)</span><br><span class="line">    [ON DELETE reference_option]</span><br><span class="line">    [ON UPDATE reference_option]</span><br><span class="line"></span><br><span class="line">reference_option:</span><br><span class="line">    RESTRICT | CASCADE | SET NULL | NO ACTION | SET DEFAULT</span><br><span class="line"></span><br><span class="line">CREATE TABLE child (</span><br><span class="line">    id INT,</span><br><span class="line">    parent_id INT,</span><br><span class="line">    -- 定义索引</span><br><span class="line">    INDEX par_ind (parent_id),</span><br><span class="line">    -- parent_id关联parent表中的id字段</span><br><span class="line">    -- 如果父表删除了，则子表也需要删除字段内容</span><br><span class="line">    FOREIGN KEY (parent_id)</span><br><span class="line">        REFERENCES parent(id)</span><br><span class="line">        ON DELETE CASCADE</span><br><span class="line">) ENGINE=INNODB;</span><br><span class="line"></span><br><span class="line">-- 添加外键</span><br><span class="line">ALTER TABLE tb1 ADD FOREIGN KEY  (parent_id)</span><br><span class="line">        REFERENCES parent(id)</span><br><span class="line">        ON DELETE CASCADE</span><br><span class="line"></span><br><span class="line">-- 删除外键</span><br><span class="line">ALTER TABLE tbl_name DROP FOREIGN KEY fk_symbol;</span><br></pre></td></tr></table></figure>
+
+<p><code>index_name</code> 指的是外键的标识，如果子表已经显式的定义了可以支持外键的索引（上面例子中的<code>par_ind</code>），则忽略。否则，mysql会依照以下规则隐式的创建一个外键索引。</p>
+<ul>
+<li>如果定义<code>CONSTRAINT symbol</code> 值，则使用这个值，否则使用外键名 <code>index_name</code>.</li>
+<li>如果上面两个都没有定义，外键名使用引用外键列的名称。</li>
+</ul>
+<h2 id="更新-删除行为"><a href="#更新-删除行为" class="headerlink" title="更新/删除行为"></a>更新/删除行为</h2><p>Mysql如何使用外键来保证参照的完整性。</p>
+<p>对于支持外键的innoDB存储引擎来说，MYSQL拒绝在子表中插入或删除在父表中没有匹配到的外键候选值。</p>
+<p>当父表中的外键候选值发生变化的时候，根据不同的行为策略，来影响子表中对应的外键的键值。具体的策略如下：</p>
+<h3 id="CASCADE-【级联】"><a href="#CASCADE-【级联】" class="headerlink" title="CASCADE 【级联】"></a><code>CASCADE</code> 【级联】</h3><p>如果在父表中删除和更新数据，会自动的删除和更新子表中的匹配到的所有数据。支持删除级联<code>ON DELETE CASCADE</code>和更新级联<code>ON UPDATE CASCADE</code>,两个表之间，不要定义几个这样的子句，这些子句作用域父表或子表中的同一列。</p>
+<h3 id="SET-NULL-【置空】"><a href="#SET-NULL-【置空】" class="headerlink" title="SET NULL 【置空】"></a><code>SET NULL</code> 【置空】</h3><p>如果在父表中删除和更新数据，则自动的置空<code>NULL</code>子表中的外键对应的字段。如果在更新或删除操作中指定了<code>ON DELETE SET NULL</code>或者<code>ON UPDATE SET NULL</code> 时，必须保障*<em>子表外键的那个字段没有设置为 <code>NOT NULL</code> *</em></p>
+<h3 id="RESTRICT-【限制】"><a href="#RESTRICT-【限制】" class="headerlink" title="RESTRICT 【限制】"></a><code>RESTRICT</code> 【限制】</h3><p>如果在伏笔啊哦中删除和更新数据，子表拒绝删除或更新对应字段内容。</p>
+<h3 id="NO-ACTION【无动作】"><a href="#NO-ACTION【无动作】" class="headerlink" title="NO ACTION【无动作】"></a><code>NO ACTION</code>【无动作】</h3><p><code>NO ACTION</code> 是标准SQL中的关键字，在mysql中<code>NO ACTION</code>和<code>RESTRICT</code>的作用相同，都是在在修改或者删除之前去检查从表中是否有对应的数据，如果有，拒绝操作。</p>
+<p>但是有些数据库系统会有延迟检查功能，会导致NO Action 会延迟检查是否有对应数据，但是<strong>MYSQL外键的检查是立即执行的，所以RESTRICT和NO ACTION是完全相同的</strong></p>
+<h3 id="SET-DEFAULT"><a href="#SET-DEFAULT" class="headerlink" title="SET DEFAULT"></a><code>SET DEFAULT</code></h3><p>需要注意的是，set default只是MySQL 解析器认可，但是InnoDB和NDB 拒绝在定义表时，出现ON DELETE SET DEFAULT or ON UPDATE SET DEFAULT 语句。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+<div>
+      
+</div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/07/10/2019-07-10-SpringBoot的日志/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2309,207 +2506,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/06/19/2019-06-19-设计模式之状态模式/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="NanYin">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NanYin的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/06/19/2019-06-19-设计模式之状态模式/" itemprop="url">设计模式之状态模式</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-06-19T12:00:00Z">
-                2019-06-19
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/设计模式/" itemprop="url" rel="index">
-                    <span itemprop="name">设计模式</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  575
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  2
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="设计模式之状态模式"><a href="#设计模式之状态模式" class="headerlink" title="设计模式之状态模式"></a>设计模式之状态模式</h1><p>状态模式是对象的行为模式。状态模式允许一个对象在其内部状态改变的时候改变其行为。这个对象看上去就像是改变了它的类一样。</p>
-<h2 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h2><ul>
-<li>对象的行为取决于其状态，并且必须根据该状态在运行时更改其行为。</li>
-<li>通常，几个操作将包含相同的条件结构。State模式将条件的每个分支放在一个单独的类中。可以将对象的状态视为一个对象，它可以独立于其他对象而变化</li>
-</ul>
-<p>概括来说，状态模式将行为包装到具体的状态对象中。每个状态对象是抽象状态的子类。状态模式意图是在改变对象的内部状态的时候，行为随之改变。</p>
-<h2 id="模式结构"><a href="#模式结构" class="headerlink" title="模式结构"></a>模式结构</h2><p>状态模式分为三种结构：环境角色、抽象状态角色、具体状态角色</p>
-<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618203143.png" alt="状态模式结构图"></p>
-<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><p>电灯有两种基本行为 开启、关闭。但是有两个状态，正常和坏掉的状态。将共同的行为封装到统一的状态接口中，再根据不同的状态，创建子类完成不同状态形成不同的行为。</p>
-<p>灯再正常状态下能够正常开启，正常关闭。等在坏掉的状态下，不能开启和关闭。状态模式就是根据这个逻辑抽离行为，将具体行为包装到具体状态对象中。</p>
-<h3 id="抽象状态角色"><a href="#抽象状态角色" class="headerlink" title="抽象状态角色"></a>抽象状态角色</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">State</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">open</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">close</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="具体状态角色"><a href="#具体状态角色" class="headerlink" title="具体状态角色"></a>具体状态角色</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">NormalState</span> <span class="keyword">implements</span> <span class="title">State</span></span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">open</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"电灯开了！"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">close</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"电灯关了！"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ErrorState</span> <span class="keyword">implements</span> <span class="title">State</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">open</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"电灯开不了！"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">close</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"电灯关不了！"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="环境角色"><a href="#环境角色" class="headerlink" title="环境角色"></a>环境角色</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Context</span> </span>&#123;</span><br><span class="line">    <span class="comment">//状态参数</span></span><br><span class="line">    State state;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Context</span><span class="params">(State state)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.state = state;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">requestToOpen</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        state.open();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">requestToClose</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        state.close();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//状态变化</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">changeStageTo</span><span class="params">(State state)</span></span>&#123;</span><br><span class="line">       <span class="keyword">this</span>.state = state;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="客户端测试"><a href="#客户端测试" class="headerlink" title="客户端测试"></a>客户端测试</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">App</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Context context = <span class="keyword">new</span> Context(<span class="keyword">new</span> NormalState());</span><br><span class="line">        context.requestToOpen();</span><br><span class="line">        context.requestToClose();</span><br><span class="line">        <span class="comment">//将状态变更为坏的状态</span></span><br><span class="line">        context.changeStageTo(<span class="keyword">new</span> ErrorState());</span><br><span class="line">        context.requestToOpen();</span><br><span class="line">        context.requestToClose();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-<div>
-      
-</div>
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/4/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/11/">11</a><a class="extend next" rel="next" href="/page/4/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2557,7 +2558,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">100</span>
+                  <span class="site-state-item-count">101</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2631,6 +2632,10 @@
              
              
                <li>
+                 <a href="/2020/03/29/线程生命周期/" title="线程生命周期" target="_blank">线程生命周期</a>
+               </li>
+             
+               <li>
                  <a href="/2020/03/28/位运算/" title="Java中的位运算" target="_blank">Java中的位运算</a>
                </li>
              
@@ -2644,10 +2649,6 @@
              
                <li>
                  <a href="/2020/03/05/SpringBoot整合JPA使用/" title="SpringBoot整合JPA使用" target="_blank">SpringBoot整合JPA使用</a>
-               </li>
-             
-               <li>
-                 <a href="/2020/01/17/Spring从零开始之源码分析（四）/" title="Spring的Bean的实例化" target="_blank">Spring的Bean的实例化</a>
                </li>
              
            </ul>
@@ -2696,7 +2697,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共115.3k字</span>
+  <span class="post-count">博客全站共115.9k字</span>
 </div>
 
 

@@ -304,7 +304,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/01/04/2019-01-25-过程问题/">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/01/29/2019-01-29-基本Llinux命令(必须掌握)/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="NanYin">
@@ -323,7 +323,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/01/04/2019-01-25-过程问题/" itemprop="url">SpringBoot过程问题</a></h1>
+                <a class="post-title-link" href="/2019/01/29/2019-01-29-基本Llinux命令(必须掌握)/" itemprop="url">Linux常用命令整理</a></h1>
         
 
         <div class="post-meta">
@@ -335,8 +335,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-04T12:00:00Z">
-                2019-01-04
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-29T12:00:00Z">
+                2019-01-29
               </time>
             
 
@@ -358,8 +358,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Spring/" itemprop="url" rel="index">
-                    <span itemprop="name">Spring</span>
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
                   </a>
                 </span>
 
@@ -389,7 +389,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  1.5k
+                  1.4k
                 </span>
               
 
@@ -405,7 +405,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  6
+                  5
                 </span>
               
             </div>
@@ -428,117 +428,198 @@
       
         
           
-            <h1 id="SpringBoot过程问题"><a href="#SpringBoot过程问题" class="headerlink" title="SpringBoot过程问题"></a>SpringBoot过程问题</h1><h2 id="spring注解相关"><a href="#spring注解相关" class="headerlink" title="spring注解相关"></a>spring注解相关</h2><h3 id="RestController"><a href="#RestController" class="headerlink" title="@RestController"></a><code>@RestController</code></h3><p>​    <code>@RestController</code> 是<code>spring 4.0</code>来引入的简化的<code>RESTful WEB</code>应用的创建，是一个结合<code>@Constroller</code>和<code>@ResponseBody</code>的注解，不用每个类都使用<code>ResponseBody</code>注解来达到处理请求的目的。</p>
-<p>​    控制器使用<code>@RestController</code>注释进行注释，因此不需要<code>@ResponseBody</code>。</p>
-<h3 id="RequestMapping"><a href="#RequestMapping" class="headerlink" title="@RequestMapping"></a><code>@RequestMapping</code></h3><p><code>@RequestMapping</code>的注解中的参数：</p>
-<p>name ： 在4.0后引入的，开始我错把name当value用，结果出现 <code>[java.lang.IllegalStateException: Ambiguous mapping found. Cannot map &#39;appController&#39; bean method]</code> 类似这种错误。其实name就是一个名字而已,没有什么特殊含义，但是官方文档中指出 <code>在类型级别和方法级别支持！在两个级别上使用时，组合名称通过串联以“＃”作为分隔符派生</code> 。使用上，官方说明是主要可以通过使用Spring jsp tag包里面的mvcUrl，来生成jsp到controller的链接。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">@RequestMapping(&quot;/people&quot;)</span><br><span class="line"> class PersonController &#123;</span><br><span class="line"></span><br><span class="line">   @RequestMapping(&quot;/&#123;id&#125;&quot;)</span><br><span class="line">   public HttpEntity getPerson(@PathVariable String id) &#123; ... &#125;</span><br><span class="line"></span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;%@ taglib uri=&quot;http://www.springframework.org/tags&quot; prefix=&quot;s&quot; %&gt;</span><br><span class="line"></span><br><span class="line"> &lt;a href=&quot;$&#123;s:mvcUrl(&apos;PC#getPerson&apos;).arg(0,&quot;123&quot;).build()&#125;&quot;&gt;Get Person&lt;/a&gt;</span><br></pre></td></tr></table></figure>
-
-<p>value:用来表示主要映射,是常用的</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">@RequestMapping(value = &quot;/user&quot;,method = RequestMethod.GET,produces = &quot;application/json&quot;)</span><br><span class="line">    public @ResponseBody</span><br><span class="line">    List&lt;User&gt; findUsers() &#123;</span><br><span class="line">        return userService.findUsers();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
-<p>path: 指定访问的uri地址</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">@RequestMapping(path = &quot;/user&quot;,method = RequestMethod.POST,name = &quot;this is user`s post methods&quot;)</span><br><span class="line">    public String insertUser()&#123;</span><br><span class="line">        userService.saveUser();</span><br><span class="line">        return null;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
-<p>method:映射的HTTP的访问方法，有GET, POST, HEAD, OPTIONS, PUT, PATCH, DELETE, TRACE</p>
-<p>consumes： 指定<strong>处理请求的提交内容类型（Content-Type）</strong>，例如application/json, text/html;</p>
-<p>produces: 指定<strong>返回的内容类型</strong>，仅当request请求头中的(Accept)类型中包含该指定类型才返回；</p>
-<p>params： 指定request中必须包含某些参数值时，才让该方法处理。</p>
-<p>headers： 指定request中必须包含某些指定的header值，才能让该方法处理请求。</p>
-<h3 id="Jpa常用注解"><a href="#Jpa常用注解" class="headerlink" title="Jpa常用注解"></a><code>Jpa</code>常用注解</h3><h4 id="Entity"><a href="#Entity" class="headerlink" title="@Entity"></a>@Entity</h4><p>标注在类外侧，标注着这个类是一个实体类。</p>
-<h4 id="Table"><a href="#Table" class="headerlink" title="@Table"></a><code>@Table</code></h4><p>​    标注在类外侧，标注实体的主表，其中有 <code>catalog</code>,<code>indexes</code>, <code>name</code>, <code>schema</code>，分别注明为：指定database的目录，索引，名称，和表的结构描述 </p>
-<p>​    注意：schema定义了表、每个表的字段，还有表和字段之间的关系。 </p>
-<h4 id="Id"><a href="#Id" class="headerlink" title="@Id"></a>@Id</h4><p>表示是实体类的主键</p>
-<h4 id="GeneratedValue"><a href="#GeneratedValue" class="headerlink" title="@GeneratedValue"></a>@GeneratedValue</h4><p>​    提供主键的值得生成策略规范。GeneratedValue注释可以与Id注释一起应用于实体或映射超类的主键属性或字段，派生主键不支持该注解。提供两个可选值：1. <a href="https://docs.oracle.com/javaee/7/api/javax/persistence/GeneratedValue.html#generator--" target="_blank" rel="noopener">generator</a> ：要在SequenceGenerator或TableGenerator注解中指定的主键生成器的名称。2. <a href="https://docs.oracle.com/javaee/7/api/javax/persistence/GeneratedValue.html#strategy--" target="_blank" rel="noopener">strategy</a> 生成策略，有四个可选值AUTO,INDENTITY,SEQUENCE 和 TABLE ，默认为AUTO</p>
-<h4 id="Column"><a href="#Column" class="headerlink" title="@Column"></a>@Column</h4><p>指定持久属性或字段的映射列。如果未指定Column注释，则应用默认值。</p>
-<p><a href="https://docs.oracle.com/javaee/7/api/javax/persistence/Column.html#updatable--" target="_blank" rel="noopener">updatable</a>：是否包含在框架自动生成的update语句中。</p>
-<p>其他可以通过例子一看便知：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">@Column(name=&quot;description&quot;, nullable=false, length=512)</span><br><span class="line">public String getDescription() &#123; return description; &#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="Transient"><a href="#Transient" class="headerlink" title="@Transient"></a>@Transient</h4><p><code>@Transient</code>表示该属性并非一个到数据库表的字段的映射,<code>ORM</code>框架将忽略该属性.<br>如果一个属性并非数据库表的字段映射,就<strong>务必</strong>将其标示为<code>@Transient</code>,否则,<code>ORM</code>框架默认其注解为<code>@Basic</code>.</p>
-<h4 id="ManyToOne"><a href="#ManyToOne" class="headerlink" title="@ManyToOne"></a>@ManyToOne</h4><p>表示一个多对一的映射,该注解标注的属性通常是数据库表的外键</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">//订单Order和用户User是一个ManyToOne的关系</span><br><span class="line">//在Order类中定义</span><br><span class="line">@ManyToOne()</span><br><span class="line">@JoinColumn(name=”USER”)</span><br><span class="line">public User getUser() &#123;</span><br><span class="line">    return user;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="JoinColumn"><a href="#JoinColumn" class="headerlink" title="@JoinColumn"></a>@JoinColumn</h4><p>​    指定用于连接实体关联或元素集合的列。如果JoinColumn注解本身是默认的，则假定使用单个连接列并应用默认值。其默认的名称为实体User的名称+下划线+实体User的主键名称。也就是USER_ID.</p>
-<h4 id="OneToMany"><a href="#OneToMany" class="headerlink" title="@OneToMany"></a>@OneToMany</h4><p>@OneToMany描述一个一对多的关联,该属性应该为集体类型,在数据库中并没有实际字段.例如:实体User和Order是OneToMany的关系,则实体User被删除时,其关联的实体Order也应该被全部删除</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@OneTyMany(cascade=ALL)</span><br><span class="line">public List getOrders() &#123;</span><br><span class="line">    return orders;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="OneToOne"><a href="#OneToOne" class="headerlink" title="@OneToOne"></a>@OneToOne</h4><p>描述一对一的关系</p>
-<p>如User表和person表，一个是基本信息一个是详细信息</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@OneToOne(fetch=FetchType.LAZY) // Fetch是抓取策略，如果不写，自动的策略是LAZY</span><br><span class="line">public Person getPerson() &#123;</span><br><span class="line">    return person;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="ManyToMany"><a href="#ManyToMany" class="headerlink" title="@ManyToMany"></a>@ManyToMany</h4><p>@ManyToMany 描述一个多对多的关联.多对多关联上是两个一对多关联,但是在ManyToMany描述中,中间表是由ORM框架自动处理</p>
-<h4 id="Embedded"><a href="#Embedded" class="headerlink" title="@Embedded"></a>@Embedded</h4><p>@Embedded将几个字段组合成一个类,并作为整个Entity的一个属性.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">@Embeddable</span><br><span class="line">public class Address &#123;city,street,zip&#125;</span><br><span class="line">    @Entity</span><br><span class="line">public class User &#123;</span><br><span class="line">    @Embedded</span><br><span class="line">    public Address getAddress() &#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<table>
-<thead>
-<tr>
-<th>注解</th>
-<th><strong>说明</strong></th>
-</tr>
-</thead>
-<tbody><tr>
-<td>@Null</td>
-<td>被注释的元素必须为 null</td>
-</tr>
-<tr>
-<td>@NotNull</td>
-<td>被注释的元素必须不为 null</td>
-</tr>
-<tr>
-<td>@AssertTrue</td>
-<td>被注释的元素必须为 true</td>
-</tr>
-<tr>
-<td>@Min(value)</td>
-<td>被注释的元素必须是一个数字，其值必须大于等于指定的最小值,同理@Max(value)</td>
-</tr>
-<tr>
-<td>@DecimalMin(value)</td>
-<td>被注释的元素必须是一个数字，其值必须大于等于指定的最小值，同理@DecimalMax(value)</td>
-</tr>
-<tr>
-<td>@Size(max=, min=)</td>
-<td>被注释的元素的大小必须在指定的范围内</td>
-</tr>
-<tr>
-<td>@Past</td>
-<td>被注释的元素必须是一个过去的日期，同理@Future</td>
-</tr>
-<tr>
-<td>@Pattern(regex=,flag=)</td>
-<td>符合正则</td>
-</tr>
-<tr>
-<td>Hibernate Validator 附加的 constraint</td>
-<td></td>
-</tr>
-<tr>
-<td>@NotBlank(message =)</td>
-<td>验证字符串非null，且长度必须大于0，message表示提示信息</td>
-</tr>
-<tr>
-<td>@Email</td>
-<td>邮箱验证</td>
-</tr>
-<tr>
-<td>@Range(min=,max=,message=)</td>
-<td>被注释的元素必须在合适的范围内</td>
-</tr>
-<tr>
-<td></td>
-<td></td>
-</tr>
-</tbody></table>
-<h2 id="spring-boot-配置问题"><a href="#spring-boot-配置问题" class="headerlink" title="spring boot 配置问题"></a>spring boot 配置问题</h2><h3 id="spring2-0后静态资源访问不到的问题"><a href="#spring2-0后静态资源访问不到的问题" class="headerlink" title="spring2.0后静态资源访问不到的问题"></a>spring2.0后静态资源访问不到的问题</h3><p>需要手动写配置类进行静态资源配置</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">@Configuration</span><br><span class="line">public class WebMvcConfig implements WebMvcConfigurer &#123;</span><br><span class="line">    /**</span><br><span class="line">     * 添加静态资源文件，外部可以直接访问地址</span><br><span class="line">     * @param registry</span><br><span class="line">     */</span><br><span class="line">    @Override</span><br><span class="line">    public void addResourceHandlers(ResourceHandlerRegistry registry) &#123;</span><br><span class="line">        registry.addResourceHandler(&quot;/static/**&quot;).addResourceLocations(&quot;classpath:/static/&quot;);</span><br><span class="line">        registry.addResourceHandler(&quot;/templates/**&quot;).addResourceLocations(&quot;classpath:/templates/&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="配置SpringBoot-Jpa默认mysql生成表引擎为InnoDB"><a href="#配置SpringBoot-Jpa默认mysql生成表引擎为InnoDB" class="headerlink" title="配置SpringBoot Jpa默认mysql生成表引擎为InnoDB"></a>配置<code>SpringBoot Jpa</code>默认<code>mysql</code>生成表引擎为<code>InnoDB</code></h3><p>在配置文件<code>appliction.properties</code>中加入</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">spring.jpa.database-platform=org.hibernate.dialect.MySQL5InnoDBDialect</span><br></pre></td></tr></table></figure>
-
+            <h1 id="linux中必须掌握的基本命令"><a href="#linux中必须掌握的基本命令" class="headerlink" title="linux中必须掌握的基本命令"></a>linux中必须掌握的基本命令</h1><p>在开始前，我推荐安装 <a href="https://github.com/tldr-pages/tldr" target="_blank" rel="noopener">trdr（too long dont read）</a>工具，用来简化man命令，来实现查看命令含义和用法的作用。</p>
+<h2 id="一-、系统工作命令"><a href="#一-、系统工作命令" class="headerlink" title="一 、系统工作命令"></a>一 、系统工作命令</h2><ol>
+<li><p><code>echo</code></p>
+<p><code>echo</code>命令一般用于shell中打印变量或者字符串的作用，主要用来显示和提醒。</p>
+<ul>
+<li>输出一段信息 如：<code>echo &quot;hello world&quot;</code> 其中<code>&quot;</code>不是必须的 </li>
+<li>输出一段带环境变量的信息 如：<code>echo &quot;My Path is $PATH&quot;</code> </li>
+<li>输出并不带换行符号 如：<code>echo  -n &quot;Hello World&quot;</code></li>
+<li>输出一段激活转依字符 如： <code>echo -e &quot;Column 1 \t Column 2&quot;</code></li>
+</ul>
+</li>
+<li><p><code>date</code> </p>
+<p><code>date</code> 命令主要用来设置和打印系统时间。</p>
+<ul>
+<li>输出默认时区格式的事件 <code>date +&quot;%c&quot;</code></li>
+<li>输出当前事件按照UTC和iso格式输出 <code>date -u +&quot;%Y-%m-%dT%H:%M:%SZ&quot;</code></li>
+<li>输出事件戳 <code>date +&quot;%s&quot;</code></li>
+</ul>
+</li>
+<li><p><code>reboot</code> 命令主要用来重启系统</p>
+<ul>
+<li>重启系统 <code>reboot</code></li>
+<li>强制重启 <code>reboot -f</code></li>
+</ul>
+</li>
+<li><p><code>poweroff</code> 命令用户关机</p>
+</li>
+<li><p><code>wget</code> 命令 用于从web中下载文件，支持 <code>http</code>,<code>https</code>,<code>ftp</code></p>
+<ul>
+<li>获取URL中的内容到<code>foo</code>中 <code>wget https://example.com/foo</code></li>
+<li>获取URL中的内容到bar中 <code>wget -O bar https://example.com/foo</code></li>
+<li>继续未完成的下载 <code>wget -c https://example.com</code></li>
+<li>后台下载 <code>wget -q https://example.com</code></li>
+</ul>
+</li>
+<li><p><code>ps</code>命令主要用于查看正在运行的进程的信息</p>
+<ul>
+<li>打印全部正在执行的进程 <code>ps aux</code></li>
+<li>打印全部正在执行的进程并且伴有完整的命令串 <code>ps auxww</code></li>
+<li>通过 <code>grep</code> 管道过滤 <code>ps aux | grep &quot;tomcat&quot;</code></li>
+<li>得到进程的父进程<code>pid</code> :<code>ps -o ppid= -p pid</code> </li>
+</ul>
+</li>
+<li><p><code>top</code>命令 主要用户动态的实时的显示正在运行的程序</p>
+<ul>
+<li><code>top -i</code> 不显示空闲或者是僵尸进程</li>
+<li><code>top -u $user</code> 显示指定用户的进程 </li>
+<li><code>top -p PID</code> 只显示指定进程PID</li>
+<li><code>top -p $(pgrep -d &#39;,&#39; process_name)</code> 通过进程名来查询</li>
+</ul>
+</li>
+<li><p><code>pidof</code> 命令主要用于查找指定进程的id号</p>
+<ul>
+<li><code>pidof -s</code> 进返回一个进程号</li>
+<li><code>pidof</code> -c 仅显示具有相同root目录下的进程</li>
+</ul>
+</li>
+</ol>
+<h2 id="二、系统状态"><a href="#二、系统状态" class="headerlink" title="二、系统状态"></a>二、系统状态</h2><ol>
+<li><code>ifconfig</code> 命令主要用于网络接口的查看和配置</li>
+</ol>
+<ul>
+<li><code>Ifconfig eth0</code> 查看etho0接口网络设置</li>
+<li><code>ifconfig -a</code> 查看所有接口的详细信息</li>
+<li><code>ifconfig eth0 down</code> 关闭接口eth0</li>
+<li><code>ifconfig eth0 ipaddr</code> 设置端口ip地址</li>
+</ul>
+<ol start="2">
+<li><code>uname</code> 打印出现当前机器和系统的相关信息</li>
+</ol>
+<ul>
+<li><code>uname -n</code> 打印当前的<code>hostname</code></li>
+<li><code>uname -a</code> 打印当前可用的系统的信息，包括硬件软件。</li>
+</ul>
+<ol start="3">
+<li><code>who</code> 打印哪些用户登录再这台机器上</li>
+</ol>
+<ul>
+<li><code>who</code> 显示<code>username</code>等比较全的信息</li>
+<li><code>who am i</code> 打印出当前用户 </li>
+</ul>
+<ol start="4">
+<li><code>last</code> 用于查看当前用户最近的登录信息</li>
+</ol>
+<h2 id="三、文件和目录"><a href="#三、文件和目录" class="headerlink" title="三、文件和目录"></a>三、文件和目录</h2><ol>
+<li><p><code>pwd</code> 用于打印当前目录</p>
+</li>
+<li><p><code>cd</code> 用于切换目录</p>
+</li>
+<li><p><code>ls</code> 用于罗列目录下的文件或者文件夹</p>
+</li>
+</ol>
+<ul>
+<li><code>ls -l</code>按行罗列文件或文件夹</li>
+<li><code>ls -a</code> 显示所有文件，包括隐藏的文件。</li>
+<li><code>ls -lh</code> 按照大小排泄排列</li>
+</ul>
+<ol start="4">
+<li><code>touch</code> 命令主要用于改变文件的访问时间和修改时间。</li>
+</ol>
+<ul>
+<li><code>touch filename</code> 以当前时间创建文件</li>
+<li><code>touch -t yyyy-mm-dd filename</code> 以某一时间来改变文件时间</li>
+</ul>
+<ol start="5">
+<li><code>mkdir</code> 命令主要用于创建文件</li>
+</ol>
+<ul>
+<li><code>mkdir dir</code> 创建文件夹</li>
+<li><code>mkdir -p /path/dir</code> 创建指定路径下的文件</li>
+</ul>
+<ol start="6">
+<li><code>cp</code> 命令主要用于文件的复制</li>
+</ol>
+<ul>
+<li><code>cp path/to/file.ext path/to/copy.ext</code> 复制文件到另一个地址</li>
+<li><code>cp path/to/file.ext path/to/target_parent_directory</code> 复制文件到指定地址，并且保持文件名不变</li>
+<li><code>cp -r path/to/directory path/to/copy</code> 递归的复制整个文件夹及其中的内容到指定目录</li>
+<li><code>cp -i *.txt path/to/target_directory</code> 以交互的模式复制文件到指定文件夹中</li>
+</ul>
+<ol start="7">
+<li><code>mv</code> 命令主要用于移动文件</li>
+</ol>
+<ul>
+<li><code>mv source target</code> 移动文件</li>
+<li><code>mv -f</code> 强制移动，覆盖现有文件时不要提示</li>
+</ul>
+<ol start="8">
+<li><code>rm</code>命令主要用于删除文件</li>
+</ol>
+<ul>
+<li><code>rm path/to/file path/to/another/file</code> 删除特定文件夹中的文件</li>
+<li><code>rm -r path/to/directory</code> 递归删除文件夹及文件夹中的文件</li>
+<li><code>rm -rf</code> 递归删除，并且不要提示信息</li>
+</ul>
+<ol start="9">
+<li><code>dd</code> 命令主要用于转化和复制文件,制作usb镜像</li>
+</ol>
+<ul>
+<li>Clone a drive to another drive with 4MB block and ignore error <code>dd if=/dev/source_drive of=/dev/dest_drive bs=4m conv=noerror</code></li>
+</ul>
+<ol start="10">
+<li><code>file</code>命令主要用于确定文件类型</li>
+</ol>
+<ul>
+<li><code>file filename</code> 输出文件类型</li>
+<li><code>file -s filename</code> 用于特殊的文件或者设备文件。</li>
+</ul>
+<h2 id="四、文本编辑命令"><a href="#四、文本编辑命令" class="headerlink" title="四、文本编辑命令"></a>四、文本编辑命令</h2><ol>
+<li><code>cat</code> 打印和串联文件</li>
+</ol>
+<ul>
+<li><code>cat file</code> 打印文件内容到标准输出</li>
+<li><code>cat file1 file2  &gt; targetFile</code> 将多个文件内容串联到目标文件中</li>
+<li><code>cat -n file</code> 打印出行数到标准输出</li>
+</ul>
+<ol start="2">
+<li><code>more</code> 用于互动的阅读文件内容，可以上下滚动</li>
+</ol>
+<ul>
+<li><code>more file</code> 打开文件，<code>&lt;space&gt;</code>用于移动到下一页，<code>/</code>用于搜索文件内容， <code>q</code>用于退出当前界面</li>
+</ul>
+<ol start="3">
+<li><code>head</code> 输出文件开始的部分</li>
+</ol>
+<ul>
+<li><code>head -n count_of_line filename</code> 查看文件的前n行</li>
+<li><code>head -c number_of_byte filename</code> 查看文件的前n个字节</li>
+</ul>
+<ol start="4">
+<li><code>tail</code> 输出文件最后的部分</li>
+</ol>
+<ul>
+<li><code>tail -n num file</code>打印出文件最后num行 </li>
+<li><code>tail -n +num file</code> 打印出文件从num开始的几行</li>
+<li><code>tail -f file</code> 保持阅读状态直到 <code>Ctrl + c</code></li>
+</ul>
+<ol start="5">
+<li><code>wc</code>命令用于统计文件的单词，字节，行数 </li>
+</ol>
+<ul>
+<li><code>wc -l filename</code> 统计文件的行数</li>
+<li><code>wc -w filename</code> 统计文件的字数</li>
+<li><code>wc -c filename</code> 统计文件的字节数</li>
+</ul>
+<ol start="6">
+<li><code>显示文件的状态</code> </li>
+</ol>
+<ul>
+<li><code>stat filename</code> 显示文件的属性比如大小，权限等。</li>
+<li><code>stat -x filename</code>格式化显示文件的详细属性信息。</li>
+</ul>
 
           
         
@@ -1235,6 +1316,295 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/01/04/2019-01-25-过程问题/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="NanYin">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NanYin的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/01/04/2019-01-25-过程问题/" itemprop="url">SpringBoot过程问题</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-04T12:00:00Z">
+                2019-01-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Spring/" itemprop="url" rel="index">
+                    <span itemprop="name">Spring</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  1.5k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  6
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="SpringBoot过程问题"><a href="#SpringBoot过程问题" class="headerlink" title="SpringBoot过程问题"></a>SpringBoot过程问题</h1><h2 id="spring注解相关"><a href="#spring注解相关" class="headerlink" title="spring注解相关"></a>spring注解相关</h2><h3 id="RestController"><a href="#RestController" class="headerlink" title="@RestController"></a><code>@RestController</code></h3><p>​    <code>@RestController</code> 是<code>spring 4.0</code>来引入的简化的<code>RESTful WEB</code>应用的创建，是一个结合<code>@Constroller</code>和<code>@ResponseBody</code>的注解，不用每个类都使用<code>ResponseBody</code>注解来达到处理请求的目的。</p>
+<p>​    控制器使用<code>@RestController</code>注释进行注释，因此不需要<code>@ResponseBody</code>。</p>
+<h3 id="RequestMapping"><a href="#RequestMapping" class="headerlink" title="@RequestMapping"></a><code>@RequestMapping</code></h3><p><code>@RequestMapping</code>的注解中的参数：</p>
+<p>name ： 在4.0后引入的，开始我错把name当value用，结果出现 <code>[java.lang.IllegalStateException: Ambiguous mapping found. Cannot map &#39;appController&#39; bean method]</code> 类似这种错误。其实name就是一个名字而已,没有什么特殊含义，但是官方文档中指出 <code>在类型级别和方法级别支持！在两个级别上使用时，组合名称通过串联以“＃”作为分隔符派生</code> 。使用上，官方说明是主要可以通过使用Spring jsp tag包里面的mvcUrl，来生成jsp到controller的链接。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">@RequestMapping(&quot;/people&quot;)</span><br><span class="line"> class PersonController &#123;</span><br><span class="line"></span><br><span class="line">   @RequestMapping(&quot;/&#123;id&#125;&quot;)</span><br><span class="line">   public HttpEntity getPerson(@PathVariable String id) &#123; ... &#125;</span><br><span class="line"></span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;%@ taglib uri=&quot;http://www.springframework.org/tags&quot; prefix=&quot;s&quot; %&gt;</span><br><span class="line"></span><br><span class="line"> &lt;a href=&quot;$&#123;s:mvcUrl(&apos;PC#getPerson&apos;).arg(0,&quot;123&quot;).build()&#125;&quot;&gt;Get Person&lt;/a&gt;</span><br></pre></td></tr></table></figure>
+
+<p>value:用来表示主要映射,是常用的</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">@RequestMapping(value = &quot;/user&quot;,method = RequestMethod.GET,produces = &quot;application/json&quot;)</span><br><span class="line">    public @ResponseBody</span><br><span class="line">    List&lt;User&gt; findUsers() &#123;</span><br><span class="line">        return userService.findUsers();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>path: 指定访问的uri地址</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">@RequestMapping(path = &quot;/user&quot;,method = RequestMethod.POST,name = &quot;this is user`s post methods&quot;)</span><br><span class="line">    public String insertUser()&#123;</span><br><span class="line">        userService.saveUser();</span><br><span class="line">        return null;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>method:映射的HTTP的访问方法，有GET, POST, HEAD, OPTIONS, PUT, PATCH, DELETE, TRACE</p>
+<p>consumes： 指定<strong>处理请求的提交内容类型（Content-Type）</strong>，例如application/json, text/html;</p>
+<p>produces: 指定<strong>返回的内容类型</strong>，仅当request请求头中的(Accept)类型中包含该指定类型才返回；</p>
+<p>params： 指定request中必须包含某些参数值时，才让该方法处理。</p>
+<p>headers： 指定request中必须包含某些指定的header值，才能让该方法处理请求。</p>
+<h3 id="Jpa常用注解"><a href="#Jpa常用注解" class="headerlink" title="Jpa常用注解"></a><code>Jpa</code>常用注解</h3><h4 id="Entity"><a href="#Entity" class="headerlink" title="@Entity"></a>@Entity</h4><p>标注在类外侧，标注着这个类是一个实体类。</p>
+<h4 id="Table"><a href="#Table" class="headerlink" title="@Table"></a><code>@Table</code></h4><p>​    标注在类外侧，标注实体的主表，其中有 <code>catalog</code>,<code>indexes</code>, <code>name</code>, <code>schema</code>，分别注明为：指定database的目录，索引，名称，和表的结构描述 </p>
+<p>​    注意：schema定义了表、每个表的字段，还有表和字段之间的关系。 </p>
+<h4 id="Id"><a href="#Id" class="headerlink" title="@Id"></a>@Id</h4><p>表示是实体类的主键</p>
+<h4 id="GeneratedValue"><a href="#GeneratedValue" class="headerlink" title="@GeneratedValue"></a>@GeneratedValue</h4><p>​    提供主键的值得生成策略规范。GeneratedValue注释可以与Id注释一起应用于实体或映射超类的主键属性或字段，派生主键不支持该注解。提供两个可选值：1. <a href="https://docs.oracle.com/javaee/7/api/javax/persistence/GeneratedValue.html#generator--" target="_blank" rel="noopener">generator</a> ：要在SequenceGenerator或TableGenerator注解中指定的主键生成器的名称。2. <a href="https://docs.oracle.com/javaee/7/api/javax/persistence/GeneratedValue.html#strategy--" target="_blank" rel="noopener">strategy</a> 生成策略，有四个可选值AUTO,INDENTITY,SEQUENCE 和 TABLE ，默认为AUTO</p>
+<h4 id="Column"><a href="#Column" class="headerlink" title="@Column"></a>@Column</h4><p>指定持久属性或字段的映射列。如果未指定Column注释，则应用默认值。</p>
+<p><a href="https://docs.oracle.com/javaee/7/api/javax/persistence/Column.html#updatable--" target="_blank" rel="noopener">updatable</a>：是否包含在框架自动生成的update语句中。</p>
+<p>其他可以通过例子一看便知：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">@Column(name=&quot;description&quot;, nullable=false, length=512)</span><br><span class="line">public String getDescription() &#123; return description; &#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="Transient"><a href="#Transient" class="headerlink" title="@Transient"></a>@Transient</h4><p><code>@Transient</code>表示该属性并非一个到数据库表的字段的映射,<code>ORM</code>框架将忽略该属性.<br>如果一个属性并非数据库表的字段映射,就<strong>务必</strong>将其标示为<code>@Transient</code>,否则,<code>ORM</code>框架默认其注解为<code>@Basic</code>.</p>
+<h4 id="ManyToOne"><a href="#ManyToOne" class="headerlink" title="@ManyToOne"></a>@ManyToOne</h4><p>表示一个多对一的映射,该注解标注的属性通常是数据库表的外键</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">//订单Order和用户User是一个ManyToOne的关系</span><br><span class="line">//在Order类中定义</span><br><span class="line">@ManyToOne()</span><br><span class="line">@JoinColumn(name=”USER”)</span><br><span class="line">public User getUser() &#123;</span><br><span class="line">    return user;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="JoinColumn"><a href="#JoinColumn" class="headerlink" title="@JoinColumn"></a>@JoinColumn</h4><p>​    指定用于连接实体关联或元素集合的列。如果JoinColumn注解本身是默认的，则假定使用单个连接列并应用默认值。其默认的名称为实体User的名称+下划线+实体User的主键名称。也就是USER_ID.</p>
+<h4 id="OneToMany"><a href="#OneToMany" class="headerlink" title="@OneToMany"></a>@OneToMany</h4><p>@OneToMany描述一个一对多的关联,该属性应该为集体类型,在数据库中并没有实际字段.例如:实体User和Order是OneToMany的关系,则实体User被删除时,其关联的实体Order也应该被全部删除</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@OneTyMany(cascade=ALL)</span><br><span class="line">public List getOrders() &#123;</span><br><span class="line">    return orders;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="OneToOne"><a href="#OneToOne" class="headerlink" title="@OneToOne"></a>@OneToOne</h4><p>描述一对一的关系</p>
+<p>如User表和person表，一个是基本信息一个是详细信息</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@OneToOne(fetch=FetchType.LAZY) // Fetch是抓取策略，如果不写，自动的策略是LAZY</span><br><span class="line">public Person getPerson() &#123;</span><br><span class="line">    return person;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="ManyToMany"><a href="#ManyToMany" class="headerlink" title="@ManyToMany"></a>@ManyToMany</h4><p>@ManyToMany 描述一个多对多的关联.多对多关联上是两个一对多关联,但是在ManyToMany描述中,中间表是由ORM框架自动处理</p>
+<h4 id="Embedded"><a href="#Embedded" class="headerlink" title="@Embedded"></a>@Embedded</h4><p>@Embedded将几个字段组合成一个类,并作为整个Entity的一个属性.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">@Embeddable</span><br><span class="line">public class Address &#123;city,street,zip&#125;</span><br><span class="line">    @Entity</span><br><span class="line">public class User &#123;</span><br><span class="line">    @Embedded</span><br><span class="line">    public Address getAddress() &#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>注解</th>
+<th><strong>说明</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>@Null</td>
+<td>被注释的元素必须为 null</td>
+</tr>
+<tr>
+<td>@NotNull</td>
+<td>被注释的元素必须不为 null</td>
+</tr>
+<tr>
+<td>@AssertTrue</td>
+<td>被注释的元素必须为 true</td>
+</tr>
+<tr>
+<td>@Min(value)</td>
+<td>被注释的元素必须是一个数字，其值必须大于等于指定的最小值,同理@Max(value)</td>
+</tr>
+<tr>
+<td>@DecimalMin(value)</td>
+<td>被注释的元素必须是一个数字，其值必须大于等于指定的最小值，同理@DecimalMax(value)</td>
+</tr>
+<tr>
+<td>@Size(max=, min=)</td>
+<td>被注释的元素的大小必须在指定的范围内</td>
+</tr>
+<tr>
+<td>@Past</td>
+<td>被注释的元素必须是一个过去的日期，同理@Future</td>
+</tr>
+<tr>
+<td>@Pattern(regex=,flag=)</td>
+<td>符合正则</td>
+</tr>
+<tr>
+<td>Hibernate Validator 附加的 constraint</td>
+<td></td>
+</tr>
+<tr>
+<td>@NotBlank(message =)</td>
+<td>验证字符串非null，且长度必须大于0，message表示提示信息</td>
+</tr>
+<tr>
+<td>@Email</td>
+<td>邮箱验证</td>
+</tr>
+<tr>
+<td>@Range(min=,max=,message=)</td>
+<td>被注释的元素必须在合适的范围内</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<h2 id="spring-boot-配置问题"><a href="#spring-boot-配置问题" class="headerlink" title="spring boot 配置问题"></a>spring boot 配置问题</h2><h3 id="spring2-0后静态资源访问不到的问题"><a href="#spring2-0后静态资源访问不到的问题" class="headerlink" title="spring2.0后静态资源访问不到的问题"></a>spring2.0后静态资源访问不到的问题</h3><p>需要手动写配置类进行静态资源配置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">@Configuration</span><br><span class="line">public class WebMvcConfig implements WebMvcConfigurer &#123;</span><br><span class="line">    /**</span><br><span class="line">     * 添加静态资源文件，外部可以直接访问地址</span><br><span class="line">     * @param registry</span><br><span class="line">     */</span><br><span class="line">    @Override</span><br><span class="line">    public void addResourceHandlers(ResourceHandlerRegistry registry) &#123;</span><br><span class="line">        registry.addResourceHandler(&quot;/static/**&quot;).addResourceLocations(&quot;classpath:/static/&quot;);</span><br><span class="line">        registry.addResourceHandler(&quot;/templates/**&quot;).addResourceLocations(&quot;classpath:/templates/&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="配置SpringBoot-Jpa默认mysql生成表引擎为InnoDB"><a href="#配置SpringBoot-Jpa默认mysql生成表引擎为InnoDB" class="headerlink" title="配置SpringBoot Jpa默认mysql生成表引擎为InnoDB"></a>配置<code>SpringBoot Jpa</code>默认<code>mysql</code>生成表引擎为<code>InnoDB</code></h3><p>在配置文件<code>appliction.properties</code>中加入</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">spring.jpa.database-platform=org.hibernate.dialect.MySQL5InnoDBDialect</span><br></pre></td></tr></table></figure>
+
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+<div>
+      
+</div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/12/29/2018-12-18-Pop!_Os的Ibus输入法上方panel图标消失的问题/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1364,195 +1734,6 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ibus-daemon -drx</span><br></pre></td></tr></table></figure>
 
 <p>解决！！</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-<div>
-      
-</div>
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/11/09/2018-12-18-关于SpringMvc使用DELETE和PUT请求时405错误/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="NanYin">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NanYin的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/11/09/2018-12-18-关于SpringMvc使用DELETE和PUT请求时405错误/" itemprop="url">关于SpringMvc实现restFul时DELETE和PUT出现错误</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-08T22:05:00Z">
-                2018-11-08
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Java/" itemprop="url" rel="index">
-                    <span itemprop="name">Java</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  199
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  1
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="关于RESTful"><a href="#关于RESTful" class="headerlink" title="关于RESTful"></a>关于RESTful</h1><p>我理解的restful是一种风格，每一个url表示一个资源，一个资源不同的操作享用同一个接口，但是传输的状态是不同的，比如http中的POST,DELETE,PUT,GET。</p>
-<h1 id="再springMVC中实现RESTful"><a href="#再springMVC中实现RESTful" class="headerlink" title="再springMVC中实现RESTful"></a>再springMVC中实现RESTful</h1><ol>
-<li>web.xml中配置</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&lt;filter&gt;</span><br><span class="line">        &lt;filter-name&gt;HiddenHttpMethodFilter&lt;/filter-name&gt;</span><br><span class="line">        &lt;filter-class&gt;org.springframework.web.filter.HiddenHttpMethodFilter&lt;/filter-class&gt;</span><br><span class="line">    &lt;/filter&gt;</span><br><span class="line">    &lt;filter-mapping&gt;</span><br><span class="line">        &lt;filter-name&gt;HiddenHttpMethodFilter&lt;/filter-name&gt;</span><br><span class="line">        &lt;url-pattern&gt;/*&lt;/url-pattern&gt;</span><br><span class="line">    &lt;/filter-mapping&gt;</span><br><span class="line"></span><br><span class="line">    &lt;filter&gt;</span><br><span class="line">        &lt;filter-name&gt;HttpMethodFilter&lt;/filter-name&gt;</span><br><span class="line">        &lt;filter-class&gt;org.springframework.web.filter.HttpPutFormContentFilter&lt;/filter-class&gt;</span><br><span class="line">    &lt;/filter&gt;</span><br><span class="line">    &lt;filter-mapping&gt;</span><br><span class="line">        &lt;filter-name&gt;HttpMethodFilter&lt;/filter-name&gt;</span><br><span class="line">        &lt;url-pattern&gt;/*&lt;/url-pattern&gt;</span><br><span class="line">    &lt;/filter-mapping&gt;</span><br></pre></td></tr></table></figure>
-
-<ol start="2">
-<li>springmvc control层使用相应状态码来标识。</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">@RequestMapping(value = &quot;/navbarCategory/&#123;id&#125;&quot;, method = RequestMethod.DELETE)</span><br></pre></td></tr></table></figure>
-
 
           
         
@@ -1753,6 +1934,195 @@
 <h2 id="StringBuffer"><a href="#StringBuffer" class="headerlink" title="StringBuffer"></a>StringBuffer</h2><p>和StringBuilder一样，也是继承了AbstractStringBuilder类，但是看一个append这个方法的源码就能够知道有什么区别了</p>
 <h3 id="append方法-1"><a href="#append方法-1" class="headerlink" title="append方法"></a>append方法</h3><p>添加了synchronized关键字，使得变为线程安全的，但是代价就是效率不如StringBuilder高。</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> StringBuffer <span class="title">append</span><span class="params">(String str)</span> </span>&#123;</span><br><span class="line">    toStringCache = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">super</span>.append(str);</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+<div>
+      
+</div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/11/09/2018-12-18-关于SpringMvc使用DELETE和PUT请求时405错误/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="NanYin">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NanYin的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/11/09/2018-12-18-关于SpringMvc使用DELETE和PUT请求时405错误/" itemprop="url">关于SpringMvc实现restFul时DELETE和PUT出现错误</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-08T22:05:00Z">
+                2018-11-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  199
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  1
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="关于RESTful"><a href="#关于RESTful" class="headerlink" title="关于RESTful"></a>关于RESTful</h1><p>我理解的restful是一种风格，每一个url表示一个资源，一个资源不同的操作享用同一个接口，但是传输的状态是不同的，比如http中的POST,DELETE,PUT,GET。</p>
+<h1 id="再springMVC中实现RESTful"><a href="#再springMVC中实现RESTful" class="headerlink" title="再springMVC中实现RESTful"></a>再springMVC中实现RESTful</h1><ol>
+<li>web.xml中配置</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&lt;filter&gt;</span><br><span class="line">        &lt;filter-name&gt;HiddenHttpMethodFilter&lt;/filter-name&gt;</span><br><span class="line">        &lt;filter-class&gt;org.springframework.web.filter.HiddenHttpMethodFilter&lt;/filter-class&gt;</span><br><span class="line">    &lt;/filter&gt;</span><br><span class="line">    &lt;filter-mapping&gt;</span><br><span class="line">        &lt;filter-name&gt;HiddenHttpMethodFilter&lt;/filter-name&gt;</span><br><span class="line">        &lt;url-pattern&gt;/*&lt;/url-pattern&gt;</span><br><span class="line">    &lt;/filter-mapping&gt;</span><br><span class="line"></span><br><span class="line">    &lt;filter&gt;</span><br><span class="line">        &lt;filter-name&gt;HttpMethodFilter&lt;/filter-name&gt;</span><br><span class="line">        &lt;filter-class&gt;org.springframework.web.filter.HttpPutFormContentFilter&lt;/filter-class&gt;</span><br><span class="line">    &lt;/filter&gt;</span><br><span class="line">    &lt;filter-mapping&gt;</span><br><span class="line">        &lt;filter-name&gt;HttpMethodFilter&lt;/filter-name&gt;</span><br><span class="line">        &lt;url-pattern&gt;/*&lt;/url-pattern&gt;</span><br><span class="line">    &lt;/filter-mapping&gt;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>springmvc control层使用相应状态码来标识。</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">@RequestMapping(value = &quot;/navbarCategory/&#123;id&#125;&quot;, method = RequestMethod.DELETE)</span><br></pre></td></tr></table></figure>
 
 
           
@@ -2424,221 +2794,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/10/26/2018-10-24-Java中Deque及其子类/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="NanYin">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NanYin的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/10/26/2018-10-24-Java中Deque及其子类/" itemprop="url">Java中Deque和ArrayDeque</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-25T22:05:00Z">
-                2018-10-25
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Java/" itemprop="url" rel="index">
-                    <span itemprop="name">Java</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  871
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  3
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Java中Deque和ArrayDeque"><a href="#Java中Deque和ArrayDeque" class="headerlink" title="Java中Deque和ArrayDeque"></a>Java中Deque和ArrayDeque</h1><h2 id="Deque类"><a href="#Deque类" class="headerlink" title="Deque类"></a>Deque类</h2><p>一个线性的可在双端插入、删除节点的结构。他名字时Deque，实际上时“double ended queue”的简写；</p>
-<h2 id="ArrayDeque类"><a href="#ArrayDeque类" class="headerlink" title="ArrayDeque类"></a>ArrayDeque类</h2><p>对于ArrayDeque中的数组，它是一个逻辑上的循环数组，所谓循环是指元素到数组尾之后可以接着从数组头开始，数组的长度、第一个和最后一个元素都与head和tail这两个变量有关</p>
-<h3 id="构造方法"><a href="#构造方法" class="headerlink" title="构造方法"></a>构造方法</h3><p>ArrayDeque就像他的名字一样，使用Array数组来实现Deque结构。构造方法和以前提到的ArrayList相似。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">ArrayDeque</span><span class="params">()</span> </span>&#123;</span><br><span class="line"><span class="comment">// 初始化的数组大小是16</span></span><br><span class="line">        elements = <span class="keyword">new</span> Object[<span class="number">16</span>];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">ArrayDeque</span><span class="params">(<span class="keyword">int</span> numElements)</span> </span>&#123;</span><br><span class="line">        allocateElements(numElements);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">ArrayDeque</span><span class="params">(Collection&lt;? extends E&gt; c)</span> </span>&#123;</span><br><span class="line">        allocateElements(c.size());</span><br><span class="line">        <span class="comment">// addAll方法就是为c 进行for循环添加</span></span><br><span class="line">        addAll(c);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="添加和移除方法"><a href="#添加和移除方法" class="headerlink" title="添加和移除方法"></a>添加和移除方法</h3><ul>
-<li>add方法</li>
-</ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 在前面添加元素，也就是在数组的第一个位置上加元素</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addFirst</span><span class="params">(E e)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (e == <span class="keyword">null</span>)</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException();</span><br><span class="line">            <span class="comment">// 在前面添加的时候，head-1 的位置上插入 e</span></span><br><span class="line">        elements[head = (head - <span class="number">1</span>) &amp; (elements.length - <span class="number">1</span>)] = e;</span><br><span class="line">        <span class="keyword">if</span> (head == tail)</span><br><span class="line">            doubleCapacity();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addLast</span><span class="params">(E e)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (e == <span class="keyword">null</span>)</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException();</span><br><span class="line">            添加到下一个位置</span><br><span class="line">        elements[tail] = e;</span><br><span class="line">        <span class="comment">/* </span></span><br><span class="line"><span class="comment">         * 如果当前添加位置的下一个位置 与上 长度-1 </span></span><br><span class="line"><span class="comment">         *（因为长度都是2的倍数，所以-1之后，2进制后几位都是1，保证负数的时候也能够找到正确的索引）</span></span><br><span class="line"><span class="comment">         * 如果tail和head相等说明数组满了，需要扩容</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="keyword">if</span> ( (tail = (tail + <span class="number">1</span>) &amp; (elements.length - <span class="number">1</span>)) == head)</span><br><span class="line">            doubleCapacity();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
-<p>有了这两种方法，队列或者栈的方法都可以轻松实现了。</p>
-<p>在进行增加元素的时候涉及到 <code>doubleCapacity</code> 这个方法，这个方法主要用来扩充数组的容量。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">doubleCapacity</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">assert</span> head == tail;</span><br><span class="line">        <span class="keyword">int</span> p = head;</span><br><span class="line">        <span class="keyword">int</span> n = elements.length;</span><br><span class="line">        <span class="keyword">int</span> r = n - p; <span class="comment">// head右边元素的个数</span></span><br><span class="line">        <span class="keyword">int</span> newCapacity = n &lt;&lt; <span class="number">1</span>; <span class="comment">// 扩充为原来的2倍</span></span><br><span class="line">        <span class="keyword">if</span> (newCapacity &lt; <span class="number">0</span>)</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"Sorry, deque too big"</span>);</span><br><span class="line">        Object[] a = <span class="keyword">new</span> Object[newCapacity]; <span class="comment">//创建新数组</span></span><br><span class="line">        Systkkem.arraycopy(elements, p, a, <span class="number">0</span>, r); </span><br><span class="line">        System.arraycopy(elements, <span class="number">0</span>, a, r, p);<span class="comment">// 两部copy数组相当于从 head -&gt; tail 重新排序了</span></span><br><span class="line">        elements = a;</span><br><span class="line">        head = <span class="number">0</span>;</span><br><span class="line">        tail = n;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>remove方法</li>
-</ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> E <span class="title">remove</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> removeFirst();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> E <span class="title">removeFirst</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        E x = pollFirst();</span><br><span class="line">        <span class="keyword">if</span> (x == <span class="keyword">null</span>)</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> NoSuchElementException();</span><br><span class="line">        <span class="keyword">return</span> x;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> E <span class="title">pollFirst</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> h = head;</span><br><span class="line">        <span class="meta">@SuppressWarnings</span>(<span class="string">"unchecked"</span>)</span><br><span class="line">        E result = (E) elements[h];</span><br><span class="line">        <span class="comment">// Element is null if deque empty</span></span><br><span class="line">        <span class="keyword">if</span> (result == <span class="keyword">null</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        elements[h] = <span class="keyword">null</span>;     <span class="comment">// Must null out slot</span></span><br><span class="line">        <span class="comment">// 把element的头部位置置空后，将head向前移</span></span><br><span class="line">        head = (h + <span class="number">1</span>) &amp; (elements.length - <span class="number">1</span>);</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>toArray方法</li>
-</ul>
-<p>toArray方法主要是方便输出。用来真正的按照逻辑顺序，进行物理重排，实现方法和doubleCapacity实现相同。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> Object[] toArray() &#123;</span><br><span class="line">        <span class="keyword">return</span> copyElements(<span class="keyword">new</span> Object[size()]);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> &lt;T&gt; T[] copyElements(T[] a) &#123;</span><br><span class="line">        <span class="keyword">if</span> (head &lt; tail) &#123;</span><br><span class="line">         <span class="comment">// 如果顺序正常</span></span><br><span class="line">            System.arraycopy(elements, head, a, <span class="number">0</span>, size());</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (head &gt; tail) &#123;</span><br><span class="line">         <span class="comment">// 否则将head右侧的先copy到数组中，在copy剩下的</span></span><br><span class="line">            <span class="keyword">int</span> headPortionLen = elements.length - head;</span><br><span class="line">            System.arraycopy(elements, head, a, <span class="number">0</span>, headPortionLen);</span><br><span class="line">            System.arraycopy(elements, <span class="number">0</span>, a, headPortionLen, tail);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> a;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>size方法</li>
-</ul>
-<p>和很多数据结构类不同的是，他的size并不是依靠本身的变量字段进行维护，而是通过size方法计算而来。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">size</span><span class="params">()</span> </span>&#123;</span><br><span class="line">         <span class="keyword">return</span> (tail - head) &amp; (elements.length - <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
-<p>总结一下，ArrayDeque实现了双端队列的特点，能够完成栈和队列的功能，效率比同样继承Deque的LinkedList效率高，因为在ArrayDeque中的计算大部分为位运算。ArrayDeque逻辑上循环的数组，但实际上并不是。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-<div>
-      
-</div>
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/6/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span><a class="page-number" href="/page/8/">8</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/8/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/6/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span><a class="page-number" href="/page/8/">8</a><span class="space">&hellip;</span><a class="page-number" href="/page/11/">11</a><a class="extend next" rel="next" href="/page/8/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2686,7 +2846,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">100</span>
+                  <span class="site-state-item-count">101</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2760,6 +2920,10 @@
              
              
                <li>
+                 <a href="/2020/03/29/线程生命周期/" title="线程生命周期" target="_blank">线程生命周期</a>
+               </li>
+             
+               <li>
                  <a href="/2020/03/28/位运算/" title="Java中的位运算" target="_blank">Java中的位运算</a>
                </li>
              
@@ -2773,10 +2937,6 @@
              
                <li>
                  <a href="/2020/03/05/SpringBoot整合JPA使用/" title="SpringBoot整合JPA使用" target="_blank">SpringBoot整合JPA使用</a>
-               </li>
-             
-               <li>
-                 <a href="/2020/01/17/Spring从零开始之源码分析（四）/" title="Spring的Bean的实例化" target="_blank">Spring的Bean的实例化</a>
                </li>
              
            </ul>
@@ -2825,7 +2985,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共115.3k字</span>
+  <span class="post-count">博客全站共115.9k字</span>
 </div>
 
 
