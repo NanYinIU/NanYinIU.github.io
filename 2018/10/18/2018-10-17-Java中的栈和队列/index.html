@@ -109,7 +109,7 @@
     root: '/',
     scheme: 'Gemini',
     version: '5.1.4',
-    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
     fancybox: true,
     tabs: true,
     motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
@@ -445,13 +445,13 @@
 
 <h1 id="java中的栈和队列"><a href="#java中的栈和队列" class="headerlink" title="java中的栈和队列"></a>java中的栈和队列</h1><h2 id="Stack-栈"><a href="#Stack-栈" class="headerlink" title="Stack 栈"></a>Stack 栈</h2><p>栈是一个后进先出的数据结构，有这样的数据结构功能的还有Dequ类，推荐使用Dequ</p>
 <h3 id="push方法和pop方法"><a href="#push方法和pop方法" class="headerlink" title="push方法和pop方法"></a>push方法和pop方法</h3><p>push方法是向栈顶放值</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">public E push(E item) &#123;</span><br><span class="line">// 这里调用父类Vector的addElement方法</span><br><span class="line">        addElement(item);</span><br><span class="line"></span><br><span class="line">        return item;</span><br><span class="line">    &#125;</span><br><span class="line">// addElement方法是加锁的方法 调用element实际上就是数组长度加一并且在该问之上付值</span><br><span class="line">public synchronized void addElement(E obj) &#123;</span><br><span class="line">        modCount++;</span><br><span class="line">        ensureCapacityHelper(elementCount + 1);</span><br><span class="line">        elementData[elementCount++] = obj;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<div class="highlight-wrap" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true" data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">public E push(E item) &#123;</span><br><span class="line">// 这里调用父类Vector的addElement方法</span><br><span class="line">        addElement(item);</span><br><span class="line"></span><br><span class="line">        return item;</span><br><span class="line">    &#125;</span><br><span class="line">// addElement方法是加锁的方法 调用element实际上就是数组长度加一并且在该问之上付值</span><br><span class="line">public synchronized void addElement(E obj) &#123;</span><br><span class="line">        modCount++;</span><br><span class="line">        ensureCapacityHelper(elementCount + 1);</span><br><span class="line">        elementData[elementCount++] = obj;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></div>
 
 <p>pop方法是在将栈顶的值出栈</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">// 同样加锁的方法 调用方法 移除在数组最后位置的元素</span><br><span class="line">public synchronized E pop() &#123;</span><br><span class="line">        E       obj;</span><br><span class="line">        int     len = size();</span><br><span class="line"></span><br><span class="line">        obj = peek();</span><br><span class="line">        removeElementAt(len - 1);</span><br><span class="line"></span><br><span class="line">        return obj;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<div class="highlight-wrap" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true" data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">// 同样加锁的方法 调用方法 移除在数组最后位置的元素</span><br><span class="line">public synchronized E pop() &#123;</span><br><span class="line">        E       obj;</span><br><span class="line">        int     len = size();</span><br><span class="line"></span><br><span class="line">        obj = peek();</span><br><span class="line">        removeElementAt(len - 1);</span><br><span class="line"></span><br><span class="line">        return obj;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></div>
 
 <h3 id="peek方法"><a href="#peek方法" class="headerlink" title="peek方法"></a>peek方法</h3><p>peek方法是看一下栈顶元素的值，但不做任何操作</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">public synchronized E peek() &#123;</span><br><span class="line">        int     len = size();</span><br><span class="line"></span><br><span class="line">        if (len == 0)</span><br><span class="line">            throw new EmptyStackException();</span><br><span class="line">        return elementAt(len - 1);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<div class="highlight-wrap" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true" data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">public synchronized E peek() &#123;</span><br><span class="line">        int     len = size();</span><br><span class="line"></span><br><span class="line">        if (len == 0)</span><br><span class="line">            throw new EmptyStackException();</span><br><span class="line">        return elementAt(len - 1);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></div>
 
 <p>这几个方法和linkedList类中的对应的方法非常像，所以其实LindedList也可以当作栈用。</p>
 <h2 id="Queue-队列"><a href="#Queue-队列" class="headerlink" title="Queue 队列"></a>Queue 队列</h2><p>队列和栈相反，是一个先进后出的数据结构，想成现实中的排队再明白不过了。</p>
@@ -752,6 +752,13 @@
       
 
       
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
 
     </div>
   </aside>
@@ -808,11 +815,6 @@
       </div>
     </footer>
 
-    
-      <div class="back-to-top">
-        <i class="fa fa-arrow-up"></i>
-        
-      </div>
     
 
     

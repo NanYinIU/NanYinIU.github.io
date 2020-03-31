@@ -109,7 +109,7 @@
     root: '/',
     scheme: 'Gemini',
     version: '5.1.4',
-    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
     fancybox: true,
     tabs: true,
     motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
@@ -428,15 +428,15 @@
 <p>​    控制器使用<code>@RestController</code>注释进行注释，因此不需要<code>@ResponseBody</code>。</p>
 <h3 id="RequestMapping"><a href="#RequestMapping" class="headerlink" title="@RequestMapping"></a><code>@RequestMapping</code></h3><p><code>@RequestMapping</code>的注解中的参数：</p>
 <p>name ： 在4.0后引入的，开始我错把name当value用，结果出现 <code>[java.lang.IllegalStateException: Ambiguous mapping found. Cannot map &#39;appController&#39; bean method]</code> 类似这种错误。其实name就是一个名字而已,没有什么特殊含义，但是官方文档中指出 <code>在类型级别和方法级别支持！在两个级别上使用时，组合名称通过串联以“＃”作为分隔符派生</code> 。使用上，官方说明是主要可以通过使用Spring jsp tag包里面的mvcUrl，来生成jsp到controller的链接。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">@RequestMapping(&quot;/people&quot;)</span><br><span class="line"> class PersonController &#123;</span><br><span class="line"></span><br><span class="line">   @RequestMapping(&quot;/&#123;id&#125;&quot;)</span><br><span class="line">   public HttpEntity getPerson(@PathVariable String id) &#123; ... &#125;</span><br><span class="line"></span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<div class="highlight-wrap" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true" data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">@RequestMapping(&quot;/people&quot;)</span><br><span class="line"> class PersonController &#123;</span><br><span class="line"></span><br><span class="line">   @RequestMapping(&quot;/&#123;id&#125;&quot;)</span><br><span class="line">   public HttpEntity getPerson(@PathVariable String id) &#123; ... &#125;</span><br><span class="line"></span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure></div>
 
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;%@ taglib uri=&quot;http://www.springframework.org/tags&quot; prefix=&quot;s&quot; %&gt;</span><br><span class="line"></span><br><span class="line"> &lt;a href=&quot;$&#123;s:mvcUrl(&apos;PC#getPerson&apos;).arg(0,&quot;123&quot;).build()&#125;&quot;&gt;Get Person&lt;/a&gt;</span><br></pre></td></tr></table></figure>
+<div class="highlight-wrap" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true" data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;%@ taglib uri=&quot;http://www.springframework.org/tags&quot; prefix=&quot;s&quot; %&gt;</span><br><span class="line"></span><br><span class="line"> &lt;a href=&quot;$&#123;s:mvcUrl(&apos;PC#getPerson&apos;).arg(0,&quot;123&quot;).build()&#125;&quot;&gt;Get Person&lt;/a&gt;</span><br></pre></td></tr></table></figure></div>
 
 <p>value:用来表示主要映射,是常用的</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">@RequestMapping(value = &quot;/user&quot;,method = RequestMethod.GET,produces = &quot;application/json&quot;)</span><br><span class="line">    public @ResponseBody</span><br><span class="line">    List&lt;User&gt; findUsers() &#123;</span><br><span class="line">        return userService.findUsers();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<div class="highlight-wrap" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true" data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">@RequestMapping(value = &quot;/user&quot;,method = RequestMethod.GET,produces = &quot;application/json&quot;)</span><br><span class="line">    public @ResponseBody</span><br><span class="line">    List&lt;User&gt; findUsers() &#123;</span><br><span class="line">        return userService.findUsers();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></div>
 
 <p>path: 指定访问的uri地址</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">@RequestMapping(path = &quot;/user&quot;,method = RequestMethod.POST,name = &quot;this is user`s post methods&quot;)</span><br><span class="line">    public String insertUser()&#123;</span><br><span class="line">        userService.saveUser();</span><br><span class="line">        return null;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<div class="highlight-wrap" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true" data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">@RequestMapping(path = &quot;/user&quot;,method = RequestMethod.POST,name = &quot;this is user`s post methods&quot;)</span><br><span class="line">    public String insertUser()&#123;</span><br><span class="line">        userService.saveUser();</span><br><span class="line">        return null;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></div>
 
 <p>method:映射的HTTP的访问方法，有GET, POST, HEAD, OPTIONS, PUT, PATCH, DELETE, TRACE</p>
 <p>consumes： 指定<strong>处理请求的提交内容类型（Content-Type）</strong>，例如application/json, text/html;</p>
@@ -451,23 +451,23 @@
 <h4 id="Column"><a href="#Column" class="headerlink" title="@Column"></a>@Column</h4><p>指定持久属性或字段的映射列。如果未指定Column注释，则应用默认值。</p>
 <p><a href="https://docs.oracle.com/javaee/7/api/javax/persistence/Column.html#updatable--" target="_blank" rel="noopener">updatable</a>：是否包含在框架自动生成的update语句中。</p>
 <p>其他可以通过例子一看便知：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">@Column(name=&quot;description&quot;, nullable=false, length=512)</span><br><span class="line">public String getDescription() &#123; return description; &#125;</span><br></pre></td></tr></table></figure>
+<div class="highlight-wrap" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true" data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">@Column(name=&quot;description&quot;, nullable=false, length=512)</span><br><span class="line">public String getDescription() &#123; return description; &#125;</span><br></pre></td></tr></table></figure></div>
 
 <h4 id="Transient"><a href="#Transient" class="headerlink" title="@Transient"></a>@Transient</h4><p><code>@Transient</code>表示该属性并非一个到数据库表的字段的映射,<code>ORM</code>框架将忽略该属性.<br>如果一个属性并非数据库表的字段映射,就<strong>务必</strong>将其标示为<code>@Transient</code>,否则,<code>ORM</code>框架默认其注解为<code>@Basic</code>.</p>
 <h4 id="ManyToOne"><a href="#ManyToOne" class="headerlink" title="@ManyToOne"></a>@ManyToOne</h4><p>表示一个多对一的映射,该注解标注的属性通常是数据库表的外键</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">//订单Order和用户User是一个ManyToOne的关系</span><br><span class="line">//在Order类中定义</span><br><span class="line">@ManyToOne()</span><br><span class="line">@JoinColumn(name=”USER”)</span><br><span class="line">public User getUser() &#123;</span><br><span class="line">    return user;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<div class="highlight-wrap" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true" data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">//订单Order和用户User是一个ManyToOne的关系</span><br><span class="line">//在Order类中定义</span><br><span class="line">@ManyToOne()</span><br><span class="line">@JoinColumn(name=”USER”)</span><br><span class="line">public User getUser() &#123;</span><br><span class="line">    return user;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
 
 <h4 id="JoinColumn"><a href="#JoinColumn" class="headerlink" title="@JoinColumn"></a>@JoinColumn</h4><p>​    指定用于连接实体关联或元素集合的列。如果JoinColumn注解本身是默认的，则假定使用单个连接列并应用默认值。其默认的名称为实体User的名称+下划线+实体User的主键名称。也就是USER_ID.</p>
 <h4 id="OneToMany"><a href="#OneToMany" class="headerlink" title="@OneToMany"></a>@OneToMany</h4><p>@OneToMany描述一个一对多的关联,该属性应该为集体类型,在数据库中并没有实际字段.例如:实体User和Order是OneToMany的关系,则实体User被删除时,其关联的实体Order也应该被全部删除</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@OneTyMany(cascade=ALL)</span><br><span class="line">public List getOrders() &#123;</span><br><span class="line">    return orders;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<div class="highlight-wrap" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true" data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@OneTyMany(cascade=ALL)</span><br><span class="line">public List getOrders() &#123;</span><br><span class="line">    return orders;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
 
 <h4 id="OneToOne"><a href="#OneToOne" class="headerlink" title="@OneToOne"></a>@OneToOne</h4><p>描述一对一的关系</p>
 <p>如User表和person表，一个是基本信息一个是详细信息</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@OneToOne(fetch=FetchType.LAZY) // Fetch是抓取策略，如果不写，自动的策略是LAZY</span><br><span class="line">public Person getPerson() &#123;</span><br><span class="line">    return person;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<div class="highlight-wrap" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true" data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@OneToOne(fetch=FetchType.LAZY) // Fetch是抓取策略，如果不写，自动的策略是LAZY</span><br><span class="line">public Person getPerson() &#123;</span><br><span class="line">    return person;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
 
 <h4 id="ManyToMany"><a href="#ManyToMany" class="headerlink" title="@ManyToMany"></a>@ManyToMany</h4><p>@ManyToMany 描述一个多对多的关联.多对多关联上是两个一对多关联,但是在ManyToMany描述中,中间表是由ORM框架自动处理</p>
 <h4 id="Embedded"><a href="#Embedded" class="headerlink" title="@Embedded"></a>@Embedded</h4><p>@Embedded将几个字段组合成一个类,并作为整个Entity的一个属性.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">@Embeddable</span><br><span class="line">public class Address &#123;city,street,zip&#125;</span><br><span class="line">    @Entity</span><br><span class="line">public class User &#123;</span><br><span class="line">    @Embedded</span><br><span class="line">    public Address getAddress() &#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<div class="highlight-wrap" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true" data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">@Embeddable</span><br><span class="line">public class Address &#123;city,street,zip&#125;</span><br><span class="line">    @Entity</span><br><span class="line">public class User &#123;</span><br><span class="line">    @Embedded</span><br><span class="line">    public Address getAddress() &#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
 
 <table>
 <thead>
@@ -530,10 +530,10 @@
 </tr>
 </tbody></table>
 <h2 id="spring-boot-配置问题"><a href="#spring-boot-配置问题" class="headerlink" title="spring boot 配置问题"></a>spring boot 配置问题</h2><h3 id="spring2-0后静态资源访问不到的问题"><a href="#spring2-0后静态资源访问不到的问题" class="headerlink" title="spring2.0后静态资源访问不到的问题"></a>spring2.0后静态资源访问不到的问题</h3><p>需要手动写配置类进行静态资源配置</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">@Configuration</span><br><span class="line">public class WebMvcConfig implements WebMvcConfigurer &#123;</span><br><span class="line">    /**</span><br><span class="line">     * 添加静态资源文件，外部可以直接访问地址</span><br><span class="line">     * @param registry</span><br><span class="line">     */</span><br><span class="line">    @Override</span><br><span class="line">    public void addResourceHandlers(ResourceHandlerRegistry registry) &#123;</span><br><span class="line">        registry.addResourceHandler(&quot;/static/**&quot;).addResourceLocations(&quot;classpath:/static/&quot;);</span><br><span class="line">        registry.addResourceHandler(&quot;/templates/**&quot;).addResourceLocations(&quot;classpath:/templates/&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<div class="highlight-wrap" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true" data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">@Configuration</span><br><span class="line">public class WebMvcConfig implements WebMvcConfigurer &#123;</span><br><span class="line">    /**</span><br><span class="line">     * 添加静态资源文件，外部可以直接访问地址</span><br><span class="line">     * @param registry</span><br><span class="line">     */</span><br><span class="line">    @Override</span><br><span class="line">    public void addResourceHandlers(ResourceHandlerRegistry registry) &#123;</span><br><span class="line">        registry.addResourceHandler(&quot;/static/**&quot;).addResourceLocations(&quot;classpath:/static/&quot;);</span><br><span class="line">        registry.addResourceHandler(&quot;/templates/**&quot;).addResourceLocations(&quot;classpath:/templates/&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
 
 <h3 id="配置SpringBoot-Jpa默认mysql生成表引擎为InnoDB"><a href="#配置SpringBoot-Jpa默认mysql生成表引擎为InnoDB" class="headerlink" title="配置SpringBoot Jpa默认mysql生成表引擎为InnoDB"></a>配置<code>SpringBoot Jpa</code>默认<code>mysql</code>生成表引擎为<code>InnoDB</code></h3><p>在配置文件<code>appliction.properties</code>中加入</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">spring.jpa.database-platform=org.hibernate.dialect.MySQL5InnoDBDialect</span><br></pre></td></tr></table></figure>
+<div class="highlight-wrap" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true" data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">spring.jpa.database-platform=org.hibernate.dialect.MySQL5InnoDBDialect</span><br></pre></td></tr></table></figure></div>
 
 
       
@@ -620,7 +620,7 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2019/01/04/2019-01-04-Ubuntu配置全过程/" rel="prev" title="Ubuntu18.04 配置全过程">
+              <a href="/2019/01/04/2019-01-04-Ubuntu配置全过程 2/" rel="prev" title="Ubuntu18.04 配置全过程">
                 Ubuntu18.04 配置全过程 <i class="fa fa-chevron-right"></i>
               </a>
             
@@ -827,6 +827,13 @@
       
 
       
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
 
     </div>
   </aside>
@@ -883,11 +890,6 @@
       </div>
     </footer>
 
-    
-      <div class="back-to-top">
-        <i class="fa fa-arrow-up"></i>
-        
-      </div>
     
 
     

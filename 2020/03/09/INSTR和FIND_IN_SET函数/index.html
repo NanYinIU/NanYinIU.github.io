@@ -109,7 +109,7 @@
     root: '/',
     scheme: 'Gemini',
     version: '5.1.4',
-    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
     fancybox: true,
     tabs: true,
     motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
@@ -428,18 +428,18 @@
 <p>This function performs a case-insensitive search.</p>
 <p>能够找到第一个匹配到位置,类似java中的firstIndexOf,并且是大小写不敏感的搜索</p>
 <h2 id="用法"><a href="#用法" class="headerlink" title="用法"></a>用法</h2><p>首先:了解到 INSTR 函数的基本功能时能够 <strong>返回字符串在某一个字段的内容中的位置, 没有找到字符串返回0，否则返回位置（从1开始）</strong> .比如:</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 结果为10</span></span><br><span class="line"><span class="keyword">select</span> <span class="keyword">INSTR</span>(<span class="string">"this is mysql"</span>,<span class="string">"y"</span>)  </span><br><span class="line"><span class="comment">-- 结果为0</span></span><br><span class="line"><span class="keyword">select</span> <span class="keyword">INSTR</span>(<span class="string">"this is mysql"</span>,<span class="string">"a"</span>)</span><br></pre></td></tr></table></figure>
+<div class="highlight-wrap" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true" data-rel="SQL"><figure class="iseeu highlight /sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 结果为10</span></span><br><span class="line"><span class="keyword">select</span> <span class="keyword">INSTR</span>(<span class="string">"this is mysql"</span>,<span class="string">"y"</span>)  </span><br><span class="line"><span class="comment">-- 结果为0</span></span><br><span class="line"><span class="keyword">select</span> <span class="keyword">INSTR</span>(<span class="string">"this is mysql"</span>,<span class="string">"a"</span>)</span><br></pre></td></tr></table></figure></div>
 
 <p>2如果instr当作查询条件,就能起到<strong>类似in的作用</strong></p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 返回用户id为12的数据,同样的,也会返回id为 1,2的数据</span></span><br><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> <span class="keyword">user</span> u <span class="keyword">where</span> <span class="keyword">INSTR</span>(<span class="string">'12'</span>,u.id);</span><br></pre></td></tr></table></figure>
+<div class="highlight-wrap" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true" data-rel="SQL"><figure class="iseeu highlight /sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 返回用户id为12的数据,同样的,也会返回id为 1,2的数据</span></span><br><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> <span class="keyword">user</span> u <span class="keyword">where</span> <span class="keyword">INSTR</span>(<span class="string">'12'</span>,u.id);</span><br></pre></td></tr></table></figure></div>
 
 <p>更复杂的能够查询数据为字符串,并且用特定符号分隔的特定的数据</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> (</span><br><span class="line">	<span class="keyword">select</span> <span class="keyword">GROUP_CONCAT</span>(u.username) <span class="keyword">as</span> <span class="keyword">name</span> </span><br><span class="line">		<span class="keyword">from</span> <span class="string">`user`</span> u </span><br><span class="line">		<span class="keyword">where</span> <span class="keyword">INSTR</span>(<span class="keyword">concat</span>(<span class="string">','</span>,(p.leaderIds),<span class="string">','</span>),<span class="keyword">concat</span>(<span class="string">','</span>,(u.id),<span class="string">','</span>))</span><br><span class="line">)</span><br><span class="line">	<span class="keyword">from</span> product p </span><br><span class="line">	<span class="keyword">WHERE</span> p.product_uid =<span class="string">'02124ff31eac4c14934b045358b10cca'</span></span><br></pre></td></tr></table></figure>
+<div class="highlight-wrap" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true" data-rel="SQL"><figure class="iseeu highlight /sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> (</span><br><span class="line">	<span class="keyword">select</span> <span class="keyword">GROUP_CONCAT</span>(u.username) <span class="keyword">as</span> <span class="keyword">name</span> </span><br><span class="line">		<span class="keyword">from</span> <span class="string">`user`</span> u </span><br><span class="line">		<span class="keyword">where</span> <span class="keyword">INSTR</span>(<span class="keyword">concat</span>(<span class="string">','</span>,(p.leaderIds),<span class="string">','</span>),<span class="keyword">concat</span>(<span class="string">','</span>,(u.id),<span class="string">','</span>))</span><br><span class="line">)</span><br><span class="line">	<span class="keyword">from</span> product p </span><br><span class="line">	<span class="keyword">WHERE</span> p.product_uid =<span class="string">'02124ff31eac4c14934b045358b10cca'</span></span><br></pre></td></tr></table></figure></div>
 
 <h1 id="FIND-IN-SET-函数"><a href="#FIND-IN-SET-函数" class="headerlink" title="FIND_IN_SET 函数"></a>FIND_IN_SET 函数</h1><p>The FIND_IN_SET() function returns the position of a string within a list of strings.</p>
 <p>能够返回list中的字符串位置(使用逗号分隔)</p>
 <p>基础的就不多说,直接举例</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 会只返回id为12,13的数据</span></span><br><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> <span class="keyword">user</span> u <span class="keyword">where</span> FIND_IN_SET(u.id,<span class="string">'12,13'</span>)</span><br></pre></td></tr></table></figure>
+<div class="highlight-wrap" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true" data-rel="SQL"><figure class="iseeu highlight /sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 会只返回id为12,13的数据</span></span><br><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> <span class="keyword">user</span> u <span class="keyword">where</span> FIND_IN_SET(u.id,<span class="string">'12,13'</span>)</span><br></pre></td></tr></table></figure></div>
 
 <p>find_in_set 和 instr 函数做例子上的对比时,发现instr是模糊匹配,只要符合都会查出来,而find_in_set是针对使用逗号分隔的对instr的进一步处理,只有出现在逗号之间的进行精确匹配.</p>
 
@@ -734,6 +734,13 @@
       
 
       
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
 
     </div>
   </aside>
@@ -790,11 +797,6 @@
       </div>
     </footer>
 
-    
-      <div class="back-to-top">
-        <i class="fa fa-arrow-up"></i>
-        
-      </div>
     
 
     

@@ -109,7 +109,7 @@
     root: '/',
     scheme: 'Gemini',
     version: '5.1.4',
-    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
     fancybox: true,
     tabs: true,
     motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
@@ -426,16 +426,16 @@
       
         <h1 id="bash相关问题总结"><a href="#bash相关问题总结" class="headerlink" title="bash相关问题总结"></a>bash相关问题总结</h1><h2 id="七月专题"><a href="#七月专题" class="headerlink" title="七月专题 - -"></a>七月专题 - -</h2><h3 id="关于bash中的-lt-lt-lt-的含义"><a href="#关于bash中的-lt-lt-lt-的含义" class="headerlink" title="关于bash中的 &lt;&lt;&lt; 的含义"></a>关于bash中的 <code>&lt;&lt;&lt;</code> 的含义</h3><p>在StackOverflow中有个例子非常的详细。。先贴连接 <a href="https://unix.stackexchange.com/questions/80362/what-does-mean" target="_blank" rel="noopener">What does &lt;&lt;&lt; mean? </a>以下是我的渣翻译，可能会翻译错。。</p>
 <p>我们可以这样对字符串进行处理</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;$string&quot; | command</span><br></pre></td></tr></table></figure>
+<div class="highlight-wrap" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true" data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;$string&quot; | command</span><br></pre></td></tr></table></figure></div>
 
 <p>然而在bash中，这样写（使用管道）就相当于把命令分到子shell中进行处理，考虑这种情况</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;hello world&quot; | read first second</span><br><span class="line">echo $second $first</span><br></pre></td></tr></table></figure>
+<div class="highlight-wrap" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true" data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;hello world&quot; | read first second</span><br><span class="line">echo $second $first</span><br></pre></td></tr></table></figure></div>
 
 <p>它会输出一个空行，子shell成功的读到了两个变量，但是随后子shell退出，两个变量就消失掉了。所以输出是没有结果的。应当这样写</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;hello world&quot; | &#123;</span><br><span class="line">    read first second</span><br><span class="line">    echo $second $first</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<div class="highlight-wrap" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true" data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;hello world&quot; | &#123;</span><br><span class="line">    read first second</span><br><span class="line">    echo $second $first</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
 
 <p>但是这样还是没有解决这种分成子shell去执行的尴尬。这时候就能够使用 <code>&lt;&lt;&lt;</code> 了</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">read first second &lt;&lt;&lt; echo &quot;hello world&quot;</span><br></pre></td></tr></table></figure>
+<div class="highlight-wrap" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true" data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">read first second &lt;&lt;&lt; echo &quot;hello world&quot;</span><br></pre></td></tr></table></figure></div>
 
 <h3 id="关于-var-var是变量名"><a href="#关于-var-var是变量名" class="headerlink" title="关于${!var} var是变量名"></a>关于${!var} var是变量名</h3><p>使用${!var}的作用是当ver不存在的时候会原样输出，也就是显示${var}</p>
 <h3 id="关于bash中的trap命令的使用"><a href="#关于bash中的trap命令的使用" class="headerlink" title="关于bash中的trap命令的使用"></a>关于bash中的trap命令的使用</h3><p>trap可以强化bash脚本，让脚本更加稳定。</p>
@@ -548,8 +548,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/07/13/2018-07-15-idea快捷键/" rel="next" title="IDEA 中的快捷键">
-                <i class="fa fa-chevron-left"></i> IDEA 中的快捷键
+              <a href="/2018/07/08/2018-07-06-bash_15_终章/" rel="next" title="bash学习记录（十六） bash学习终章">
+                <i class="fa fa-chevron-left"></i> bash学习记录（十六） bash学习终章
               </a>
             
           </div>
@@ -558,8 +558,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/07/25/2018-07-25-stackOverFlow上的热门问题/" rel="prev" title="整理并学习stackOverFlow上的热门回答">
-                整理并学习stackOverFlow上的热门回答 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/07/13/2018-07-15-idea快捷键/" rel="prev" title="IDEA 中的快捷键">
+                IDEA 中的快捷键 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -765,6 +765,13 @@
       
 
       
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
 
     </div>
   </aside>
@@ -821,11 +828,6 @@
       </div>
     </footer>
 
-    
-      <div class="back-to-top">
-        <i class="fa fa-arrow-up"></i>
-        
-      </div>
     
 
     
