@@ -304,6 +304,294 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/12/11/（四）AOP切面使用与原理/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="NanYin">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NanYin的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/12/11/（四）AOP切面使用与原理/" itemprop="url">SpringAOP的使用和源码分析</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-12-11T12:00:00Z">
+                2019-12-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Spring/" itemprop="url" rel="index">
+                    <span itemprop="name">Spring</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  3.6k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  16
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="SpringAOP的使用和源码分析"><a href="#SpringAOP的使用和源码分析" class="headerlink" title="SpringAOP的使用和源码分析"></a>SpringAOP的使用和源码分析</h1><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>现在来看（Aspect-oriented Programming） 面向切面编程aop，是和oop（Object-oriented Programming）是对编程结果的不同的思考的方向。在面向对象中，形成组合的组件是类（class）。而在面向切面，形成组合的组件是切面（Aspect）,切面能够对关注的地方模块化，横切多种不同的类型和对象（比如事务管理）。而这个所谓的“关注的地方”，也可以在AOP中称为<strong>跨领域关注点</strong>。</p>
+<p>Spring提供 配置文件 和 @AspectJ注解 方式编写AOP，两种方式都支持各种的 Advice（通知），如果使用@AspectJ注解，仍然会通过Spring的进行织入。</p>
+<h2 id="AOP中关键字的概念"><a href="#AOP中关键字的概念" class="headerlink" title="AOP中关键字的概念"></a>AOP中关键字的概念</h2><h3 id="1-Aspect"><a href="#1-Aspect" class="headerlink" title="1.Aspect"></a>1.Aspect</h3><p>切面： 对多种不同的类的横切关注点，这个关注点被模块化为一个类，这个类就叫做切面（切面类），通过在普通类上标注 <code>@Aspect</code>注解来实现。</p>
+<h3 id="2-Join-point"><a href="#2-Join-point" class="headerlink" title="2.Join point"></a>2.Join point</h3><p>连接点：程序执行过程中能够执行通知（Advice）的点。</p>
+<h3 id="3-Advice"><a href="#3-Advice" class="headerlink" title="3.Advice"></a>3.Advice</h3><p>通知：通知指的是切面在指定的连接点处执行的操作，不同的通知类型包括：“around”, “before” and “after”</p>
+<h3 id="4-Pointcut"><a href="#4-Pointcut" class="headerlink" title="4.Pointcut"></a>4.Pointcut</h3><p>切点：切点会匹配通知所要织入的一个或者多个连接点，通知是与切点向关联的，并且在任何匹配到切点的地方执行在连接点上的操作。</p>
+<h3 id="5-Target-object"><a href="#5-Target-object" class="headerlink" title="5.Target object"></a>5.Target object</h3><p>目标对象：一个【被一个或多个切面进行通知】的对象叫做目标对象，也叫代理对象。</p>
+<h3 id="6-AOP-proxy"><a href="#6-AOP-proxy" class="headerlink" title="6.AOP proxy"></a>6.AOP proxy</h3><p>AOP代理：在Spring中，一个是JDK动态代理，一个是 CGLIB 代理。</p>
+<h3 id="7-Weaving"><a href="#7-Weaving" class="headerlink" title="7.Weaving"></a>7.Weaving</h3><p>织入：织入是将切面应用到目标对象来创建的代理对象过程</p>
+<h2 id="使用注解方式进行AOP的配置和使用"><a href="#使用注解方式进行AOP的配置和使用" class="headerlink" title="使用注解方式进行AOP的配置和使用"></a>使用注解方式进行AOP的配置和使用</h2><div class="highlight-wrap" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true" data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 1. 使用 <span class="doctag">@Aspect</span> 注解创建切面类</span></span><br><span class="line"><span class="comment"> * 2. 使用 <span class="doctag">@Pointcut</span> 注解注明切点（使用Aspect表达式）</span></span><br><span class="line"><span class="comment"> * 3. 声明通知（Before，After，Around，AfterReturning，AfterThrowing）具体含义可以参考Ref文档 5.4.4. Declaring Advice</span></span><br><span class="line"><span class="comment"> * 只是以上三步是不行的，因为没有开启Spring对注解版AOP的支持</span></span><br><span class="line"><span class="comment"> * 所以，需要使用 <span class="doctag">@EnableAspectJAutoProxy</span> 开启对<span class="doctag">@Aspect</span>注解的支持</span></span><br><span class="line"><span class="comment"> **/</span></span><br><span class="line"><span class="meta">@Aspect</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LogAspects</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Pointcut</span>(value=<span class="string">"within(com.nanyin.service.*)"</span>)</span><br><span class="line"><span class="comment">// 	@Pointcut("execution(public * (..))")</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">pointCut</span><span class="params">()</span></span>&#123;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Before</span>(<span class="string">"pointCut()"</span>)</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">logBefore</span><span class="params">(JoinPoint jp)</span></span>&#123;</span><br><span class="line">		System.out.println(jp.getSignature().getName());</span><br><span class="line">		System.out.println(<span class="string">"before..."</span>);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@After</span>(<span class="string">"pointCut()"</span>)</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">logAfter</span><span class="params">()</span></span>&#123;</span><br><span class="line">		System.out.println(<span class="string">"after..."</span>);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@AfterReturning</span>(<span class="string">"pointCut()"</span>)</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">logAfterReturn</span><span class="params">()</span></span>&#123;</span><br><span class="line">		System.out.println(<span class="string">"after return..."</span>);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@AfterThrowing</span>(value = <span class="string">"pointCut()"</span>,throwing = <span class="string">"ex"</span>)</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">logAfterThrowing</span><span class="params">(JoinPoint joinPoint,Exception ex)</span></span>&#123;</span><br><span class="line">		joinPoint.getSignature().getName();</span><br><span class="line">		System.out.println(<span class="string">"after throwing..."</span>);</span><br><span class="line">		System.out.println(ex.getMessage());</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// around在proceed 之前是在 before之前执行</span></span><br><span class="line">	<span class="comment">// around在proceed 之前是在 after之前执行</span></span><br><span class="line">	<span class="comment">// 可兼容before和after</span></span><br><span class="line">	<span class="meta">@Around</span>(<span class="string">"pointCut()"</span>)</span><br><span class="line">	<span class="function"><span class="keyword">public</span> Object <span class="title">logAround</span><span class="params">(ProceedingJoinPoint joinPoint)</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">		<span class="comment">// 方法开始</span></span><br><span class="line">		System.out.println(<span class="string">"around methods begin ..."</span>);</span><br><span class="line">		Object object = joinPoint.proceed();</span><br><span class="line">		System.out.println(<span class="string">"around methods end ..."</span>);</span><br><span class="line">		<span class="keyword">return</span> object;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 进行测试</span></span><br><span class="line"><span class="comment"> * </span></span><br><span class="line"><span class="comment"> **/</span></span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test1</span><span class="params">()</span></span>&#123;</span><br><span class="line">	AnnotationConfigApplicationContext applicationContext = <span class="keyword">new</span> AnnotationConfigApplicationContext(BasicConfig.class);</span><br><span class="line">	BasicService basicService = (BasicService) applicationContext.getBean(<span class="string">"basicService"</span>);</span><br><span class="line">	<span class="comment">// 因为切点包括这个basicService，所以执行hello就会触发AOP</span></span><br><span class="line">	basicService.hello();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 结果</span></span><br><span class="line">around methods begin ...</span><br><span class="line">hello</span><br><span class="line">before...</span><br><span class="line">hello world!!</span><br><span class="line">around methods end ...</span><br><span class="line">after...</span><br><span class="line">after <span class="keyword">return</span>...</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="AOP代码原理分析"><a href="#AOP代码原理分析" class="headerlink" title="AOP代码原理分析"></a>AOP代码原理分析</h2><p>通过以上实践，可以看到如果需要使用Spring的AOP功能，需要先使用 <code>@EnableAspectJAutoProxy</code> 注解标注在配置类中，使 <code>@Aspect</code> 生效为一个切面类。</p>
+<h3 id="1-EnableAspectJAutoProxy-开启springAOP支持"><a href="#1-EnableAspectJAutoProxy-开启springAOP支持" class="headerlink" title="1. @EnableAspectJAutoProxy 开启springAOP支持"></a>1. @EnableAspectJAutoProxy 开启springAOP支持</h3><div class="highlight-wrap" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true" data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Target</span>(ElementType.TYPE) <span class="comment">//标注在类上</span></span><br><span class="line"><span class="meta">@Retention</span>(RetentionPolicy.RUNTIME)</span><br><span class="line"><span class="meta">@Documented</span></span><br><span class="line"><span class="meta">@Import</span>(AspectJAutoProxyRegistrar.class) <span class="comment">//引入 AspectJAutoProxyRegistrar</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> EnableAspectJAutoProxy &#123;</span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * 是否使用CGLIB进行代理，默认是false，即默认使用JDK动态代理</span></span><br><span class="line"><span class="comment">   **/</span></span><br><span class="line">  <span class="function"><span class="keyword">boolean</span> <span class="title">proxyTargetClass</span><span class="params">()</span> <span class="keyword">default</span> <span class="keyword">false</span></span>;</span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * 是否需要 代理应由AOP框架公开为&#123;ThreadLocal&#125;，以便通过&#123;AopContext&#125;类进行检索。</span></span><br><span class="line"><span class="comment">   **/</span></span><br><span class="line">  <span class="function"><span class="keyword">boolean</span> <span class="title">exposeProxy</span><span class="params">()</span> <span class="keyword">default</span> <span class="keyword">false</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>重要的是注解Import内引用的<code>AspectJAutoProxyRegistrar</code>类。这个类通过使用 <code>BeanDefinitionRegistry</code> 注册一个 <code>AnnotationAwareAspectJAutoProxyCreator</code>.</p>
+<div class="highlight-wrap" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true" data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">registerBeanDefinitions</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">		AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry)</span> </span>&#123;</span><br><span class="line">	<span class="comment">//如果需要 注册AspectJ注解自动代理创建类 internalAutoProxyCreator</span></span><br><span class="line">	AopConfigUtils.registerAspectJAnnotationAutoProxyCreatorIfNecessary(registry);</span><br><span class="line"><span class="comment">// 	...</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">@Nullable</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> BeanDefinition <span class="title">registerOrEscalateApcAsRequired</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">		Class&lt;?&gt; cls, BeanDefinitionRegistry registry, @Nullable Object source)</span> </span>&#123;</span><br><span class="line"><span class="comment">//		cls=AnnotationAwareAspectJAutoProxyCreator</span></span><br><span class="line">	Assert.notNull(registry, <span class="string">"BeanDefinitionRegistry must not be null"</span>);</span><br><span class="line">	<span class="comment">// 是否存在internalAutoProxyCreator</span></span><br><span class="line">	<span class="keyword">if</span> (registry.containsBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME)) &#123;</span><br><span class="line">    <span class="comment">// ...	</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 获得一个 AnnotationAwareAspectJAutoProxyCreator 的 beanDefinition</span></span><br><span class="line">	RootBeanDefinition beanDefinition = <span class="keyword">new</span> RootBeanDefinition(cls);</span><br><span class="line">	beanDefinition.setSource(source);</span><br><span class="line">	beanDefinition.getPropertyValues().add(<span class="string">"order"</span>, Ordered.HIGHEST_PRECEDENCE);</span><br><span class="line">	beanDefinition.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);</span><br><span class="line">	<span class="comment">// 注册名为 org.springframework.aop.config.internalAutoProxyCreator 的类</span></span><br><span class="line">	<span class="comment">// 实际对应的是 AnnotationAwareAspectJAutoProxyCreator 类，而这个类是用来使@Aspect起作用的</span></span><br><span class="line">	registry.registerBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME, beanDefinition);</span><br><span class="line">	<span class="keyword">return</span> beanDefinition;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>为什么必须要使用 <code>@EnableAspectJAutoProxy</code> 注解 才能使 Spring AOP 起到作用，经过上面的分析就能够给出答案了，因为只有添加了 <code>@EnableAspectJAutoProxy</code> 这个注解，才能使解析 <code>@Aspect</code> 注解的 <strong>AnnotationAwareAspectJAutoProxyCreator</strong> 注册到容器中。</p>
+<p>那么 <strong>AnnotationAwareAspectJAutoProxyCreator</strong> 是如何工作的呢。。</p>
+<h3 id="2-AnnotationAwareAspectJAutoProxyCreator-实现AOP功能"><a href="#2-AnnotationAwareAspectJAutoProxyCreator-实现AOP功能" class="headerlink" title="2. AnnotationAwareAspectJAutoProxyCreator 实现AOP功能"></a>2. AnnotationAwareAspectJAutoProxyCreator 实现AOP功能</h3><h4 id="类结构初步分析"><a href="#类结构初步分析" class="headerlink" title="类结构初步分析"></a>类结构初步分析</h4><p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20191117135450.jpg" alt="图1"></p>
+<p>根据上面的图片可以看出 AnnotationAwareAspectJAutoProxyCreator 有两个顶级接口，分别是 BeanPostProcesser 和 Aware 接口。</p>
+<p>Aware 接口主要用于标记超级接口，用于指示bean有资格通过回调样式方法由Spring容器通知特定框架对象。</p>
+<p>BeanPostProcesser 可以通过实现 BeanPostProcesser 允许自定义修改新的bean实例。 其中包括两个后置处理器：1.<code>postProcessBeforeInitialization(Object bean, String beanName)</code>  2.<code>postProcessAfterInitialization(Object bean, String beanName)</code> 分别针对初始化前后的拦截处理。</p>
+<h5 id="a-AbstractAutoProxyCreator"><a href="#a-AbstractAutoProxyCreator" class="headerlink" title="a. AbstractAutoProxyCreator"></a>a. AbstractAutoProxyCreator</h5><p>在通过上面图片中所看到的 AbstractAutoProxyCreator 继承了 ProxyProcessorSupport 类</p>
+<table>
+<thead>
+<tr>
+<th>继承类/接口</th>
+<th>作用</th>
+<th>需要实现方法</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ProxyConfig类</td>
+<td>用于创建代理的配置的便利超类，保证所有的代理创建类有一致的属性</td>
+<td></td>
+</tr>
+<tr>
+<td>Ordered接口</td>
+<td>表示继承类是有序的</td>
+<td></td>
+</tr>
+<tr>
+<td>BeanClassLoaderAware接口</td>
+<td>使用指定的classLoader来加载Bean</td>
+<td>setBeanClassLoader(ClassLoader classLoader)</td>
+</tr>
+<tr>
+<td>AopInfrastructureBean接口</td>
+<td>标示该Bean是作为Spring AOP的基础组件进行使用，因此不会被代理，即使被PointCut指定到也不会被代理到</td>
+<td></td>
+</tr>
+<tr>
+<td>BeanFactoryAware</td>
+<td>使用指定的 BeanFactory 来实例化Bean</td>
+<td>void setBeanFactory(BeanFactory beanFactory)</td>
+</tr>
+</tbody></table>
+<h5 id="b-SmartInstantiationAwareBeanPostProcessor"><a href="#b-SmartInstantiationAwareBeanPostProcessor" class="headerlink" title="b. SmartInstantiationAwareBeanPostProcessor"></a>b. SmartInstantiationAwareBeanPostProcessor</h5><p>AbstractAutoProxyCreator -&gt; 实现自 <code>SmartInstantiationAwareBeanPostProcessor</code>  -&gt; 继承自 <code>InstantiationAwareBeanPostProcessor</code> -&gt; 继承自 <code>BeanPostProcessor</code>.</p>
+<ul>
+<li>InstantiationAwareBeanPostProcessor</li>
+</ul>
+<p>在这个接口中，不仅仅有继承于 BeanPostProcessor 的 <code>postProcessBeforeInitialization(Object bean, String beanName)</code>  和 <code>postProcessAfterInitialization(Object bean, String beanName)</code> 两个Bean初始化前后的处理方法，本身还定义了 <code>postProcessProperties</code> 和 <code>postProcessPropertyValues</code>方法。作用是在针对Bean的初始化后对属性进行后置处理。</p>
+<ul>
+<li>SmartInstantiationAwareBeanPostProcessor</li>
+</ul>
+<p>在这个接口中定义两个方法，分别为 <code>default Class&lt;?&gt; predictBeanType(Class&lt;?&gt; beanClass, String beanName)</code> 用来预测使用BeanPostProcessor的postProcessBeforeInstantiation方法的返回类型，默认为null。<code>default Constructor&lt;?&gt;[] determineCandidateConstructors(Class&lt;?&gt; beanClass, String beanName)</code> 用来决定使用哪个候选的构造器。</p>
+<h4 id="AbstractAutoProxyCreator类源码分析"><a href="#AbstractAutoProxyCreator类源码分析" class="headerlink" title="AbstractAutoProxyCreator类源码分析"></a>AbstractAutoProxyCreator类源码分析</h4><p>在 <code>AbstractAutoProxyCreator</code> 作为 <code>AnnotationAwareAspectJAutoProxyCreator</code> 的父类，起到了非常重要的作用。</p>
+<p>在 <code>AbstractAutoProxyCreator</code> 中，实现了 <code>BeanPostProcessor</code> 的初始化前后处理方法，用来针对每次初始化Bean前后对切面的识别判断和对符合条件的Bean进行通知的代理。</p>
+<div class="highlight-wrap" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true" data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// postProcessBeforeInitialization ,BeanPostProcessor的实现方法。</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Object <span class="title">postProcessBeforeInstantiation</span><span class="params">(Class&lt;?&gt; beanClass, String beanName)</span> </span>&#123;</span><br><span class="line">	Object cacheKey = getCacheKey(beanClass, beanName); <span class="comment">//获得beanClass</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (!StringUtils.hasLength(beanName) || !<span class="keyword">this</span>.targetSourcedBeans.contains(beanName)) &#123;</span><br><span class="line">		<span class="keyword">if</span> (<span class="keyword">this</span>.advisedBeans.containsKey(cacheKey)) &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> (isInfrastructureClass(beanClass) || shouldSkip(beanClass, beanName)) &#123;</span><br><span class="line">		  <span class="comment">// 通过判断是否使用了@AspectJ注解定义的切面类还是 实现Advice、Pointcut、Advisor、AopInfrastructureBean</span></span><br><span class="line">			<span class="keyword">this</span>.advisedBeans.put(cacheKey, Boolean.FALSE); <span class="comment">//添加到advisedBeans里面，等待处理</span></span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">//如果不是基础设施的类</span></span><br><span class="line">	TargetSource targetSource = getCustomTargetSource(beanClass, beanName); <span class="comment">//获得targetSource</span></span><br><span class="line">	<span class="keyword">if</span> (targetSource != <span class="keyword">null</span>) &#123;</span><br><span class="line">		<span class="keyword">if</span> (StringUtils.hasLength(beanName)) &#123;</span><br><span class="line">			<span class="keyword">this</span>.targetSourcedBeans.add(beanName);</span><br><span class="line">		&#125;</span><br><span class="line">		Object[] specificInterceptors = getAdvicesAndAdvisorsForBean(beanClass, beanName, targetSource);</span><br><span class="line">		Object proxy = createProxy(beanClass, beanName, specificInterceptors, targetSource); <span class="comment">//创建代理类</span></span><br><span class="line">		<span class="keyword">this</span>.proxyTypes.put(cacheKey, proxy.getClass());</span><br><span class="line">		<span class="keyword">return</span> proxy;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>在postProcessBeforeInstantiation实现类中，具体流程大致为 如果是Aspect切面类，则将类添加到advisedBeans中等待进行Advice的组装，如果不是切面类，则会先去判断是否自定义一个  customTargetSourceCreators 数组 ，如果定义了。则组装成自定义的代理类进行返回。</p>
+<h5 id="1-判断是否是个切面"><a href="#1-判断是否是个切面" class="headerlink" title="1. 判断是否是个切面"></a>1. 判断是否是个切面</h5><p>那么最主要的问题是如何进行判断是否是Aspect切面类呢。只有系统认为是切面类，才能进行接下来的组装Advice发通知的后续操作。否则就不能进行通知了。<br>所以关键点在于 <code>isInfrastructureClass</code> 方法。</p>
+<p>在 AnnotationAwareAspectJAutoProxyCreator 中存在 的isInfrastructureClass 实现方法。</p>
+<div class="highlight-wrap" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true" data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">boolean</span> <span class="title">isInfrastructureClass</span><span class="params">(Class&lt;?&gt; beanClass)</span> </span>&#123;</span><br><span class="line">  <span class="comment">// 加上父类中的isInfrastructureClass判断规则</span></span><br><span class="line">	<span class="keyword">return</span> (<span class="keyword">super</span>.isInfrastructureClass(beanClass) ||</span><br><span class="line">			(<span class="keyword">this</span>.aspectJAdvisorFactory != <span class="keyword">null</span> &amp;&amp; <span class="keyword">this</span>.aspectJAdvisorFactory.isAspect(beanClass)));</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isAspect</span><span class="params">(Class&lt;?&gt; clazz)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">return</span> (hasAspectAnnotation(clazz) &amp;&amp; !compiledByAjc(clazz));</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 在这里判断是否存在 Aspect 注解</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">hasAspectAnnotation</span><span class="params">(Class&lt;?&gt; clazz)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> (AnnotationUtils.findAnnotation(clazz, Aspect.class) != <span class="keyword">null</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// AbstractAutoProxyCreator 中的方法</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">boolean</span> <span class="title">isInfrastructureClass</span><span class="params">(Class&lt;?&gt; beanClass)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">boolean</span> retVal = Advice.class.isAssignableFrom(beanClass) || <span class="comment">//是否实现 Advice</span></span><br><span class="line">			Pointcut.class.isAssignableFrom(beanClass) || <span class="comment">//是否实现 Pointcut</span></span><br><span class="line">			Advisor.class.isAssignableFrom(beanClass) || <span class="comment">//是否实现 Advisor</span></span><br><span class="line">			AopInfrastructureBean.class.isAssignableFrom(beanClass); <span class="comment">//是否实现 AopInfrastructureBean</span></span><br><span class="line">	<span class="keyword">if</span> (retVal &amp;&amp; logger.isTraceEnabled()) &#123;</span><br><span class="line">		logger.trace(<span class="string">"Did not attempt to auto-proxy infrastructure class ["</span> + beanClass.getName() + <span class="string">"]"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> retVal;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<h5 id="2-进行代理"><a href="#2-进行代理" class="headerlink" title="2.进行代理"></a>2.进行代理</h5><p>真正的代理是发生在实现的 <code>beanPostProcessor</code> 的 <code>postProcessAfterInitialization</code></p>
+<p>在 <code>AbstractAutoProxyCreator</code> 中提供类一个初始化后置处理器 <code>postProcessAfterInitialization</code> 。</p>
+<div class="highlight-wrap" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true" data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Object <span class="title">postProcessAfterInitialization</span><span class="params">(@Nullable Object bean, String beanName)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (bean != <span class="keyword">null</span>) &#123;</span><br><span class="line">		Object cacheKey = getCacheKey(bean.getClass(), beanName);</span><br><span class="line">		<span class="keyword">if</span> (<span class="keyword">this</span>.earlyProxyReferences.remove(cacheKey) != bean) &#123; <span class="comment">// 如果不存在</span></span><br><span class="line">		<span class="comment">// 如果需要进行代理的包装</span></span><br><span class="line">			<span class="keyword">return</span> wrapIfNecessary(bean, beanName, cacheKey);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> bean;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//如有必要，包装给定的bean，即是否有资格被代理</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> Object <span class="title">wrapIfNecessary</span><span class="params">(Object bean, String beanName, Object cacheKey)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (StringUtils.hasLength(beanName) &amp;&amp; <span class="keyword">this</span>.targetSourcedBeans.contains(beanName)) &#123;</span><br><span class="line">		<span class="comment">// 如果在 postProcessBeforeInitialization 中定义了targetSourcedBeans,则直接返回</span></span><br><span class="line">		<span class="keyword">return</span> bean;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> (Boolean.FALSE.equals(<span class="keyword">this</span>.advisedBeans.get(cacheKey))) &#123;</span><br><span class="line">		<span class="comment">// 如果已经添加到advisedBeans中也直接返回</span></span><br><span class="line">		<span class="keyword">return</span> bean;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 如果是一个基本配置Aspect类，则放到advisedBeans中。</span></span><br><span class="line">	<span class="keyword">if</span> (isInfrastructureClass(bean.getClass()) || shouldSkip(bean.getClass(), beanName)) &#123;</span><br><span class="line">		<span class="keyword">this</span>.advisedBeans.put(cacheKey, Boolean.FALSE);</span><br><span class="line">		<span class="keyword">return</span> bean;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 创建Advice，创建advice的过程先省略</span></span><br><span class="line">	Object[] specificInterceptors = getAdvicesAndAdvisorsForBean(bean.getClass(), beanName, <span class="keyword">null</span>);</span><br><span class="line">	<span class="comment">// Advice存在，则表示需要代理</span></span><br><span class="line">	<span class="keyword">if</span> (specificInterceptors != DO_NOT_PROXY) &#123;</span><br><span class="line">		<span class="keyword">this</span>.advisedBeans.put(cacheKey, Boolean.TRUE);</span><br><span class="line">		<span class="comment">// 创建代理</span></span><br><span class="line">		Object proxy = createProxy(</span><br><span class="line">				bean.getClass(), beanName, specificInterceptors, <span class="keyword">new</span> SingletonTargetSource(bean));</span><br><span class="line">		<span class="keyword">this</span>.proxyTypes.put(cacheKey, proxy.getClass());</span><br><span class="line">		<span class="comment">// 返回代理对象。</span></span><br><span class="line">		<span class="keyword">return</span> proxy;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">this</span>.advisedBeans.put(cacheKey, Boolean.FALSE);</span><br><span class="line">	<span class="keyword">return</span> bean;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="AOP对类的加载包装过程"><a href="#AOP对类的加载包装过程" class="headerlink" title="AOP对类的加载包装过程"></a>AOP对类的加载包装过程</h3><p>每次在创建Bean时，会通过createBean()方法来创建Bean，其中在真正的创建Bean之前执行了resolveBeforeInstantiation 去生成代理Bean。</p>
+<div class="highlight-wrap" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true" data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">	Object bean = resolveBeforeInstantiation(beanName, mbdToUse);</span><br><span class="line">	<span class="keyword">if</span> (bean != <span class="keyword">null</span>) &#123;</span><br><span class="line">		<span class="keyword">return</span> bean;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">	<span class="comment">// 创建Bean</span></span><br><span class="line">	Object beanInstance = doCreateBean(beanName, mbdToUse, args);</span><br><span class="line">	<span class="keyword">if</span> (logger.isTraceEnabled()) &#123;</span><br><span class="line">		logger.trace(<span class="string">"Finished creating instance of bean '"</span> + beanName + <span class="string">"'"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> beanInstance;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 生成代理对象方法</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> Object <span class="title">resolveBeforeInstantiation</span><span class="params">(String beanName, RootBeanDefinition mbd)</span> </span>&#123;</span><br><span class="line">	Object bean = <span class="keyword">null</span>;</span><br><span class="line">	<span class="keyword">if</span> (!Boolean.FALSE.equals(mbd.beforeInstantiationResolved)) &#123;</span><br><span class="line">		<span class="comment">// Make sure bean class is actually resolved at this point.</span></span><br><span class="line">		<span class="keyword">if</span> (!mbd.isSynthetic() &amp;&amp; hasInstantiationAwareBeanPostProcessors()) &#123;</span><br><span class="line">			Class&lt;?&gt; targetType = determineTargetType(beanName, mbd);</span><br><span class="line">			<span class="keyword">if</span> (targetType != <span class="keyword">null</span>) &#123;</span><br><span class="line">				bean = applyBeanPostProcessorsBeforeInstantiation(targetType, beanName);</span><br><span class="line">				<span class="comment">// 。。。</span></span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		mbd.beforeInstantiationResolved = (bean != <span class="keyword">null</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> bean;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>在这里真正执行了创建代理对象中的bean初始化前后方法。先执行了 <code>applyBeanPostProcessorsBeforeInstantiation</code> , 进行AOP切面类的识别。</p>
+<div class="highlight-wrap" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true" data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Nullable</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> Object <span class="title">applyBeanPostProcessorsBeforeInstantiation</span><span class="params">(Class&lt;?&gt; beanClass, String beanName)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">for</span> (BeanPostProcessor bp : getBeanPostProcessors()) &#123;</span><br><span class="line">		<span class="keyword">if</span> (bp <span class="keyword">instanceof</span> InstantiationAwareBeanPostProcessor) &#123;</span><br><span class="line">			<span class="comment">// 对每一个Bean创建前都进行一次处理，前提是 这个类实现</span></span><br><span class="line">			<span class="comment">// InstantiationAwareBeanPostProcessor 接口。</span></span><br><span class="line">			InstantiationAwareBeanPostProcessor ibp = (InstantiationAwareBeanPostProcessor) bp;</span><br><span class="line">			<span class="comment">// 如果实现这个接口，则进行实例化前的后置处理。</span></span><br><span class="line">			Object result = ibp.postProcessBeforeInstantiation(beanClass, beanName);</span><br><span class="line">			<span class="keyword">if</span> (result != <span class="keyword">null</span>) &#123;</span><br><span class="line">				<span class="keyword">return</span> result;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>在createBean方法时：</p>
+<div class="highlight-wrap" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true" data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Initialize the bean instance.</span></span><br><span class="line">Object exposedObject = bean;</span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">	<span class="comment">// 填充Bean</span></span><br><span class="line">	populateBean(beanName, mbd, instanceWrapper);</span><br><span class="line">	<span class="comment">// 初始化Bean</span></span><br><span class="line">	exposedObject = initializeBean(beanName, exposedObject, mbd);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>在 initializeBean 中才真正的执行继承 BeanPostProcessor 类的Bean初始化前后的CallBack方法。</p>
+<div class="highlight-wrap" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true" data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (mbd == <span class="keyword">null</span> || !mbd.isSynthetic()) &#123;</span><br><span class="line">	wrappedBean = applyBeanPostProcessorsBeforeInitialization(wrappedBean, beanName);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">	invokeInitMethods(beanName, wrappedBean, mbd);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">catch</span> (Throwable ex) &#123;</span><br><span class="line">	<span class="keyword">throw</span> <span class="keyword">new</span> BeanCreationException(</span><br><span class="line">			(mbd != <span class="keyword">null</span> ? mbd.getResourceDescription() : <span class="keyword">null</span>),</span><br><span class="line">			beanName, <span class="string">"Invocation of init method failed"</span>, ex);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span> (mbd == <span class="keyword">null</span> || !mbd.isSynthetic()) &#123;</span><br><span class="line">	wrappedBean = applyBeanPostProcessorsAfterInitialization(wrappedBean, beanName);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>所以，综上，在 createbean 方法之前会执行对切面类的识别，也就是切面类的前置处理。但真正去执行所有的Bean的通知，都是在 initializeBean 中的  applyBeanPostProcessorsAfterInitialization 方法中执行的。</p>
+<h3 id="Spring创建代理的方式"><a href="#Spring创建代理的方式" class="headerlink" title="Spring创建代理的方式"></a>Spring创建代理的方式</h3><p>SpringAOP创建代理有两种方式，第一种：使用JDK动态代理。第二种：使用CGLIB代理。下面来针对代理方式的选择方式，查看源码一探究竟。</p>
+<p>在上一节中提到的在 <code>AbstractAutoProxyCreator</code> 中的在后置处理器中 <code>postProcessAfterInitialization</code> 的 <code>wrapIfNecessary</code>中进行了对Bean的代理包装处理.</p>
+<div class="highlight-wrap" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true" data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 如果存在可用的通知，则对Bean进行代理</span></span><br><span class="line">Object[] specificInterceptors = getAdvicesAndAdvisorsForBean(bean.getClass(), beanName, <span class="keyword">null</span>);</span><br><span class="line"><span class="keyword">if</span> (specificInterceptors != DO_NOT_PROXY) &#123;</span><br><span class="line">	<span class="keyword">this</span>.advisedBeans.put(cacheKey, Boolean.TRUE);</span><br><span class="line">	<span class="comment">// 创建代理对象</span></span><br><span class="line">	Object proxy = createProxy(</span><br><span class="line">			bean.getClass(), beanName, specificInterceptors, <span class="keyword">new</span> SingletonTargetSource(bean));</span><br><span class="line">	<span class="keyword">this</span>.proxyTypes.put(cacheKey, proxy.getClass());</span><br><span class="line">	<span class="keyword">return</span> proxy;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>在 <code>createProxy</code> 中决定了使用哪种方式（JDK动态代理、CGLIB代理）进行代理。</p>
+<div class="highlight-wrap" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true" data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">protected</span> Object <span class="title">createProxy</span><span class="params">(Class&lt;?&gt; beanClass, @Nullable String beanName,</span></span></span><br><span class="line"><span class="function"><span class="params">		@Nullable Object[] specificInterceptors, TargetSource targetSource)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (<span class="keyword">this</span>.beanFactory <span class="keyword">instanceof</span> ConfigurableListableBeanFactory) &#123;</span><br><span class="line">		AutoProxyUtils.exposeTargetClass((ConfigurableListableBeanFactory) <span class="keyword">this</span>.beanFactory, beanName, beanClass);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	ProxyFactory proxyFactory = <span class="keyword">new</span> ProxyFactory();</span><br><span class="line">	proxyFactory.copyFrom(<span class="keyword">this</span>);<span class="comment">// 复制配置</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (!proxyFactory.isProxyTargetClass()) &#123;<span class="comment">//返回是否直接代理目标类以及任何接口。</span></span><br><span class="line">		<span class="keyword">if</span> (shouldProxyTargetClass(beanClass, beanName)) &#123;</span><br><span class="line">		<span class="comment">// 如果 proxy-target-class 标签属性返回true，则表明需要基于类的代理，</span></span><br><span class="line">		<span class="comment">// 反之则需要基于接口的代理</span></span><br><span class="line">			proxyFactory.setProxyTargetClass(<span class="keyword">true</span>); <span class="comment">//使用CGLIB代理（true）</span></span><br><span class="line">		&#125;<span class="keyword">else</span> &#123;</span><br><span class="line">			evaluateProxyInterfaces(beanClass, proxyFactory); <span class="comment">//检查是否实现了接口</span></span><br><span class="line">			<span class="comment">// 如果实现了接口，则设置interface，否则设置proxyTargetClass为true，但前提是</span></span><br><span class="line">			<span class="comment">// 用户没有自己设置proxyTargetClass属性</span></span><br><span class="line">			<span class="comment">/**</span></span><br><span class="line"><span class="comment">			 * if (hasReasonableProxyInterface) &#123;</span></span><br><span class="line"><span class="comment">			 * Must allow for introductions; can't just set interfaces to the target's interfaces only.</span></span><br><span class="line"><span class="comment">			 *	for (Class&lt;?&gt; ifc : targetInterfaces) &#123;</span></span><br><span class="line"><span class="comment">			 *		proxyFactory.addInterface(ifc);</span></span><br><span class="line"><span class="comment">			 *	&#125;</span></span><br><span class="line"><span class="comment">		     *&#125;else &#123;</span></span><br><span class="line"><span class="comment">			 *	proxyFactory.setProxyTargetClass(true);</span></span><br><span class="line"><span class="comment">			 *&#125;</span></span><br><span class="line"><span class="comment">			 */</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	Advisor[] advisors = buildAdvisors(beanName, specificInterceptors);</span><br><span class="line">	proxyFactory.addAdvisors(advisors);</span><br><span class="line">	proxyFactory.setTargetSource(targetSource);</span><br><span class="line">	customizeProxyFactory(proxyFactory);</span><br><span class="line"></span><br><span class="line">	proxyFactory.setFrozen(<span class="keyword">this</span>.freezeProxy);</span><br><span class="line">	<span class="keyword">if</span> (advisorsPreFiltered()) &#123;</span><br><span class="line">		proxyFactory.setPreFiltered(<span class="keyword">true</span>);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> proxyFactory.getProxy(getProxyClassLoader());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>在这里设置了有关于proxyFactory的相关属性， 如是否继承接口的interface，和 ProxyTargetClass 。如果没有实现interface，则会自动将ProxyTargeClass为true，也就是说这两个属性是相对的。</p>
+<p>在最后的retrun的 <code>getProxy()</code> 方法最终会调用 <code>DefaultAopProxyFactory</code> 类中的 <code>createAopProxy</code> 方法决定使用哪中代理方式进行代理。</p>
+<div class="highlight-wrap" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true" data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> AopProxy <span class="title">createAopProxy</span><span class="params">(AdvisedSupport config)</span> <span class="keyword">throws</span> AopConfigException </span>&#123;</span><br><span class="line">	<span class="comment">/*</span></span><br><span class="line"><span class="comment">	* 下面的三个条件简单分析一下：</span></span><br><span class="line"><span class="comment">	*</span></span><br><span class="line"><span class="comment">	*   条件1：config.isOptimize() - 是否需要优化</span></span><br><span class="line"><span class="comment">	*   条件2：config.isProxyTargetClass() - 检测 proxyTargetClass 的值，</span></span><br><span class="line"><span class="comment">	*   条件3：hasNoUserSuppliedProxyInterfaces(config) - 目标 bean 是否实现了接口</span></span><br><span class="line"><span class="comment">	*</span></span><br><span class="line"><span class="comment">	*/</span></span><br><span class="line">	<span class="keyword">if</span> (config.isOptimize() || config.isProxyTargetClass() || hasNoUserSuppliedProxyInterfaces(config)) &#123;</span><br><span class="line">		<span class="comment">// 如果设置了optimize 或者 proxyTargetClass 或者设置了进行代理的接口</span></span><br><span class="line">		Class&lt;?&gt; targetClass = config.getTargetClass();</span><br><span class="line">		<span class="keyword">if</span> (targetClass == <span class="keyword">null</span>) &#123;</span><br><span class="line">			<span class="keyword">throw</span> <span class="keyword">new</span> AopConfigException(<span class="string">"TargetSource cannot determine target class: "</span> +</span><br><span class="line">					<span class="string">"Either an interface or a target is required for proxy creation."</span>);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> (targetClass.isInterface() || Proxy.isProxyClass(targetClass)) &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">new</span> JdkDynamicAopProxy(config); <span class="comment">//如果代理的是接口，使用JDK动态代理</span></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">new</span> ObjenesisCglibAopProxy(config);<span class="comment">//否则使用CGlib代理</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span> &#123; <span class="comment">//否则都使用JDK进行代理</span></span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">new</span> JdkDynamicAopProxy(config);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>前面说的如果自己设置类proxyTargetClass属性为true，就不会判断是继承了interface。如果没有单独设置，则会先判断是否继承了接口，如果没有则会自动设置proxyTargetClass属性为true。</p>
+<p><em>所以得出结论：</em></p>
+<ol>
+<li><strong>如果设置了proxyTargetClass为true，则使用CGLIB代理。</strong></li>
+<li><strong>如果没有设置proxyTargetClass，如果是接口，则使用JDK动态代理。如果没有实现接口，则还是会使用CGLIB进行代理。</strong> </li>
+</ol>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+<div>
+      
+</div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/12/07/（三）自动装配/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2298,269 +2586,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/07/15/SpringBoot的WEB开发之国际化/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="NanYin">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NanYin的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/07/15/SpringBoot的WEB开发之国际化/" itemprop="url">SpringBoot的WEB开发之国际化</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-15T12:00:00Z">
-                2019-07-15
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/SpringBoot/" itemprop="url" rel="index">
-                    <span itemprop="name">SpringBoot</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  2.8k
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  12
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h1><p>SpringBoot默认是支持<code>Thymeleaf</code>模版引擎的。相应的如果使用<code>Thymeleaf</code>就可以使用thymeleaf的语法在页面显示返回给页面的数据。</p>
-<h2 id="使用thymeleaf"><a href="#使用thymeleaf" class="headerlink" title="使用thymeleaf"></a>使用thymeleaf</h2><h3 id="导入starter"><a href="#导入starter" class="headerlink" title="导入starter"></a>导入starter</h3><p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190715214204.png" alt="autoConfig"></p>
-<p>如图，SpringBoot自动配置是导入有Thymeleaf相关自动配置文件的，但是，红色部分是缺少的部分，也就是说少包。自然SpringBoot会提供这些相关的包的starters.</p>
-<p>那么在官网上的starters中可以找到<code>spring-boot-starter-thymeleaf</code>，说明SpringBoot提供Thymeleaf的starter需要导入，才能使用<code>Thymeleaf</code>。</p>
-<h3 id="在SpringBoot中Thymeleaf的自动配置"><a href="#在SpringBoot中Thymeleaf的自动配置" class="headerlink" title="在SpringBoot中Thymeleaf的自动配置"></a>在SpringBoot中Thymeleaf的自动配置</h3><div class="highlight-wrap" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true" data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@ConfigurationProperties</span>(prefix = <span class="string">"spring.thymeleaf"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ThymeleafProperties</span> </span>&#123;</span><br><span class="line"></span><br><span class="line"><span class="comment">//  charset</span></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Charset DEFAULT_ENCODING = StandardCharsets.UTF_8;</span><br><span class="line"><span class="comment">// 默认加载模版的路径</span></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String DEFAULT_PREFIX = <span class="string">"classpath:/templates/"</span>;</span><br><span class="line"><span class="comment">// 默认加载的文件类型 是html</span></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String DEFAULT_SUFFIX = <span class="string">".html"</span>;</span><br><span class="line"><span class="comment">// 可自己修改配置文件中的 前缀和后缀，如果 spring.thymeleaf.suffix=.htmlx</span></span><br><span class="line">	<span class="keyword">private</span> String prefix = DEFAULT_PREFIX;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> String suffix = DEFAULT_SUFFIX;</span><br></pre></td></tr></table></figure></div>
-
-<h3 id="使用Thymeleaf进行页面渲染"><a href="#使用Thymeleaf进行页面渲染" class="headerlink" title="使用Thymeleaf进行页面渲染"></a>使用Thymeleaf进行页面渲染</h3><p>所以在SpringBoot中在Controller中使用如下：</p>
-<div class="highlight-wrap" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true" data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Controller</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloController</span> </span>&#123;</span><br><span class="line">    <span class="meta">@RequestMapping</span>(<span class="string">"/home"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">home</span><span class="params">(Map&lt;String,String&gt; map)</span></span>&#123;</span><br><span class="line">        map.put(<span class="string">"hello"</span>,<span class="string">"Hello World~~~"</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"home"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
-
-<p>这样映射器就会自动映射到<code>classpath:/templates/home.html</code>文件上。</p>
-<p>在templates下建立home.html文件</p>
-<div class="highlight-wrap" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true" data-rel="HTML"><figure class="iseeu highlight /html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE html&gt;</span></span><br><span class="line"> <span class="comment">&lt;!--引入 xmlns:th 用于thymeleaf语法提示--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">"en"</span> <span class="attr">xmlns:th</span>=<span class="string">"http://www.thymeleaf.org"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"UTF-8"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Title<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">h1</span> <span class="attr">th:text</span>=<span class="string">"$&#123;hello&#125;"</span>&gt;</span>hello world<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure></div>
-
-<p>重启后查看<code>http://localhost:8080/home</code>发现已经可以让 <code>/home</code> 映射到 <code>home.html</code> 文件上了。并且根据我们传过来的值 <code>Hello World~~~</code> 显示在页面上了。</p>
-<p>Thymeleaf语法可直接参考官方的<a href="https://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html" target="_blank" rel="noopener">文档</a>;</p>
-<h2 id="使用SpringMVC"><a href="#使用SpringMVC" class="headerlink" title="使用SpringMVC"></a>使用SpringMVC</h2><p> SpringMvc框架是一种丰富<code>model view controller</code> 的web框架。SpringMVC通过使用 <code>@Controller</code> 和 <code>@RestController</code> 完成对 <code>HTTP</code> 请求的处理。通过使用 <code>@RequestMapping</code> 完成对请求对controller的映射。</p>
-<h3 id="自动配置"><a href="#自动配置" class="headerlink" title="自动配置"></a>自动配置</h3><p> <code>SpringBoot</code> 对 <code>SpringMVC</code> 在自动配置的时候，进行了很多默认的设置。包括前一篇文章中的关于静态资源加载的两种方式（ <code>Webjars</code> 和本地加载位置），也是通过 <code>SpringBoot</code> 进行自动配置的。更多的 <code>SpringBoot</code> 对 <code>SpringMVC</code> 在哪些地方进行了自动配置，可以参考文档中的<a href="RELEASE/reference/html/boot-features-developing-web-applications.html#boot-features-spring-mvc">SpringMVC 特性</a>。</p>
-<h3 id="自动配置代码参考"><a href="#自动配置代码参考" class="headerlink" title="自动配置代码参考"></a>自动配置代码参考</h3><p>拿 <code>ContentNegotiatingViewResolver</code>这个bean来说，SpringMVC的自动配置类是如何对拓展的支持。</p>
-<div class="highlight-wrap" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true" data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="meta">@ConditionalOnBean</span>(ViewResolver.class)</span><br><span class="line"><span class="comment">// 如果类路径中不存在ContentNegotiatingViewResolver这个类的时候</span></span><br><span class="line"><span class="meta">@ConditionalOnMissingBean</span>(name = <span class="string">"viewResolver"</span>, value = ContentNegotiatingViewResolver.class)</span><br><span class="line"><span class="function"><span class="keyword">public</span> ContentNegotiatingViewResolver <span class="title">viewResolver</span><span class="params">(BeanFactory beanFactory)</span> </span>&#123;</span><br><span class="line"><span class="comment">//  返回这个Resolver</span></span><br><span class="line">    ContentNegotiatingViewResolver resolver = <span class="keyword">new</span> ContentNegotiatingViewResolver();</span><br><span class="line">    resolver.setContentNegotiationManager(beanFactory.getBean(ContentNegotiationManager.class));</span><br><span class="line">    <span class="comment">// ContentNegotiatingViewResolver uses all the other view resolvers to locate</span></span><br><span class="line">    <span class="comment">// a view so it should have a high precedence</span></span><br><span class="line">    resolver.setOrder(Ordered.HIGHEST_PRECEDENCE);</span><br><span class="line">    <span class="keyword">return</span> resolver;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// ContentNegotiatingViewResolver 类中的初始化servlet容器方法</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">initServletContext</span><span class="params">(ServletContext servletContext)</span> </span>&#123;</span><br><span class="line"><span class="comment">// 找出所有的容器中的ViewResolver</span></span><br><span class="line">    Collection&lt;ViewResolver&gt; matchingBeans =</span><br><span class="line">            BeanFactoryUtils.beansOfTypeIncludingAncestors(obtainApplicationContext(), ViewResolver.class).values();</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span>.viewResolvers == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">this</span>.viewResolvers = <span class="keyword">new</span> ArrayList&lt;&gt;(matchingBeans.size());</span><br><span class="line">        <span class="comment">// 循环添加到viewResolver中</span></span><br><span class="line">        <span class="keyword">for</span> (ViewResolver viewResolver : matchingBeans) &#123;</span><br><span class="line">            <span class="keyword">if</span> (<span class="keyword">this</span> != viewResolver) &#123;</span><br><span class="line">                <span class="keyword">this</span>.viewResolvers.add(viewResolver);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="meta">@Nullable</span></span><br><span class="line"><span class="comment">//实现ViewResolver的实现方法</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> View <span class="title">resolveViewName</span><span class="params">(String viewName, Locale locale)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    RequestAttributes attrs = RequestContextHolder.getRequestAttributes();</span><br><span class="line">    Assert.state(attrs <span class="keyword">instanceof</span> ServletRequestAttributes, <span class="string">"No current ServletRequestAttributes"</span>);</span><br><span class="line">    List&lt;MediaType&gt; requestedMediaTypes = getMediaTypes(((ServletRequestAttributes) attrs).getRequest());</span><br><span class="line">    <span class="keyword">if</span> (requestedMediaTypes != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="comment">//  获取候选的view</span></span><br><span class="line">        <span class="comment">// 在getCandidateViews这个方法里就是把全局的viewResolver循环一遍</span></span><br><span class="line">        List&lt;View&gt; candidateViews = getCandidateViews(viewName, locale, requestedMediaTypes);</span><br><span class="line">        <span class="comment">// 寻找最好的/最合适的view</span></span><br><span class="line">        View bestView = getBestView(candidateViews, requestedMediaTypes, attrs);</span><br><span class="line">        <span class="keyword">if</span> (bestView != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> bestView;</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure></div>
-
-<p>通过上述代码的描述，可以发现如果自己实现ViewResolver，只需要实现ViewResolver后加入到容器中即可。SpringBoot会自动获取容器中的ViewResover。</p>
-<h3 id="定制开发"><a href="#定制开发" class="headerlink" title="定制开发"></a>定制开发</h3><p>如果想保留 <code>SpringBoot</code> 的MVC特性，并且想去添加MVC配置如拦截器，视图控制器等，你可以添加自己的配置类，并且继承<code>WebMvcConfigurer</code>,但是需要注意的是不能使用 <code>@EnableWebMvc</code> 注解。如果使用 <code>@EnableWebMvc</code> 注解，则表示要你全面接管SpringMvc配置功能，不使用SpringBoot自动配置的功能。</p>
-<ol>
-<li>使用bean的方式，让 <code>InnerViewResolver</code> 自动发现容器中的ViewResolver</li>
-</ol>
-<div class="highlight-wrap" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true" data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="comment">//@EnableWebMvc // 使用这个注解表示完全不实用SpringBoot对SpringMVC的自动配置功能。</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MvcConfig</span> <span class="keyword">implements</span> <span class="title">WebMvcConfigurer</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> MyViewResolver <span class="title">myViewResolver</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> MyViewResolver();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">InnerViewResolver</span> <span class="keyword">implements</span> <span class="title">ViewResolver</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> View <span class="title">resolveViewName</span><span class="params">(String viewName, Locale locale)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></div>
-
-<p>这样将一个ViewResolver放到容器中，那么前面说到的 <code>InnerViewResolver</code> 会自动的发现这个bean来使用。</p>
-<ol start="2">
-<li>使用 <code>WebMvcConfigurer</code> 实现</li>
-</ol>
-<div class="highlight-wrap" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true" data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="comment">//@EnableWebMvc</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MvcConfig</span> <span class="keyword">implements</span> <span class="title">WebMvcConfigurer</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">configureViewResolvers</span><span class="params">(ViewResolverRegistry registry)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        registry.viewResolver(<span class="keyword">new</span> InnerViewResolver());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addViewControllers</span><span class="params">(ViewControllerRegistry registry)</span> </span>&#123;</span><br><span class="line">        registry.addRedirectViewController(<span class="string">"/index"</span>,<span class="string">"/home"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// ViewResolverRegistry 类中的viewResolver方法，直接添加到全局变量 viewResolvers中，代替前面的遍历</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">viewResolver</span><span class="params">(ViewResolver viewResolver)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (viewResolver <span class="keyword">instanceof</span> ContentNegotiatingViewResolver) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> BeanInitializationException(</span><br><span class="line">                <span class="string">"addViewResolver cannot be used to configure a ContentNegotiatingViewResolver. "</span> +</span><br><span class="line">                <span class="string">"Please use the method enableContentNegotiation instead."</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">this</span>.viewResolvers.add(viewResolver);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
-
-<p>继承WebMvcConfigurer使用继承方法，将类放到容器中。</p>
-<h1 id="国际化开发"><a href="#国际化开发" class="headerlink" title="国际化开发"></a>国际化开发</h1><p>下面从自动配置入手，来看SpringBoot是怎么配置国际化的。</p>
-<h2 id="让SpringBoot配置指定国际化文件"><a href="#让SpringBoot配置指定国际化文件" class="headerlink" title="让SpringBoot配置指定国际化文件"></a>让SpringBoot配置指定国际化文件</h2><div class="highlight-wrap" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true" data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MessageSourceAutoConfiguration</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Resource[] NO_RESOURCES = &#123;&#125;;</span><br><span class="line"><span class="comment">// 在配置文件中可以进行配置的内容 以spring.message开头</span></span><br><span class="line">	<span class="meta">@Bean</span></span><br><span class="line">	<span class="meta">@ConfigurationProperties</span>(prefix = <span class="string">"spring.messages"</span>)</span><br><span class="line">	<span class="function"><span class="keyword">public</span> MessageSourceProperties <span class="title">messageSourceProperties</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">new</span> MessageSourceProperties();</span><br><span class="line">	&#125;</span><br><span class="line"><span class="comment">/***********************MessageSourceProperties**********************/</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MessageSourceProperties</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 以逗号分隔的基本名称列表 每一个都是在完整的路径下加载，比如 i18n.home,i18n.hello这样</span></span><br><span class="line"><span class="comment">   * 如果在类路径上，就去掉i18n.</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="keyword">private</span> String basename = <span class="string">"messages"</span>;</span><br></pre></td></tr></table></figure></div>
-
-<p>如果对<code>basename</code>的值的设置仍有疑惑，那来直接看解析<code>basename</code>的代码。</p>
-<div class="highlight-wrap" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true" data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> ConditionOutcome <span class="title">getMatchOutcome</span><span class="params">(ConditionContext context, AnnotatedTypeMetadata metadata)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 获得propertiesf中的spring.messages.basename属性，如果没有默认是messages</span></span><br><span class="line">	String basename = context.getEnvironment().getProperty(<span class="string">"spring.messages.basename"</span>, <span class="string">"messages"</span>);</span><br><span class="line">	ConditionOutcome outcome = cache.get(basename);</span><br><span class="line">	<span class="keyword">if</span> (outcome == <span class="keyword">null</span>) &#123;</span><br><span class="line">      <span class="comment">// 调用方法解析basename</span></span><br><span class="line">		outcome = getMatchOutcomeForBasename(context, basename);</span><br><span class="line">		cache.put(basename, outcome);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> outcome;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> ConditionOutcome <span class="title">getMatchOutcomeForBasename</span><span class="params">(ConditionContext context, String basename)</span> </span>&#123;</span><br><span class="line">	ConditionMessage.Builder message = ConditionMessage.forCondition(<span class="string">"ResourceBundle"</span>);</span><br><span class="line">	<span class="keyword">for</span> (String name : StringUtils.commaDelimitedListToStringArray(StringUtils.trimAllWhitespace(basename))) &#123;</span><br><span class="line">      <span class="comment">// 将basename以逗号分隔，循环这个数组</span></span><br><span class="line">		<span class="keyword">for</span> (Resource resource : getResources(context.getClassLoader(), name)) &#123;</span><br><span class="line">        <span class="comment">// 这里的getResource方法 是加载classpath + name + .properties中的内容</span></span><br><span class="line">        <span class="comment">// 所以国际化文件只支持 properties文件，其他文件不支持</span></span><br><span class="line">        <span class="comment">// return new PathMatchingResourcePatternResolver(classLoader)</span></span><br><span class="line">			<span class="comment">// 	.getResources("classpath*:" + target + ".properties");</span></span><br><span class="line">			<span class="keyword">if</span> (resource.exists()) &#123;</span><br><span class="line">          <span class="comment">// 对每一个获取Resource 新建一个match实例对象</span></span><br><span class="line">				<span class="keyword">return</span> ConditionOutcome.match(message.found(<span class="string">"bundle"</span>).items(resource));</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> ConditionOutcome.noMatch(message.didNotFind(<span class="string">"bundle with basename "</span> + basename).atAll());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
-
-<h2 id="国际化步骤"><a href="#国际化步骤" class="headerlink" title="国际化步骤"></a>国际化步骤</h2><p>上面通过对SpringBoot对国际化的配置的分析，知道了在properties文件中怎么更改国际化文件的配置信息。下面来具体操作，进行国际化。</p>
-<h3 id="默认的国际化"><a href="#默认的国际化" class="headerlink" title="默认的国际化"></a>默认的国际化</h3><h4 id="创建国际化的properties"><a href="#创建国际化的properties" class="headerlink" title="创建国际化的properties"></a>创建国际化的properties</h4><p>在resources文件夹下创建文件夹<code>i18n</code> ,在文件夹下右键创建<code>Resource Bundle</code> 文件。</p>
-<p><img src="https://i.loli.net/2019/07/16/5d2dc701793f461130.png" alt="resource"></p>
-<p>左边<code>project locale</code>中有三个选项，default和自己添加的<code>zh_CN</code>和<code>en_US</code>分别表示中文和英文。点击<code>add All</code>后确认，创建文件。如下图：</p>
-<p><img src="https://i.loli.net/2019/07/16/5d2dc7ca2479570179.png" alt></p>
-<p>双击其中的一个配置文件比如<code>index.properties</code>，使用idea可以发现编辑区的左下角有一个<code>Resource Bundle</code> tab页，点击之后，来到如下图的界面，新建一个选项，输入各配置文件中的值。</p>
-<p><img src="https://i.loli.net/2019/07/16/5d2dc82af114521374.png" alt></p>
-<h4 id="创建controller和html页面"><a href="#创建controller和html页面" class="headerlink" title="创建controller和html页面"></a>创建controller和html页面</h4><ol>
-<li><p>创建<code>controller</code></p>
- <div class="highlight-wrap" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true" data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping</span>(<span class="string">"/index"</span>)</span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">index</span><span class="params">()</span></span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="string">"index"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
-</li>
-<li><p>创建<code>html</code>页面</p>
- <div class="highlight-wrap" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true" data-rel="HTML"><figure class="iseeu highlight /html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">"en"</span> <span class="attr">xmlns:th</span>=<span class="string">"http://www.thymeleaf.org"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"UTF-8"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Title<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">--</span> 使用<span class="attr">th:text</span>会替换标签内的文本内容 使用#&#123;&#125;来表示国际化内容<span class="attr">--</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">h1</span> <span class="attr">th:text</span>=<span class="string">"#&#123;index&#125;"</span>&gt;</span>这里是主页<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure></div>
-
-
-
-</li>
-</ol>
-<p>重启程序，发现index页面上显示的是<code>主页</code>，这个内容，正好是在index_zh_CN.properties中定义的<code>index</code>的值。SpringBoot会根据请求头中的语言来判断使用哪个配置文件中的内容。</p>
-<h4 id="如何切换页面的中英文？"><a href="#如何切换页面的中英文？" class="headerlink" title="如何切换页面的中英文？"></a>如何切换页面的中英文？</h4><p>在<code>dispatcherServlet</code>中在渲染视图的时候，会通过<code>locale</code>的属性来改变渲染后的语言。</p>
-<div class="highlight-wrap" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true" data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">render</span><span class="params">(ModelAndView mv, HttpServletRequest request, HttpServletResponse response)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">	<span class="comment">// 可以通过请求的locale来定义返回的locale</span></span><br><span class="line">	Locale locale =</span><br><span class="line">			(<span class="keyword">this</span>.localeResolver != <span class="keyword">null</span> ? <span class="keyword">this</span>.localeResolver.resolveLocale(request) : request.getLocale());</span><br><span class="line">	response.setLocale(locale);</span><br></pre></td></tr></table></figure></div>
-
-<p>通过debug发现<code>this.localeResolver</code>中是有值的，说明<code>Spring</code>容器中有localeResolver,进而可以得出结论：<strong><code>SpringBoot</code>中自动配置来默认的<code>localeResover</code>。</strong></p>
-<p><img src="https://i.loli.net/2019/07/16/5d2dd26ac0a7a43943.png" alt="计算"></p>
-<p>在<code>WebMvcAutoConfiguration</code>中的确配置了关于locale的信息。</p>
-<div class="highlight-wrap" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true" data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="meta">@ConditionalOnMissingBean</span></span><br><span class="line"><span class="meta">@ConditionalOnProperty</span>(prefix = <span class="string">"spring.mvc"</span>, name = <span class="string">"locale"</span>)</span><br><span class="line"><span class="function"><span class="keyword">public</span> LocaleResolver <span class="title">localeResolver</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">this</span>.mvcProperties.getLocaleResolver() == WebMvcProperties.LocaleResolver.FIXED) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> FixedLocaleResolver(<span class="keyword">this</span>.mvcProperties.getLocale());</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 设置了 容器中的localeResolver 为 AcceptHeaderLocaleResolver</span></span><br><span class="line">  AcceptHeaderLocaleResolver localeResolver = <span class="keyword">new</span> AcceptHeaderLocaleResolver();</span><br><span class="line">  localeResolver.setDefaultLocale(<span class="keyword">this</span>.mvcProperties.getLocale());</span><br><span class="line">  <span class="keyword">return</span> localeResolver;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
-
-<p>因为配置了默认的<code>localeResolver</code> ,所以在使用<code>this.localeResolver.resolveLocale(request)</code>处理这个请求的时候，就会使用<code>AcceptHeaderLocaleResolver</code>类中的方法，而这个方法正是拿的<code>request</code>中的<code>Accept-Language</code></p>
-<div class="highlight-wrap" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true" data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> Locale <span class="title">resolveLocale</span><span class="params">(HttpServletRequest request)</span> </span>&#123;</span><br><span class="line">		Locale defaultLocale = getDefaultLocale();</span><br><span class="line">		<span class="keyword">if</span> (defaultLocale != <span class="keyword">null</span> &amp;&amp; request.getHeader(<span class="string">"Accept-Language"</span>) == <span class="keyword">null</span>) &#123;</span><br><span class="line">			<span class="keyword">return</span> defaultLocale;</span><br><span class="line">		&#125;</span><br><span class="line">    <span class="comment">// 从request中拿Accept-Language这个值。</span></span><br><span class="line">		Locale requestLocale = request.getLocale();</span><br><span class="line">		List&lt;Locale&gt; supportedLocales = getSupportedLocales();</span><br><span class="line">		<span class="keyword">if</span> (supportedLocales.isEmpty() || supportedLocales.contains(requestLocale)) &#123;</span><br><span class="line">			<span class="keyword">return</span> requestLocale;</span><br><span class="line">		&#125;</span><br></pre></td></tr></table></figure></div>
-
-<p>这样的话疑惑就解开了，<strong>默认的SpringBoot构件web应用会使用当前浏览器的地区语言来进行国际化。</strong></p>
-<h3 id="改变国际化语言标准的判断方式"><a href="#改变国际化语言标准的判断方式" class="headerlink" title="改变国际化语言标准的判断方式"></a>改变国际化语言标准的判断方式</h3><p>上面说了默认的<code>SpringBoot</code>会从<code>request</code>中获取地区语言信息，来判断加载哪个配置。</p>
-<p>在自动配置的方法上标注着这样一段<code>@ConditionalOnMissingBean</code>,说明如果有<code>localeResolver</code>这个类那么这个方法是不会生效的。所以改变的方法就是自己实现<code>localeResolver</code>.</p>
-<div class="highlight-wrap" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true" data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyLocalResolver</span> <span class="keyword">implements</span> <span class="title">LocaleResolver</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Locale defaultLocale;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Locale <span class="title">resolveLocale</span><span class="params">(HttpServletRequest request)</span> </span>&#123;</span><br><span class="line">        Locale defaultLocale = getDefaultLocale();</span><br><span class="line">        String language = request.getParameter(<span class="string">"language"</span>);</span><br><span class="line">      <span class="comment">// 获取请求中的 ?language=「xxx」 </span></span><br><span class="line">        String[] s = <span class="keyword">new</span> String[<span class="number">2</span>];</span><br><span class="line">        <span class="keyword">if</span>(language != <span class="keyword">null</span> &amp;&amp; !<span class="string">""</span>.equals(language))&#123;</span><br><span class="line">            s = getS(language);</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            <span class="comment">//如果是空则找浏览器中的属性</span></span><br><span class="line">            String header = getFirstLangInRequest(request);</span><br><span class="line">            <span class="keyword">if</span>(header!=<span class="keyword">null</span> &amp;&amp; !<span class="string">""</span>.equals(header))&#123;</span><br><span class="line">                s = getS(header);</span><br><span class="line">            &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                <span class="comment">//否则给个默认的local</span></span><br><span class="line">                s = getS(<span class="string">"zh-CN"</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        defaultLocale = <span class="keyword">new</span> Locale(s[<span class="number">0</span>],s[<span class="number">1</span>]);</span><br><span class="line">        <span class="keyword">return</span> defaultLocale;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> String <span class="title">getFirstLangInRequest</span><span class="params">(HttpServletRequest request)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> request.getHeader(<span class="string">"Accept-Language"</span>).split(<span class="string">","</span>)[<span class="number">0</span>];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String[] getS(String language) &#123;</span><br><span class="line">        <span class="keyword">return</span> language.split(<span class="string">"-"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Locale <span class="title">getDefaultLocale</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.defaultLocale;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//添加到bean中 方法名称必须是localeResolver 或者指定bean的名称为localeResolver</span></span><br><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> LocaleResolver <span class="title">localeResolver</span><span class="params">()</span></span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> MyLocalResolver();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
-
-<p>稍微修改一下<code>index.html</code>中的内容</p>
-<div class="highlight-wrap" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true" data-rel="HTML"><figure class="iseeu highlight /html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">h1</span> <span class="attr">th:text</span>=<span class="string">"#&#123;index&#125;"</span>&gt;</span>这里是主页<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">--</span> 点击按钮时变换中英文 <span class="attr">--</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">th:href</span>=<span class="string">"@&#123;/index(language='zh-CN')&#125;"</span>&gt;</span><span class="tag">&lt;<span class="name">button</span> <span class="attr">th:text</span>=<span class="string">"#&#123;but1&#125;"</span> &gt;</span>这是切换中文的按钮<span class="tag">&lt;/<span class="name">button</span>&gt;</span><span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">th:href</span>=<span class="string">"@&#123;/index(language='en-US')&#125;"</span>&gt;</span><span class="tag">&lt;<span class="name">button</span> <span class="attr">th:text</span>=<span class="string">"#&#123;but2&#125;"</span> &gt;</span>这是切换英文的按钮<span class="tag">&lt;/<span class="name">button</span>&gt;</span> <span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br></pre></td></tr></table></figure></div>
-
-<p>重启程序，进行测试：</p>
-<p><img src="https://i.loli.net/2019/07/16/5d2ded6219ee739593.gif" alt="测试成果"></p>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><h4 id="如何在SpringBoot中使用国际化"><a href="#如何在SpringBoot中使用国际化" class="headerlink" title="如何在SpringBoot中使用国际化"></a>如何在SpringBoot中使用国际化</h4><ol>
-<li>编写国际化相关的 <code>ResourceBundle</code>文件，也就是对应的语言配置文件如：<code>index_en_US.properties</code>,<code>index_zh_CN.properties</code>，注意这个<strong>文件格式是固定的<code>xxx_语言代码_大写的国家代码</code>，并且必须是properties文件</strong>。</li>
-<li>编写<code>html</code>接收国际化变量，使用<code>Thymeleaf</code>引擎可以使用语法<code>#{}</code>来使用国际化变量。</li>
-</ol>
-<h4 id="如何改造"><a href="#如何改造" class="headerlink" title="如何改造"></a>如何改造</h4><p>因为SpringBoot默认实现了<code>LocaleResolver</code>,并且标注了<code>ConditionalOnMissingBean</code>注解，所以，只需要自己实现<code>LocaleResolver</code>类，重写相关方法，就可以达到改造的目的。需要注意的是，<strong>在注册<code>bean</code>的时候，方法名必须<code>localeResolver</code>,或者指定<code>bean</code>的名称为<code>localeResolver</code>。</strong></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-<div>
-      
-</div>
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2613,7 +2638,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">101</span>
+                  <span class="site-state-item-count">102</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2687,6 +2712,10 @@
              
              
                <li>
+                 <a href="/2020/04/16/Java的深拷贝和浅拷贝/" title="Java的深拷贝和浅拷贝" target="_blank">Java的深拷贝和浅拷贝</a>
+               </li>
+             
+               <li>
                  <a href="/2020/04/05/Jav IO浅析/" title="Java IO浅析" target="_blank">Java IO浅析</a>
                </li>
              
@@ -2700,10 +2729,6 @@
              
                <li>
                  <a href="/2020/03/24/Lambda expression/" title="lambda表达式学习和应用" target="_blank">lambda表达式学习和应用</a>
-               </li>
-             
-               <li>
-                 <a href="/2020/03/09/INSTR和FIND_IN_SET函数/" title="Mysql中的INSTR和FIND_IN_SET函数应用" target="_blank">Mysql中的INSTR和FIND_IN_SET函数应用</a>
                </li>
              
            </ul>
@@ -2759,7 +2784,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共118.7k字</span>
+  <span class="post-count">博客全站共120k字</span>
 </div>
 
 
