@@ -1,6 +1,161 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>（二）Bean的生命周期</title>
+    <url>/2020/05/22/%EF%BC%88%E4%BA%8C%EF%BC%89Bean%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/</url>
+    <content><![CDATA[<ul>
+<li><a href="#bean%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F">Bean的生命周期</a><ul>
+<li><a href="#bean%E7%9A%84%E5%88%9D%E5%A7%8B%E5%8C%96%E5%92%8C%E9%94%80%E6%AF%81">Bean的初始化和销毁</a><ul>
+<li><a href="#%E4%B8%80%E4%BD%BF%E7%94%A8bean%E7%9A%84%E5%88%9D%E5%A7%8B%E5%8C%96%E5%92%8C%E9%94%80%E6%AF%81%E5%B1%9E%E6%80%A7">一、使用@Bean的初始化和销毁属性</a></li>
+<li><a href="#%E4%BA%8C%E4%BD%BF%E7%94%A8-initializingbean-%E5%92%8C-disposablebean-%E6%8E%A5%E5%8F%A3%E6%8C%87%E5%AE%9A">二、使用 InitializingBean 和 DisposableBean 接口指定</a></li>
+<li><a href="#%E4%B8%89%E4%BD%BF%E7%94%A8jsr%E6%A0%87%E5%87%86%E7%9A%84%E6%B3%A8%E8%A7%A3-postconstruce-%E5%92%8C-predestroy">三、使用JSR标准的注解 @PostConstruce 和 @PreDestroy</a></li>
+<li><a href="#%E5%9B%9Bbeanpostprocessor%E8%87%AA%E5%AE%9A%E4%B9%89%E5%88%9D%E5%A7%8B%E5%8C%96%E5%89%8D%E5%90%8E%E6%96%B9%E6%B3%95">四、BeanPostProcessor自定义初始化前后方法</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="Bean的生命周期"><a href="#Bean的生命周期" class="headerlink" title="Bean的生命周期"></a>Bean的生命周期</h1><p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20191020160536.png" alt=""></p>
+<h2 id="Bean的初始化和销毁"><a href="#Bean的初始化和销毁" class="headerlink" title="Bean的初始化和销毁"></a>Bean的初始化和销毁</h2><h3 id="一、使用-Bean注解的初始化和销毁属性"><a href="#一、使用-Bean注解的初始化和销毁属性" class="headerlink" title="一、使用@Bean注解的初始化和销毁属性"></a>一、使用@Bean注解的初始化和销毁属性</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 在dog实例中指定init和destroy方法</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Dog</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"instance dog execute init method....."</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">destroy</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"instance dog execute destroy method....."</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 声明bean的时候指定 initMethod = "init",destroyMethod = "destroy"</span></span><br><span class="line"><span class="meta">@Configurable</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LifeCycleConfig</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Bean</span>(initMethod = <span class="string">"init"</span>,destroyMethod = <span class="string">"destroy"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> Dog <span class="title">dog</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"begin create dog"</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Dog();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 执行测试</span></span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">LifeCycleTest</span><span class="params">()</span></span>&#123;</span><br><span class="line">    ApplicationContext applicationContext = <span class="keyword">new</span> AnnotationConfigApplicationContext(LifeCycleConfig.class);</span><br><span class="line">    System.out.println(<span class="string">"instance has created !!!"</span>);</span><br><span class="line"><span class="comment">//        Dog dog = (Dog) applicationContext.getBean("dog");</span></span><br><span class="line">    ((AnnotationConfigApplicationContext) applicationContext).close();</span><br><span class="line">    System.out.println(<span class="string">"context has closed !!!"</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 测试结果:</span></span><br><span class="line"><span class="comment">// begin create dog</span></span><br><span class="line"><span class="comment">// instance dog execute init method.....</span></span><br><span class="line"><span class="comment">// instance has created !!!</span></span><br><span class="line"><span class="comment">// instance dog execute destroy method.....</span></span><br><span class="line"><span class="comment">// context has closed !!!</span></span><br></pre></td></tr></table></figure>
+
+<p>从测试结果来看当创建对象时,通过 <code>initMethod</code>,<code>destroyMethod</code>指定初始化和销毁方法时可行的。</p>
+<p><code>init</code>方法在<strong>对象创建后</strong>执行。<code>destroy</code>在<strong>容器销毁前</strong>执行.</p>
+<h3 id="二、继承-InitializingBean-和-DisposableBean-接口"><a href="#二、继承-InitializingBean-和-DisposableBean-接口" class="headerlink" title="二、继承 InitializingBean 和 DisposableBean 接口"></a>二、继承 InitializingBean 和 DisposableBean 接口</h3><p>方法同上，不过需要对象类实现这两个接口</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Cat</span> <span class="keyword">implements</span> <span class="title">InitializingBean</span>, <span class="title">DisposableBean</span> </span>&#123;</span><br><span class="line"></span><br><span class="line"><span class="comment">//  接口中的destroy 方法,执行销毁bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">destroy</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"instance cat execute destroy method....."</span>);</span><br><span class="line">    &#125;</span><br><span class="line"><span class="comment">// 接口中的afterPropertiesSet方法,用来创建bean后的初始化</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">afterPropertiesSet</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"instance cat execute init method....."</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 不需要在bean注解中指定相关方法</span></span><br><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Cat <span class="title">cat</span><span class="params">()</span></span>&#123;</span><br><span class="line">    System.out.println(<span class="string">"begin create cat"</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> Cat();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//用同样的测试程序测试得到的结果如下:</span></span><br><span class="line"><span class="comment">// begin create cat</span></span><br><span class="line"><span class="comment">// instance dog execute init method.....</span></span><br><span class="line"><span class="comment">// instance has created !!!</span></span><br><span class="line"><span class="comment">// instance dog execute destroy method.....</span></span><br><span class="line"><span class="comment">// context has closed !!!</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="三、使用JSR标准注解-PostConstruce-和-PreDestroy"><a href="#三、使用JSR标准注解-PostConstruce-和-PreDestroy" class="headerlink" title="三、使用JSR标准注解 @PostConstruce 和 @PreDestroy"></a>三、使用JSR标准注解 @PostConstruce 和 @PreDestroy</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Bug</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@PostConstruct</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"instance Bug execute init method....."</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@PreDestroy</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">destroy</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"instance Bug execute destroy method....."</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="四、BeanPostProcessor自定义初始化前后方法"><a href="#四、BeanPostProcessor自定义初始化前后方法" class="headerlink" title="四、BeanPostProcessor自定义初始化前后方法"></a>四、BeanPostProcessor自定义初始化前后方法</h3><p>先自定义一个 <code>MyBeanPostProcessor</code> ，并将它放到<strong>容器中</strong>，在启动后，每次生成bean时，都会执行下面的 <code>postProcessBeforeInitialization</code> 和 <code>postProcessAfterInitializationde</code> 前置方法和后置方法。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyBeanPostProcessor</span> <span class="keyword">implements</span> <span class="title">BeanPostProcessor</span> </span>&#123;</span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> Object <span class="title">postProcessBeforeInitialization</span><span class="params">(Object bean, String beanName)</span> <span class="keyword">throws</span> BeansException </span>&#123;</span><br><span class="line">		<span class="comment">// 根据BeanName和bean可以获取bean的类信息接下来就可以进行筛选，在初始化前进行相关操作</span></span><br><span class="line">		System.out.println(beanName);</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> Object <span class="title">postProcessAfterInitialization</span><span class="params">(Object bean, String beanName)</span> <span class="keyword">throws</span> BeansException </span>&#123;</span><br><span class="line">		System.out.println(beanName);</span><br><span class="line">		<span class="comment">// 同理初始化后</span></span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>￼￼￼￼￼</p>
+]]></content>
+  </entry>
+  <entry>
+    <title>线上内存溢出分析</title>
+    <url>/2020/05/02/%E7%BA%BF%E4%B8%8A%E5%86%85%E5%AD%98%E6%BA%A2%E5%87%BA%E5%88%86%E6%9E%90/</url>
+    <content><![CDATA[<h1 id="线上内存溢出分析"><a href="#线上内存溢出分析" class="headerlink" title="线上内存溢出分析"></a>线上内存溢出分析</h1><p>系统变慢，打开页面变卡，使用top命令查看cpu和内存情况后，发现在使用系统时，CPU 飙高。</p>
+<p>针对此问题，展开排查。</p>
+<h2 id="排查产生原因"><a href="#排查产生原因" class="headerlink" title="排查产生原因"></a>排查产生原因</h2><p>首先，使用 arthas 工具或者使用 jstack 查看 java 运行中的线程状态，查看哪些线程占用cpu过高，在使用时，发现为gc线程。</p>
+<p>然后，使用 jstat 或者 arthas 中的 dashboard 命令 进行确认，发现堆中新生代老年代空间已满，每过十几秒就在进行一次full gc。所以，可以分析出CPU飙高的原因为内存溢出。</p>
+<h2 id="内存溢出原因分析"><a href="#内存溢出原因分析" class="headerlink" title="内存溢出原因分析"></a>内存溢出原因分析</h2><p>因为要进行内存溢出情况，需要拿出堆转储信息，所以，在无人使用系统时，使用 jmap 命令获取堆转储信息：</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="BASH"><figure class="iseeu highlight /bash"><table><tr><td class="code"><pre><span class="line">jmap -dump:format=b,file=heapdump.hprof pid</span><br></pre></td></tr></table></figure></div>
+
+<p>需要注意的是，使用 jmap 时，会使 JVM 处于 STW（stop the world） 状态，所以尽量不要在生产上有人使用时使用该命令，否则会导致非常长的时间停顿。</p>
+<p>在拿到堆转储信息后，使用MAT(Memory Analyzer Tool)工具进行分析，装载文件后，得到如下图中的内容：</p>
+<p><img src="https://gitee.com/NanYinIU/Pic/raw/master/img/20200627205207.png" alt="a1"></p>
+<p>发现DefaultSVNRepositoryPoll引出的对象占用了3.6个G的空间（整个JVM分配空间为4个G），所以可以确定，是这个类生产 RunnableSecheduleFuture 对象的问题。</p>
+<h3 id="对-DefaultSVNRepositoryPool-进行分析，找问题"><a href="#对-DefaultSVNRepositoryPool-进行分析，找问题" class="headerlink" title="对 DefaultSVNRepositoryPool 进行分析，找问题"></a>对 DefaultSVNRepositoryPool 进行分析，找问题</h3><p>在前面已经分析出是DefaultSVNRepositoryPool引出的内存溢出，所以直接在IDEA中搜索到这个类，进入到该类，查看是否有相关 RunnableSecheduleFuture 方法。</p>
+<ul>
+<li>首先确认哪里引用到了该类</li>
+</ul>
+<p>一切还要从SVN上传文件说起，SVN上传文件有几个步骤：</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//1. 判断路径是否存在;</span></span><br><span class="line">SVNClientManipulator rp = <span class="keyword">new</span> SVNClientManipulator(user);</span><br><span class="line"><span class="comment">//2. 得到版本库;</span></span><br><span class="line">SVNRepository rps = rp.getRepository(svnDao.getSvnUrlByRepository(repository) + </span><br><span class="line">repository + <span class="string">"/"</span> + newPath);</span><br><span class="line"><span class="comment">//3. 判断是否存在;</span></span><br><span class="line">SVNNodeKind nodeKind = rps.checkPath(<span class="string">""</span>, -<span class="number">1</span>);</span><br><span class="line"><span class="keyword">if</span> (nodeKind == SVNNodeKind.NONE) &#123;<span class="comment">//如果存在则更新路径;</span></span><br><span class="line">    svnConfigDevelopService.addDir(svnDao.getSvnUrlByRepository(repository) +</span><br><span class="line"> repository + <span class="string">"/"</span> + newPath, desc, rp, <span class="keyword">true</span>);</span><br><span class="line">&#125;</span><br><span class="line">importFolder = newPath;</span><br><span class="line"><span class="comment">// 4. 上传文件</span></span><br><span class="line">String msg = svnCommonService.addFileToSVN(svnFilePath, gdFileName, </span><br><span class="line">repository, <span class="string">"/"</span> + importFolder + <span class="string">"/"</span>, user, desc);</span><br></pre></td></tr></table></figure></div>
+
+<p>其中对获取SVNClientManipulator时，其实是获取一个client客户端，整个过程可以用一个简单的sequence图来说明：</p>
+<p><img src="https://gitee.com/NanYinIU/Pic/raw/master/img/20200627205241.png" alt="a2"></p>
+<ul>
+<li>然后对DefaultSVNRepositoryPool内部排查</li>
+</ul>
+<p>在引用到的 DefaultSVNRepositoryPool 的构造方法内，可以看到</p>
+<p><img src="https://gitee.com/NanYinIU/Pic/raw/master/img/20200627205258.png" alt="a3"></p>
+<p>这里有两个Timer，作为全局的变量，可以看到作用是从10秒开始，没10秒执行一次 TimeOutTask() 方法。而这里的 <code>myScheduledTimeoutTask</code> 正是  <code>ScheduledFuture</code> 类型的。</p>
+<p>如果不确认该类是否为溢出的对象，可以再进入到scheduleWithFixedDelay中。可以看到返回的正是<code>RunnableScheduledFuture</code> 对象。</p>
+<p><img src="https://gitee.com/NanYinIU/Pic/raw/master/img/20200627205311.png" alt="a4"></p>
+<p>此时就可以由刚才的seq图往回推</p>
+<p>最终问题有可能出现在在 svnCommonService 中创建了过多的 SVNClientManipulator 。</p>
+<h3 id="SVN上传代码排查"><a href="#SVN上传代码排查" class="headerlink" title="SVN上传代码排查"></a>SVN上传代码排查</h3><p>是否为上述分析的原因，需要在svnCommonService代码中确认。</p>
+<ul>
+<li>对现有的SVN上传代码过程分析</li>
+</ul>
+<p>svnFileJsonArray 将json解析为array，循环每个数组中的内容，进行文件上传。</p>
+<p>首先<strong>SVNClientManipulator的创建发生在循环内</strong>，也就是说一次请求上传多个文件，则会创建多个客户端。此处为导致问题的主要原因。</p>
+<p>其次，在代码内没有发现同步区域，而且大部分内容是需要查询表、插入表，在高并发的情况下可能会出现 mysql 的 lock wait 异常，最终导致文件无法上传的错误。</p>
+<p>最后，现有因为代码是一个请求创建一个线程，n次请求就产生n个线程，这在高请求量的情况下出现问题的概率非常大。</p>
+<p>基于以上三点进行代码上的修改</p>
+<h3 id="问题代码修改"><a href="#问题代码修改" class="headerlink" title="问题代码修改"></a>问题代码修改</h3><ul>
+<li>针对<strong>SVNClientManipulator的创建发生在循环内</strong></li>
+</ul>
+<p>将json中取出一人或者直接传进一个处理人，创建client，减少client的创建次数</p>
+<ul>
+<li>针对一次请求创建一个线程，修改为使用线程池，默认线程池的coreSize为8，核心数*2</li>
+<li>针对同步代码块，使用sycronized进行同步代码块。</li>
+</ul>
+<p>进阶修改：</p>
+<p>上述修改后，可以满足过程，但是实际上大部分代码会使用sycronized进行包裹，同时进行的线程只有一个，所以提前创建多线程是占用内存的时间的。</p>
+<p><img src="https://gitee.com/NanYinIU/Pic/raw/master/img/20200627205327.png" alt="a5"></p>
+<p>最终修改为：</p>
+<ol>
+<li>使用单线程处理请求，单线程处理业务代码，避免了加锁解锁的消耗</li>
+<li>仅仅在上传文件时，使用线程池进行文件上传</li>
+</ol>
+<h3 id="插曲：为什么DefaultSVNRepositoryPool没有回收掉"><a href="#插曲：为什么DefaultSVNRepositoryPool没有回收掉" class="headerlink" title="插曲：为什么DefaultSVNRepositoryPool没有回收掉"></a>插曲：为什么DefaultSVNRepositoryPool没有回收掉</h3><p>这里涉及到客户端连接SVN的状态，默认连接状态时 keepAlive 的，但是不需要手动进行连接的关闭。</p>
+<p>一个客户端启动一个全局的Timer，这个Timer没10秒检测一下是否可以关闭连接，可以关闭连接的条件是 这个连接在 60 秒内没有再次访问过SVN。</p>
+<p>但是，因为task是需要线程进行执行的，当创建非常多的pool时，timer可能取不到CPU时间片来执行task，所以就在一直等待，导致链上的所有对象，虚拟机都无法进行回收，最终导致内存溢出。</p>
+<p><img src="https://gitee.com/NanYinIU/Pic/raw/master/img/20200627205339.png" alt="a6"></p>
+<hr>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><h3 id="一、JVM调优参数"><a href="#一、JVM调优参数" class="headerlink" title="一、JVM调优参数"></a>一、JVM调优参数</h3><p>线上分为三台机器，而应用占其中一台，总内存为16g，针对此环境修改JAVA_OPTS</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="BASH"><figure class="iseeu highlight /bash"><table><tr><td class="code"><pre><span class="line">JAVA_OPTS=<span class="string">"-server -Xms8192m -Xmx8192m </span></span><br><span class="line"><span class="string">-XX:PermSize=1024M -XX:MaxPermSize=1024M -Duser.language=zh -Djava.util.Arrays.useLegacyMergeSort=true </span></span><br><span class="line"><span class="string">-Djava.awt.headless=true </span></span><br><span class="line"><span class="string">-Xloggc:/app/okit/java/gc-%t.log </span></span><br><span class="line"><span class="string">-XX:+UseGCLogFileRotation </span></span><br><span class="line"><span class="string">-XX:NumberOfGCLogFiles=5 </span></span><br><span class="line"><span class="string">-XX:GCLogFileSize=50M -XX:+PrintGCTimeStamps </span></span><br><span class="line"><span class="string">-XX:+PrintGCDetails </span></span><br><span class="line"><span class="string">-XX:HeapDumpPath=./java_dump.hprof </span></span><br><span class="line"><span class="string">-XX:+HeapDumpOnOutOfMemoryError"</span></span><br></pre></td></tr></table></figure></div>
+
+<p>针对其中参数含义解释：</p>
+<ul>
+<li><strong>-XX:+UseGCLogFileRotation  GCLog文件输出</strong></li>
+<li><strong>-XX:NumberOfGCLogFiles=5 GCLog文件数量</strong></li>
+<li><strong>-XX:GCLogFileSize=20M  GCLog文件大小</strong></li>
+<li><strong>-XX:+PrintGCTimeStamps 打印GC耗时</strong></li>
+<li><strong>-XX:+PrintGCDetails 打印GC回收的细节</strong></li>
+<li><strong>-XX:HeapDumpPath=./java_pid<pid>.hprof ：堆内存快照的存储文件路径。文件名一般为java_<pid>_<date>_<time>_heapDump.hprof。</strong></li>
+<li><strong>-XX:+HeapDumpOnOutOfMemoryError 在OOM时，自动输出一个dump文件</strong></li>
+</ul>
+<h3 id="二、JDK自带工具使用"><a href="#二、JDK自带工具使用" class="headerlink" title="二、JDK自带工具使用"></a>二、JDK自带工具使用</h3><ul>
+<li>jps</li>
+</ul>
+<p>JPS(Java Virtual Machine Process Status Tool)，可以显示进行中的Java线程。</p>
+<p>使用方式：<code>jps [options] [hostid]</code></p>
+<ul>
+<li>jstat -gc</li>
+</ul>
+<p>jstat(Java Virtual Machine statistics monitoring tool),能够查看JVM的使用情况</p>
+<p>使用方式：<code>jstat [ generalOption | outputOptions vmid [ interval [ s|ms ] [ count ] ] ]</code></p>
+<p>如： jstat -gc -h3 31736 1000 10</p>
+<ul>
+<li>jstack</li>
+</ul>
+<p>jstack(Java stack trace)是Java的堆栈分析工具。</p>
+<p>两个功能：</p>
+<ol>
+<li>针对活着的进程做本地的或远程的线程dump；</li>
+<li>针对core文件做线程dump。</li>
+</ol>
+<p>使用方式：<code>jstack [ option ] pid</code></p>
+<p>可将堆栈输出到指定文件中：jstack -l PID &gt;&gt; jstack.out</p>
+<ul>
+<li>jmap</li>
+</ul>
+<p>jmap(Java memory map)，它可以生成 java 程序的 dump 文件， 也可以查看堆内对象示例的统计信息、查看 ClassLoader 的信息以及 finalizer 队列。</p>
+<p>jmap -dump:format=b,file=heapdump.hprof pid</p>
+<ul>
+<li>JVisualVM</li>
+</ul>
+<p>用来监测JVM内存和线程使用情况，可以远程连接</p>
+<h3 id="三、其他分析工具"><a href="#三、其他分析工具" class="headerlink" title="三、其他分析工具"></a>三、其他分析工具</h3><ul>
+<li>MAT</li>
+</ul>
+<p>用来分析堆转储信息，能够分析内存溢出问题</p>
+<ul>
+<li>Arthas</li>
+</ul>
+<p>可以实现JDK中工具所有功能，更直观。还能够线上<strong>热部署。</strong></p>
+]]></content>
+      <categories>
+        <category>JVM</category>
+      </categories>
+      <tags>
+        <tag>Java</tag>
+        <tag>JVM</tag>
+        <tag>内存溢出</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Java的深拷贝和浅拷贝</title>
     <url>/2020/04/16/Java%E7%9A%84%E6%B7%B1%E6%8B%B7%E8%B4%9D%E5%92%8C%E6%B5%85%E6%8B%B7%E8%B4%9D/</url>
     <content><![CDATA[<h1 id="Java的深拷贝和浅拷贝"><a href="#Java的深拷贝和浅拷贝" class="headerlink" title="Java的深拷贝和浅拷贝"></a>Java的深拷贝和浅拷贝</h1><h2 id="对象拷贝"><a href="#对象拷贝" class="headerlink" title="对象拷贝"></a>对象拷贝</h2><p>在展开说深拷贝和浅拷贝之前，先来阐述阐述一下什么是对象拷贝。对象拷贝(Object Copy)就是将一个对象的属性拷贝到另一个有着相同类类型的对象中去。</p>
@@ -1195,29 +1350,6 @@
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">synchronized</span> (<span class="keyword">this</span>.beanDefinitionMap) &#123;</span><br><span class="line">	<span class="keyword">this</span>.beanDefinitionMap.put(beanName, beanDefinition); <span class="comment">//实际上就是一个ConcurrentHashMap 存储 beanDefinition 使用BeanName作为Key</span></span><br><span class="line">	List&lt;String&gt; updatedDefinitions = <span class="keyword">new</span> ArrayList&lt;&gt;(<span class="keyword">this</span>.beanDefinitionNames.size() + <span class="number">1</span>); <span class="comment">// 添加到updatedDefinitions里面</span></span><br><span class="line">	updatedDefinitions.addAll(<span class="keyword">this</span>.beanDefinitionNames);</span><br><span class="line">	updatedDefinitions.add(beanName);</span><br><span class="line">	<span class="keyword">this</span>.beanDefinitionNames = updatedDefinitions;</span><br><span class="line">	removeManualSingletonName(beanName);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>至此，Spring容器的创建，和对配置文件的注册就完成了。</p>
-]]></content>
-      <categories>
-        <category>Spring</category>
-      </categories>
-      <tags>
-        <tag>Java</tag>
-        <tag>Spring</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Bean的生命周期</title>
-    <url>/2019/12/05/%EF%BC%88%E4%BA%8C%EF%BC%89Bean%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/</url>
-    <content><![CDATA[<h1 id="Bean的生命周期"><a href="#Bean的生命周期" class="headerlink" title="Bean的生命周期"></a>Bean的生命周期</h1><p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20191020160536.png" alt=""></p>
-<h2 id="Bean的初始化和销毁"><a href="#Bean的初始化和销毁" class="headerlink" title="Bean的初始化和销毁"></a>Bean的初始化和销毁</h2><h3 id="一、使用-Bean的初始化和销毁属性"><a href="#一、使用-Bean的初始化和销毁属性" class="headerlink" title="一、使用@Bean的初始化和销毁属性"></a>一、使用@Bean的初始化和销毁属性</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 在dog实例中指定init和destroy方法</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Dog</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"instance dog execute init method....."</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">destroy</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"instance dog execute destroy method....."</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 声明bean的时候指定 initMethod = "init",destroyMethod = "destroy"</span></span><br><span class="line"><span class="meta">@Configurable</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LifeCycleConfig</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Bean</span>(initMethod = <span class="string">"init"</span>,destroyMethod = <span class="string">"destroy"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> Dog <span class="title">dog</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"begin create dog"</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Dog();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 执行测试</span></span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">LifeCycleTest</span><span class="params">()</span></span>&#123;</span><br><span class="line">    ApplicationContext applicationContext = <span class="keyword">new</span> AnnotationConfigApplicationContext(LifeCycleConfig.class);</span><br><span class="line">    System.out.println(<span class="string">"instance has created !!!"</span>);</span><br><span class="line"><span class="comment">//        Dog dog = (Dog) applicationContext.getBean("dog");</span></span><br><span class="line">    ((AnnotationConfigApplicationContext) applicationContext).close();</span><br><span class="line">    System.out.println(<span class="string">"context has closed !!!"</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 测试结果:</span></span><br><span class="line"><span class="comment">// begin create dog</span></span><br><span class="line"><span class="comment">// instance dog execute init method.....</span></span><br><span class="line"><span class="comment">// instance has created !!!</span></span><br><span class="line"><span class="comment">// instance dog execute destroy method.....</span></span><br><span class="line"><span class="comment">// context has closed !!!</span></span><br></pre></td></tr></table></figure>
-
-<p>从测试结果来看当创建对象时,通过 <code>initMethod</code>,<code>destroyMethod</code>指定初始化和销毁方法时可行的.init方法在对象创建后执行.destroy在容器销毁前执行.</p>
-<h3 id="二、使用-InitializingBean-和-DisposableBean-接口指定"><a href="#二、使用-InitializingBean-和-DisposableBean-接口指定" class="headerlink" title="二、使用 InitializingBean 和 DisposableBean 接口指定"></a>二、使用 InitializingBean 和 DisposableBean 接口指定</h3><p>方法同上,不过需要对象类实现这两个接口</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Cat</span> <span class="keyword">implements</span> <span class="title">InitializingBean</span>, <span class="title">DisposableBean</span> </span>&#123;</span><br><span class="line"></span><br><span class="line"><span class="comment">//  接口中的destroy 方法,执行销毁bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">destroy</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"instance cat execute destroy method....."</span>);</span><br><span class="line">    &#125;</span><br><span class="line"><span class="comment">// 接口中的afterPropertiesSet方法,用来创建bean后的初始化</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">afterPropertiesSet</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"instance cat execute init method....."</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 不需要在bean注解中指定相关方法</span></span><br><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Cat <span class="title">cat</span><span class="params">()</span></span>&#123;</span><br><span class="line">    System.out.println(<span class="string">"begin create cat"</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> Cat();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//用同样的测试程序测试得到的结果如下:</span></span><br><span class="line"><span class="comment">// begin create cat</span></span><br><span class="line"><span class="comment">// instance dog execute init method.....</span></span><br><span class="line"><span class="comment">// instance has created !!!</span></span><br><span class="line"><span class="comment">// instance dog execute destroy method.....</span></span><br><span class="line"><span class="comment">// context has closed !!!</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="三、使用JSR标准的注解-PostConstruce-和-PreDestroy"><a href="#三、使用JSR标准的注解-PostConstruce-和-PreDestroy" class="headerlink" title="三、使用JSR标准的注解 @PostConstruce 和 @PreDestroy"></a>三、使用JSR标准的注解 @PostConstruce 和 @PreDestroy</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Bug</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@PostConstruct</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"instance Bug execute init method....."</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@PreDestroy</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">destroy</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"instance Bug execute destroy method....."</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="四、BeanPostProcessor自定义初始化前后方法"><a href="#四、BeanPostProcessor自定义初始化前后方法" class="headerlink" title="四、BeanPostProcessor自定义初始化前后方法"></a>四、BeanPostProcessor自定义初始化前后方法</h3><p>先自定义一个 MyBeanPostProcessor ，并将它放到容器中，在启动后，每次生成bean时，都会执行下面的 postProcessBeforeInitialization 和 postProcessAfterInitialization。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyBeanPostProcessor</span> <span class="keyword">implements</span> <span class="title">BeanPostProcessor</span> </span>&#123;</span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> Object <span class="title">postProcessBeforeInitialization</span><span class="params">(Object bean, String beanName)</span> <span class="keyword">throws</span> BeansException </span>&#123;</span><br><span class="line">		<span class="comment">// 根据BeanName和bean可以获取bean的类信息接下来就可以进行筛选，在初始化前进行相关操作</span></span><br><span class="line">		System.out.println(beanName);</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> Object <span class="title">postProcessAfterInitialization</span><span class="params">(Object bean, String beanName)</span> <span class="keyword">throws</span> BeansException </span>&#123;</span><br><span class="line">		System.out.println(beanName);</span><br><span class="line">		<span class="comment">// 同理初始化后</span></span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 ]]></content>
       <categories>
         <category>Spring</category>

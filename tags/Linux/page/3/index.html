@@ -1,281 +1,1085 @@
-<!doctype html>
-<html lang="zh"><head><meta charset="utf-8"><meta name="generator" content="Hexo 4.2.1"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>标签: Linux - NanYin的博客</title><meta description="Was mich nicht umbringt, macht mich starker."><meta property="og:type" content="blog"><meta property="og:title" content="NanYin的博客"><meta property="og:url" content="https://nanyiniu.github.io/"><meta property="og:site_name" content="NanYin的博客"><meta property="og:description" content="Was mich nicht umbringt, macht mich starker."><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://nanyiniu.github.io/img/og_image.png"><meta property="article:author" content="NanYin"><meta property="article:tag" content="技术 生活"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://nanyiniu.github.io"},"headline":"NanYin的博客","image":["https://nanyiniu.github.io/img/og_image.png"],"author":{"@type":"Person","name":"NanYin"},"description":"Was mich nicht umbringt, macht mich starker."}</script><link rel="icon" href="/img/Fail.png"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.12.0/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><script>var _hmt = _hmt || [];
-        (function() {
-            var hm = document.createElement("script");
-            hm.src = "//hm.baidu.com/hm.js?53e5c0e399c6e3142f9ad8241fdba1b1";
-            var s = document.getElementsByTagName("script")[0];
-            s.parentNode.insertBefore(hm, s);
-        })();</script><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css"><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/Fail.png" alt="NanYin的博客" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="My Github" href="https://github.com/NanYinIU"><i class="fab fa-github"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><div class="card-content"><nav class="breadcrumb" aria-label="breadcrumbs"><ul><li><a href="/tags">标签</a></li><li class="is-active"><a href="#" aria-current="page">Linux</a></li></ul></nav></div></div><div class="card"><article class="card-content article" role="article"><div class="article-meta size-small is-uppercase level is-mobile"><div class="level-left"><time class="level-item" dateTime="2018-04-12T15:00:00.000Z" title="2018-04-12T15:00:00.000Z">2018-04-12</time><span class="level-item"> NanYin </span><span class="level-item"><a class="link-muted" href="/categories/Bash/">Bash</a></span><span class="level-item">7 分钟 读完 (大约 1106 个字)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2018/04/12/2018-04-12-bash_exitCode/">bash学习记录（三） bash中的退出码和测试（Test）</a></h1><div class="content"><h1 id="bash学习记录（三）-bash退出码和测试"><a href="#bash学习记录（三）-bash退出码和测试" class="headerlink" title="bash学习记录（三） bash退出码和测试"></a>bash学习记录（三） bash退出码和测试</h1><h2 id="1-Bash退出码"><a href="#1-Bash退出码" class="headerlink" title="1. Bash退出码"></a>1. Bash退出码</h2><ul>
-<li><p>脚本的退出命令，类似C语言中的 <code>return value</code> ，可以供脚本的父进程调用。</p>
-</li>
-<li><p>每条命令返回一条状态状态，命令执行成功返回<code>0</code>，执行失败返回<code>非0</code>状态码可以理解为一个错误码（<code>error code</code>）。</p>
-</li>
-<li><p>最后的命令返回的状态或者 exit nnn（这里的nnn必须是1～255之间的整数）传递给shell。</p>
-</li>
-</ul>
-<p><code>exit nnn</code> <code>exit</code> <code>exit $?</code> 或者<code>空</code>。都可以，是bash <code>Return value</code>的方式。</p>
-<ul>
-<li>可以使用 <code>！</code>来反转状态。</li>
-</ul>
-<h2 id="2-Bash中的test"><a href="#2-Bash中的test" class="headerlink" title="2. Bash中的test"></a>2. Bash中的test</h2><p>每个编程语言都会有对一个情况下测试的功能，Bash也不例外，bash提供test命令，多种的括号操作，最终要的If/else结构语句来实现test功能。</p>
-<h3 id="测试结构体-Test-Constructs"><a href="#测试结构体-Test-Constructs" class="headerlink" title="测试结构体(Test Constructs)"></a>测试结构体(Test Constructs)</h3><ul>
-<li><p>一个if/else结构体会测试一系列命令的返回值是否是0也就是命令是否执行成功。如果成功执行另外一系列操作。</p>
-</li>
-<li><p>bash使用 <code>[</code> 来进行测试，但是在后来的版本里，bash引进了 <code>[[</code> 来拓展test命令，bash把<code>[[$a -lt $b]]</code>看作一个元素，他会返回一个状态码（成功0，不成功是非0）</p>
-</li>
-<li><p>当使用<code>let</code> 和 <code>(())</code> 的时候，对计算表达式进行运算的时候也会返回exit code，用于对算式的测试</p>
-</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">(( 0 &amp;&amp; 1 ))                 # Logical AND</span><br><span class="line">echo $?     # 1     ***</span><br><span class="line"># And so ...</span><br><span class="line">let &quot;num &#x3D; (( 0 &amp;&amp; 1 ))&quot;</span><br><span class="line">echo $num   # 0</span><br><span class="line"># But ...</span><br><span class="line">let &quot;num &#x3D; (( 0 &amp;&amp; 1 ))&quot;</span><br><span class="line">echo $?     # 1     ***</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">(( 200 || 11 ))              # Logical OR</span><br><span class="line">echo $?     # 0     ***</span><br><span class="line"># ...</span><br><span class="line">let &quot;num &#x3D; (( 200 || 11 ))&quot;</span><br><span class="line">echo $num   # 1</span><br><span class="line">let &quot;num &#x3D; (( 200 || 11 ))&quot;</span><br><span class="line">echo $?     # 0     ***</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">(( 200 | 11 ))               # Bitwise OR</span><br><span class="line">echo $?                      # 0     ***</span><br><span class="line"># ...</span><br><span class="line">let &quot;num &#x3D; (( 200 | 11 ))&quot;</span><br><span class="line">echo $num                    # 203</span><br><span class="line">let &quot;num &#x3D; (( 200 | 11 ))&quot;</span><br><span class="line">echo $?                      # 0     ***</span><br><span class="line"></span><br><span class="line"># The &quot;let&quot; construct returns the same exit status</span><br><span class="line">#+ as the double-parentheses arithmetic expansion.</span><br></pre></td></tr></table></figure>
+<!DOCTYPE html>
 
-<ul>
-<li><p>if可以测试任何条件 不仅仅是包在括号里面的条件。</p>
-</li>
-<li><p><strong>Else if and elif</strong></p>
-<blockquote>
-<p>elif相当与 else if，要请求分支需要用到elif</p>
-</blockquote>
-  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> [ condition1 ]</span><br><span class="line"><span class="keyword">then</span></span><br><span class="line">command1</span><br><span class="line">command2</span><br><span class="line">command3</span><br><span class="line"><span class="keyword">elif</span> [ condition2 ]</span><br><span class="line"><span class="comment"># Same as else if</span></span><br><span class="line"><span class="keyword">then</span></span><br><span class="line">command4</span><br><span class="line">command5</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">default-command</span><br><span class="line"><span class="keyword">fi</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>Equivalence of test, <code>/usr/bin/test</code>,<code>[ ]</code>, and <code>/usr/bin/[</code> 使用这几个做判断都是一样的。更复杂的表达式要使用<code>[[]]</code>来代替<code>[]</code>。</p>
-<blockquote>
-<p>Using the [[ … ]] test construct, rather than [ … ] can prevent many logic errors in scripts. 这是Advanced Bash-Scripting Guide给出的建议。</p>
-</blockquote>
-</li>
-</ul>
-<h3 id="文件测试操作（File）"><a href="#文件测试操作（File）" class="headerlink" title="文件测试操作（File）"></a>文件测试操作（File）</h3><ul>
-<li><p>-e 文件是否存在</p>
-</li>
-<li><p>-a 文件是否存在（以弃用）</p>
-</li>
-<li><p>-f 是否是普通文件(不是目录文件或者设备文件)</p>
-</li>
-<li><p>-s 是否是空文件</p>
-</li>
-<li><p>-d 是否是目录</p>
-</li>
-<li><p>-b 是否是块设备(block device)</p>
-</li>
-<li><p>-c 是否是字符设备(character device)</p>
-</li>
-<li><p>-h 是否是链接文件(symbolic link)</p>
-</li>
-<li><p>-S file is socket</p>
-</li>
-<li><p>-r -w -x 分别对应文件的 读写执行权限</p>
-</li>
-<li><p>-O 是否是文件的拥有者</p>
-</li>
-<li><p>-G group-id是否和你自己的相同</p>
-</li>
-<li><p>-N 在最后一次被读之后文件已经更改</p>
-</li>
-<li><p>f1 <code>-nt</code> f2 f1比f2新 </p>
-</li>
-<li><p><code>-ot</code> f1比f2旧 </p>
-</li>
-<li><p><code>-ef</code> f1和f2 引用同一个文件</p>
-</li>
-<li><p>例子</p>
-  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> directory <span class="keyword">in</span> <span class="variable">$directorys</span>; <span class="keyword">do</span></span><br><span class="line">    <span class="keyword">if</span> [ -d <span class="variable">$directory</span> ]</span><br><span class="line">    <span class="keyword">then</span> linkchk <span class="variable">$directory</span></span><br><span class="line">    <span class="keyword">else</span> </span><br><span class="line">        <span class="built_in">echo</span> <span class="string">"<span class="variable">$directory</span> is not a directory"</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="string">"Usage: <span class="variable">$0</span> dir1 dir2 ..."</span></span><br><span class="line">    <span class="keyword">fi</span></span><br><span class="line"><span class="keyword">done</span></span><br></pre></td></tr></table></figure>
-<h3 id="其他比较操作（Integer，String）"><a href="#其他比较操作（Integer，String）" class="headerlink" title="其他比较操作（Integer，String）"></a>其他比较操作（Integer，String）</h3></li>
-</ul>
-<p>整型和字符串类型使用两组不同的操作</p>
-<h4 id="整形"><a href="#整形" class="headerlink" title="整形"></a>整形</h4><ul>
-<li><p>-eq 相等比较 <code>if [ &quot;$a&quot; -eq &quot;$b&quot; ]</code></p>
-</li>
-<li><p>-ne 比较不相等 <code>if [ &quot;$a&quot; -ne &quot;$b&quot; ]</code></p>
-</li>
-<li><p>-gt 大于等于(is greater than or equal to) <code>if [ &quot;$a&quot; -ge &quot;$b&quot; ]</code></p>
-</li>
-<li><p>-lt 小于(is less than) <code>if [ &quot;$a&quot; -lt &quot;$b&quot; ]</code></p>
-</li>
-<li><p>-le 小于等于(is less than or equal to) `if [ “$a” -le “$b” ]</p>
-</li>
-<li><p><code>&lt;</code> <code>&gt;</code> <code>&lt;=</code> <code>&gt;=</code> 对应大于，小于，小于等于，大于等于这些相应的操作</p>
-</li>
-</ul>
-<h4 id="String类型"><a href="#String类型" class="headerlink" title="String类型"></a>String类型</h4><ul>
-<li><p>= 判断字符串是否相等</p>
-</li>
-<li><p>== 和 = 相同，同样是判断字符串是否相同 但 == 在 [] 和 [[]] 中定义不同，下面举例：</p>
-</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[[ $a &#x3D;&#x3D; z* ]]   # True if $a starts with an &quot;z&quot; (pattern matching).</span><br><span class="line">[[ $a &#x3D;&#x3D; &quot;z*&quot; ]] # True if $a is equal to z* (literal matching).</span><br><span class="line"></span><br><span class="line">[ $a &#x3D;&#x3D; z* ]     # File globbing and word splitting take place.</span><br><span class="line">[ &quot;$a&quot; &#x3D;&#x3D; &quot;z*&quot; ] # True if $a is equal to z* (literal matching).</span><br></pre></td></tr></table></figure>
 
-<ul>
-<li><p>!= 不等于</p>
-</li>
-<li><p>&lt; and &gt; 大于小于 按照ASCII 码比较</p>
-</li>
-<li><p>-z 空字符串,因此，字符串长度为0</p>
-</li>
-<li><p>-n 字符串不为空</p>
-</li>
-</ul>
-<h4 id="逻辑比较"><a href="#逻辑比较" class="headerlink" title="逻辑比较"></a>逻辑比较</h4><ul>
-<li><p>-a 表示逻辑与</p>
-</li>
-<li><p>-o 表示逻辑或</p>
-<p>  -a -o 要使用在单个中括号中<code>if [ &quot;$expr1&quot; -a &quot;$expr2&quot; ]</code></p>
-<p>  &amp;&amp; and || 但是要在双中括号中使用<code>[[ condition1 &amp;&amp; condition2 ]]</code> </p>
-</li>
-</ul>
-<h3 id="嵌套-if-else"><a href="#嵌套-if-else" class="headerlink" title="嵌套 if else"></a>嵌套 <code>if else</code></h3><p>如其他编程语言类似,if else结构能够嵌套，但是嵌套结构和使用 <code>&amp;&amp;</code> 比较符结果相同</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">a&#x3D;3</span><br><span class="line"></span><br><span class="line">if [ &quot;$a&quot; -gt 0 ]</span><br><span class="line">then</span><br><span class="line">  if [ &quot;$a&quot; -lt 5 ]</span><br><span class="line">  then</span><br><span class="line">    echo &quot;The value of \&quot;a\&quot; lies somewhere between 0 and 5.&quot;</span><br><span class="line">  fi</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line"># Same result as:</span><br><span class="line"></span><br><span class="line">if [ &quot;$a&quot; -gt 0 ] &amp;&amp; [ &quot;$a&quot; -lt 5 ]</span><br><span class="line">then</span><br><span class="line">  echo &quot;The value of \&quot;a\&quot; lies somewhere between 0 and 5.&quot;</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
 
-</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta size-small is-uppercase level is-mobile"><div class="level-left"><time class="level-item" dateTime="2018-04-11T15:00:00.000Z" title="2018-04-11T15:00:00.000Z">2018-04-11</time><span class="level-item"> NanYin </span><span class="level-item"><a class="link-muted" href="/categories/Bash/">Bash</a></span><span class="level-item">5 分钟 读完 (大约 708 个字)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2018/04/11/2018-4-11-bash_%E5%8F%98%E9%87%8F/">bash学习记录（二） bash中的变量和参数</a></h1><div class="content"><h1 id="bash学习记录（二）-bash中的变量和参数"><a href="#bash学习记录（二）-bash中的变量和参数" class="headerlink" title="bash学习记录（二） bash中的变量和参数"></a>bash学习记录（二） bash中的变量和参数</h1><p>变量就是一个标签在脚本中代表数据，不过是给分配在电脑内存中的数据一个名字，经常会出现在数学计算和大量操作(manipulation of quantities)和字符串解析(string parsing)中。</p>
-<h2 id="变量置换-Variable-Substitution"><a href="#变量置换-Variable-Substitution" class="headerlink" title="变量置换 (Variable Substitution) $"></a>变量置换 (Variable Substitution) $</h2><p>The name of a variable is a placeholder for its value, the data it holds. Referencing (retrieving) its value is called variable substitution. 大致意思就是变量引用具体的值。使用$来引用变量 如</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">bash$ variable1&#x3D;23</span><br><span class="line"></span><br><span class="line">bash$ echo variable1</span><br><span class="line">&#x2F;&#x2F;variable1</span><br><span class="line"></span><br><span class="line">bash$ echo $variable1</span><br><span class="line">&#x2F;&#x2F;23</span><br></pre></td></tr></table></figure>
+  
 
-<p>在(“..”)里引用不会干涉变量的引用，这叫做局部引用(<code>partial quoting</code>),也叫弱引用.但使用(‘..’)单引号会直接把变量名打印出来，不会引用变量，叫做全引用(<code>full quoting</code>),也叫做强引用。</p>
-<blockquote>
-<p>注意：其实使用$variable1和使用${variable1}是一样的但是某些语境下前者可能会出问题。</p>
-</blockquote>
-<blockquote>
-<p>未初始化的变量有一个默认的的值为”null“而不是‘0’，并且bash中的变量不分类型。</p>
-</blockquote>
-<h2 id="变量分配-Variable-Assignment"><a href="#变量分配-Variable-Assignment" class="headerlink" title="变量分配(Variable Assignment) ="></a>变量分配(Variable Assignment) =</h2><p>等号-&gt; the assignment operator (no space before and after) 前后不能有空格</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">#举一个比较典型的小例子，之前不知道区别。。</span><br><span class="line">a&#x3D;&#96;ls -l&#96;         # Assigns result of &#39;ls -l&#39; command to &#39;a&#39;</span><br><span class="line">echo $a           # Unquoted, however, it removes tabs and newlines.</span><br><span class="line">echo</span><br><span class="line">echo &quot;$a&quot;         # The quoted variable preserves whitespace.</span><br></pre></td></tr></table></figure>
 
-<p>使用双引号扩起来的$a有空格，而没有双引号的是去掉空格的。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">R&#x3D;$(cat &#x2F;etc&#x2F;redhat-release)</span><br><span class="line">arch&#x3D;$(uname -m)</span><br></pre></td></tr></table></figure>
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
 
-<p>可以看出使用$()的作用和使用``的作用相同，都可以对命令进行包裹。</p>
-<h2 id="bash变量没有类型"><a href="#bash变量没有类型" class="headerlink" title="bash变量没有类型"></a>bash变量没有类型</h2><p>不像其他的很多编程语言，bash脚本中的变量是没有类型的。无类型的变量是把双刃剑，一方面更加灵活，另一方面会渗透一些小的问题。</p>
-<p>所以bash提供声明变量，会在后面的章节对声明变量的参数等信息详细列出来。</p>
-<h2 id="特殊的变量类型-Special-Variable-Types"><a href="#特殊的变量类型-Special-Variable-Types" class="headerlink" title="特殊的变量类型(Special Variable Types)"></a>特殊的变量类型(Special Variable Types)</h2><ul>
-<li><p>本地变量：变量只能在代码块和函数中可见</p>
-</li>
-<li><p>系统变量：变量影响shell的行为和用户的接口（比如设置Java环境变量）</p>
-<p>  如果脚本需要设置环境变量那么就去 <code>export ..</code></p>
-</li>
-<li><p>位置参数：</p>
-<p>  $0是脚本名称，1-9等对应其位置，10之后要使用大括号扩起来。$#对应最后一个元素</p>
-<p>  使用shift命令可以将位置参数重新排列，实际上就是向左移动一级。</p>
-</li>
-</ul>
-<h3 id="这次篇幅较小，主要讲了讲bash中的变量和位置参数的含义和使用，属于非常基础，非常容易理解的部分。"><a href="#这次篇幅较小，主要讲了讲bash中的变量和位置参数的含义和使用，属于非常基础，非常容易理解的部分。" class="headerlink" title="这次篇幅较小，主要讲了讲bash中的变量和位置参数的含义和使用，属于非常基础，非常容易理解的部分。"></a>这次篇幅较小，主要讲了讲bash中的变量和位置参数的含义和使用，属于非常基础，非常容易理解的部分。</h3></div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta size-small is-uppercase level is-mobile"><div class="level-left"><time class="level-item" dateTime="2018-04-10T15:00:00.000Z" title="2018-04-10T15:00:00.000Z">2018-04-10</time><span class="level-item"> NanYin </span><span class="level-item"><a class="link-muted" href="/categories/Bash/">Bash</a></span><span class="level-item">8 分钟 读完 (大约 1229 个字)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2018/04/10/2018-04-10-bash%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/">bash学习记录（一） 初识和bash中的特殊字符</a></h1><div class="content"><h1 id="bash学习记录（一）初识bash和特殊字符"><a href="#bash学习记录（一）初识bash和特殊字符" class="headerlink" title="bash学习记录（一）初识bash和特殊字符"></a>bash学习记录（一）初识bash和特殊字符</h1><h2 id="初识Bash"><a href="#初识Bash" class="headerlink" title="初识Bash"></a>初识Bash</h2><p>鉴于本人的表达能力，不适合想要去系统学习bash的人来查看，提前分享两个不同阶段，不同人群学习的资料。</p>
-<ol>
-<li><p>想要学习bash但是不想学习太深的人:       <a href="https://github.com/denysdovhan/bash-handbook/blob/master/translations/zh-CN/README.md#%E5%89%8D%E8%A8%80">bash-handbook</a></p>
-</li>
-<li><p>想要系统学习bash的人：<a href="http://tldp.org/LDP/abs/html/index.html">Advanced Bash-Scripting Guide</a></p>
-</li>
-</ol>
-<p>其实bash很难，要考虑的东西很多，但现在学到的只是皮毛，希望能够多看多实践，才能更进一步。</p>
-<h3 id="Starting-Off-With-a-Sha-Bang"><a href="#Starting-Off-With-a-Sha-Bang" class="headerlink" title="Starting Off With a Sha-Bang"></a>Starting Off With a Sha-Bang</h3><p>sha-bang(#!)在起始的位置来告诉你的系统这个文件是命令的集合，能够使用哪个命令解释器来执行（/bin/bash）-&gt;path,这个命令路径必须正确</p>
-<p>如果系统默认解释器是/bin/bash 或者其他 则不用使用 #! /bin/bash 来放到开头</p>
-<h2 id="Special-Characters"><a href="#Special-Characters" class="headerlink" title="Special Characters"></a>Special Characters</h2><p>下面来简单总结一下有特殊意义的字符</p>
-<ol>
-<li><p><strong>‘#‘</strong>  跟在#号后面的相当与是注释，不会被解释器执行,可以出现单行，也可以出现在命令后作注释用</p>
-</li>
-<li><p><strong>; 分号</strong> 允许将多条命令放到单行用</p>
-</li>
-<li><p><strong>;;  两个分号</strong>，在<code>case</code>的场景下使用 如</p>
- <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">case</span> <span class="string">"<span class="variable">$variable</span>"</span> <span class="keyword">in</span></span><br><span class="line"></span><br><span class="line">abc)  <span class="built_in">echo</span> <span class="string">"\$variable = abc"</span> ;;</span><br><span class="line"></span><br><span class="line">xyz)  <span class="built_in">echo</span> <span class="string">"\$variable = xyz"</span> ;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">esac</span></span><br></pre></td></tr></table></figure></li>
-<li><p><strong>. dot</strong></p>
-<p>  相当与linux的内建命令source</p>
-<p>  作为文件名的一部分 如 .vimrc等</p>
-<p>  作为目录导向 如 ./表示当前目录 ../相当与父目录</p>
-<p>  正则表达式中可以表示为1个字符</p>
-</li>
-<li><p><strong>“ 双引号</strong> 部分引用字符串，大部分还是字符串，但是能够引用变量 ‘$value’，并且特殊字符需要转义</p>
-</li>
-<li><p><strong>‘ 单引号</strong> 可以保存全部特殊字符，不能引用变量</p>
-</li>
-<li><p><strong>, 逗号</strong> 表示连接多个计算表达式,多个表达式都会执行，但是只有最后一个计算式会返回值 。也做链接字符串</p>
- <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">let</span> <span class="string">"t2 = ((a = 9, 15 / 3))"</span></span><br><span class="line"><span class="comment"># Set "a = 9" and "t2 = 15 / 3"</span></span><br></pre></td></tr></table></figure></li>
-<li><p><strong>\ 反斜杠</strong> <code>escape [backslash]</code> 可是实现对单个字符的转义</p>
-</li>
-<li><p><strong>/ 斜杠</strong> <code>Filename path separator [forward slash]</code>本身就叫做文件分割符可以明了做什么用的了</p>
-</li>
-<li><p><strong>` <code>command substitution</code></strong> 命令替换 如 a=`echo “hello world” `;echo $a 等 或者 a=`date` ; echo $a</p>
-</li>
-<li><p><strong>: 冒号</strong> 空命令等价与‘NOP’ <code>do-nothing operation</code> 也是有状态的相当与内建函数 <code>true</code> 比如</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> :</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">operation-1</span><br><span class="line">operation-2</span><br><span class="line">...</span><br><span class="line">operation-n</span><br><span class="line"><span class="keyword">done</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Same as:</span></span><br><span class="line"><span class="comment">#    while true</span></span><br><span class="line"><span class="comment">#    do</span></span><br><span class="line"><span class="comment">#      ...</span></span><br><span class="line"><span class="comment">#    done</span></span><br></pre></td></tr></table></figure>
-<p>作if判断的分支</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> condition</span><br><span class="line"><span class="keyword">then</span> :   <span class="comment"># Do nothing and branch ahead</span></span><br><span class="line"><span class="keyword">else</span>     <span class="comment"># Or else ...</span></span><br><span class="line">take-some-action</span><br><span class="line"><span class="keyword">fi</span></span><br></pre></td></tr></table></figure>
-<p>放在必须要有两元操作的地方作为分隔符，如：: ${username=`whoami`}</p>
-<p>配合管道命令 <code>:&gt;</code> <code>:&gt;&gt;</code>如果文件没有存在则创建</p>
-<p>做分割符 如 echo $PATH 会出现很多以：作为分割符的字符串</p>
-<p>在函数里可以作为站位符防止函数提为空</p>
-</li>
-<li><p><strong>!叹号</strong>  作为 <code>非</code>出现 如 ！null 或者退出码 exit code。在不同的语境下可以作为间接变量引用。</p>
-</li>
-<li><p><strong>* 星号</strong> 可以作为全匹配来使用 如 echo * 。 表示乘法 1*2</p>
-</li>
-<li><p><strong>? 问号</strong> <code>test operator</code>. Within certain expressions, the ? indicates a test for a condition. 还可以作为匹配任意单个字符。</p>
-</li>
-<li><p><strong>$</strong> 变量引用  正则表达式中表示行尾</p>
-</li>
-<li><p><strong>${}</strong> 变量引用</p>
-</li>
-<li><p><strong>$(…)</strong> 多个变量同时引用</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">file1=<span class="string">"file"</span></span><br><span class="line">file2=<span class="string">"nofile"</span></span><br><span class="line"><span class="built_in">echo</span> $<span class="string">'file1,file2'</span></span><br></pre></td></tr></table></figure>
-<p>输出内容：file1,file2</p>
-</li>
-<li><p><strong><code>$* $@</code></strong>  位置参数 $*是将所有参数作为一个整体返回（字符串），而$@是将每个参数作为单元返回一个参数列表</p>
-</li>
-<li><p><strong>() 小括号</strong></p>
-</li>
-</ol>
-<ul>
-<li>操作组<code>(a=hello; echo $a)</code></li>
-<li>数组初始化</li>
-</ul>
-<ol start="20">
-<li><p><strong>{} 花括号扩展</strong> 用来扩展参数 如 abou{t,y,u}</p>
-</li>
-<li><p><strong>[] 中括号</strong></p>
-</li>
-</ol>
-<ul>
-<li>shell内建测试的一部分</li>
-<li>表达数组的部分如array[1]</li>
-<li>表示字符集的范围，在正表达式中，方括号表示该位置可以匹配的字符集范围。</li>
-</ul>
-<ol start="22">
-<li><p><strong>[[]] 双中括号</strong>(double brackets)。</p>
-<blockquote>
-<p>这个结构也是测试，测试[[]]之中的表达式(Shell的关键字)。这个比单中括号更能防止脚本里面的逻辑错误</p>
-</blockquote>
-</li>
-<li><p>$[ … ] and (()) 都表示Integer计算 integer expansion.</p>
-</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">a&#x3D;3</span><br><span class="line">b&#x3D;7</span><br><span class="line">echo $[$a+$b]</span><br><span class="line">echo (($a+$b))</span><br></pre></td></tr></table></figure>
 
-<ol start="24">
-<li><p><strong>| 管道</strong> 非常基础的概念 如 ls|grep .. 。</p>
-</li>
-<li><p>&amp;：后台执行  &amp;&amp; 和 || ：逻辑操作符</p>
-</li>
-<li><p>+ - * % 各自意义就不详细解释了</p>
-</li>
-</ol>
-<p>资料引用 <a href="http://tldp.org/LDP/abs/html/index.html">Advanced Bash-Scripting Guide</a> 文章特别详尽，有兴趣非常鼓励看原文。这里我只做了部分比较常用的比较容易理解的部分做了精简（原谅我英文不好 :) 破产版总结 - - ）。</p>
-<p>作为bash学习总结的第一篇文章，篇幅不大，尽量做到简单，详尽易懂。当遇到问题能够回头看一看，希望能够起到好的作用！！</p>
-</div></article></div><nav class="pagination is-centered mt-4" role="navigation" aria-label="pagination"><div class="pagination-previous"><a href="/tags/Linux/page/2/">上一页</a></div><div class="pagination-next is-invisible is-hidden-mobile"><a href="/tags/Linux/page/4/">下一页</a></div><ul class="pagination-list is-hidden-mobile"><li><a class="pagination-link" href="/tags/Linux/">1</a></li><li><a class="pagination-link" href="/tags/Linux/page/2/">2</a></li><li><a class="pagination-link is-current" href="/tags/Linux/page/3/">3</a></li></ul></nav></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1 is-sticky"><div class="card widget"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="is-rounded" src="/img/avatar.jpeg" alt="NanYin"></figure><p class="title is-size-4 is-block line-height-inherit">NanYin</p><p class="is-size-6 is-block">not now</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Beijing,China</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">文章</p><a href="/archives"><p class="title">102</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">分类</p><a href="/categories"><p class="title">13</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">标签</p><a href="/tags"><p class="title">16</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/nanyiniu" target="_blank" rel="noopener">关注我</a></div><div class="level is-mobile"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/nanyiniu"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Facebook" href="https://facebook.com"><i class="fab fa-facebook"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Twitter" href="https://twitter.com"><i class="fab fa-twitter"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Dribbble" href="https://dribbble.com"><i class="fab fa-dribbble"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><div class="card widget"><div class="card-content"><div class="menu"><h3 class="menu-label">链接</h3><ul class="menu-list"><li><a class="level is-mobile is-mobile" href="https://hexo.io" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">Hexo</span></span><span class="level-right"><span class="level-item tag">hexo.io</span></span></a></li><li><a class="level is-mobile is-mobile" href="https://bulma.io" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">Bulma</span></span><span class="level-right"><span class="level-item tag">bulma.io</span></span></a></li></ul></div></div></div><div class="card widget"><div class="card-content"><div class="menu"><h3 class="menu-label">标签</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/JVM/"><span class="tag">JVM</span><span class="tag is-grey-lightest">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Java/"><span class="tag">Java</span><span class="tag is-grey-lightest">69</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Linux/"><span class="tag">Linux</span><span class="tag is-grey-lightest">23</span></a></div><div class="control"><a class="tags has-addons" href="/tags/MYSQL/"><span class="tag">MYSQL</span><span class="tag is-grey-lightest">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Spring/"><span class="tag">Spring</span><span class="tag is-grey-lightest">10</span></a></div><div class="control"><a class="tags has-addons" href="/tags/SpringBoot/"><span class="tag">SpringBoot</span><span class="tag is-grey-lightest">13</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Thread/"><span class="tag">Thread</span><span class="tag is-grey-lightest">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/UML/"><span class="tag">UML</span><span class="tag is-grey-lightest">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/bash/"><span class="tag">bash</span><span class="tag is-grey-lightest">17</span></a></div><div class="control"><a class="tags has-addons" href="/tags/idea/"><span class="tag">idea</span><span class="tag is-grey-lightest">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/markdown/"><span class="tag">markdown</span><span class="tag is-grey-lightest">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%9F%BA%E7%A1%80/"><span class="tag">基础</span><span class="tag is-grey-lightest">11</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%B7%A5%E5%85%B7/"><span class="tag">工具</span><span class="tag is-grey-lightest">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/"><span class="tag">正则表达式</span><span class="tag is-grey-lightest">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"><span class="tag">设计模式</span><span class="tag is-grey-lightest">21</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E8%AF%AD%E6%B3%95/"><span class="tag">语法</span><span class="tag is-grey-lightest">1</span></a></div></div></div></div></div><div class="card widget"><div class="card-content"><div class="menu"><h3 class="menu-label">订阅更新</h3><form action="https://feedburner.google.com/fb/a/mailverify" method="post" target="popupwindow" onsubmit="window.open(&#039;https://feedburner.google.com/fb/a/mailverify?uri=&#039;,&#039;popupwindow&#039;,&#039;scrollbars=yes,width=550,height=520&#039;);return true"><input type="hidden" value="" name="uri"><input type="hidden" name="loc" value="en_US"><div class="field has-addons"><div class="control has-icons-left is-expanded"><input class="input" name="email" type="email" placeholder="Email"><span class="icon is-small is-left"><i class="fas fa-envelope"></i></span></div><div class="control"><input class="button is-primary" type="submit" value="订阅"></div></div></form></div></div></div><div class="column-right-shadow is-hidden-widescreen is-sticky"></div></div><div class="column column-right is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only order-3 is-sticky"><!--!--><div class="card widget"><div class="card-content"><h3 class="menu-label">最新文章</h3><article class="media"><div class="media-content size-small"><p><time dateTime="2020-04-16T00:00:00.000Z">2020-04-16</time></p><p class="title is-6"><a class="link-muted" href="/2020/04/16/Java%E7%9A%84%E6%B7%B1%E6%8B%B7%E8%B4%9D%E5%92%8C%E6%B5%85%E6%8B%B7%E8%B4%9D/">Java的深拷贝和浅拷贝</a></p><p class="is-uppercase"><a class="link-muted" href="/categories/Java/">Java</a></p></div></article><article class="media"><div class="media-content size-small"><p><time dateTime="2020-04-05T00:00:00.000Z">2020-04-05</time></p><p class="title is-6"><a class="link-muted" href="/2020/04/05/Jav%20IO%E6%B5%85%E6%9E%90/">Java IO浅析</a></p><p class="is-uppercase"><a class="link-muted" href="/categories/Java/">Java</a></p></div></article><article class="media"><div class="media-content size-small"><p><time dateTime="2020-03-29T00:00:00.000Z">2020-03-29</time></p><p class="title is-6"><a class="link-muted" href="/2020/03/29/%E7%BA%BF%E7%A8%8B%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/">线程生命周期</a></p><p class="is-uppercase"><a class="link-muted" href="/categories/Java/">Java</a></p></div></article><article class="media"><div class="media-content size-small"><p><time dateTime="2020-03-28T12:00:00.000Z">2020-03-28</time></p><p class="title is-6"><a class="link-muted" href="/2020/03/28/%E4%BD%8D%E8%BF%90%E7%AE%97/">Java中的位运算</a></p><p class="is-uppercase"><a class="link-muted" href="/categories/Java/">Java</a></p></div></article><article class="media"><div class="media-content size-small"><p><time dateTime="2020-03-23T19:45:00.000Z">2020-03-23</time></p><p class="title is-6"><a class="link-muted" href="/2020/03/24/Lambda%20expression/">lambda表达式学习和应用</a></p><p class="is-uppercase"><a class="link-muted" href="/categories/Java/">Java</a></p></div></article></div></div><div class="card widget"><div class="card-content"><div class="menu"><h3 class="menu-label">分类</h3><ul class="menu-list"><li><a class="level is-mobile is-marginless" href="/categories/Bash/"><span class="level-start"><span class="level-item">Bash</span></span><span class="level-end"><span class="level-item tag">16</span></span></a></li><li><a class="level is-mobile is-marginless" href="/categories/Hibernate/"><span class="level-start"><span class="level-item">Hibernate</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile is-marginless" href="/categories/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">19</span></span></a><ul class="mr-0"><li><a class="level is-mobile is-marginless" href="/categories/Java/JVM/"><span class="level-start"><span class="level-item">JVM</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile is-marginless" href="/categories/Java/%E5%A4%9A%E7%BA%BF%E7%A8%8B/"><span class="level-start"><span class="level-item">多线程</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile is-marginless" href="/categories/Linux/"><span class="level-start"><span class="level-item">Linux</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile is-marginless" href="/categories/MYSQL/"><span class="level-start"><span class="level-item">MYSQL</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile is-marginless" href="/categories/Markdown/"><span class="level-start"><span class="level-item">Markdown</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile is-marginless" href="/categories/Spring/"><span class="level-start"><span class="level-item">Spring</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li><li><a class="level is-mobile is-marginless" href="/categories/SpringBoot/"><span class="level-start"><span class="level-item">SpringBoot</span></span><span class="level-end"><span class="level-item tag">13</span></span></a></li><li><a class="level is-mobile is-marginless" href="/categories/%E5%A4%9A%E7%BA%BF%E7%A8%8B/"><span class="level-start"><span class="level-item">多线程</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile is-marginless" href="/categories/%E5%B7%A5%E5%85%B7/"><span class="level-start"><span class="level-item">工具</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile is-marginless" href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"><span class="level-start"><span class="level-item">设计模式</span></span><span class="level-end"><span class="level-item tag">21</span></span></a></li></ul></div></div></div><div class="card widget"><div class="card-content"><div class="menu"><h3 class="menu-label">归档</h3><ul class="menu-list"><li><a class="level is-mobile is-marginless" href="/archives/2020/04/"><span class="level-start"><span class="level-item">四月 2020</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile is-marginless" href="/archives/2020/03/"><span class="level-start"><span class="level-item">三月 2020</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile is-marginless" href="/archives/2020/01/"><span class="level-start"><span class="level-item">一月 2020</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile is-marginless" href="/archives/2019/12/"><span class="level-start"><span class="level-item">十二月 2019</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile is-marginless" href="/archives/2019/08/"><span class="level-start"><span class="level-item">八月 2019</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile is-marginless" href="/archives/2019/07/"><span class="level-start"><span class="level-item">七月 2019</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile is-marginless" href="/archives/2019/06/"><span class="level-start"><span class="level-item">六月 2019</span></span><span class="level-end"><span class="level-item tag">18</span></span></a></li><li><a class="level is-mobile is-marginless" href="/archives/2019/05/"><span class="level-start"><span class="level-item">五月 2019</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile is-marginless" href="/archives/2019/04/"><span class="level-start"><span class="level-item">四月 2019</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile is-marginless" href="/archives/2019/01/"><span class="level-start"><span class="level-item">一月 2019</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile is-marginless" href="/archives/2018/12/"><span class="level-start"><span class="level-item">十二月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile is-marginless" href="/archives/2018/11/"><span class="level-start"><span class="level-item">十一月 2018</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile is-marginless" href="/archives/2018/10/"><span class="level-start"><span class="level-item">十月 2018</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile is-marginless" href="/archives/2018/07/"><span class="level-start"><span class="level-item">七月 2018</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile is-marginless" href="/archives/2018/06/"><span class="level-start"><span class="level-item">六月 2018</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile is-marginless" href="/archives/2018/05/"><span class="level-start"><span class="level-item">五月 2018</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile is-marginless" href="/archives/2018/04/"><span class="level-start"><span class="level-item">四月 2018</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile is-marginless" href="/archives/2018/01/"><span class="level-start"><span class="level-item">一月 2018</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></div></div></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/Fail.png" alt="NanYin的博客" height="28"></a><p class="size-small"><span>&copy; 2020 NanYin</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="My GitHub" href="https://github.com/NanYinIU"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script>moment.locale("zh-CN");</script><script>var IcarusThemeSettings = {
-            site: {
-                url: 'https://nanyiniu.github.io',
-                external_link: {"enable":true,"exclude":[]}
-            },
-            article: {
-                highlight: {
-                    clipboard: true,
-                    fold: 'unfolded'
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="NanYin的博客" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="Was mich nicht umbringt, macht mich starker.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="NanYin的博客">
+<meta property="og:url" content="https://nanyiniu.github.io/tags/Linux/page/3/index.html">
+<meta property="og:site_name" content="NanYin的博客">
+<meta property="og:description" content="Was mich nicht umbringt, macht mich starker.">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:author" content="NanYin">
+<meta property="article:tag" content="技术 生活">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://nanyiniu.github.io/tags/Linux/page/3/"/>
+
+
+
+
+
+  <title>Tag: Linux | NanYin的博客</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left ">
+    <div class="headband"></div>
+<a href="https://github.com/NanYinIU" target="_blank" rel="noopener" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">NanYin的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">记录生活点滴</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            Search
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="Searching..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  
+  
+  
+  <div class="post-block tag">
+
+    <div id="posts" class="posts-collapse">
+      <div class="collection-title">
+        <h1>Linux<small>Tag</small>
+        </h1>
+      </div>
+
+      
+        
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      <h2 class="post-title">
+        
+            <a class="post-title-link" href="/2018/04/12/2018-04-12-bash_exitCode/" itemprop="url">
+              
+                <span itemprop="name">bash学习记录（三） bash中的退出码和测试（Test）</span>
+              
+            </a>
+        
+      </h2>
+
+      <div class="post-meta">
+        <time class="post-time" itemprop="dateCreated"
+              datetime="2018-04-12T15:00:00Z"
+              content="2018-04-12" >
+          04-12
+        </time>
+      </div>
+
+    </header>
+  </article>
+
+
+      
+        
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      <h2 class="post-title">
+        
+            <a class="post-title-link" href="/2018/04/11/2018-4-11-bash_%E5%8F%98%E9%87%8F/" itemprop="url">
+              
+                <span itemprop="name">bash学习记录（二） bash中的变量和参数</span>
+              
+            </a>
+        
+      </h2>
+
+      <div class="post-meta">
+        <time class="post-time" itemprop="dateCreated"
+              datetime="2018-04-11T15:00:00Z"
+              content="2018-04-11" >
+          04-11
+        </time>
+      </div>
+
+    </header>
+  </article>
+
+
+      
+        
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      <h2 class="post-title">
+        
+            <a class="post-title-link" href="/2018/04/10/2018-04-10-bash%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" itemprop="url">
+              
+                <span itemprop="name">bash学习记录（一） 初识和bash中的特殊字符</span>
+              
+            </a>
+        
+      </h2>
+
+      <div class="post-meta">
+        <time class="post-time" itemprop="dateCreated"
+              datetime="2018-04-10T15:00:00Z"
+              content="2018-04-10" >
+          04-10
+        </time>
+      </div>
+
+    </header>
+  </article>
+
+
+      
+    </div>
+
+  </div>
+  
+  
+  
+
+  
+  <nav class="pagination">
+    <a class="extend prev" rel="prev" href="/tags/Linux/page/2/">&lt;i class&#x3D;&quot;fa fa-angle-left&quot;&gt;&lt;&#x2F;i&gt;</a><a class="page-number" href="/tags/Linux/">1</a><a class="page-number" href="/tags/Linux/page/2/">2</a><span class="page-number current">3</span>
+  </nav>
+
+
+
+          </div>
+          
+
+
+          
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png"
+                alt="NanYin" />
+            
+              <p class="site-author-name" itemprop="name">NanYin</p>
+              <p class="site-description motion-element" itemprop="description">Was mich nicht umbringt, macht mich starker.</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%20%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">103</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">17</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/NanYinIU" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="1977713379@qq.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-block">
+           <div class="links-of-blogroll-title">
+             <!-- modify icon to fire by szw -->
+             <i class="fa fa-history fa-" aria-hidden="true"></i>
+             近期文章
+           </div>
+           <ul class="links-of-blogroll-list">
+             
+             
+               <li>
+                 <a href="/2020/05/22/%EF%BC%88%E4%BA%8C%EF%BC%89Bean%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/" title="（二）Bean的生命周期" target="_blank">（二）Bean的生命周期</a>
+               </li>
+             
+               <li>
+                 <a href="/2020/05/02/%E7%BA%BF%E4%B8%8A%E5%86%85%E5%AD%98%E6%BA%A2%E5%87%BA%E5%88%86%E6%9E%90/" title="线上内存溢出分析" target="_blank">线上内存溢出分析</a>
+               </li>
+             
+               <li>
+                 <a href="/2020/04/16/Java%E7%9A%84%E6%B7%B1%E6%8B%B7%E8%B4%9D%E5%92%8C%E6%B5%85%E6%8B%B7%E8%B4%9D/" title="Java的深拷贝和浅拷贝" target="_blank">Java的深拷贝和浅拷贝</a>
+               </li>
+             
+               <li>
+                 <a href="/2020/04/05/Jav%20IO%E6%B5%85%E6%9E%90/" title="Java IO浅析" target="_blank">Java IO浅析</a>
+               </li>
+             
+               <li>
+                 <a href="/2020/03/29/%E7%BA%BF%E7%A8%8B%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/" title="线程生命周期" target="_blank">线程生命周期</a>
+               </li>
+             
+           </ul>
+         </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">NanYin</span>
+
+</div>
+
+
+  <span class="post-meta-divider">|</span>
+
+
+<div class="powered-by">
+<i class="fa fa-user-md"></i><span id="busuanzi_container_site_uv">
+  本站访客数:<span id="busuanzi_value_site_uv"></span>
+</span>
+</div>
+
+<span class="post-meta-divider">|</span>
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共122.6k字</span>
+</div>
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
                 }
-            }
-        };</script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
-            if (typeof $.fn.lightGallery === 'function') {
-                $('.article').lightGallery({ selector: '.gallery-item' });
-            }
-            if (typeof $.fn.justifiedGallery === 'function') {
-                if ($('.justified-gallery > p > .gallery-item').length) {
-                    $('.justified-gallery > p > .gallery-item').unwrap();
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
                 }
-                $('.justified-gallery').justifiedGallery();
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
             }
-        });</script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
-            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
-        });</script><script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body></html>
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+<!-- 代码块复制功能 -->
+<script type="text/javascript" src="/js/src/clipboard.min.js"></script>
+<script type="text/javascript" src="/js/src/clipboard-use.js"></script>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>
