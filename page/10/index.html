@@ -305,6 +305,226 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/06/19/2018-06-19-bash_09-bash%E5%91%BD%E4%BB%A4%E7%AF%87%EF%BC%88%E4%B8%80%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="NanYin">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NanYin的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/06/19/2018-06-19-bash_09-bash%E5%91%BD%E4%BB%A4%E7%AF%87%EF%BC%88%E4%B8%80%EF%BC%89/" itemprop="url">bash学习记录（十）命令篇（1）</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-06-19T15:00:00Z">
+                2018-06-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Bash/" itemprop="url" rel="index">
+                    <span itemprop="name">Bash</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  1.1k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  5
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Bash中的命令"><a href="#Bash中的命令" class="headerlink" title="Bash中的命令"></a>Bash中的命令</h1><h2 id="内建命令"><a href="#内建命令" class="headerlink" title="内建命令"></a>内建命令</h2><p>内建命令是bash工具集中自带的命令，好处是执行速度比外部命令要快，因为内建命令一般直接执行命令，而外部命令一般要分支出一个子进程。</p>
+<h3 id="I-O操作"><a href="#I-O操作" class="headerlink" title="I/O操作"></a>I/O操作</h3><ul>
+<li><code>echo</code> 当然是最熟悉的echo命令进行输出了。但是需要注意的是在使用 echo `command ` 的时候echo会默认将取消输出的所有换行。</li>
+</ul>
+<p>再当使用 echo “`command`“的时候可以避免换行符的缺失。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;&#96;ll&#96;&quot;</span><br><span class="line">total 12K</span><br><span class="line">drwxr-xr-x 2 nanyin nanyin 4.0K Jun 19 21:18 bash</span><br><span class="line">drwxr-xr-x 3 nanyin nanyin 4.0K Jun 18 21:16 git</span><br><span class="line">-rw-r--r-- 1 nanyin nanyin 1.1K Jun 19 21:31 总结.txt</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>printf</code> 在C中使用的printf 能够格式化输出内容。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># 基本使用</span><br><span class="line">printf format-string... parameter...</span><br><span class="line"># 例子</span><br><span class="line">declare -r PI&#x3D;3.1415926535</span><br><span class="line">printf &quot;pi to 2 decimal is  %1.2f&quot; $PI # pi to 2 decimal is  3.14%</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>read</code> 读取参数的命令，可以通过这个命令读取输入参数。通常情况下，在输入read数据期间输入\会抑制换行符。 -r选项会导致输入的\被字面解释。同样read命令有很多参数可以使用</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;please input a value:&quot;</span><br><span class="line">read var1</span><br><span class="line">echo &quot;input var1 is $var1&quot;</span><br></pre></td></tr></table></figure>
+
+<p>当read 后面不跟任何值的话他默认给 $REPLY 赋值，之后可以取这个值作为read进来的值。</p>
+<p>在当输入内容后面加上 <code>/</code> 的话会起到输入时候的换行的作用，而使用 -r 参数会将 <code>/</code>按照原样输出出来</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;input var1 is $var1&quot;</span><br><span class="line">echo &quot;Enter a string terminated by a \\, then press &lt;ENTER&gt;.&quot;</span><br><span class="line">echo &quot;Then, enter a second string (no \\ this time), and again press &lt;ENTER&gt;.&quot;</span><br><span class="line">read</span><br><span class="line">echo &quot;the default value is $REPLY&quot;</span><br><span class="line"># 当read后面不写具体值的时候会把值付给 REPLY</span><br></pre></td></tr></table></figure>
+
+<p>read有很多有用的参数可以调用，实现复杂的输入功能。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">read -s -n1 -p &quot;Hit a key &quot; keypress</span><br><span class="line"># read 有很多非常有意思的参数，比如 -s的意思就是不要回显输入</span><br><span class="line"># -n1 的意思是输入指定数量的字符</span><br><span class="line"># -p 是先输出前面的提示。</span><br><span class="line">echo; echo &quot;Keypress was &quot;\&quot;$keypress\&quot;&quot;.&quot;</span><br></pre></td></tr></table></figure>
+
+<p>read也可以使用文件作为输入的源</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;文件temp_file中内容有两行 一行是hello world 第二行是 Hello World&quot;</span><br><span class="line">read var1 var2 &lt; temp_file</span><br><span class="line">echo &quot;var1 is $var1 var2 is $var2&quot;</span><br><span class="line">echo &quot;这里显然输出的第一行的内容&quot;</span><br><span class="line">echo &quot;---------------------------&quot;</span><br><span class="line">echo &quot;其实还能自定义IFS分割符然后根据规则自定义文件输入&quot;</span><br><span class="line">echo &quot;all users in the list:&quot;</span><br><span class="line">OIFS&#x3D;$IFS ; IFS&#x3D;:</span><br><span class="line">while read name passwd uid gid fullname ignore</span><br><span class="line">do</span><br><span class="line">	echo &quot;$name ($fullname)&quot;</span><br><span class="line">done &lt; &#x2F;etc&#x2F;passwd</span><br><span class="line">IFS&#x3D;$OIFS</span><br></pre></td></tr></table></figure>
+
+<h3 id="文件系统操作"><a href="#文件系统操作" class="headerlink" title="文件系统操作"></a>文件系统操作</h3><p>操作文件系统的命令有很多但是都非常的常用也非常的简单。这里不做具体的说明其中举一两个非常常见的。</p>
+<p>cd : 切换目录</p>
+<p>pwd ： 查看当前工作目录</p>
+<h3 id="变量操作"><a href="#变量操作" class="headerlink" title="变量操作"></a>变量操作</h3><p>let 是能够进行简单变量运算的命令 比如</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">let a&#x3D;1+2</span><br><span class="line">echo $a</span><br><span class="line">let b&#x3D;&quot;2+3&quot;</span><br><span class="line">echo $b</span><br></pre></td></tr></table></figure>
+
+<p>eval 命令是能够将字符串转换成成命令。并且可以多次调用以去评估是否是命令去执行</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"> command_string&#x3D;&quot;ps ax&quot;</span><br><span class="line"> process&#x3D;&quot;ps ax&quot;</span><br><span class="line"> eval &quot;$command_string&quot; | grep &quot;$process&quot;</span><br><span class="line"># 26973 pts&#x2F;3    R+     0:00 grep --color ps ax</span><br><span class="line"># 26974 pts&#x2F;3    R+     0:00 ps ax</span><br><span class="line"></span><br><span class="line">a&#x3D;&#39;$b&#39;</span><br><span class="line">b&#x3D;&#39;$c&#39;</span><br><span class="line">c&#x3D;d</span><br><span class="line">echo $a             # $b</span><br><span class="line">                    # First level.</span><br><span class="line">eval echo $a        # $c</span><br><span class="line">                    # Second level.</span><br><span class="line">eval eval echo $a   # d</span><br><span class="line">                    # Third level.</span><br></pre></td></tr></table></figure>
+
+<p>set和unset命令，一看就知道是设置和取消变量的意思。</p>
+<p>export 命令一般使用在设置环境变量上，如在/etc/profile文件中设置JAVA_HOME</p>
+<p>declare和typeset命令指定和/或限制变量的属性。</p>
+<p>getopts 是能够定义属性的 比如 在解压tar包的时候使用<code>-xvf</code><br>之类的命令的时候就是使用getopts来达到不同的 -a -b 之类的实现。这个命令一般出现在case 或者while循环中</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">while getopts &quot;:abcde:fg&quot; Option</span><br><span class="line"># Initial declaration.</span><br><span class="line"># a, b, c, d, e, f, and g are the options (flags) expected.</span><br><span class="line"># The : after option &#39;e&#39; shows it will have an argument passed with it.</span><br><span class="line"># e参数后面的的表示会有参数传递给他</span><br><span class="line">do</span><br><span class="line">  case $Option in</span><br><span class="line">    a ) # Do something with variable &#39;a&#39;.</span><br><span class="line">    b ) # Do something with variable &#39;b&#39;.</span><br><span class="line">    ...</span><br><span class="line">    e)  # Do something with &#39;e&#39;, and also with $OPTARG,</span><br><span class="line">        # which is the associated argument passed with option &#39;e&#39;.</span><br><span class="line">    ...</span><br><span class="line">    g ) # Do something with variable &#39;g&#39;.</span><br><span class="line">  esac</span><br><span class="line">done</span><br><span class="line">shift $(($OPTIND - 1))</span><br><span class="line"># Move argument pointer to next.</span><br></pre></td></tr></table></figure>
+
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+<div>
+      
+</div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/06/12/2018-06-12-bash_08_bash%E4%B8%AD%E7%9A%84%E5%BE%AA%E7%8E%AF%E5%92%8C%E5%88%86%E6%94%AF%EF%BC%88%E4%BA%8C%EF%BC%89/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2538,215 +2758,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/04/11/2018-4-11-bash_%E5%8F%98%E9%87%8F/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="NanYin">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NanYin的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/04/11/2018-4-11-bash_%E5%8F%98%E9%87%8F/" itemprop="url">bash学习记录（二） bash中的变量和参数</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-04-11T15:00:00Z">
-                2018-04-11
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Bash/" itemprop="url" rel="index">
-                    <span itemprop="name">Bash</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Words count in article&#58;</span>
-                
-                <span title="Words count in article">
-                  683
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Reading time &asymp;</span>
-                
-                <span title="Reading time">
-                  2
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="bash学习记录（二）-bash中的变量和参数"><a href="#bash学习记录（二）-bash中的变量和参数" class="headerlink" title="bash学习记录（二） bash中的变量和参数"></a>bash学习记录（二） bash中的变量和参数</h1><p>变量就是一个标签在脚本中代表数据，不过是给分配在电脑内存中的数据一个名字，经常会出现在数学计算和大量操作(manipulation of quantities)和字符串解析(string parsing)中。</p>
-<h2 id="变量置换-Variable-Substitution"><a href="#变量置换-Variable-Substitution" class="headerlink" title="变量置换 (Variable Substitution) $"></a>变量置换 (Variable Substitution) $</h2><p>The name of a variable is a placeholder for its value, the data it holds. Referencing (retrieving) its value is called variable substitution. 大致意思就是变量引用具体的值。使用$来引用变量 如</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">bash$ variable1&#x3D;23</span><br><span class="line"></span><br><span class="line">bash$ echo variable1</span><br><span class="line">&#x2F;&#x2F;variable1</span><br><span class="line"></span><br><span class="line">bash$ echo $variable1</span><br><span class="line">&#x2F;&#x2F;23</span><br></pre></td></tr></table></figure>
-
-<p>在(“..”)里引用不会干涉变量的引用，这叫做局部引用(<code>partial quoting</code>),也叫弱引用.但使用(‘..’)单引号会直接把变量名打印出来，不会引用变量，叫做全引用(<code>full quoting</code>),也叫做强引用。</p>
-<blockquote>
-<p>注意：其实使用$variable1和使用${variable1}是一样的但是某些语境下前者可能会出问题。</p>
-</blockquote>
-<blockquote>
-<p>未初始化的变量有一个默认的的值为”null“而不是‘0’，并且bash中的变量不分类型。</p>
-</blockquote>
-<h2 id="变量分配-Variable-Assignment"><a href="#变量分配-Variable-Assignment" class="headerlink" title="变量分配(Variable Assignment) ="></a>变量分配(Variable Assignment) =</h2><p>等号-&gt; the assignment operator (no space before and after) 前后不能有空格</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">#举一个比较典型的小例子，之前不知道区别。。</span><br><span class="line">a&#x3D;&#96;ls -l&#96;         # Assigns result of &#39;ls -l&#39; command to &#39;a&#39;</span><br><span class="line">echo $a           # Unquoted, however, it removes tabs and newlines.</span><br><span class="line">echo</span><br><span class="line">echo &quot;$a&quot;         # The quoted variable preserves whitespace.</span><br></pre></td></tr></table></figure>
-
-<p>使用双引号扩起来的$a有空格，而没有双引号的是去掉空格的。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">R&#x3D;$(cat &#x2F;etc&#x2F;redhat-release)</span><br><span class="line">arch&#x3D;$(uname -m)</span><br></pre></td></tr></table></figure>
-
-<p>可以看出使用$()的作用和使用``的作用相同，都可以对命令进行包裹。</p>
-<h2 id="bash变量没有类型"><a href="#bash变量没有类型" class="headerlink" title="bash变量没有类型"></a>bash变量没有类型</h2><p>不像其他的很多编程语言，bash脚本中的变量是没有类型的。无类型的变量是把双刃剑，一方面更加灵活，另一方面会渗透一些小的问题。</p>
-<p>所以bash提供声明变量，会在后面的章节对声明变量的参数等信息详细列出来。</p>
-<h2 id="特殊的变量类型-Special-Variable-Types"><a href="#特殊的变量类型-Special-Variable-Types" class="headerlink" title="特殊的变量类型(Special Variable Types)"></a>特殊的变量类型(Special Variable Types)</h2><ul>
-<li><p>本地变量：变量只能在代码块和函数中可见</p>
-</li>
-<li><p>系统变量：变量影响shell的行为和用户的接口（比如设置Java环境变量）</p>
-<p>  如果脚本需要设置环境变量那么就去 <code>export ..</code></p>
-</li>
-<li><p>位置参数：</p>
-<p>  $0是脚本名称，1-9等对应其位置，10之后要使用大括号扩起来。$#对应最后一个元素</p>
-<p>  使用shift命令可以将位置参数重新排列，实际上就是向左移动一级。</p>
-</li>
-</ul>
-<h3 id="这次篇幅较小，主要讲了讲bash中的变量和位置参数的含义和使用，属于非常基础，非常容易理解的部分。"><a href="#这次篇幅较小，主要讲了讲bash中的变量和位置参数的含义和使用，属于非常基础，非常容易理解的部分。" class="headerlink" title="这次篇幅较小，主要讲了讲bash中的变量和位置参数的含义和使用，属于非常基础，非常容易理解的部分。"></a>这次篇幅较小，主要讲了讲bash中的变量和位置参数的含义和使用，属于非常基础，非常容易理解的部分。</h3>
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-<div>
-      
-</div>
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2801,7 +2812,7 @@
               
                 <a href="/archives/%7C%7C%20archive">
               
-                  <span class="site-state-item-count">103</span>
+                  <span class="site-state-item-count">104</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -2875,7 +2886,15 @@
              
              
                <li>
+                 <a href="/2020/05/22/%EF%BC%88%E4%B8%89%EF%BC%89%E8%87%AA%E5%8A%A8%E8%A3%85%E9%85%8D/" title="（三）自动装配" target="_blank">（三）自动装配</a>
+               </li>
+             
+               <li>
                  <a href="/2020/05/22/%EF%BC%88%E4%BA%8C%EF%BC%89Bean%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/" title="（二）Bean的生命周期" target="_blank">（二）Bean的生命周期</a>
+               </li>
+             
+               <li>
+                 <a href="/2020/05/10/%E6%B7%B1%E5%85%A5JVM%EF%BC%88%E4%B8%80%EF%BC%89%E7%B1%BB%E5%8A%A0%E8%BD%BD%E8%BF%87%E7%A8%8B%E5%92%8C%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D/" title="深入JVM（一）类加载过程和内存分配" target="_blank">深入JVM（一）类加载过程和内存分配</a>
                </li>
              
                <li>
@@ -2884,14 +2903,6 @@
              
                <li>
                  <a href="/2020/04/16/Java%E7%9A%84%E6%B7%B1%E6%8B%B7%E8%B4%9D%E5%92%8C%E6%B5%85%E6%8B%B7%E8%B4%9D/" title="Java的深拷贝和浅拷贝" target="_blank">Java的深拷贝和浅拷贝</a>
-               </li>
-             
-               <li>
-                 <a href="/2020/04/05/Jav%20IO%E6%B5%85%E6%9E%90/" title="Java IO浅析" target="_blank">Java IO浅析</a>
-               </li>
-             
-               <li>
-                 <a href="/2020/03/29/%E7%BA%BF%E7%A8%8B%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/" title="线程生命周期" target="_blank">线程生命周期</a>
                </li>
              
            </ul>
@@ -2947,7 +2958,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共122.6k字</span>
+  <span class="post-count">博客全站共126.5k字</span>
 </div>
 
 

@@ -305,6 +305,211 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/06/13/2019-06-13-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E4%BA%AB%E5%85%83%E6%A8%A1%E5%BC%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="NanYin">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NanYin的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/06/13/2019-06-13-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E4%BA%AB%E5%85%83%E6%A8%A1%E5%BC%8F/" itemprop="url">设计模式之享元模式</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-06-13T12:00:00Z">
+                2019-06-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" itemprop="url" rel="index">
+                    <span itemprop="name">设计模式</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  827
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  3
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="设计模式之享元模式"><a href="#设计模式之享元模式" class="headerlink" title="设计模式之享元模式"></a>设计模式之享元模式</h1><p>享元模式是对象的结构模式。享元模式以共享的方式高效地支持大量的细粒度对象。它用于通过尽可能多地与类似对象共享来最小化内存使用或计算开销。</p>
+<h2 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h2><ol>
+<li>应用中需要大量的对象，大量的对象可能造成存储对象的开销。</li>
+<li>对象变化的状态大多是外部状态。一旦外部状态被移除，许多对象组可被相对较少的共享对象替换。这也就是享元模式利用的点。</li>
+<li>因为在享元模式中对象是共享的，所以在含义上的不同对象使用equels实际返回的是true。</li>
+</ol>
+<h2 id="享元模式结构"><a href="#享元模式结构" class="headerlink" title="享元模式结构"></a>享元模式结构</h2><p>享元模式采用一个共享来避免大量拥有相同内容对象的开销。这种开销最常见、最直观的就是内存的损耗。享元对象能做到共享的关键是区分内蕴状态(Internal State)和外蕴状态(External State)。</p>
+<p>内蕴状态决定对象本身的状态，不会随着环境的变化而变化，而外蕰状态是由客户端将状态传递给享元对象的，外蕴状态类似同一个对象的不同的行为，内蕴状态和外蕰状态是相互独立，互不影响的。</p>
+<p>享元模式主要这几三个部分：抽象享元类，具体享元类和享元工厂类。具体可以参考下面代码。</p>
+<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190613005252.png" alt="享元模式"></p>
+<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><p>在Java中，String类就符合享元模式，<code>string a = &quot;aa&quot;</code> 和 <code>string b =&quot;aa&quot;</code> 是相等的。</p>
+<p>在下面例子中，构造抽象享元类“MyString” 和它的具体实现类，使用到相同的对象，因为享元模式，可以对这些对象进行共享使用。</p>
+<p>第一部分：抽象享元类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">MyString</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">create</span><span class="params">(String outerState)</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//枚举类</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">enum</span> InstanceType &#123;</span><br><span class="line">    INSTANCE1,INSTANCE2</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>第二部分：具体享元类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StringIns1</span> <span class="keyword">implements</span> <span class="title">MyString</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 内部状态，不可随时变化的</span></span><br><span class="line">    String innerState;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">StringIns1</span><span class="params">(String innerState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.innerState = innerState;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">create</span><span class="params">(String outerState)</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"create instance 1 -&gt; innerState:"</span>+<span class="keyword">this</span>.innerState);</span><br><span class="line">        <span class="comment">//外部状态，需要客户端传进来，这个值是可变化的</span></span><br><span class="line">        System.out.println(<span class="string">"create instance 1 -&gt; outerState:"</span>+outerState);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StringIns2</span> <span class="keyword">implements</span> <span class="title">MyString</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    String innerState;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">StringIns2</span><span class="params">(String innerState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.innerState = innerState;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">create</span><span class="params">(String outerState)</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"create instance 2 -&gt; innerState:"</span>+<span class="keyword">this</span>.innerState);</span><br><span class="line">        System.out.println(<span class="string">"create instance 2 -&gt; outerState:"</span>+outerState);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>第三部分：享元工厂类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FlyWeight</span> </span>&#123;</span><br><span class="line">    Map&lt;InstanceType,MyString&gt; store;</span><br><span class="line"></span><br><span class="line">    FlyWeight() &#123;</span><br><span class="line">        store = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> MyString <span class="title">factory</span><span class="params">(InstanceType instanceType)</span></span>&#123;</span><br><span class="line">        MyString curr = store.get(instanceType);</span><br><span class="line">        <span class="keyword">if</span>(curr == <span class="keyword">null</span>)&#123;</span><br><span class="line">        <span class="comment">// 如果对象不存在，新建对应的对象</span></span><br><span class="line">            <span class="keyword">if</span>(instanceType.equals(InstanceType.INSTANCE1))&#123;</span><br><span class="line">            <span class="comment">// 根据内部状态决定生成哪个类型的子类</span></span><br><span class="line">                curr= <span class="keyword">new</span> StringIns1(instanceType.toString());</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span>(instanceType.equals(InstanceType.INSTANCE2))&#123;</span><br><span class="line">                curr= <span class="keyword">new</span> StringIns2(instanceType.toString());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        store.put(instanceType,curr);</span><br><span class="line">        <span class="keyword">return</span> curr;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>第四部分：客户端调用</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">App</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        FlyWeight flyWeight = <span class="keyword">new</span> FlyWeight();</span><br><span class="line">        MyString ins1 = flyWeight.factory(InstanceType.INSTANCE1);</span><br><span class="line">        MyString ins2 = flyWeight.factory(InstanceType.INSTANCE1);</span><br><span class="line">        System.out.println(ins1.equals(ins2));<span class="comment">//true 是同一个对象 内部状态相同</span></span><br><span class="line">        ins1.create(<span class="string">"*****"</span>); <span class="comment">//针对外部状态打印不同内容</span></span><br><span class="line">        ins2.create(<span class="string">"-----"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>结果：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">true</span><br><span class="line">create instance 1 -&gt; innerState:INSTANCE1</span><br><span class="line">create instance 1 -&gt; outerState:*****</span><br><span class="line">create instance 1 -&gt; innerState:INSTANCE1</span><br><span class="line">create instance 1 -&gt; outerState:-----</span><br></pre></td></tr></table></figure>
+
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+<div>
+      
+</div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/06/12/2019-06-12-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E5%A4%96%E8%A7%82%E6%A8%A1%E5%BC%8F/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2087,196 +2292,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/05/29/2019-02-17-%E4%BD%BF%E7%94%A8IDEA%E8%AE%BE%E7%BD%AEspringboot%E7%83%AD%E9%83%A8%E7%BD%B2/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="NanYin">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NanYin的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/05/29/2019-02-17-%E4%BD%BF%E7%94%A8IDEA%E8%AE%BE%E7%BD%AEspringboot%E7%83%AD%E9%83%A8%E7%BD%B2/" itemprop="url">使用idea对spring boot应用进行热部署</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-05-29T12:00:00Z">
-                2019-05-29
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%B7%A5%E5%85%B7/" itemprop="url" rel="index">
-                    <span itemprop="name">工具</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Words count in article&#58;</span>
-                
-                <span title="Words count in article">
-                  209
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Reading time &asymp;</span>
-                
-                <span title="Reading time">
-                  1
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="使用idea对spring-boot应用进行热部署"><a href="#使用idea对spring-boot应用进行热部署" class="headerlink" title="使用idea对spring boot应用进行热部署"></a>使用idea对spring boot应用进行热部署</h1><h2 id="POM"><a href="#POM" class="headerlink" title="POM"></a>POM</h2><h3 id="在pom-xml中添加maven依赖"><a href="#在pom-xml中添加maven依赖" class="headerlink" title="在pom.xml中添加maven依赖"></a>在pom.xml中添加maven依赖</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">        &lt;groupId&gt;org.springframework.boot&lt;&#x2F;groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;spring-boot-devtools&lt;&#x2F;artifactId&gt;</span><br><span class="line">        &lt;optional&gt;true&lt;&#x2F;optional&gt; &lt;!-- 这行必填 --&gt;</span><br><span class="line">        &lt;scope&gt;runtime&lt;&#x2F;scope&gt;</span><br><span class="line"> &lt;&#x2F;dependency&gt;</span><br></pre></td></tr></table></figure>
-
-<h3 id="并且在后面的插件配置中配置dev"><a href="#并且在后面的插件配置中配置dev" class="headerlink" title="并且在后面的插件配置中配置dev"></a>并且在后面的插件配置中配置dev</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;build&gt;</span><br><span class="line">    &lt;plugins&gt;</span><br><span class="line">        &lt;plugin&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework.boot&lt;&#x2F;groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-boot-maven-plugin&lt;&#x2F;artifactId&gt;</span><br><span class="line">            &lt;configuration&gt;</span><br><span class="line">                &lt;!--如果没有该项配置，devtools不会起作用，即应用不会restart --&gt;</span><br><span class="line">                &lt;fork&gt;true&lt;&#x2F;fork&gt;</span><br><span class="line">            &lt;&#x2F;configuration&gt;</span><br><span class="line">        &lt;&#x2F;plugin&gt;</span><br><span class="line">    &lt;&#x2F;plugins&gt;</span><br><span class="line">&lt;&#x2F;build&gt;</span><br></pre></td></tr></table></figure>
-
-<h2 id="IDEA"><a href="#IDEA" class="headerlink" title="IDEA"></a>IDEA</h2><h3 id="在IDEA中添加配置如下"><a href="#在IDEA中添加配置如下" class="headerlink" title="在IDEA中添加配置如下"></a>在IDEA中添加配置如下</h3><ol>
-<li>打开 setting ,搜索 <code>compiler</code> 后，把 <code>Build Project automaticial</code> 选项勾上</li>
-</ol>
-<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190531171258.png" alt="compiler"></p>
-<ol start="2">
-<li>使用  <code>ctrl+shift+A</code>  快捷键打开窗口，并搜索 <code>Registry...</code> 。勾选 <code>compiler.automake.allow.when.app.running</code> </li>
-</ol>
-<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190531171606.png" alt="running"></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-<div>
-      
-</div>
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2331,7 +2346,7 @@
               
                 <a href="/archives/%7C%7C%20archive">
               
-                  <span class="site-state-item-count">103</span>
+                  <span class="site-state-item-count">104</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -2405,7 +2420,15 @@
              
              
                <li>
+                 <a href="/2020/05/22/%EF%BC%88%E4%B8%89%EF%BC%89%E8%87%AA%E5%8A%A8%E8%A3%85%E9%85%8D/" title="（三）自动装配" target="_blank">（三）自动装配</a>
+               </li>
+             
+               <li>
                  <a href="/2020/05/22/%EF%BC%88%E4%BA%8C%EF%BC%89Bean%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/" title="（二）Bean的生命周期" target="_blank">（二）Bean的生命周期</a>
+               </li>
+             
+               <li>
+                 <a href="/2020/05/10/%E6%B7%B1%E5%85%A5JVM%EF%BC%88%E4%B8%80%EF%BC%89%E7%B1%BB%E5%8A%A0%E8%BD%BD%E8%BF%87%E7%A8%8B%E5%92%8C%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D/" title="深入JVM（一）类加载过程和内存分配" target="_blank">深入JVM（一）类加载过程和内存分配</a>
                </li>
              
                <li>
@@ -2414,14 +2437,6 @@
              
                <li>
                  <a href="/2020/04/16/Java%E7%9A%84%E6%B7%B1%E6%8B%B7%E8%B4%9D%E5%92%8C%E6%B5%85%E6%8B%B7%E8%B4%9D/" title="Java的深拷贝和浅拷贝" target="_blank">Java的深拷贝和浅拷贝</a>
-               </li>
-             
-               <li>
-                 <a href="/2020/04/05/Jav%20IO%E6%B5%85%E6%9E%90/" title="Java IO浅析" target="_blank">Java IO浅析</a>
-               </li>
-             
-               <li>
-                 <a href="/2020/03/29/%E7%BA%BF%E7%A8%8B%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/" title="线程生命周期" target="_blank">线程生命周期</a>
                </li>
              
            </ul>
@@ -2477,7 +2492,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共122.6k字</span>
+  <span class="post-count">博客全站共126.5k字</span>
 </div>
 
 

@@ -305,6 +305,202 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2020/05/22/%EF%BC%88%E4%B8%89%EF%BC%89%E8%87%AA%E5%8A%A8%E8%A3%85%E9%85%8D/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="NanYin">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NanYin的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/05/22/%EF%BC%88%E4%B8%89%EF%BC%89%E8%87%AA%E5%8A%A8%E8%A3%85%E9%85%8D/" itemprop="url">（三）自动装配</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-05-22T07:26:46Z">
+                2020-05-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  566
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  2
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <ul>
+<li><a href="#spring中的自动装配">Spring中的自动装配</a><ul>
+<li><a href="#autowire-qualifierprimary">@Autowire、 @Qualifier、@Primary</a></li>
+<li><a href="#injectnamed">@Inject、@Named</a></li>
+</ul>
+</li>
+</ul>
+<h1 id="Spring中的自动装配"><a href="#Spring中的自动装配" class="headerlink" title="Spring中的自动装配"></a>Spring中的自动装配</h1><h2 id="Autowire、-Qualifier、-Primary"><a href="#Autowire、-Qualifier、-Primary" class="headerlink" title="@Autowire、 @Qualifier、@Primary"></a>@Autowire、 @Qualifier、@Primary</h2><p><code>@Autowire</code> 注解标注在constructor, field, setter method 上，方便在Spring中进行依赖的注入（<code>dependency injection</code>）。和JSR-330标准javax.inject.Inject达到一样的效果，不过autowired时Spring持有的。</p>
+<ul>
+<li>默认使用Autowire是按照类型进行注入的，但是如果在容器中存在多个类型相同的bean时，@Autowired也会按照名称进行匹配。</li>
+<li>使用<code>@Qualifier</code>注解，在获取Bean时，指定要获取的bean的名称。</li>
+<li>使用<code>@Primary</code>注解，在声明Bean时，指定如果注入，则首选的bean。</li>
+</ul>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">	<span class="keyword">private</span> String firstName;</span><br><span class="line">	<span class="keyword">private</span> String lastName;</span><br><span class="line"></span><br><span class="line"> 	<span class="function"><span class="keyword">public</span> <span class="title">Person</span><span class="params">(String firstName, String lastName)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.firstName = <span class="string">"w"</span>;</span><br><span class="line">		<span class="keyword">this</span>.lastName = <span class="string">"y"</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Autowired</span></span><br><span class="line">	<span class="meta">@Qualifier</span>(<span class="string">"abc"</span>)</span><br><span class="line">	<span class="keyword">private</span> Pet pet;</span><br><span class="line"><span class="comment">// 省略getter setter</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// 或者在声明Bean时，使用Primary进行指定。</span></span><br><span class="line"><span class="meta">@Bean</span>(<span class="string">"dotdot"</span>)</span><br><span class="line"><span class="meta">@Primary</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Pet <span class="title">pet2</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">new</span> Pet(<span class="string">"dotdot"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<blockquote>
+<p>需要注意的是：在同时指定Qualifier和Primary时，会以<strong>Qualifier</strong>为主。</p>
+</blockquote>
+<h2 id="Inject、-Named"><a href="#Inject、-Named" class="headerlink" title="@Inject、@Named"></a>@Inject、@Named</h2><p>@Inject、@Named 都是Javax规范的注解，并不是Spring的注解。</p>
+<p>使用 Inject 注解同样能够标注在constructor, field, setter method 上。基本能够代替 Autowired 注解，并且能够使用 Named 注解，指定名称进行实例的注入，可以代替 Qualifier 注解。</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">	<span class="keyword">private</span> String firstName;</span><br><span class="line">	<span class="keyword">private</span> String lastName;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">Person</span><span class="params">(String firstName, String lastName)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.firstName = <span class="string">"w"</span>;</span><br><span class="line">		<span class="keyword">this</span>.lastName = <span class="string">"y"</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Inject</span></span><br><span class="line">	<span class="meta">@Named</span>(<span class="string">"abc"</span>)</span><br><span class="line">	<span class="keyword">private</span> Pet pet;</span><br><span class="line">	<span class="comment">// 省略getter setter</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<blockquote>
+<p>区别点在于 Autowired 注解支持 required() 属性。而 Inject 注解并不支持。可以使用java.util.Optional或者Spring Framework 5.0 后提供的 @Nullable 注解，标志在构造方法上。</p>
+</blockquote>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SimpleMovieLister</span> </span>&#123;</span><br><span class="line"><span class="meta">@Autowired</span> <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setMovieFinder</span><span class="params">(@Nullable MovieFinder movieFinder)</span> </span>&#123;</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="Resource"><a href="#Resource" class="headerlink" title="@Resource"></a>@Resource</h2><p>使用 <code>@Resource</code> 同样能够达到自动装配的目的，与 <code>@Autowire</code> 的区别在于以下几点：</p>
+<ul>
+<li>处理这2个注解的BeanPostProcessor不一样</li>
+<li>匹配Bean的方式不同。<ul>
+<li><code>@Resource</code><ul>
+<li>默认按照名称进行匹配注入。</li>
+<li>如果指定了 <code>type</code>,则按照类型进行匹配。当无法找到正确的类型或者找到多个时都会报错。如果都没有指定时，并且无法按照名称匹配到Bean时，会回退到按照类型寻找Bean。</li>
+</ul>
+</li>
+<li><code>@Autowire</code> 默认就是按照类型进行匹配的，如果需要指定特定Bean，则需要使用 <code>@Qualifier</code> 注解进行指定。</li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+<div>
+      
+</div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2020/05/22/%EF%BC%88%E4%BA%8C%EF%BC%89Bean%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -433,6 +629,273 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyBeanPostProcessor</span> <span class="keyword">implements</span> <span class="title">BeanPostProcessor</span> </span>&#123;</span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> Object <span class="title">postProcessBeforeInitialization</span><span class="params">(Object bean, String beanName)</span> <span class="keyword">throws</span> BeansException </span>&#123;</span><br><span class="line">		<span class="comment">// 根据BeanName和bean可以获取bean的类信息接下来就可以进行筛选，在初始化前进行相关操作</span></span><br><span class="line">		System.out.println(beanName);</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> Object <span class="title">postProcessAfterInitialization</span><span class="params">(Object bean, String beanName)</span> <span class="keyword">throws</span> BeansException </span>&#123;</span><br><span class="line">		System.out.println(beanName);</span><br><span class="line">		<span class="comment">// 同理初始化后</span></span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>￼￼￼￼￼</p>
 
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+<div>
+      
+</div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2020/05/10/%E6%B7%B1%E5%85%A5JVM%EF%BC%88%E4%B8%80%EF%BC%89%E7%B1%BB%E5%8A%A0%E8%BD%BD%E8%BF%87%E7%A8%8B%E5%92%8C%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="NanYin">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NanYin的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/05/10/%E6%B7%B1%E5%85%A5JVM%EF%BC%88%E4%B8%80%EF%BC%89%E7%B1%BB%E5%8A%A0%E8%BD%BD%E8%BF%87%E7%A8%8B%E5%92%8C%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D/" itemprop="url">深入JVM（一）类加载过程和内存分配</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-05-10T15:00:00Z">
+                2020-05-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/JVM/" itemprop="url" rel="index">
+                    <span itemprop="name">JVM</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  3.8k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  14
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="深入JVM（一）类加载过程和内存分配"><a href="#深入JVM（一）类加载过程和内存分配" class="headerlink" title="深入JVM（一）类加载过程和内存分配"></a>深入JVM（一）类加载过程和内存分配</h1><blockquote>
+<p>本篇需要完成的内容是完成对对象从加载到创建过程的分析，与过程中的内存分配的方式等进行总结</p>
+</blockquote>
+<h1 id="内存区域"><a href="#内存区域" class="headerlink" title="内存区域"></a>内存区域</h1><p>在分析对象创建过程前，需要先了解Java虚拟机中对内存区域的划分与管理。</p>
+<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20200518205233.png" alt="Untitled"></p>
+<p><strong>红色部分的方法区在1.8之后已经被移除，变为元数据区，红色内的运行时常量池已经成为堆中的一部分使用！！</strong></p>
+<p>上图中展示了Java虚拟机在运行时对管理的内存区域的划分。其中，分为线程私有的程序计数器、本地方法栈、虚拟机栈和线程共享的堆与方法区和直接内存。</p>
+<h2 id="1-程序计数器"><a href="#1-程序计数器" class="headerlink" title="1. 程序计数器"></a>1. 程序计数器</h2><p>程序计数器是线程私有的、当前线程所执行的字节码的行号指示器，就像名字一样，它是可以看做计数的，每一条指令执行完后，会挪动程序计数器的指针，并指向下一条指令。（就像在平时debug一样）。</p>
+<ul>
+<li>占用大小：程序计数器占用非常小的部分</li>
+<li>生命周期：跟随线程的创建而创建，销毁而销毁</li>
+<li>作用：简单来说可以执行该线程执行字节码的位置。在多线程切换的情况下也能够知道当前线程执行的位置。</li>
+</ul>
+<h2 id="2-Java虚拟机栈"><a href="#2-Java虚拟机栈" class="headerlink" title="2. Java虚拟机栈"></a>2. Java虚拟机栈</h2><p>虚拟机栈有一个一个的栈针组成，而每一个栈针内由<strong>局部变量表、操作数栈、动态链接、方法出口信息</strong>组成。线程的方法调用过程（方法调用链）会将其中的每一个方法依次压入栈中，最后在调用过后，依次出栈，也就是说，方法执行的过程也就是栈针压栈到弹出的过程。</p>
+<p>一个线程中方法的调用链可能会很长，很多方法都同时处于执行状态。对于JVM说，在活动线程中，只有位于JVM虚拟机栈栈顶的元素才是有效的，即称为<strong>当前栈帧，</strong>也就是<strong>当前执行的方法。</strong></p>
+<h3 id="局部变量表"><a href="#局部变量表" class="headerlink" title="局部变量表"></a>局部变量表</h3><p>局部变量表是我们在使用和了解Java虚拟机栈的主要部分，是变量值的存储空间，主要存放了编译时可知的基本数据类型（boolean、byte、char、short、int、float、long、double）和方法引用（reference）。在编译时，局部变量表的空间就确定下来。</p>
+<h3 id="操作数栈"><a href="#操作数栈" class="headerlink" title="操作数栈"></a>操作数栈</h3><p>操作数栈在方法执行的过程中，起到了对常量或者变量暂存和计算的作用，当方法开始时，操作数栈时空的，随着方法的进行，会将局部变量表中或者实例对象中，复制常量变量到操作数栈，再随着方法的执行，进行数据的运算。最后出栈返回给方法调用者。</p>
+<p>和局部变量表相同的是，操作数栈的栈的深度在编译时就已经确认下来。</p>
+<h3 id="动态链接"><a href="#动态链接" class="headerlink" title="动态链接"></a>动态链接</h3><p>一个方法调用另一个方法时，会通过寻找符号引用的方式查找到直接内存地址。而方法的符号引用存在于<strong>运行时常量池</strong>中。</p>
+<p>在每一个栈针中，会通过栈针中的动态链接，来持有方法的符号引用。能够动态的寻找到方法对应的内存地址完成调用。</p>
+<h3 id="方法出口信息"><a href="#方法出口信息" class="headerlink" title="方法出口信息"></a>方法出口信息</h3><p>方法返回时可能需要在栈帧中保存一些信息，用来于恢复调用者（调用当前方法的方法）的执行状态。</p>
+<p>如果正常返回，会在调用者的栈针中保存调用方法的返回值，而被调用者的栈针可能会保存调用者当前程序计数器的值。</p>
+<p>如果异常退出，也就是在调用过程中发现异常，调用者的返回值将由异常处理器返回，而被调用者中就不可能存在调用者的计数器值。</p>
+<h3 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h3><p>通过下面的代码，来看虚拟机栈的调用返回过程和操作数栈的入栈出栈过程。</p>
+<p>源程序：</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">NewObject</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        NewObject newObject = <span class="keyword">new</span> NewObject();</span><br><span class="line">        newObject.add();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">add</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">int</span> a = <span class="number">5</span>;</span><br><span class="line">        <span class="keyword">int</span> b = <span class="number">6</span>;</span><br><span class="line">        <span class="keyword">return</span> a+b;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>反编译后的程序：</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(java.lang.String[])</span></span>;</span><br><span class="line">    Code:</span><br><span class="line">       0: new           #2                  // class com/java8/Jvm/NewObject 半初始化申请内存地址</span><br><span class="line">       <span class="number">3</span>: dup                               <span class="comment">// 复制栈顶数值并将复制值压入栈顶</span></span><br><span class="line">       4: invokespecial #3                  // Method "&lt;init&gt;":()V 构造初始化</span><br><span class="line">       <span class="number">7</span>: astore_1                          <span class="comment">// 建立关联，将初始化后的存到变量newObject上</span></span><br><span class="line">       <span class="number">8</span>: aload_1                           <span class="comment">// 从本地变量上加载newObject</span></span><br><span class="line">       9: invokevirtual #4                  // Method add:()I 执行add()方法</span><br><span class="line">      <span class="number">12</span>: pop                               <span class="comment">// 栈顶数值弹出</span></span><br><span class="line">      <span class="number">13</span>: <span class="keyword">return</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">add</span><span class="params">()</span></span>;</span><br><span class="line">    Code:</span><br><span class="line">       <span class="number">0</span>: iconst_5 <span class="comment">// 将5推至操作数栈顶</span></span><br><span class="line">       <span class="number">1</span>: istore_1 <span class="comment">// 将栈顶int型数值存入第1个本地变量 也就是a，保存到局部变量表中</span></span><br><span class="line">       <span class="number">2</span>: bipush        <span class="number">6</span> <span class="comment">//将单字节的常量值6推送至操作数栈顶</span></span><br><span class="line">       <span class="number">4</span>: istore_2 <span class="comment">// 将栈顶int型数值存入第2个本地变量 也就是b，保存到局部变量表中</span></span><br><span class="line">       <span class="number">5</span>: iload_1 <span class="comment">// 将第1个int型本地变量推送至操作数栈顶</span></span><br><span class="line">       <span class="number">6</span>: iload_2 <span class="comment">// 将第2个int型本地变量推送至操作数栈顶</span></span><br><span class="line">       <span class="number">7</span>: iadd  <span class="comment">// 将栈顶两int型数值相加并将结果压入操作数栈顶</span></span><br><span class="line">       <span class="number">8</span>: ireturn <span class="comment">//返回</span></span><br></pre></td></tr></table></figure></div>
+
+<p>调用过程是：先通过在main方法里面创建一个newObject对象，再调用其中的add方法。其中newObject的过程先略过，后面讲，先看add方法执行的过程。</p>
+<p>在add方法内，每次会将int类型的值先推到栈顶，然后执行赋值操作，将赋值的变量保存到局部变量表中，最后计算后将结果return。</p>
+<h2 id="3-本地方法栈"><a href="#3-本地方法栈" class="headerlink" title="3. 本地方法栈"></a>3. 本地方法栈</h2><p>虚拟机栈为虚拟机执行 Java 方法 （也就是字节码）服务，而本地方法栈则为虚拟机使用到的 Native 方法服务。</p>
+<p>和虚拟机栈相同，每次方法执行时，都会创建一个栈针，存放本地方法的局部变量表、操作数栈、动态链接、方法出口信息。</p>
+<h2 id="4-堆"><a href="#4-堆" class="headerlink" title="4. 堆"></a>4. 堆</h2><p>堆是Java虚拟机管理内存中的最大的部分，也是进行GC主要部分。几乎所有的实例变量在堆中分配内存，少数小的对象可能在栈上分配。</p>
+<blockquote>
+<p>在栈上分配的好处，首先快，其次不需要额外的垃圾回收的介入即可完成内存的释放。</p>
+</blockquote>
+<p>在1.7之后，字符串常量池从方法区中挪到了堆中</p>
+<h2 id="5-方法区"><a href="#5-方法区" class="headerlink" title="5. 方法区"></a>5. 方法区</h2><p>方法区和堆一样是线程共享的内容，它用于存储已被虚拟机加载的类信息、常量、静态变量、即时编译器编译后的代码等数据。</p>
+<p>方法区是Java虚拟机定义的规范，在1.7之前，Hotspot虚拟机使用永久代实现方法区。在1.7后，使用了元空间区实现方法区。两者的差异在于元空间使用的是直接内存，整个永久代有一个 JVM 本身设置固定大小上限，无法进行调整，而元空间使用的是直接内存，受本机可用内存的限制，虽然元空间仍旧可能溢出，但是比原来出现的几率会更小。</p>
+<h3 id="运行时常量池"><a href="#运行时常量池" class="headerlink" title="运行时常量池"></a>运行时常量池</h3><p>有三个比较容易混淆的概念，什么是类常量池，什么是运行时常量池，什么是字符串常量池，三者的区别是什么。</p>
+<ul>
+<li>类常量池存在于字节码文件中，在字节码文件中存在类的常量池，其中存放两个类常量：字面量和符号引用，其中字面量的含义就是文本字符串和final修饰的常量值等。符号引用包含import的包、类和接口的全限定名、字段名称和描述符、方法类型和引用等等。</li>
+<li>运行时常量池存在于内存中，在类加载的过程时，会将存在于字节码中的类常量池中的内容加载到运行时常量池中。相较于类常量池，运行时常量池具有动态性，不一定是在编译时期就确定的放入的。</li>
+<li>字符串常量池，也叫做StringTable，在java7之后被放到了堆内，存放了字符串常量和字符串对象的引用。在class中的内容加载到运行时常量池后，在解析阶段，会把符号引用替换为直接引用，解析的过程会去查询字符串常量池，以保证运行时常量池所引用的字符串与字符串常量池中是一致的。</li>
+</ul>
+<p>下图表示运行时常量池中的内容：</p>
+<p><img src="http://my-blog-to-use.oss-cn-beijing.aliyuncs.com/18-9-14/26038433.jpg" alt="http://my-blog-to-use.oss-cn-beijing.aliyuncs.com/18-9-14/26038433.jpg"></p>
+<p><a href="https://blog.csdn.net/wangbiao007/article/details/78545189" target="_blank" rel="noopener">方法区和常量池_Java_屌丝程序员的奋斗之路-CSDN博客</a></p>
+<h2 id="6-直接内存"><a href="#6-直接内存" class="headerlink" title="6. 直接内存"></a>6. 直接内存</h2><p>直接内存并不是虚拟机运行时数据区的一部分，也不是虚拟机规范中定义的内存区域，但是这部分内存也被频繁地使用。</p>
+<h1 id="对象创建过程和对象布局"><a href="#对象创建过程和对象布局" class="headerlink" title="对象创建过程和对象布局"></a>对象创建过程和对象布局</h1><h2 id="对象的创建过程"><a href="#对象的创建过程" class="headerlink" title="对象的创建过程"></a>对象的创建过程</h2><p>使用new关键字创建对象的过程分为5步，类加载检查、内存分配、初始化零值、设置对象头、执行init方法。参考下图：</p>
+<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20200518205307.png" alt="Untitled 1"></p>
+<h3 id="1-类加载检查"><a href="#1-类加载检查" class="headerlink" title="1. 类加载检查"></a>1. 类加载检查</h3><p>虚拟机遇到new指令时，会先进行类加载检查，如果再运行时常量池中未发现类的符号引用，则先去加载、解析、初始化类这一些列类加载到内存中的过程。</p>
+<h3 id="2-分配内存"><a href="#2-分配内存" class="headerlink" title="2. 分配内存"></a>2. 分配内存</h3><p>在类加载到内存后，对象在堆中分配的大小已经确定，利用<code>指针碰撞</code>或者<code>空闲列表</code>的方式将堆中指定大小的空间分配给新创建的类对象。</p>
+<h3 id="3-初始化零值"><a href="#3-初始化零值" class="headerlink" title="3. 初始化零值"></a>3. 初始化零值</h3><p>在为对象分配完内存后，首先需要对对象的初始化零值，来保证对象不手动赋值也能够正常被访问。此时的对象处于半初始化状态。</p>
+<h3 id="4-设置对象头"><a href="#4-设置对象头" class="headerlink" title="4. 设置对象头"></a>4. 设置对象头</h3><p>在初始化零值后，还需要为对象设置头部信息，包括Mark Word、Kclass Word、数组长度（如果是数组的话），具体会在后面提到。</p>
+<h3 id="5-执行init方法"><a href="#5-执行init方法" class="headerlink" title="5. 执行init方法"></a>5. 执行init方法</h3><p>通过init方法，为对象真正的赋值，当执行init方法后，一个需要的对象才产生出来。</p>
+<p>下面通过反编译的代码来看创建一个Object对象的过程：</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(java.lang.String[])</span></span>;</span><br><span class="line">    Code:</span><br><span class="line">       0: new           #2                  // class java/lang/Object 申请内存空间</span><br><span class="line">       <span class="number">3</span>: dup</span><br><span class="line">       4: invokespecial #1                  // Method java/lang/Object."&lt;init&gt;":()V  构造初始化</span><br><span class="line">       <span class="number">7</span>: astore_1                          <span class="comment">// 建立关联，将初始化后的存到变量Object上</span></span><br><span class="line">       <span class="number">8</span>: <span class="keyword">return</span></span><br></pre></td></tr></table></figure></div>
+
+<p>通过javap反编译可以看出一个对象，通过使用new命令后在堆中申请一块内存空间后，将o推到栈顶，使用invokespecial命令进行初始化，最后使用astore命令将对象o和创建的对象关联到一起。</p>
+<h2 id="对象布局"><a href="#对象布局" class="headerlink" title="对象布局"></a>对象布局</h2><p>一个对象包含三个部分，分别为对象头、实例数据（对象体）、Padding对其字节。</p>
+<h3 id="对象头（Header）"><a href="#对象头（Header）" class="headerlink" title="对象头（Header）"></a>对象头（Header）</h3><p>在对象头中包含了三个部分：Mark Word、Class Pointer、数组长度（如果是数组）</p>
+<ul>
+<li>Mark Word：MarkWord中包含了自身的hashcode，gc的分代信息和锁标志位等，其中当上锁、上不同的锁的时候，头部信息都会出现不同的变化，具体占用长度和信息可以参考下图：</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20200518205334.png" alt="Untitled 2"></p>
+<ul>
+<li>Class Pointer： 在Class Pointer中包含了对方法区中的类元数据的引用，在64位系统下，如果不开启指针压缩时，会比32位多占二分之一的空间，所以在1.6之后，通过使用JVM的参数<code>-XX:+UseCompressedOops</code>可以开启指针压缩将原来的8字节压缩为现在的4字节。</li>
+<li>数组长度：如果当前对象时数组时，会额外产生一部分空间存储数组的长度</li>
+</ul>
+<h3 id="实例数据（Instance-Data）"><a href="#实例数据（Instance-Data）" class="headerlink" title="实例数据（Instance Data）"></a>实例数据（Instance Data）</h3><p>对象中主要的内容，存放实例数据，包括了对象的所有成员变量，其大小由各个成员变量的大小决定。</p>
+<h3 id="对其字节（Padding）"><a href="#对其字节（Padding）" class="headerlink" title="对其字节（Padding）"></a>对其字节（Padding）</h3><p>Java对象占用空间是8字节对齐的，即所有Java对象占用bytes数必须是8的倍数。</p>
+<h3 id="观察对象空间实例"><a href="#观察对象空间实例" class="headerlink" title="观察对象空间实例"></a>观察对象空间实例</h3><div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">      Object o = <span class="keyword">new</span> Object();</span><br><span class="line">      System.out.println(ClassLayout.parseInstance(o).toPrintable());</span><br><span class="line">      <span class="keyword">int</span>[] arr = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">10</span>];</span><br><span class="line">      System.out.println(ClassLayout.parseInstance(arr).toPrintable());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>当使用上面的方式创建一个对象o和一个数组对象arr时，利用openjdk的jol（Java Object Layout）工具进行内存的分析，产生如下的分析结果：</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">java.lang.Object object internals:</span><br><span class="line"> OFFSET  SIZE   TYPE DESCRIPTION                               VALUE</span><br><span class="line">      <span class="number">0</span>     <span class="number">4</span>        (object header)                           <span class="number">01</span> <span class="number">00</span> <span class="number">00</span> <span class="number">00</span> (<span class="number">00000001</span> <span class="number">00000000</span> <span class="number">00000000</span> <span class="number">00000000</span>) (<span class="number">1</span>)</span><br><span class="line">      <span class="number">4</span>     <span class="number">4</span>        (object header)                           <span class="number">00</span> <span class="number">00</span> <span class="number">00</span> <span class="number">00</span> (<span class="number">00000000</span> <span class="number">00000000</span> <span class="number">00000000</span> <span class="number">00000000</span>) (<span class="number">0</span>)</span><br><span class="line">      <span class="number">8</span>     <span class="number">4</span>        (object header)                           e5 <span class="number">01</span> <span class="number">00</span> f8 (<span class="number">11100101</span> <span class="number">00000001</span> <span class="number">00000000</span> <span class="number">11111000</span>) (-<span class="number">134217243</span>)</span><br><span class="line">     <span class="number">12</span>     <span class="number">4</span>        (loss due to the next object alignment)</span><br><span class="line">Instance size: <span class="number">16</span> bytes</span><br><span class="line">Space losses: <span class="number">0</span> bytes internal + <span class="number">4</span> bytes external = <span class="number">4</span> bytes total</span><br><span class="line"></span><br><span class="line">[I object internals:</span><br><span class="line"> OFFSET  SIZE   TYPE DESCRIPTION                               VALUE</span><br><span class="line">      <span class="number">0</span>     <span class="number">4</span>        (object header)                           <span class="number">01</span> <span class="number">00</span> <span class="number">00</span> <span class="number">00</span> (<span class="number">00000001</span> <span class="number">00000000</span> <span class="number">00000000</span> <span class="number">00000000</span>) (<span class="number">1</span>)</span><br><span class="line">      <span class="number">4</span>     <span class="number">4</span>        (object header)                           <span class="number">00</span> <span class="number">00</span> <span class="number">00</span> <span class="number">00</span> (<span class="number">00000000</span> <span class="number">00000000</span> <span class="number">00000000</span> <span class="number">00000000</span>) (<span class="number">0</span>)</span><br><span class="line">      <span class="number">8</span>     <span class="number">4</span>        (object header)                           <span class="number">6</span>d <span class="number">01</span> <span class="number">00</span> f8 (<span class="number">01101101</span> <span class="number">00000001</span> <span class="number">00000000</span> <span class="number">11111000</span>) (-<span class="number">134217363</span>)</span><br><span class="line">     <span class="number">12</span>     <span class="number">4</span>        (object header)                           <span class="number">0</span>a <span class="number">00</span> <span class="number">00</span> <span class="number">00</span> (<span class="number">00001010</span> <span class="number">00000000</span> <span class="number">00000000</span> <span class="number">00000000</span>) (<span class="number">10</span>)</span><br><span class="line">     <span class="number">16</span>    <span class="number">40</span>    <span class="keyword">int</span> [I.&lt;elements&gt;                             N/A</span><br><span class="line">Instance size: <span class="number">56</span> bytes</span><br><span class="line">Space losses: <span class="number">0</span> bytes internal + <span class="number">0</span> bytes external = <span class="number">0</span> bytes total</span><br></pre></td></tr></table></figure></div>
+
+<p>因为当前环境为64位，所以生成对象的大小应为8的倍数。可以看到对象o的layout中，前8个字节表示64位的MarkWord，之后4个字节表示KlassWord，最后四个字节并没有内容，是loss掉的，用于补齐字节用的，保证能够被8整除。</p>
+<p>而在下面的数组对象arr中，可以看到最后的四个字节并不是对其，而是存储量数组的长度，而最后的字节表示了对象体，也就是初始化的数组内容。</p>
+<p>在使用 <code>-XX:-UseCompressedOops</code> 关闭指针压缩时，观察对象o所占大小，发现大小未发生变化，然而原来的padding字节不见了，class pointer 变为了8个字节，一共16个字节，所以不需要padding来对其空间。</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">java.lang.Object object internals:</span><br><span class="line"> OFFSET  SIZE   TYPE DESCRIPTION                               VALUE</span><br><span class="line">      <span class="number">0</span>     <span class="number">4</span>        (object header)                           <span class="number">01</span> <span class="number">00</span> <span class="number">00</span> <span class="number">00</span> (<span class="number">00000001</span> <span class="number">00000000</span> <span class="number">00000000</span> <span class="number">00000000</span>) (<span class="number">1</span>)</span><br><span class="line">      <span class="number">4</span>     <span class="number">4</span>        (object header)                           <span class="number">00</span> <span class="number">00</span> <span class="number">00</span> <span class="number">00</span> (<span class="number">00000000</span> <span class="number">00000000</span> <span class="number">00000000</span> <span class="number">00000000</span>) (<span class="number">0</span>)</span><br><span class="line">      <span class="number">8</span>     <span class="number">4</span>        (object header)                           <span class="number">00</span> <span class="number">1</span>c b6 <span class="number">0</span>d (<span class="number">00000000</span> <span class="number">00011100</span> <span class="number">10110110</span> <span class="number">00001101</span>) (<span class="number">230038528</span>)</span><br><span class="line">     <span class="number">12</span>     <span class="number">4</span>        (object header)                           <span class="number">01</span> <span class="number">00</span> <span class="number">00</span> <span class="number">00</span> (<span class="number">00000001</span> <span class="number">00000000</span> <span class="number">00000000</span> <span class="number">00000000</span>) (<span class="number">1</span>)</span><br><span class="line">Instance size: <span class="number">16</span> bytes</span><br><span class="line">Space losses: <span class="number">0</span> bytes internal + <span class="number">0</span> bytes external = <span class="number">0</span> bytes total</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="补充：javap和jol工具"><a href="#补充：javap和jol工具" class="headerlink" title="补充：javap和jol工具"></a>补充：javap和jol工具</h2><ol>
+<li>使用JDK中自带的javap对class文件进行反编译，能够获得反编译到的执行过程。</li>
+<li>使用IDEA中的插件：Jclasslib可以更具体的看反编译的代码和常量池中的内容</li>
+<li>使用jol可以查看对象布局，使用方法，将OpenJDK中的jol的jar包加入到项目中，在main方法中使用ClassLayout静态方法解析对象后输出：</li>
+</ol>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="XML"><figure class="iseeu highlight /xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.openjdk.jol<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>jol-core<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>0.10<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure></div>
           
         
       
@@ -2213,725 +2676,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2020/03/05/SpringBoot%E6%95%B4%E5%90%88JPA%E4%BD%BF%E7%94%A8/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="NanYin">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NanYin的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2020/03/05/SpringBoot%E6%95%B4%E5%90%88JPA%E4%BD%BF%E7%94%A8/" itemprop="url">SpringBoot整合JPA使用</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-03-05T12:00:00Z">
-                2020-03-05
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/SpringBoot/" itemprop="url" rel="index">
-                    <span itemprop="name">SpringBoot</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Words count in article&#58;</span>
-                
-                <span title="Words count in article">
-                  3.4k
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Reading time &asymp;</span>
-                
-                <span title="Reading time">
-                  15
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="SpringBoot整合JPA使用"><a href="#SpringBoot整合JPA使用" class="headerlink" title="SpringBoot整合JPA使用"></a>SpringBoot整合JPA使用</h1><h2 id="整合JPA"><a href="#整合JPA" class="headerlink" title="整合JPA"></a>整合JPA</h2><p>SpringBoot整合JPA十分方便,在Pom中添加如下:</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-data-jpa<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 数据库配置,使用druid --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.alibaba<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>druid-spring-boot-starter<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.1.16<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>mysql<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>mysql-connector-java<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">version</span>&gt;</span>5.1.47<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="JPA基本配置"><a href="#JPA基本配置" class="headerlink" title="JPA基本配置"></a>JPA基本配置</h3><p>在application.properties 或者 application.yaml 文件中配置数据库链接和JPA的基本配置(本例使用yaml文件):</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line"><span class="attr">    datasource:</span></span><br><span class="line"><span class="attr">        driver-class-name:</span> <span class="string">com.mysql.jdbc.Driver</span></span><br><span class="line"><span class="attr">        druid:</span></span><br><span class="line"><span class="attr">            initial-size:</span> <span class="number">5</span></span><br><span class="line"><span class="attr">            max-active:</span> <span class="number">20</span></span><br><span class="line"><span class="attr">            max-wait:</span> <span class="number">60000</span></span><br><span class="line"><span class="attr">            stat-view-servlet:</span></span><br><span class="line"><span class="attr">                login-password:</span> <span class="string">admin</span></span><br><span class="line"><span class="attr">                login-username:</span> <span class="string">admin</span></span><br><span class="line"><span class="attr">        password:</span> <span class="number">123456</span></span><br><span class="line"><span class="attr">        url:</span> <span class="attr">jdbc:mysql://127.0.0.1:3306/web?useUnicode=true&amp;characterEncoding=UTF-8&amp;useSSL=false</span></span><br><span class="line"><span class="attr">        username:</span> <span class="string">root</span></span><br><span class="line"><span class="attr">    jpa:</span></span><br><span class="line">    <span class="comment">#   配置创建表使用的SQLDialect</span></span><br><span class="line"><span class="attr">        database-platform:</span> <span class="string">org.hibernate.dialect.MySQL5InnoDBDialect</span></span><br><span class="line"><span class="attr">        show-sql:</span> <span class="literal">true</span></span><br><span class="line">    <span class="comment">#   自动更新数据库表</span></span><br><span class="line"><span class="attr">        hibernate:</span></span><br><span class="line"><span class="attr">            ddl-auto:</span> <span class="string">update</span></span><br><span class="line"><span class="attr">        properties:</span></span><br><span class="line"><span class="attr">            hibernate:</span></span><br><span class="line">            <span class="comment">#   使用@Query时SQL的dialect方言</span></span><br><span class="line"><span class="attr">                dialect:</span> <span class="string">org.hibernate.dialect.MySQL5InnoDBDialect</span></span><br></pre></td></tr></table></figure>
-
-
-<h2 id="使用JPA"><a href="#使用JPA" class="headerlink" title="使用JPA"></a>使用JPA</h2><p>在SpringBoot中使用JPA十分简单,只要引用JPA的starter即可</p>
-<h3 id="实体类中属性"><a href="#实体类中属性" class="headerlink" title="实体类中属性"></a>实体类中属性</h3><p>使用Spring Data JPA,与Mybatis不同,更多的是面向对象查询.所以构造对象实体类就非常重要,如果配置了自动更新表结构,就需要注意如何在实体中使用特定的注解完成对实体的配置.</p>
-<h4 id="1-Entity"><a href="#1-Entity" class="headerlink" title="1. @Entity"></a>1. @Entity</h4><p>使用 <code>@Entity</code> 注解在类上,用来表示该类为一个实体类</p>
-<h4 id="2-Table"><a href="#2-Table" class="headerlink" title="2. @Table"></a>2. @Table</h4><p>使用 @Table 注解标注在类上, 可以指定使用 @Entity 注解标注的类所生成的数据库表信息,如表名称等.</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Entity</span> <span class="comment">// 指定这个类为实体类</span></span><br><span class="line"><span class="meta">@Table</span>(name=<span class="string">"user"</span>) <span class="comment">// 指定@Entity标注的主表</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">User</span> <span class="keyword">implements</span> <span class="title">Serializable</span> </span>&#123;</span><br><span class="line"><span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="3-Id-Column"><a href="#3-Id-Column" class="headerlink" title="3. @Id,@Column"></a>3. @Id,@Column</h4><p>使用 @Id 注解标注在变量或者set方法上,用来标注该变量为主键ID.</p>
-<p>使用 @Column 注解同样标注在变量上,能够设置生成表的各种详细信息,如字段名称,字段长度等等…</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Id</span></span><br><span class="line"><span class="meta">@Column</span>(columnDefinition = <span class="string">"INT(11)"</span>)</span><br><span class="line"><span class="meta">@GeneratedValue</span>(strategy=GenerationType.IDENTITY)</span><br><span class="line"><span class="keyword">private</span> Integer id;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Column</span>(name = <span class="string">"is_deleted"</span>,columnDefinition = <span class="string">"TINYINT(1)"</span>,nullable =</span><br><span class="line"><span class="keyword">false</span>)</span><br><span class="line"><span class="keyword">private</span> Short isDeleted=<span class="number">0</span>;</span><br></pre></td></tr></table></figure>
-
-<h4 id="4-GeneratedValue"><a href="#4-GeneratedValue" class="headerlink" title="4. @GeneratedValue"></a>4. @GeneratedValue</h4><p>使用 @GeneratedValue 注解标注在 和 @Id 相同的位置,用来表示主键ID的生成策略.该注解有两个属性,第一个是常用到的 strategy 即生成策略,第二个是不常用到的generator指定生成器.</p>
-<h5 id="strategy"><a href="#strategy" class="headerlink" title="strategy"></a>strategy</h5><p>GenerationType 包含四种策略:</p>
-<ul>
-<li>TABLE,使用特定的表来存储生成的主键,也就是说会自动生成一种记录主键的表,一般会包含两个字段,第一个字段是字段生成策略的名称,第二个是ID的最大序列值.通常会和 @TableGenerator 一起来使用,能够指定特定表来生成主键,如果不指定,会默认生成一个名称为 sequence 的表来记录.</li>
-<li>SEQUENCE,在特定的数据库,如ORACLE,不支持自增主键,但是会提供一种叫做序列的方式生成主键,此时就需要指定 SEQUENCE 为生成主键的策略,和TABLE相似,通常会使用 @SequenceGenerator 一起使用</li>
-<li>IDENTITY ,遇到向MYSQL能够让主键自增的数据库,就可以指定生成策略为IDENTITY,生成表后, Mysql会默认将该字段设置为 ‘auto_increment’,</li>
-<li>AUTO ,使用 @GeneratedValue 默认的生成策略,把具体生成主键的规则交给持久化引擎来实现,也是我使用最多的一种方式.</li>
-</ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 使用 GenerationType.TABLE 指定生成的记录表,其中name必须,其他可选</span></span><br><span class="line"><span class="meta">@Id</span></span><br><span class="line"><span class="meta">@GeneratedValue</span>(strategy = GenerationType.TABLE, generator = <span class="string">"roleSeq"</span>)</span><br><span class="line"><span class="meta">@TableGenerator</span>(name = <span class="string">"roleSeq"</span>, allocationSize = <span class="number">1</span>, table = <span class="string">"seq_table"</span>, pkColumnName = <span class="string">"seq_id"</span>, valueColumnName = <span class="string">"seq_count"</span>)</span><br><span class="line"><span class="keyword">private</span> Integer id;</span><br><span class="line"><span class="comment">// 使用 SEQUENCE </span></span><br><span class="line"><span class="meta">@Id</span></span><br><span class="line"><span class="meta">@GeneratedValue</span>(strategy = GenerationType.SEQUENCE, generator = <span class="string">"menuSeq"</span>)</span><br><span class="line"><span class="meta">@SequenceGenerator</span>(name = <span class="string">"menuSeq"</span>, initialValue = <span class="number">1</span>, allocationSize = <span class="number">1</span>, sequenceName = <span class="string">"MENU_SEQUENCE"</span>)</span><br><span class="line"><span class="keyword">private</span> Integer id;</span><br><span class="line"><span class="comment">// 使用 IDENTITY 进行自增</span></span><br><span class="line"><span class="meta">@Id</span></span><br><span class="line"><span class="meta">@GeneratedValue</span>(strategy = GenerationType.IDENTITY)</span><br><span class="line"><span class="keyword">private</span> Integer id;</span><br><span class="line"><span class="comment">// 使用AUTO,或者不指定策略</span></span><br><span class="line"><span class="meta">@Id</span></span><br><span class="line"><span class="meta">@GeneratedValue</span>(strategy = GenerationType.AUTO)</span><br><span class="line"><span class="keyword">private</span> Integer id</span><br></pre></td></tr></table></figure>
-
-<h5 id="generator"><a href="#generator" class="headerlink" title="generator"></a>generator</h5><p>通过上面对策略的描述,也就明白generator的作用,就是指定特定name的Generator</p>
-<h4 id="5-Transient"><a href="#5-Transient" class="headerlink" title="5. @Transient"></a>5. @Transient</h4><p>使用 @Transient 注解,标注在字段上,在JPA生成表字段时能够忽略该字段,让字段不出现在数据库中.</p>
-<h4 id="6-Embedded和-Embeddable"><a href="#6-Embedded和-Embeddable" class="headerlink" title="6. @Embedded和@Embeddable"></a>6. @Embedded和@Embeddable</h4><p>当实体A出现在实体B中,但实体A不需要单独生成一张表的使用,使用@@Embedded和@Embeddable标注在类上,能够防止实体A生成数据库表.</p>
-<h4 id="7-Temporal"><a href="#7-Temporal" class="headerlink" title="7. @Temporal"></a>7. @Temporal</h4><p>使用 @Temporal 注解特殊标记在需要持久化的字段上,并且字段类型为 <code>java.util.Date</code> 或 <code>java.util.Calendar</code>的时候,可指定 TemporalType 来生成对应数据库中的时间格式(java.sql.xxxx). </p>
-<h4 id="8-一对一-一对多-多对多关系"><a href="#8-一对一-一对多-多对多关系" class="headerlink" title="8. 一对一,一对多,多对多关系"></a>8. 一对一,一对多,多对多关系</h4><p>在使用关系型数据库中,免不了上述关系的生成,下面就来说一下,如何针对一对一关系、一对多关系、多对多关系的通用设置,在分别实验前,先了解一下 @JoinColumn 的作用</p>
-<p>我认为的JoinColumn是特殊的@Column,当需要使用到“关系”时,需要使用到JoinColumn来替代普通的Column注解</p>
-<h5 id="OneToOne"><a href="#OneToOne" class="headerlink" title="OneToOne"></a>OneToOne</h5><p>使用OneToOne注解,指定两方关系是一对一的.比如User和Status,Status是User的一个属性,在User表中只需记录Stauts表中的主键,所以需要在User表(主)中声明一个Status(从)即可:</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@OneToOne</span>()</span><br><span class="line"><span class="meta">@JoinColumn</span>(columnDefinition = <span class="string">"INT(11)"</span>,name = <span class="string">"status_id"</span>)</span><br><span class="line"><span class="keyword">private</span> Status status;</span><br></pre></td></tr></table></figure>
-
-<h5 id="OneToMany、ManyToOne"><a href="#OneToMany、ManyToOne" class="headerlink" title="OneToMany、ManyToOne"></a>OneToMany、ManyToOne</h5><p>使用 @OneToMany 或 @ManyToOne 注解来表示一对多、多对一的关系.典型的如Project之于Task,一个Project包含多个Task,所以Project为One,Task为Many.</p>
-<p>如果在Project(主)中声明Task(从)时,可以使用 OneToMany 表示一对多关系</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@OneToMany</span>(cascade = CascadeType.ALL)</span><br><span class="line"><span class="meta">@JoinColumn</span>(name=<span class="string">"project_id"</span>) <span class="comment">// task表指向project表的外键</span></span><br><span class="line">Set&lt;Task&gt; tasks;</span><br></pre></td></tr></table></figure>
-
-<p>也可以在多的一方使用 ManyToOne 注解,表示多对一的关系</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@ManyToOne</span></span><br><span class="line"><span class="comment">// 在 one 的一方生成 name为 project_id 的字段,指向task</span></span><br><span class="line"><span class="meta">@JoinColumn</span>(name=<span class="string">"project_id"</span>) </span><br><span class="line">Project project;</span><br></pre></td></tr></table></figure>
-
-<p>以上是单独使用 @OneToMany 或 @ManyToOne 构造单向的关系,但是这样有缺点,注定有一方找不到另外一方(只建立了单向关系).所以稳妥的方式是构建双向关系,在One和Many双方,使用两个注解相互指定</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Project中,其中mappedBy是双向关系中必须要使用的属性</span></span><br><span class="line"><span class="meta">@OneToMany</span>(cascade = CascadeType.ALL,mappedBy =<span class="string">"project_id"</span>)</span><br><span class="line">Set&lt;Task&gt; tasks;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Task中</span></span><br><span class="line"><span class="meta">@ManyToOne</span></span><br><span class="line"><span class="meta">@JoinColumn</span>(name=<span class="string">"project_id"</span>)</span><br><span class="line">Project project</span><br></pre></td></tr></table></figure>
-
-<h5 id="ManyToMany"><a href="#ManyToMany" class="headerlink" title="ManyToMany"></a>ManyToMany</h5><p>使用 @ManyToMany 注解来标注多对多关系,比如用户和角色之间就可以理解为多对多的关系,双方需要互相拥有多个.多地多关系需要使用中间表来维护两方关系.建立关系表使用@JoinTable注解来指定实现.</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// User表中</span></span><br><span class="line"><span class="meta">@JSONField</span>(name = <span class="string">"roles"</span>)</span><br><span class="line"><span class="meta">@ManyToMany</span>(mappedBy = <span class="string">"users"</span>,fetch = FetchType.EAGER,cascade = CascadeType.ALL)</span><br><span class="line"><span class="keyword">private</span> Set&lt;Role&gt; roles;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Role 表中</span></span><br><span class="line"><span class="meta">@JSONField</span>(serialize = <span class="keyword">false</span>)</span><br><span class="line"><span class="meta">@ManyToMany</span>(cascade = CascadeType.ALL,fetch = FetchType.EAGER)</span><br><span class="line"><span class="meta">@JoinTable</span>(name = <span class="string">"r_user_role"</span>,</span><br><span class="line">        joinColumns = &#123;<span class="meta">@JoinColumn</span>(name = <span class="string">"role_id"</span>)&#125;,</span><br><span class="line">        inverseJoinColumns = &#123;<span class="meta">@JoinColumn</span>(name = <span class="string">"user_id"</span>)&#125;)</span><br><span class="line"><span class="keyword">private</span> List&lt;User&gt; users;</span><br></pre></td></tr></table></figure>
-
-<h5 id="关系使用时的坑"><a href="#关系使用时的坑" class="headerlink" title="关系使用时的坑"></a>关系使用时的坑</h5><ol>
-<li>双向关系需要双方都进行维护,否则保存不上 :)</li>
-</ol>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">User user = one.get();</span><br><span class="line"><span class="comment">// 多对多关系需要双向关联保存才起作用</span></span><br><span class="line">user.getRoles().add(role);</span><br><span class="line">role.getUsers().add(user);</span><br></pre></td></tr></table></figure>
-
-<ol start="2">
-<li>使用JSON时,如果出现循环引用导出溢出时,在一方加入设置防止序列化</li>
-</ol>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 我使用的是FastJosn,Jackson有不同的实现方式</span></span><br><span class="line"><span class="meta">@JSONField</span>(serialize = <span class="keyword">false</span>)</span><br><span class="line"><span class="meta">@ManyToMany</span>(cascade = CascadeType.ALL,fetch = FetchType.EAGER)</span><br><span class="line"><span class="meta">@JoinTable</span>(name = <span class="string">"r_user_routemeta"</span>,</span><br><span class="line">        joinColumns = &#123;<span class="meta">@JoinColumn</span>(name = <span class="string">"role_id"</span>)&#125;,</span><br><span class="line">        inverseJoinColumns = &#123;<span class="meta">@JoinColumn</span>(name = <span class="string">"meta_id"</span>)&#125;)</span><br><span class="line"><span class="keyword">private</span> Set&lt;RouteMeta&gt; routeMeta;</span><br></pre></td></tr></table></figure>
-
-<h3 id="使用-Repository-查询"><a href="#使用-Repository-查询" class="headerlink" title="使用 Repository 查询"></a>使用 Repository 查询</h3><p>Repository 是 Spring Data JPA 中最重要的接口,使用实体类和实体类中的主键ID作为类型参数.其中CURDRepository为实体类提供了复杂增删改查的函数.</p>
-<h4 id="1-CrudRepository接口"><a href="#1-CrudRepository接口" class="headerlink" title="1. CrudRepository接口"></a>1. CrudRepository接口</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">CrudRepository</span>&lt;<span class="title">T</span>, <span class="title">ID</span>&gt; <span class="keyword">extends</span> <span class="title">Repository</span>&lt;<span class="title">T</span>, <span class="title">ID</span>&gt; </span>&#123;&#125;</span><br></pre></td></tr></table></figure>
-
-<p>同样提供了特定的Repository,比如JPARepository、MongoRepository,这几个都是继承的 CrudRepository 接口,根据不同的技术特性暴露不同的接口方法.一般使用上直接继承CurdRepository就可以完成基本的工作.</p>
-<h4 id="2-PagingAndSortingRepository接口"><a href="#2-PagingAndSortingRepository接口" class="headerlink" title="2. PagingAndSortingRepository接口"></a>2. PagingAndSortingRepository接口</h4><p>如果使用分页或者排序需要继承 PagingAndSortingRepository 接口,这个接口中包含 <code>Iterable&lt;T&gt; findAll(Sort sort);</code> 和 <code>Page&lt;T&gt; findAll(Pageable pageable);</code>,这样能够具有查询时分页的特性</p>
-<h4 id="3-接口中的名称推导查询"><a href="#3-接口中的名称推导查询" class="headerlink" title="3. 接口中的名称推导查询"></a>3. 接口中的名称推导查询</h4><ul>
-<li>通过命名查询,具体可查看相关文档,写的非常全 <a href="https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#repositories.query-methods.query-creation" target="_blank" rel="noopener">create-query</a></li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>关键字</th>
-<th>方法命名</th>
-<th>sql where字句</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>And</td>
-<td>findByNameAndPwd</td>
-<td>where name= ? and pwd =?</td>
-</tr>
-<tr>
-<td>Or</td>
-<td>findByNameOrSex</td>
-<td>where name= ? or sex=?</td>
-</tr>
-<tr>
-<td>Is,Equals</td>
-<td>findById,findByIdEquals</td>
-<td>where id= ?</td>
-</tr>
-<tr>
-<td>Between</td>
-<td>findByIdBetween</td>
-<td>where id between ? and ?</td>
-</tr>
-<tr>
-<td>LessThan</td>
-<td>findByIdLessThan</td>
-<td>where id &lt; ?</td>
-</tr>
-<tr>
-<td>LessThanEquals</td>
-<td>findByIdLessThanEquals</td>
-<td>where id &lt;= ?</td>
-</tr>
-<tr>
-<td>GreaterThan</td>
-<td>findByIdGreaterThan</td>
-<td>where id &gt; ?</td>
-</tr>
-<tr>
-<td>GreaterThanEquals</td>
-<td>findByIdGreaterThanEquals</td>
-<td>where id &gt; = ?</td>
-</tr>
-<tr>
-<td>After</td>
-<td>findByIdAfter</td>
-<td>where id &gt; ?</td>
-</tr>
-<tr>
-<td>Before</td>
-<td>findByIdBefore</td>
-<td>where id &lt; ?</td>
-</tr>
-<tr>
-<td>IsNull</td>
-<td>findByNameIsNull</td>
-<td>where name is null</td>
-</tr>
-<tr>
-<td>isNotNull,NotNull</td>
-<td>findByNameNotNull</td>
-<td>where name is not null</td>
-</tr>
-<tr>
-<td>Like</td>
-<td>findByNameLike</td>
-<td>where name like ?</td>
-</tr>
-<tr>
-<td>NotLike</td>
-<td>findByNameNotLike</td>
-<td>where name not like ?</td>
-</tr>
-<tr>
-<td>StartingWith</td>
-<td>findByNameStartingWith</td>
-<td>where name like ‘?%’</td>
-</tr>
-<tr>
-<td>EndingWith</td>
-<td>findByNameEndingWith</td>
-<td>where name like ‘%?’</td>
-</tr>
-<tr>
-<td>Containing</td>
-<td>findByNameContaining</td>
-<td>where name like ‘%?%’</td>
-</tr>
-<tr>
-<td>OrderBy</td>
-<td>findByIdOrderByXDesc</td>
-<td>where id=? order by x desc</td>
-</tr>
-<tr>
-<td>Not</td>
-<td>findByNameNot</td>
-<td>where name &lt;&gt; ?</td>
-</tr>
-<tr>
-<td>In</td>
-<td>findByIdIn(Collection&lt;?&gt; c)</td>
-<td>where id in (?)</td>
-</tr>
-<tr>
-<td>NotIn</td>
-<td>findByIdNotIn(Collection&lt;?&gt; c)</td>
-<td>where id not in (?)</td>
-</tr>
-<tr>
-<td>True</td>
-<td>findByAaaTue</td>
-<td>where aaa = true</td>
-</tr>
-<tr>
-<td>False</td>
-<td>findByAaaFalse</td>
-<td>where aaa = false</td>
-</tr>
-<tr>
-<td>IgnoreCase</td>
-<td>findByNameIgnoreCase</td>
-<td>where UPPER(name)=UPPER(?)</td>
-</tr>
-</tbody></table>
-<h4 id="4-使用-Repository-查询实例"><a href="#4-使用-Repository-查询实例" class="headerlink" title="4. 使用 Repository 查询实例"></a>4. 使用 Repository 查询实例</h4><ol>
-<li>声明一个接口继承特定的Repository</li>
-</ol>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * JpaRepository 继承自 PagingAndSortingRepository,其中类型参数</span></span><br><span class="line"><span class="comment"> * 第一个是操作实体类的类型</span></span><br><span class="line"><span class="comment"> * 第二个是操作实体类的标识ID</span></span><br><span class="line"><span class="comment">**/</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">UserRepository</span> <span class="keyword">extends</span> <span class="title">JpaRepository</span>&lt;<span class="title">User</span>,<span class="title">Integer</span>&gt; </span>&#123;&#125;</span><br></pre></td></tr></table></figure>
-
-<ol start="2">
-<li>(可选)在接口中定义方法</li>
-</ol>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 具体名称推导查询可以查看上面的表格</span></span><br><span class="line"><span class="function">List&lt;User&gt; <span class="title">findByLastname</span><span class="params">(String lastname)</span></span>;</span><br></pre></td></tr></table></figure>
-
-<ol start="3">
-<li>使用@AutoWire注解inject到特定的service中调用</li>
-</ol>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Autowired</span></span><br><span class="line">UserRepository userRepository;</span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> User <span class="title">getUserFromUserName</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> userRepository.findUserByName(name);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>到这里,增删改查基本都能够实现,复杂的在于分页、多条件复杂查询.</p>
-<h4 id="5-使用-PagingAndSortingRepository-进行分页查询"><a href="#5-使用-PagingAndSortingRepository-进行分页查询" class="headerlink" title="5. 使用 PagingAndSortingRepository 进行分页查询"></a>5. 使用 PagingAndSortingRepository 进行分页查询</h4><p>前面说到 PagingAndSortingRepository 提供了两个方法,一个是返回Iterable的 findAll(Sort) 方法,另一个是返回Page的findAll方法</p>
-<ol>
-<li>在没有其他查询条件的情况下,直接定义一个Pageable变量,然后使用特定方法即可:</li>
-</ol>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Page&lt;Book&gt; <span class="title">findBookNoCriteria</span><span class="params">(Integer page,Integer size)</span> </span>&#123;</span><br><span class="line">    Pageable pageable = <span class="keyword">new</span> PageRequest(page, size, Sort.Direction.ASC, <span class="string">"id"</span>);</span><br><span class="line">    <span class="keyword">return</span> bookRepository.findAll(pageable);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ol start="2">
-<li>在存在多样的查询条件的情况下,还需要接口继承 <code>JpaSpecificationExecutor</code></li>
-</ol>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Page&lt;Book&gt; <span class="title">findBookCriteria</span><span class="params">(Integer page, Integer size, <span class="keyword">final</span> BookQuery bookQuery)</span> </span>&#123;</span><br><span class="line">    Pageable pageable = <span class="keyword">new</span> PageRequest(page, size, Sort.Direction.ASC, <span class="string">"id"</span>);</span><br><span class="line">    Page&lt;Book&gt; bookPage = bookRepository.findAll(<span class="keyword">new</span> Specification&lt;Book&gt;()&#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> Predicate <span class="title">toPredicate</span><span class="params">(Root&lt;Book&gt; root, CriteriaQuery&lt;?&gt; query, CriteriaBuilder criteriaBuilder)</span> </span>&#123;</span><br><span class="line">            Predicate p1 = criteriaBuilder.equal(root.get(<span class="string">"name"</span>).as(String.class), bookQuery.getName());</span><br><span class="line">            Predicate p2 = criteriaBuilder.equal(root.get(<span class="string">"isbn"</span>).as(String.class), bookQuery.getIsbn());</span><br><span class="line">            Predicate p3 = criteriaBuilder.equal(root.get(<span class="string">"author"</span>).as(String.class), bookQuery.getAuthor());</span><br><span class="line">            query.where(criteriaBuilder.and(p1,p2,p3));</span><br><span class="line">            <span class="keyword">return</span> query.getRestriction();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,pageable);</span><br><span class="line">    <span class="keyword">return</span> bookPage;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="使用-Query语句查询"><a href="#使用-Query语句查询" class="headerlink" title="使用@Query语句查询"></a>使用@Query语句查询</h3><p>尽管通过上面的方法能够非常方便快捷的使用查询,但是有时候包含特殊字段的查询或者使用名称组合出来的方法名又长有丑…而且担心效率低,这时候JPA提供了一种类似Hibernate的方法,就是使用@Query进行查询</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Query</span>(<span class="string">"select u from User u where u.emailAddress = ?1"</span>)</span><br><span class="line"><span class="function">User <span class="title">findByEmailAddress</span><span class="params">(String emailAddress)</span></span>;</span><br></pre></td></tr></table></figure>
-
-<p>或者使用原生SQL查询,将Query的参数nativeQuery设置为true</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Query</span>(nativeQuery = <span class="keyword">true</span>,value = <span class="string">"select u.name from user u where u.id:id limit 1"</span>)</span><br><span class="line"><span class="function">String <span class="title">getUserNameById</span><span class="params">(Integer id)</span></span>;</span><br></pre></td></tr></table></figure>
-
-<h3 id="使用QueryDSL进行复杂查询"><a href="#使用QueryDSL进行复杂查询" class="headerlink" title="使用QueryDSL进行复杂查询"></a>使用QueryDSL进行复杂查询</h3><p>如果上面的查询方式仍然满足不了需求,那么可以尝试使用QueryDSL进行查询 <a href="http://www.querydsl.com/static/querydsl/latest/reference/html/ch02.html#jpa_integration" target="_blank" rel="noopener">QueryDSL</a></p>
-<h4 id="1-过程"><a href="#1-过程" class="headerlink" title="1. 过程"></a>1. 过程</h4><ol>
-<li>添加MAVEN依赖</li>
-</ol>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">   <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.querydsl<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>querydsl-apt<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;querydsl.version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">scope</span>&gt;</span>provided<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.querydsl<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>querydsl-jpa<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;querydsl.version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- 添加APT PLUGIN --&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.mysema.maven<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>apt-maven-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.1.3<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">executions</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">execution</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">goals</span>&gt;</span></span><br><span class="line">              <span class="tag">&lt;<span class="name">goal</span>&gt;</span>process<span class="tag">&lt;/<span class="name">goal</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;/<span class="name">goals</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">              <span class="tag">&lt;<span class="name">outputDirectory</span>&gt;</span>target/generated-sources/java<span class="tag">&lt;/<span class="name">outputDirectory</span>&gt;</span></span><br><span class="line">              <span class="tag">&lt;<span class="name">processor</span>&gt;</span>com.querydsl.apt.jpa.JPAAnnotationProcessor<span class="tag">&lt;/<span class="name">processor</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">execution</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">executions</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>JPAAnnotationProcessor 会查找所有的 Entity 注解标注的实体类在目标路径下生成 Qxxx 的类.第一次需要使用 maven install 生成一下.</p>
-<ol start="2">
-<li>使用查询</li>
-</ol>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 注入 jpaQueryFactory</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> entityManager</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> JPAQueryFactory <span class="title">jpaQueryFactory</span><span class="params">(EntityManager entityManager)</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> JPAQueryFactory(entityManager);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>在配置文件中使用@Bean把JPAQueryFactory注入到容器中,然后使用JpaQueryFactory查询.</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> List&lt;User&gt; <span class="title">doGetrolePerson</span><span class="params">(Integer role,<span class="keyword">boolean</span> in,List&lt;User&gt; users)</span></span>&#123;</span><br><span class="line">    QUser user = QUser.user;</span><br><span class="line">    Predicate predicate = user.isNotNull().or(user.isNull());</span><br><span class="line">    <span class="keyword">if</span>(in)&#123;</span><br><span class="line">        predicate = role == <span class="keyword">null</span> ? predicate : ExpressionUtils.and(predicate, user.roles.any().id.in(role));</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">        predicate = role == <span class="keyword">null</span> ? predicate : ExpressionUtils.and(predicate, user.notIn(users));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> jpaQueryFactory.selectFrom(user).where(predicate).fetch();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>以上是使用基本的QueryDSL进行查询的方式,更多的增删改查的方法可以参考上面引用的文档,这里不在过多描述.</p>
-<h4 id="2-结合查询"><a href="#2-结合查询" class="headerlink" title="2. 结合查询"></a>2. 结合查询</h4><p>SpringDataJPA 对 QueryDSL 提供了一个通用的Repository – QuerydslPredicateExecutor</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">QuerydslPredicateExecutor</span>&lt;<span class="title">T</span>&gt; </span>&#123;</span><br><span class="line">    <span class="function">Optional&lt;T&gt; <span class="title">findOne</span><span class="params">(Predicate var1)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function">Iterable&lt;T&gt; <span class="title">findAll</span><span class="params">(Predicate var1)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function">Iterable&lt;T&gt; <span class="title">findAll</span><span class="params">(Predicate var1, Sort var2)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function">Iterable&lt;T&gt; <span class="title">findAll</span><span class="params">(Predicate var1, OrderSpecifier&lt;?&gt;... var2)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function">Iterable&lt;T&gt; <span class="title">findAll</span><span class="params">(OrderSpecifier&lt;?&gt;... var1)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function">Page&lt;T&gt; <span class="title">findAll</span><span class="params">(Predicate var1, Pageable var2)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">long</span> <span class="title">count</span><span class="params">(Predicate var1)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">exists</span><span class="params">(Predicate var1)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>使用需要让定义的Repository继承这个QuerydslPredicateExecutor,然后调用方法即可:</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Page&lt;User&gt; <span class="title">findUsers</span><span class="params">(Integer offset, Integer limit, String order, String search, Integer status, Integer sex, Integer role)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    Sort sort = <span class="keyword">null</span>;</span><br><span class="line">    String propertie = order.substring(<span class="number">1</span>);</span><br><span class="line">    <span class="keyword">if</span> (order.startsWith(<span class="string">"-"</span>)) &#123;</span><br><span class="line">        sort = Sort.by(propertie).descending();</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (order.startsWith(<span class="string">"+"</span>)) &#123;</span><br><span class="line">        sort = Sort.by(propertie).ascending();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(offset == <span class="keyword">null</span> || limit == <span class="keyword">null</span>)&#123;</span><br><span class="line">        offset = <span class="number">1</span>;</span><br><span class="line">        limit = Integer.MAX_VALUE;</span><br><span class="line">    &#125;</span><br><span class="line">    PageRequest pageRequest = <span class="keyword">new</span> PageRequest(offset - <span class="number">1</span>, limit, sort);</span><br><span class="line">    QUser user = QUser.user;</span><br><span class="line">    com.querydsl.core.types.Predicate predicate = user.isNotNull().or(user.isNull());</span><br><span class="line">    predicate = search == <span class="keyword">null</span> ? predicate : ExpressionUtils.and(predicate, user.name.like(<span class="string">"%"</span> + search + <span class="string">"%"</span>));</span><br><span class="line">    predicate = sex == <span class="keyword">null</span> ? predicate : ExpressionUtils.and(predicate, user.sex.id.eq(sex));</span><br><span class="line">    predicate = status == <span class="keyword">null</span> ? predicate : ExpressionUtils.and(predicate, user.status.id.eq(status));</span><br><span class="line">    predicate = role == <span class="keyword">null</span> ? predicate : ExpressionUtils.and(predicate, user.roles.any().id.eq(role));</span><br><span class="line">    <span class="keyword">return</span> userRepository.findAll(predicate, pageRequest);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-
-
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-<div>
-      
-</div>
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2020/01/17/Spring%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E4%B9%8B%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%EF%BC%88%E5%9B%9B%EF%BC%89/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="NanYin">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NanYin的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2020/01/17/Spring%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E4%B9%8B%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%EF%BC%88%E5%9B%9B%EF%BC%89/" itemprop="url">Spring的Bean的实例化</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-01-17T15:00:00Z">
-                2020-01-17
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Spring/" itemprop="url" rel="index">
-                    <span itemprop="name">Spring</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Words count in article&#58;</span>
-                
-                <span title="Words count in article">
-                  4.3k
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Reading time &asymp;</span>
-                
-                <span title="Reading time">
-                  19
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Bean的实例化"><a href="#Bean的实例化" class="headerlink" title="Bean的实例化"></a>Bean的实例化</h1><p>在refresh方法执行到 <code>finishBeanFacotyInitializawtion</code> 时，在方法内部会执行对Bean的实例化操作：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Instantiate all remaining (non-lazy-init) singletons.</span></span><br><span class="line">finishBeanFactoryInitialization(beanFactory);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">finishBeanFactoryInitialization</span><span class="params">(ConfigurableListableBeanFactory beanFactory)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//  为BeanFactoy添加conversionService</span></span><br><span class="line">    <span class="keyword">if</span> (beanFactory.containsBean(CONVERSION_SERVICE_BEAN_NAME) &amp;&amp; <span class="comment">// 是否包含 conversionService</span></span><br><span class="line">            beanFactory.isTypeMatch(CONVERSION_SERVICE_BEAN_NAME, ConversionService.class)) &#123;</span><br><span class="line">        beanFactory.setConversionService(</span><br><span class="line">                beanFactory.getBean(CONVERSION_SERVICE_BEAN_NAME, ConversionService.class));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Register a default embedded value resolver if no bean post-processor</span></span><br><span class="line">    <span class="comment">// (such as a PropertyPlaceholderConfigurer bean) registered any before:</span></span><br><span class="line">    <span class="comment">// at this point, primarily for resolution in annotation attribute values.</span></span><br><span class="line">    <span class="keyword">if</span> (!beanFactory.hasEmbeddedValueResolver()) &#123;</span><br><span class="line">        beanFactory.addEmbeddedValueResolver(strVal -&gt; getEnvironment().resolvePlaceholders(strVal));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 尽早初始化LoadTimeWeaverAware Bean，以便尽早注册其转换器。</span></span><br><span class="line">    String[] weaverAwareNames = beanFactory.getBeanNamesForType(LoadTimeWeaverAware.class, <span class="keyword">false</span>, <span class="keyword">false</span>);</span><br><span class="line">    <span class="keyword">for</span> (String weaverAwareName : weaverAwareNames) &#123;</span><br><span class="line">        getBean(weaverAwareName);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 取消使用临时的classLoader</span></span><br><span class="line">    beanFactory.setTempClassLoader(<span class="keyword">null</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 允许缓存所有的Bean Definition 元数据，</span></span><br><span class="line">    beanFactory.freezeConfiguration();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 初始化所有剩余的（非懒加载的）单例的Bean</span></span><br><span class="line">    beanFactory.preInstantiateSingletons();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>重点在于 <code>preInstantiateSingletons</code> 方法，用来初始化所有的单例Bean。实际上在前面的getBean获取weaverAware就能够看出真正调用获取单实例的Bean的方法就是 <code>getBean</code> 方法。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">preInstantiateSingletons</span><span class="params">()</span> <span class="keyword">throws</span> BeansException </span>&#123;</span><br><span class="line">    <span class="comment">// logging ....</span></span><br><span class="line"></span><br><span class="line">    List&lt;String&gt; beanNames = <span class="keyword">new</span> ArrayList&lt;&gt;(<span class="keyword">this</span>.beanDefinitionNames);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 触发有非懒加载的Bean的初始化</span></span><br><span class="line">    <span class="keyword">for</span> (String beanName : beanNames) &#123;</span><br><span class="line">        <span class="comment">// 获取所有的RootBeanDefinition,所谓的Rootxxx，其实就是统一的BeanDefinition视图</span></span><br><span class="line">        RootBeanDefinition bd = getMergedLocalBeanDefinition(beanName);</span><br><span class="line">        <span class="keyword">if</span> (!bd.isAbstract() &amp;&amp; bd.isSingleton() &amp;&amp; !bd.isLazyInit()) &#123;</span><br><span class="line">            <span class="keyword">if</span> (isFactoryBean(beanName)) &#123;</span><br><span class="line">                <span class="comment">// 如果是FactoryBean，则使用getBean时需要加上前缀 &amp;</span></span><br><span class="line">                Object bean = getBean(FACTORY_BEAN_PREFIX + beanName);</span><br><span class="line">                <span class="keyword">if</span> (bean <span class="keyword">instanceof</span> FactoryBean) &#123;</span><br><span class="line">                    <span class="keyword">final</span> FactoryBean&lt;?&gt; factory = (FactoryBean&lt;?&gt;) bean;</span><br><span class="line">                    <span class="keyword">boolean</span> isEagerInit;</span><br><span class="line">                    <span class="keyword">if</span> (System.getSecurityManager() != <span class="keyword">null</span> &amp;&amp; factory <span class="keyword">instanceof</span> SmartFactoryBean) &#123;</span><br><span class="line">                        <span class="comment">// 如果继承SmartFactoryBean</span></span><br><span class="line">                        isEagerInit = AccessController.doPrivileged((PrivilegedAction&lt;Boolean&gt;)</span><br><span class="line">                                        ((SmartFactoryBean&lt;?&gt;) factory)::isEagerInit,</span><br><span class="line">                                getAccessControlContext());</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">else</span> &#123;</span><br><span class="line">                        isEagerInit = (factory <span class="keyword">instanceof</span> SmartFactoryBean &amp;&amp;</span><br><span class="line">                                ((SmartFactoryBean&lt;?&gt;) factory).isEagerInit());</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">if</span> (isEagerInit) &#123;</span><br><span class="line">                    <span class="comment">// 执行getBean获取Bean</span></span><br><span class="line">                        getBean(beanName);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="comment">// 执行getBean获取Bean</span></span><br><span class="line">                getBean(beanName);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 触发初始化后的callback...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>在<code>preInstantiateSingletons</code> 中，可以看到它会遍历所有的已经注册到容器中的Bean，最后会通过 <code>getBean()</code> 进行对Bean的初始化操作。</p>
-<p>其中判断了如果是 <code>Factorybean</code> 的情况下应该先去添加一个前缀 ‘&amp;’ ，才能获取真正的FactoryBean的实现类的对象Bean。如果不添加前缀 ‘&amp;’，则会返回实现类中的getObject方法返回的对象。</p>
-<p>因为经过分析，是 getBean 方法是达到初始化Bean实例的目的，所以接下来看 getBean 中是如何实现的。</p>
-<h2 id="getBean"><a href="#getBean" class="headerlink" title="getBean"></a>getBean</h2><p>getBean方法比较复杂，所以我依据调用顺序拆出来大致5个小章节来展开讲。</p>
-<h3 id="1-getBean通过调用doGetBean创建实例"><a href="#1-getBean通过调用doGetBean创建实例" class="headerlink" title="1.getBean通过调用doGetBean创建实例"></a>1.getBean通过调用doGetBean创建实例</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Object <span class="title">getBean</span><span class="params">(String name)</span> <span class="keyword">throws</span> BeansException </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> doGetBean(name, <span class="keyword">null</span>, <span class="keyword">null</span>, <span class="keyword">false</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="2-检查缓存中是否存在"><a href="#2-检查缓存中是否存在" class="headerlink" title="2. 检查缓存中是否存在"></a>2. 检查缓存中是否存在</h3><p>调用doGetBean方法后，首先会先使用getSingleton方法判断缓存中是否存在实例，会执行以下逻辑：</p>
-<ol>
-<li>判断缓存中是否存在？</li>
-<li>如果存在，如果当前单例正在创建中，则说明出现了循环引用。</li>
-<li>如果存在，实例没有正在创建，没有循环引用。</li>
-<li>只要缓存中存在，都直接返回缓存中的BeanInstance</li>
-</ol>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> &lt;T&gt; <span class="function">T <span class="title">doGetBean</span><span class="params">(<span class="keyword">final</span> String name, @Nullable <span class="keyword">final</span> Class&lt;T&gt; requiredType,</span></span></span><br><span class="line"><span class="function"><span class="params">        @Nullable <span class="keyword">final</span> Object[] args, <span class="keyword">boolean</span> typeCheckOnly)</span> <span class="keyword">throws</span> BeansException </span>&#123;</span><br><span class="line">    <span class="comment">// 获得Beanname字符串，因为有FactoryBean需要添加&amp;符号</span></span><br><span class="line">    <span class="keyword">final</span> String beanName = transformedBeanName(name);</span><br><span class="line">    Object bean;</span><br><span class="line"></span><br><span class="line">    Object sharedInstance = getSingleton(beanName);</span><br><span class="line">    <span class="keyword">if</span> (sharedInstance != <span class="keyword">null</span> &amp;&amp; args == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (logger.isTraceEnabled()) &#123;</span><br><span class="line">            <span class="keyword">if</span> (isSingletonCurrentlyInCreation(beanName)) &#123;</span><br><span class="line">                logger.trace(<span class="string">"Returning eagerly cached instance of singleton bean '"</span> + beanName +</span><br><span class="line">                        <span class="string">"' that is not fully initialized yet - a consequence of a circular reference"</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> &#123;</span><br><span class="line">                logger.trace(<span class="string">"Returning cached instance of singleton bean '"</span> + beanName + <span class="string">"'"</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        bean = getObjectForBeanInstance(sharedInstance, name, beanName, <span class="keyword">null</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//...</span></span><br></pre></td></tr></table></figure>
-<h3 id="3-如果typeCheckOnly为false，则标记已创建"><a href="#3-如果typeCheckOnly为false，则标记已创建" class="headerlink" title="3. 如果typeCheckOnly为false，则标记已创建"></a>3. 如果typeCheckOnly为false，则标记已创建</h3><p>作用是：将指定的bean标记为已创建，允许bean工厂优化其缓存以重复创建指定的bean。</p>
-<h3 id="4-获取depend-on的Bean，先对其进行register和实例化"><a href="#4-获取depend-on的Bean，先对其进行register和实例化" class="headerlink" title="4. 获取depend-on的Bean，先对其进行register和实例化"></a>4. 获取depend-on的Bean，先对其进行register和实例化</h3><p>需要注意的是，这里的 depend-on 的内容是使用 <code>@DependsOn</code> 注解指定的BeanName（注解方式）</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 获得RootBeanDefinition</span></span><br><span class="line"><span class="keyword">final</span> RootBeanDefinition mbd = getMergedLocalBeanDefinition(beanName);</span><br><span class="line"><span class="comment">// 检查merge后的beanDefinition</span></span><br><span class="line">checkMergedBeanDefinition(mbd, beanName, args);</span><br><span class="line"><span class="comment">// 确保当前bean依赖的bean的初始化。</span></span><br><span class="line">String[] dependsOn = mbd.getDependsOn();</span><br><span class="line"><span class="keyword">if</span> (dependsOn != <span class="keyword">null</span>) &#123;</span><br><span class="line">    <span class="keyword">for</span> (String dep : dependsOn) &#123;</span><br><span class="line">        <span class="keyword">if</span> (isDependent(beanName, dep)) &#123;</span><br><span class="line">            <span class="comment">// throw exception ...</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 先registr 依赖的Bean</span></span><br><span class="line">        registerDependentBean(dep, beanName);</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">// 对每一个dep进行先行的实例化</span></span><br><span class="line">            getBean(dep);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">catch</span> (NoSuchBeanDefinitionException ex) &#123;</span><br><span class="line">            <span class="comment">// throw exception ...</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="5-调用createBean创建Bean实例"><a href="#5-调用createBean创建Bean实例" class="headerlink" title="5.调用createBean创建Bean实例"></a>5.调用createBean创建Bean实例</h3><p>在使用createBean创建Bean时，会通过 <code>Object bean = resolveBeforeInstantiation(beanName, mbdToUse);</code>来处理初始化Bean前置方法触发AOP的功能。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> Object <span class="title">resolveBeforeInstantiation</span><span class="params">(String beanName, RootBeanDefinition mbd)</span> </span>&#123;</span><br><span class="line">    Object bean = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">if</span> (!Boolean.FALSE.equals(mbd.beforeInstantiationResolved)) &#123;</span><br><span class="line">        <span class="comment">// Make sure bean class is actually resolved at this point.</span></span><br><span class="line">        <span class="keyword">if</span> (!mbd.isSynthetic() &amp;&amp; hasInstantiationAwareBeanPostProcessors()) &#123;</span><br><span class="line">            Class&lt;?&gt; targetType = determineTargetType(beanName, mbd);</span><br><span class="line">            <span class="keyword">if</span> (targetType != <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="comment">// 执行前置方法，获取代理Bean</span></span><br><span class="line">                bean = applyBeanPostProcessorsBeforeInstantiation(targetType, beanName);</span><br><span class="line">                <span class="keyword">if</span> (bean != <span class="keyword">null</span>) &#123;</span><br><span class="line">                    bean = applyBeanPostProcessorsAfterInitialization(bean, beanName);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        mbd.beforeInstantiationResolved = (bean != <span class="keyword">null</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> bean;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">protected</span> Object <span class="title">applyBeanPostProcessorsBeforeInstantiation</span><span class="params">(Class&lt;?&gt; beanClass, String beanName)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (BeanPostProcessor bp : getBeanPostProcessors()) &#123;</span><br><span class="line">        <span class="comment">// 使用 EnableAspectJAutoProxy 注解，将AbstractAutoProxyCreator import 进来，</span></span><br><span class="line">        <span class="comment">// 所以在这里可以调用 AbstractAutoProxyCreator后置的处理器方法，来实现AOP功能</span></span><br><span class="line">        <span class="keyword">if</span> (bp <span class="keyword">instanceof</span> InstantiationAwareBeanPostProcessor) &#123;</span><br><span class="line">            InstantiationAwareBeanPostProcessor ibp = (InstantiationAwareBeanPostProcessor) bp;</span><br><span class="line">            Object result = ibp.postProcessBeforeInstantiation(beanClass, beanName);</span><br><span class="line">            <span class="keyword">if</span> (result != <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="keyword">return</span> result;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Object <span class="title">postProcessBeforeInstantiation</span><span class="params">(Class&lt;?&gt; beanClass, String beanName)</span> </span>&#123;</span><br><span class="line">    Object cacheKey = getCacheKey(beanClass, beanName); <span class="comment">//获得beanClass</span></span><br><span class="line">    <span class="keyword">if</span> (!StringUtils.hasLength(beanName) || !<span class="keyword">this</span>.targetSourcedBeans.contains(beanName)) &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">this</span>.advisedBeans.containsKey(cacheKey)) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (isInfrastructureClass(beanClass) || shouldSkip(beanClass, beanName)) &#123;<span class="comment">// 如果是一个基础设施的类 或者是一个original instance</span></span><br><span class="line">            <span class="keyword">this</span>.advisedBeans.put(cacheKey, Boolean.FALSE); <span class="comment">//添加到advisedBeans里面</span></span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 如果有自定义的 TargetSource</span></span><br><span class="line">    <span class="comment">// 抑制目标Bean的不必要的默认实例化</span></span><br><span class="line">    <span class="comment">// TargetSource将以自定义方式处理目标实例。</span></span><br><span class="line">    TargetSource targetSource = getCustomTargetSource(beanClass, beanName); <span class="comment">//获得targetSource</span></span><br><span class="line">    <span class="keyword">if</span> (targetSource != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (StringUtils.hasLength(beanName)) &#123;</span><br><span class="line">            <span class="keyword">this</span>.targetSourcedBeans.add(beanName);</span><br><span class="line">        &#125;</span><br><span class="line">        Object[] specificInterceptors = getAdvicesAndAdvisorsForBean(beanClass, beanName, targetSource);</span><br><span class="line">        <span class="comment">// 生成代理</span></span><br><span class="line">        Object proxy = createProxy(beanClass, beanName, specificInterceptors, targetSource); <span class="comment">//创建代理类</span></span><br><span class="line">        <span class="keyword">this</span>.proxyTypes.put(cacheKey, proxy.getClass());</span><br><span class="line">        <span class="comment">// 返回生成的代理Bean</span></span><br><span class="line">        <span class="keyword">return</span> proxy;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>如果存在需要创建Proxy代理Bean，则先去创建代理Bean，在创建完后，则会开始调用 <code>doCreateBean</code> 方法创建Bean实例。</p>
-<p>接着调用 <code>Object beanInstance = doCreateBean(beanName, mbdToUse, args);</code> 创建实例，并返回一个Object的类型的beanInstance</p>
-<p>doCreateBean这个方法比较长，大致能通过这几步完成这个方法；</p>
-<ol>
-<li>使用 <code>createBeanInstance</code>  创建一个包装Bean</li>
-<li>允许<code>MergedBeanPostProcessor</code>使用后置方法处理包装后的Bean</li>
-<li>如果 <code>allowCircularReferences</code> 属性为true，则先获取 达到这个Bean的早期的ref ，用来 <strong>防止Bean在生成时循环引用</strong> 的问题，后面会详细讲这里是如果获取早期的ref应用，和又是如何防止Bean的循环应用的问题。</li>
-<li>通过 <code>populateBean</code> 方法为Bean进行赋值，包括依赖！！</li>
-<li>通过 <code>initializeBean</code> 方法，执行各种初始化方法和前、后置方法。</li>
-<li>通过三级缓存机制，用来防止出现循环引用的问题。</li>
-<li>注册Bean为一次性的</li>
-</ol>
-<h4 id="createBeanInstance-创建一个包装Bean"><a href="#createBeanInstance-创建一个包装Bean" class="headerlink" title="createBeanInstance 创建一个包装Bean"></a>createBeanInstance 创建一个包装Bean</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> BeanWrapper <span class="title">createBeanInstance</span><span class="params">(String beanName, RootBeanDefinition mbd, @Nullable Object[] args)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//.....省略部分</span></span><br><span class="line">    <span class="comment">// Shortcut when re-creating the same bean...</span></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 这里指的ShortCut的含义是当多次构建同一个 bean 时，可以使用这个Shortcut，</span></span><br><span class="line"><span class="comment">     * 也就是说不在需要每次推断应该使用哪种方式构造bean</span></span><br><span class="line"><span class="comment">     * 比如在多次构建同一个prototype类型的 bean 时，就可以走此处的Shortcut</span></span><br><span class="line"><span class="comment">     * 这里的 resolved 和 autowireNecessary 将会在 bean 第一次实例化的过程中被设置</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">boolean</span> resolved = <span class="keyword">false</span>;</span><br><span class="line">    <span class="keyword">boolean</span> autowireNecessary = <span class="keyword">false</span>;</span><br><span class="line">    <span class="keyword">if</span> (args == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (mbd.constructorArgumentLock) &#123;</span><br><span class="line">            <span class="keyword">if</span> (mbd.resolvedConstructorOrFactoryMethod != <span class="keyword">null</span>) &#123;</span><br><span class="line">                resolved = <span class="keyword">true</span>;</span><br><span class="line">                autowireNecessary = mbd.constructorArgumentsResolved;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 如果已经创建过了</span></span><br><span class="line">    <span class="keyword">if</span> (resolved) &#123;</span><br><span class="line">        <span class="comment">// 如果以解析构造函数</span></span><br><span class="line">        <span class="keyword">if</span> (autowireNecessary) &#123;</span><br><span class="line">            <span class="keyword">return</span> autowireConstructor(beanName, mbd, <span class="keyword">null</span>, <span class="keyword">null</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> instantiateBean(beanName, mbd);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// Candidate constructors for autowiring?</span></span><br><span class="line">    <span class="comment">// 如果是通过构造函数来自动注入的</span></span><br><span class="line">    Constructor&lt;?&gt;[] ctors = determineConstructorsFromBeanPostProcessors(beanClass, beanName);</span><br><span class="line">    <span class="keyword">if</span> (ctors != <span class="keyword">null</span> || mbd.getResolvedAutowireMode() == AUTOWIRE_CONSTRUCTOR ||</span><br><span class="line">            mbd.hasConstructorArgumentValues() || !ObjectUtils.isEmpty(args)) &#123;</span><br><span class="line">        <span class="keyword">return</span> autowireConstructor(beanName, mbd, ctors, args);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// Preferred constructors for default construction?</span></span><br><span class="line">    ctors = mbd.getPreferredConstructors();</span><br><span class="line">    <span class="keyword">if</span> (ctors != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> autowireConstructor(beanName, mbd, ctors, <span class="keyword">null</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 没有特殊处理，使用无参数构造器</span></span><br><span class="line">    <span class="keyword">return</span> instantiateBean(beanName, mbd);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>如果使用默认的无参数构造起，会调用<code>beanInstance = getInstantiationStrategy().instantiate(mbd, beanName, parent);</code> 获取使用反射生成的实例。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 检测 bean 配置中是否配置了 lookup-method 或 replace-method</span></span><br><span class="line"><span class="comment">// 如果没有，则使用默认的JDK代理生成对象，否则使用CGlib代理</span></span><br><span class="line"><span class="keyword">if</span> (!bd.hasMethodOverrides()) &#123;</span><br><span class="line"><span class="comment">// 省略代码。。。。</span></span><br><span class="line">    <span class="comment">// 实例化</span></span><br><span class="line">    <span class="keyword">return</span> BeanUtils.instantiateClass(constructorToUse);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// 必须生成CGLIB子类</span></span><br><span class="line">    <span class="keyword">return</span> instantiateWithMethodInjection(bd, beanName, owner);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>知道最后使用Constructor.newInstance创建一个对象。</p>
-<h4 id="先缓存早期的实例"><a href="#先缓存早期的实例" class="headerlink" title="先缓存早期的实例"></a>先缓存早期的实例</h4><p>Spring中存在三层缓存，分别为第一级的 <code>singletonObjects</code> 、第二级的 <code>earlySingletonObjects</code> 、第三级的<code>singletonFactories</code>。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** Cache of singleton objects: bean name to bean instance. */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> Map&lt;String, Object&gt; singletonObjects = <span class="keyword">new</span> ConcurrentHashMap&lt;&gt;(<span class="number">256</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">/** Cache of singleton factories: bean name to ObjectFactory. */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> Map&lt;String, ObjectFactory&lt;?&gt;&gt; singletonFactories = <span class="keyword">new</span> HashMap&lt;&gt;(<span class="number">16</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">/** Cache of early singleton objects: bean name to bean instance. */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> Map&lt;String, Object&gt; earlySingletonObjects = <span class="keyword">new</span> HashMap&lt;&gt;(<span class="number">16</span>);</span><br></pre></td></tr></table></figure>
-
-<p>那么，Spring如何依靠这三级缓存来防止循环引用（circular references）的作用的呢？先通过下面的图片来简单了解下，当发生循环引用时，Spring如何使用三级缓存的。</p>
-<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/Spring%E5%BE%AA%E7%8E%AF%E8%B0%83%E7%94%A8%E8%BF%87%E7%A8%8B2.png" alt="图1"></p>
-<p>如图中所示，对象A依赖于对象B，而对象B依赖对象A的情况。下面根据图中各节点情况来具体分析代码的实现：</p>
-<h5 id="1-实例化A，发现依赖B"><a href="#1-实例化A，发现依赖B" class="headerlink" title="1. 实例化A，发现依赖B"></a>1. 实例化A，发现依赖B</h5><p>在初始化A的过程中，会调用 populateBean 方法进行属性的赋值，其中 AutoWired 的类型来分别处理（By Name 还是 By Type）,<br>但不管是哪个类型，最后都会使用 getBean 来先获取依赖。</p>
-<h5 id="2-获取B，将A放到三级缓存中"><a href="#2-获取B，将A放到三级缓存中" class="headerlink" title="2. 获取B，将A放到三级缓存中"></a>2. 获取B，将A放到三级缓存中</h5><p>其实在进行A的属性赋值前，就已经通过 <code>doCreateBean</code> 方法中的 <code>addSingletonFactory</code> 方法将A放到三级缓存中：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">boolean</span> earlySingletonExposure = (mbd.isSingleton() &amp;&amp; <span class="keyword">this</span>.allowCircularReferences &amp;&amp;</span><br><span class="line">				isSingletonCurrentlyInCreation(beanName));</span><br><span class="line">    <span class="comment">// 如果 allowCircularReferences 为true</span></span><br><span class="line"><span class="keyword">if</span> (earlySingletonExposure) &#123;</span><br><span class="line">    <span class="comment">// log.....</span></span><br><span class="line">    <span class="comment">// 放到第三级的singletonFactory里</span></span><br><span class="line">    addSingletonFactory(beanName, () -&gt; getEarlyBeanReference(beanName, mbd, bean));</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 第三级缓存，也就是SingleFactory</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">addSingletonFactory</span><span class="params">(String beanName, ObjectFactory&lt;?&gt; singletonFactory)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (<span class="keyword">this</span>.singletonObjects) &#123;</span><br><span class="line">    <span class="comment">// 如果对象没有生成过</span></span><br><span class="line">        <span class="keyword">if</span> (!<span class="keyword">this</span>.singletonObjects.containsKey(beanName)) &#123;</span><br><span class="line">        <span class="comment">// 放到三级缓存中，同时如果二级缓存中存在，移除掉</span></span><br><span class="line">            <span class="keyword">this</span>.singletonFactories.put(beanName, singletonFactory);</span><br><span class="line">            <span class="keyword">this</span>.earlySingletonObjects.remove(beanName);</span><br><span class="line">            <span class="keyword">this</span>.registeredSingletons.add(beanName);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h5 id="3-实例化B，发现依赖A"><a href="#3-实例化B，发现依赖A" class="headerlink" title="3. 实例化B，发现依赖A"></a>3. 实例化B，发现依赖A</h5><p>在上一步中，A依赖B，会调用<code>getBean</code>先去获取B，但同样在<code>doCreateBean</code> 方法中的 <code>populateBean</code> 方法中同样会调用 <code>getBean</code> 先去获取依赖A。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Object sharedInstance = getSingleton(beanName);</span><br><span class="line"><span class="keyword">if</span> (sharedInstance != <span class="keyword">null</span> &amp;&amp; args == <span class="keyword">null</span>) &#123;</span><br><span class="line"><span class="comment">// log....</span></span><br><span class="line"><span class="comment">// 通过getObjectForBeanInstance获取Bean，完成实例化</span></span><br><span class="line">    bean = getObjectForBeanInstance(sharedInstance, name, beanName, <span class="keyword">null</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>通过getSingleton方法从三级缓存获取bean，如果成功的在第三级缓存中找到Bean，则移除第三级缓存中的Bean，并放到二级缓存中。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> Object <span class="title">getSingleton</span><span class="params">(String beanName, <span class="keyword">boolean</span> allowEarlyReference)</span> </span>&#123;</span><br><span class="line">    Object singletonObject = <span class="keyword">this</span>.singletonObjects.get(beanName);</span><br><span class="line">    <span class="keyword">if</span> (singletonObject == <span class="keyword">null</span> &amp;&amp; isSingletonCurrentlyInCreation(beanName)) &#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (<span class="keyword">this</span>.singletonObjects) &#123;</span><br><span class="line">            singletonObject = <span class="keyword">this</span>.earlySingletonObjects.get(beanName);</span><br><span class="line">            <span class="keyword">if</span> (singletonObject == <span class="keyword">null</span> &amp;&amp; allowEarlyReference) &#123;</span><br><span class="line">                ObjectFactory&lt;?&gt; singletonFactory = <span class="keyword">this</span>.singletonFactories.get(beanName);</span><br><span class="line">                <span class="keyword">if</span> (singletonFactory != <span class="keyword">null</span>) &#123;</span><br><span class="line">                    singletonObject = singletonFactory.getObject();</span><br><span class="line">                    <span class="comment">// 如果三级缓存中有bean，则放到二级缓存中</span></span><br><span class="line">                    <span class="keyword">this</span>.earlySingletonObjects.put(beanName, singletonObject);</span><br><span class="line">                    <span class="keyword">this</span>.singletonFactories.remove(beanName);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> singletonObject;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h5 id="4-实例化完成，将B放到一级缓存中"><a href="#4-实例化完成，将B放到一级缓存中" class="headerlink" title="4. 实例化完成，将B放到一级缓存中"></a>4. 实例化完成，将B放到一级缓存中</h5><p>在调用<code>doGetBean</code>方法时，会通过 <code>getSingleton</code>方法中的<code>addSingleton</code>将实例添加到一级缓存中：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">sharedInstance = getSingleton(beanName, () -&gt; &#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="comment">// 准备好后，进行创建当前Bean实例</span></span><br><span class="line">        <span class="keyword">return</span> createBean(beanName, mbd, args);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">catch</span> (BeansException ex) &#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-<p>在<code>getSingleton</code>中调用了<code>addSingleton(beanName, singletonObject)</code>,将完成的实例放到一级缓存中。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">addSingleton</span><span class="params">(String beanName, Object singletonObject)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (<span class="keyword">this</span>.singletonObjects) &#123;</span><br><span class="line">        <span class="keyword">this</span>.singletonObjects.put(beanName, singletonObject);</span><br><span class="line">        <span class="keyword">this</span>.singletonFactories.remove(beanName);</span><br><span class="line">        <span class="keyword">this</span>.earlySingletonObjects.remove(beanName);</span><br><span class="line">        <span class="keyword">this</span>.registeredSingletons.add(beanName);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h5 id="5-返回A的创建过程，继续创建A"><a href="#5-返回A的创建过程，继续创建A" class="headerlink" title="5. 返回A的创建过程，继续创建A"></a>5. 返回A的创建过程，继续创建A</h5><p>最后创建完成A后，同样会将A放到一级缓存中。至此对象A，对象B全部创建完成。利用了三级缓存机制避免了循环引用。</p>
-<h4 id="populateBean-执行Bean的初始化"><a href="#populateBean-执行Bean的初始化" class="headerlink" title="populateBean 执行Bean的初始化"></a>populateBean 执行Bean的初始化</h4><p>在上一节中提到了，初始化对象时，需要调用<code>populateBean(beanName, mbd, instanceWrapper)</code>该方法来达到属性值的填充。</p>
-<p>忽略 <code>BeanPostProcessor</code>后置处理器，那么实际上步骤比较简单明了：</p>
-<ol>
-<li>如果不存在属性值，则直接返回，跳过这个方法。</li>
-<li>如果存在，先获得所有的属性值，依据AutoWired属性，将依赖项注入到容器中</li>
-<li>最后进行真正的属性填充</li>
-</ol>
-<h5 id="1-检查是否存在属性"><a href="#1-检查是否存在属性" class="headerlink" title="1. 检查是否存在属性"></a>1. 检查是否存在属性</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (bw == <span class="keyword">null</span>) &#123;</span><br><span class="line">  <span class="keyword">if</span> (mbd.hasPropertyValues()) &#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> BeanCreationException(</span><br><span class="line">      mbd.getResourceDescription(), beanName, <span class="string">"Cannot apply property values to null instance"</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// 如果没有直接跳过</span></span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h5 id="2-依据ByName还是ByType进行属性的注入"><a href="#2-依据ByName还是ByType进行属性的注入" class="headerlink" title="2.依据ByName还是ByType进行属性的注入"></a>2.依据ByName还是ByType进行属性的注入</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 获得属性</span></span><br><span class="line">PropertyValues pvs = (mbd.hasPropertyValues() ? mbd.getPropertyValues() : <span class="keyword">null</span>);</span><br><span class="line"><span class="comment">// 获得autowired类型（by type 还是 by name）核心是pvs.add(propertyName, bean); 获得适当的bean当道pvs中</span></span><br><span class="line"><span class="keyword">int</span> resolvedAutowireMode = mbd.getResolvedAutowireMode();</span><br><span class="line"><span class="keyword">if</span> (resolvedAutowireMode == AUTOWIRE_BY_NAME || resolvedAutowireMode == AUTOWIRE_BY_TYPE) &#123;</span><br><span class="line">  MutablePropertyValues newPvs = <span class="keyword">new</span> MutablePropertyValues(pvs);</span><br><span class="line">  <span class="comment">// 如果适用，按名称添加基于自动装配的属性值。</span></span><br><span class="line">  <span class="keyword">if</span> (resolvedAutowireMode == AUTOWIRE_BY_NAME) &#123;</span><br><span class="line">    autowireByName(beanName, mbd, bw, newPvs);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 如果适用，按类型添加基于自动装配的属性值。.</span></span><br><span class="line">  <span class="keyword">if</span> (resolvedAutowireMode == AUTOWIRE_BY_TYPE) &#123;</span><br><span class="line">    <span class="comment">// 其中resolveDependency包含JSR330中的Inject方法</span></span><br><span class="line">    autowireByType(beanName, mbd, bw, newPvs);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 但是不管是ByType还是ByName最后都是调用getBean方法先获取属性依赖Bean</span></span><br><span class="line">  pvs = newPvs;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>根据 <code>resolvedAutowireMode</code> 的值的不同，选择不同的装配方式</p>
-<ul>
-<li>按名称注入，使用@Autowired默认的方式</li>
-<li>按类型注入，使用@Resource或者使用JSR330标准中的@Inject注解的默认方式</li>
-</ul>
-<p>但是，不管依赖哪种方式进行装配，最后都会使用getBean来获取属性依赖，装配到容器中，并将值放到 <code>newPvs</code> 等待填充。</p>
-<h5 id="3-属性填充"><a href="#3-属性填充" class="headerlink" title="3.属性填充"></a>3.属性填充</h5><p>最后通过使用 <code>applyPropertyValues</code> 方法实现属性的填充：</p>
-<p>主要步骤如下：</p>
-<ol>
-<li>如果pvs是空的，则直接返回</li>
-<li>否则创建一个<code>deep copy</code>，用于解决所有对值的引用，对未被解析的先解析&amp;&amp;已解析的直接加入<code>deepCopy</code>中。</li>
-<li>获取到 <code>deepCopy</code> 后，使用 <code>setPropertyValues</code> 添加到<code>BeanWrapper</code>中</li>
-</ol>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">applyPropertyValues</span><span class="params">(String beanName, BeanDefinition mbd, BeanWrapper bw, PropertyValues pvs)</span> </span>&#123;</span><br><span class="line">	<span class="comment">// 如果pvs内容是空的，则直接return</span></span><br><span class="line">	<span class="keyword">if</span> (pvs.isEmpty()) &#123;</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 设置 SecurityContextProvider</span></span><br><span class="line">	<span class="keyword">if</span> (System.getSecurityManager() != <span class="keyword">null</span> &amp;&amp; bw <span class="keyword">instanceof</span> BeanWrapperImpl) &#123;</span><br><span class="line">		((BeanWrapperImpl) bw).setSecurityContext(getAccessControlContext());</span><br><span class="line">	&#125;</span><br><span class="line">	MutablePropertyValues mpvs = <span class="keyword">null</span>;</span><br><span class="line">	List&lt;PropertyValue&gt; original;</span><br><span class="line">	<span class="keyword">if</span> (pvs <span class="keyword">instanceof</span> MutablePropertyValues) &#123;</span><br><span class="line">		mpvs = (MutablePropertyValues) pvs;</span><br><span class="line">		<span class="comment">// 已经是转化过的</span></span><br><span class="line">		<span class="keyword">if</span> (mpvs.isConverted()) &#123;</span><br><span class="line">			<span class="comment">// Shortcut: use the pre-converted values as-is.</span></span><br><span class="line">			<span class="comment">// 照原样使用预先转换的值</span></span><br><span class="line">			<span class="keyword">try</span> &#123;</span><br><span class="line">				bw.setPropertyValues(mpvs);</span><br><span class="line">				<span class="keyword">return</span>;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">catch</span> (BeansException ex) &#123;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		original = mpvs.getPropertyValueList(); <span class="comment">// 获取一个List&lt;PropertyValue&gt; 属性组</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span> &#123;</span><br><span class="line">		original = Arrays.asList(pvs.getPropertyValues());</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 获得 BeanDefinitionValueResolver</span></span><br><span class="line">	TypeConverter converter = getCustomTypeConverter();</span><br><span class="line">	<span class="keyword">if</span> (converter == <span class="keyword">null</span>) &#123;</span><br><span class="line">		converter = bw;</span><br><span class="line">	&#125;</span><br><span class="line">	BeanDefinitionValueResolver valueResolver = <span class="keyword">new</span> BeanDefinitionValueResolver(<span class="keyword">this</span>, beanName, mbd, converter);</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Create a deep copy, resolving any references for values. </span></span><br><span class="line">	<span class="comment">// 创建一个深层副本，以解决所有对值的引用。对未被解析的先解析/已解析的直接加入deepCopy中</span></span><br><span class="line">	List&lt;PropertyValue&gt; deepCopy = <span class="keyword">new</span> ArrayList&lt;&gt;(original.size());</span><br><span class="line">	<span class="keyword">boolean</span> resolveNecessary = <span class="keyword">false</span>;</span><br><span class="line">	<span class="keyword">for</span> (PropertyValue pv : original) &#123;</span><br><span class="line">		<span class="keyword">if</span> (pv.isConverted()) &#123;</span><br><span class="line">			<span class="comment">// 如果已转化，直接添加到deepCopy中</span></span><br><span class="line">			deepCopy.add(pv);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> &#123;</span><br><span class="line">			<span class="comment">// 获得属性名和属性值</span></span><br><span class="line">			String propertyName = pv.getName();</span><br><span class="line">			Object originalValue = pv.getValue();</span><br><span class="line">			<span class="comment">// 是否是AutowiredPropertyMarker</span></span><br><span class="line">			<span class="keyword">if</span> (originalValue == AutowiredPropertyMarker.INSTANCE) &#123;</span><br><span class="line">				<span class="comment">//获取应用于写入属性值的方法</span></span><br><span class="line">				Method writeMethod = bw.getPropertyDescriptor(propertyName).getWriteMethod();</span><br><span class="line">				<span class="keyword">if</span> (writeMethod == <span class="keyword">null</span>) &#123;</span><br><span class="line">					<span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"Autowire marker for property without write method: "</span> + pv);</span><br><span class="line">				&#125;</span><br><span class="line">				originalValue = <span class="keyword">new</span> DependencyDescriptor(<span class="keyword">new</span> MethodParameter(writeMethod, <span class="number">0</span>), <span class="keyword">true</span>);</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="comment">// 使用valueResolver解析属性值,给定一个PropertyValue，返回一个值，如有必要，解析工厂中对其他bean的任何引用</span></span><br><span class="line">			Object resolvedValue = valueResolver.resolveValueIfNecessary(pv, originalValue);</span><br><span class="line">			Object convertedValue = resolvedValue;</span><br><span class="line">			<span class="keyword">boolean</span> convertible = bw.isWritableProperty(propertyName) &amp;&amp;</span><br><span class="line">					!PropertyAccessorUtils.isNestedOrIndexedProperty(propertyName);</span><br><span class="line">			<span class="keyword">if</span> (convertible) &#123;</span><br><span class="line">				<span class="comment">// 如果可转化，转化这个属性</span></span><br><span class="line">				convertedValue = convertForProperty(resolvedValue, propertyName, bw, converter);</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="comment">// 可能将转换后的值存储在合并的bean定义中，避免对每个创建的bean实例进行重新转换</span></span><br><span class="line">			<span class="keyword">if</span> (resolvedValue == originalValue) &#123;</span><br><span class="line">				<span class="keyword">if</span> (convertible) &#123;</span><br><span class="line">					pv.setConvertedValue(convertedValue);</span><br><span class="line">				&#125;</span><br><span class="line">				deepCopy.add(pv);</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">else</span> <span class="keyword">if</span> (convertible &amp;&amp; originalValue <span class="keyword">instanceof</span> TypedStringValue &amp;&amp;</span><br><span class="line">					!((TypedStringValue) originalValue).isDynamic() &amp;&amp;</span><br><span class="line">					!(convertedValue <span class="keyword">instanceof</span> Collection || ObjectUtils.isArray(convertedValue))) &#123;</span><br><span class="line">				pv.setConvertedValue(convertedValue);</span><br><span class="line">				deepCopy.add(pv);</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">else</span> &#123;</span><br><span class="line">				resolveNecessary = <span class="keyword">true</span>;</span><br><span class="line">				deepCopy.add(<span class="keyword">new</span> PropertyValue(pv, convertedValue));</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> (mpvs != <span class="keyword">null</span> &amp;&amp; !resolveNecessary) &#123;</span><br><span class="line">		<span class="comment">// 设置已转化属性</span></span><br><span class="line">		mpvs.setConverted();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">try</span> &#123;</span><br><span class="line">		<span class="comment">// 放到PropertyValues里面</span></span><br><span class="line">		bw.setPropertyValues(<span class="keyword">new</span> MutablePropertyValues(deepCopy));</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="initializeBean-初始化Bean"><a href="#initializeBean-初始化Bean" class="headerlink" title="initializeBean 初始化Bean"></a>initializeBean 初始化Bean</h4><p>在使用populateBean后，调用initializeBean方法进行bean的init，在init方法内部，可分为一下几部分调用</p>
-<ol>
-<li>invokeAwareMethods 方法，设置Aware属性</li>
-<li>applyBeanPostProcessorsBeforeInitialization 方法，调用 BeanProcessor中的Bean初始化前的后置方法</li>
-<li>invokeInitMethods 方法，激活自定义的init方法</li>
-<li>执行BeanProcessor中的初始化后的后置方法</li>
-</ol>
-<h5 id="1-invokeAwareMethods"><a href="#1-invokeAwareMethods" class="headerlink" title="1. invokeAwareMethods"></a>1. invokeAwareMethods</h5><p>寻找是否满足特定的条件，如果满足则进行相关属性的填充</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">invokeAwareMethods</span><span class="params">(<span class="keyword">final</span> String beanName, <span class="keyword">final</span> Object bean)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (bean <span class="keyword">instanceof</span> Aware) &#123;</span><br><span class="line">	    <span class="comment">// 如果是 BeanNameAware，设置BeanName</span></span><br><span class="line">		<span class="keyword">if</span> (bean <span class="keyword">instanceof</span> BeanNameAware) &#123;</span><br><span class="line">			((BeanNameAware) bean).setBeanName(beanName);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">// 如果是  BeanClassLoaderAware，设置classloader</span></span><br><span class="line">		<span class="keyword">if</span> (bean <span class="keyword">instanceof</span> BeanClassLoaderAware) &#123;</span><br><span class="line">			ClassLoader bcl = getBeanClassLoader();</span><br><span class="line">			<span class="keyword">if</span> (bcl != <span class="keyword">null</span>) &#123;</span><br><span class="line">				((BeanClassLoaderAware) bean).setBeanClassLoader(bcl);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> (bean <span class="keyword">instanceof</span> BeanFactoryAware) &#123;</span><br><span class="line">			((BeanFactoryAware) bean).setBeanFactory(AbstractAutowireCapableBeanFactory.<span class="keyword">this</span>);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h5 id="2-applyBeanPostProcessorsBeforeInitialization"><a href="#2-applyBeanPostProcessorsBeforeInitialization" class="headerlink" title="2. applyBeanPostProcessorsBeforeInitialization"></a>2. applyBeanPostProcessorsBeforeInitialization</h5><p>循环容器中每一个BeanPostProcessor，执行BeanPostProcessor的postProcessBeforeInitialization方法。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Object <span class="title">applyBeanPostProcessorsBeforeInitialization</span><span class="params">(Object existingBean, String beanName)</span></span></span><br><span class="line"><span class="function">		<span class="keyword">throws</span> BeansException </span>&#123;</span><br><span class="line">	Object result = existingBean;</span><br><span class="line">	<span class="keyword">for</span> (BeanPostProcessor processor : getBeanPostProcessors()) &#123;</span><br><span class="line">		Object current = processor.postProcessBeforeInitialization(result, beanName);</span><br><span class="line">		<span class="keyword">if</span> (current == <span class="keyword">null</span>) &#123;</span><br><span class="line">			<span class="keyword">return</span> result;</span><br><span class="line">		&#125;</span><br><span class="line">		result = current;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h5 id="3-invokeInitMethods-执行init方法"><a href="#3-invokeInitMethods-执行init方法" class="headerlink" title="3.invokeInitMethods 执行init方法"></a>3.invokeInitMethods 执行init方法</h5><p>如果是isInitializingBean则先会执行自己的内置方法afterPropertiesSet。如果制定了initMethod，那么后续会通过反射执行这个方法</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">invokeInitMethods</span><span class="params">(String beanName, <span class="keyword">final</span> Object bean, @Nullable RootBeanDefinition mbd)</span></span></span><br><span class="line"><span class="function">			<span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">boolean</span> isInitializingBean = (bean <span class="keyword">instanceof</span> InitializingBean);</span><br><span class="line">	<span class="keyword">if</span> (isInitializingBean &amp;&amp; (mbd == <span class="keyword">null</span> || !mbd.isExternallyManagedInitMethod(<span class="string">"afterPropertiesSet"</span>))) &#123;</span><br><span class="line">		<span class="keyword">if</span> (System.getSecurityManager() != <span class="keyword">null</span>) &#123;</span><br><span class="line">			<span class="keyword">try</span> &#123;</span><br><span class="line">				AccessController.doPrivileged((PrivilegedExceptionAction&lt;Object&gt;) () -&gt; &#123;</span><br><span class="line">					((InitializingBean) bean).afterPropertiesSet();</span><br><span class="line">					<span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">				&#125;, getAccessControlContext());</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> &#123;</span><br><span class="line">			((InitializingBean) bean).afterPropertiesSet();</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (mbd != <span class="keyword">null</span> &amp;&amp; bean.getClass() != NullBean.class) &#123;</span><br><span class="line">		String initMethodName = mbd.getInitMethodName();</span><br><span class="line">		<span class="keyword">if</span> (StringUtils.hasLength(initMethodName) &amp;&amp;</span><br><span class="line">				!(isInitializingBean &amp;&amp; <span class="string">"afterPropertiesSet"</span>.equals(initMethodName)) &amp;&amp;</span><br><span class="line">				!mbd.isExternallyManagedInitMethod(initMethodName)) &#123;</span><br><span class="line">			invokeCustomInitMethod(beanName, bean, mbd);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h5 id="4-applyBeanPostProcessorsAfterInitialization"><a href="#4-applyBeanPostProcessorsAfterInitialization" class="headerlink" title="4.applyBeanPostProcessorsAfterInitialization"></a>4.applyBeanPostProcessorsAfterInitialization</h5><p>循环容器中每一个BeanPostProcessor，执行BeanPostProcessor的 postProcessAfterInitialization 方法。</p>
-<p>至此Bean的实例化过程就大致完成了。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-<div>
-      
-</div>
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2986,7 +2730,7 @@
               
                 <a href="/archives/%7C%7C%20archive">
               
-                  <span class="site-state-item-count">103</span>
+                  <span class="site-state-item-count">104</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -3060,7 +2804,15 @@
              
              
                <li>
+                 <a href="/2020/05/22/%EF%BC%88%E4%B8%89%EF%BC%89%E8%87%AA%E5%8A%A8%E8%A3%85%E9%85%8D/" title="（三）自动装配" target="_blank">（三）自动装配</a>
+               </li>
+             
+               <li>
                  <a href="/2020/05/22/%EF%BC%88%E4%BA%8C%EF%BC%89Bean%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/" title="（二）Bean的生命周期" target="_blank">（二）Bean的生命周期</a>
+               </li>
+             
+               <li>
+                 <a href="/2020/05/10/%E6%B7%B1%E5%85%A5JVM%EF%BC%88%E4%B8%80%EF%BC%89%E7%B1%BB%E5%8A%A0%E8%BD%BD%E8%BF%87%E7%A8%8B%E5%92%8C%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D/" title="深入JVM（一）类加载过程和内存分配" target="_blank">深入JVM（一）类加载过程和内存分配</a>
                </li>
              
                <li>
@@ -3069,14 +2821,6 @@
              
                <li>
                  <a href="/2020/04/16/Java%E7%9A%84%E6%B7%B1%E6%8B%B7%E8%B4%9D%E5%92%8C%E6%B5%85%E6%8B%B7%E8%B4%9D/" title="Java的深拷贝和浅拷贝" target="_blank">Java的深拷贝和浅拷贝</a>
-               </li>
-             
-               <li>
-                 <a href="/2020/04/05/Jav%20IO%E6%B5%85%E6%9E%90/" title="Java IO浅析" target="_blank">Java IO浅析</a>
-               </li>
-             
-               <li>
-                 <a href="/2020/03/29/%E7%BA%BF%E7%A8%8B%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/" title="线程生命周期" target="_blank">线程生命周期</a>
                </li>
              
            </ul>
@@ -3132,7 +2876,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共122.6k字</span>
+  <span class="post-count">博客全站共126.5k字</span>
 </div>
 
 
