@@ -305,6 +305,223 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/10/08/2018-10-08-LinkedList%E7%9A%84%E6%BA%90%E7%A0%81%E6%9F%A5%E7%9C%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="NanYin">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NanYin的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/10/08/2018-10-08-LinkedList%E7%9A%84%E6%BA%90%E7%A0%81%E6%9F%A5%E7%9C%8B/" itemprop="url">LinkedList的源码查看</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-10-08T15:00:00Z">
+                2018-10-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  1.8k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  8
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="LinkedList的源码查看"><a href="#LinkedList的源码查看" class="headerlink" title="LinkedList的源码查看"></a>LinkedList的源码查看</h1><h2 id="结构源码"><a href="#结构源码" class="headerlink" title="结构源码"></a>结构源码</h2><p>LinkedList是一个<strong>双向链表</strong>，因为它具有next和prev的前后引用。所以每次添加元素，移除元素时，需要考虑两个指针的引用情况，保证对前一个元素的完全断开和新元素的完全引用，如果在指定位置上连接元素的过程和结构可以参考下图：</p>
+<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20191219112513.png" alt="LinkedList结构参考"></p>
+<h3 id="依赖结构"><a href="#依赖结构" class="headerlink" title="依赖结构"></a>依赖结构</h3><div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* LinkedList的内部变量 可以看出LinkedList其实就是一个链表 */</span></span><br><span class="line"><span class="keyword">transient</span> <span class="keyword">int</span> size = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 指向首节点</span></span><br><span class="line"><span class="comment"> * Invariant: (first == null &amp;&amp; last == null) ||</span></span><br><span class="line"><span class="comment"> *            (first.prev == null &amp;&amp; first.item != null)</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">transient</span> Node&lt;E&gt; first;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 指向尾节点</span></span><br><span class="line"><span class="comment"> * Invariant: (first == null &amp;&amp; last == null) ||</span></span><br><span class="line"><span class="comment"> *            (last.next == null &amp;&amp; last.item != null)</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">transient</span> Node&lt;E&gt; last;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 内部node实现 */</span></span><br><span class="line">    E item;</span><br><span class="line">    Node&lt;E&gt; next;</span><br><span class="line">    Node&lt;E&gt; prev;</span><br><span class="line"><span class="comment">/* 双向链表 */</span></span><br><span class="line">    Node(Node&lt;E&gt; prev, E element, Node&lt;E&gt; next) &#123;</span><br><span class="line">        <span class="keyword">this</span>.item = element;</span><br><span class="line">        <span class="keyword">this</span>.next = next;</span><br><span class="line">        <span class="keyword">this</span>.prev = prev;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="LinkedList构造函数"><a href="#LinkedList构造函数" class="headerlink" title="LinkedList构造函数"></a>LinkedList构造函数</h3><div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 空构造函数 比较常用 */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">LinkedList</span><span class="params">()</span> </span>&#123;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 有collection参数的构造函数 */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">LinkedList</span><span class="params">(Collection&lt;? extends E&gt; c)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>();</span><br><span class="line">    addAll(c);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">addAll</span><span class="params">(Collection&lt;? extends E&gt; c)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> addAll(size, c);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/* 参数：当前数量也就是要得到当前链表的位置 */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">addAll</span><span class="params">(<span class="keyword">int</span> index, Collection&lt;? extends E&gt; c)</span> </span>&#123;</span><br><span class="line">    checkPositionIndex(index);</span><br><span class="line"></span><br><span class="line">    Object[] a = c.toArray();</span><br><span class="line">    <span class="keyword">int</span> numNew = a.length;</span><br><span class="line">    <span class="keyword">if</span> (numNew == <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    Node&lt;E&gt; pred, succ;</span><br><span class="line">    <span class="comment">// 对插入前情况的判断</span></span><br><span class="line">    <span class="keyword">if</span> (index == size) &#123;</span><br><span class="line"><span class="comment">//          如果在尾部插入 pred=最后一个节点</span></span><br><span class="line">        succ = <span class="keyword">null</span>;</span><br><span class="line">        pred = last;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line"><span class="comment">//          否则在中部插入 succ=当前节点 pred=前一节点</span></span><br><span class="line"><span class="comment">/* - - - - - - - - -  */</span></span><br><span class="line"><span class="comment">/*     ^ ^ */</span></span><br><span class="line"><span class="comment">/*     1 2  如果想在2位置插入元素，前一个元素不动，将后面的元素后移*/</span></span><br><span class="line">        succ = node(index);</span><br><span class="line">        pred = succ.prev;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (Object o : a) &#123;</span><br><span class="line">        <span class="meta">@SuppressWarnings</span>(<span class="string">"unchecked"</span>) E e = (E) o;</span><br><span class="line"><span class="comment">// 构造方法 前节点/内容/后节点 始终pred是前置节点</span></span><br><span class="line">        Node&lt;E&gt; newNode = <span class="keyword">new</span> Node&lt;&gt;(pred, e, <span class="keyword">null</span>);</span><br><span class="line">        <span class="keyword">if</span> (pred == <span class="keyword">null</span>)</span><br><span class="line"><span class="comment">// 如果pred==null 说明 本身列表开始就是空的或者在开头插入元素</span></span><br><span class="line">            first = newNode;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line"><span class="comment">// 否则在后面插入newNode</span></span><br><span class="line">            pred.next = newNode;</span><br><span class="line"><span class="comment">// 向后循环节点</span></span><br><span class="line">        pred = newNode;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="comment">// 如果succ==null 说明到最后一个节点后位置 </span></span><br><span class="line"><span class="comment">// 将最后的新插入的元素pred赋值给last</span></span><br><span class="line">    <span class="keyword">if</span> (succ == <span class="keyword">null</span>) &#123;</span><br><span class="line">        last = pred;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="comment">/* 否则插入在succ前 */</span></span><br><span class="line">        pred.next = succ;</span><br><span class="line">        succ.prev = pred;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    size += numNew;</span><br><span class="line">    modCount++;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="基本方法"><a href="#基本方法" class="headerlink" title="基本方法"></a>基本方法</h2><h3 id="添加"><a href="#添加" class="headerlink" title="添加"></a>添加</h3><div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* add方法默认调用linklast方法，也就是向后添加元素 */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">add</span><span class="params">(E e)</span> </span>&#123;</span><br><span class="line">    linkLast(e);</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 同样有addLast 达到相同的目的，就是不返回任何东西 */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addLast</span><span class="params">(E e)</span> </span>&#123;</span><br><span class="line">        linkLast(e);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>使用add方法后会默认的调用 linkLast 后将元素添加至List的末尾。</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">linkLast</span><span class="params">(E e)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> Node&lt;E&gt; l = last;</span><br><span class="line">    <span class="comment">/* 获得最后一个元素当作新节点的前置节点 */</span></span><br><span class="line">    <span class="keyword">final</span> Node&lt;E&gt; newNode = <span class="keyword">new</span> Node&lt;&gt;(l, e, <span class="keyword">null</span>);</span><br><span class="line">    <span class="comment">/* 把当前节点付给last */</span></span><br><span class="line">    last = newNode;</span><br><span class="line">    <span class="keyword">if</span> (l == <span class="keyword">null</span>)</span><br><span class="line">        first = newNode;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    <span class="comment">// 将last的next指向新节点,完成双方相互链接</span></span><br><span class="line">        l.next = newNode;</span><br><span class="line">    size++;</span><br><span class="line">    modCount++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>当然也可以调用方法在最前面添加元素</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addFirst</span><span class="params">(E e)</span> </span>&#123;</span><br><span class="line">    linkFirst(e);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">linkFirst</span><span class="params">(E e)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 获取首节点</span></span><br><span class="line">    <span class="keyword">final</span> Node&lt;E&gt; f = first;</span><br><span class="line">    <span class="comment">// 设置新节点</span></span><br><span class="line">    <span class="keyword">final</span> Node&lt;E&gt; newNode = <span class="keyword">new</span> Node&lt;&gt;(<span class="keyword">null</span>, e, f);</span><br><span class="line">    <span class="comment">//设置新节点为首节点</span></span><br><span class="line">    first = newNode;</span><br><span class="line">    <span class="keyword">if</span> (f == <span class="keyword">null</span>)</span><br><span class="line">        last = newNode;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    <span class="comment">// 将新节点与原首节点连接</span></span><br><span class="line">        f.prev = newNode;</span><br><span class="line">    size++;</span><br><span class="line">    modCount++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="移除"><a href="#移除" class="headerlink" title="移除"></a>移除</h3><h4 id="remove方法"><a href="#remove方法" class="headerlink" title="remove方法"></a>remove方法</h4><div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> E <span class="title">remove</span><span class="params">(<span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">  <span class="comment">/* 先判断是否越界 */</span></span><br><span class="line">      checkElementIndex(index);</span><br><span class="line">      <span class="keyword">return</span> unlink(node(index));</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line"><span class="function">E <span class="title">unlink</span><span class="params">(Node&lt;E&gt; x)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// assert x != null;</span></span><br><span class="line">    <span class="keyword">final</span> E element = x.item;</span><br><span class="line">    <span class="keyword">final</span> Node&lt;E&gt; next = x.next;</span><br><span class="line">    <span class="keyword">final</span> Node&lt;E&gt; prev = x.prev;</span><br><span class="line"><span class="comment">/* 如果prev是空 说明当前元素是第一个元素 如 A B C 移除A，直接将B指向首节点即可 */</span></span><br><span class="line">    <span class="keyword">if</span> (prev == <span class="keyword">null</span>) &#123;</span><br><span class="line">        first = next;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="comment">/* 当前节点与前后节点断绝链接 如ABC移除B，则需要将A.next指向C，B.pre指向空 */</span></span><br><span class="line">        prev.next = next;</span><br><span class="line">        x.prev = <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 因为LinkedList为双向链表，需要取消next和prev</span></span><br><span class="line"><span class="comment">/* 如果是最后一个元素 */</span></span><br><span class="line">    <span class="keyword">if</span> (next == <span class="keyword">null</span>) &#123;</span><br><span class="line">        last = prev;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="comment">/* 当前节点与前后节点断绝链接 因为LinkedList是双向链表 */</span></span><br><span class="line">        next.prev = prev;</span><br><span class="line">        x.next = <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="comment">/* 置空 */</span></span><br><span class="line">    x.item = <span class="keyword">null</span>; </span><br><span class="line">    size--;</span><br><span class="line">    modCount++;</span><br><span class="line">    <span class="keyword">return</span> element;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<h4 id="removeFirst"><a href="#removeFirst" class="headerlink" title="removeFirst"></a>removeFirst</h4><div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> E <span class="title">removeFirst</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> Node&lt;E&gt; f = first;</span><br><span class="line">    <span class="keyword">if</span> (f == <span class="keyword">null</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> NoSuchElementException();</span><br><span class="line">    <span class="keyword">return</span> unlinkFirst(f);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> E <span class="title">unlinkFirst</span><span class="params">(Node&lt;E&gt; f)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// assert f == first &amp;&amp; f != null;</span></span><br><span class="line">    <span class="keyword">final</span> E element = f.item;</span><br><span class="line">    <span class="keyword">final</span> Node&lt;E&gt; next = f.next;</span><br><span class="line">    f.item = <span class="keyword">null</span>;</span><br><span class="line">    f.next = <span class="keyword">null</span>; <span class="comment">// help GC</span></span><br><span class="line">    first = next;</span><br><span class="line">    <span class="keyword">if</span> (next == <span class="keyword">null</span>)</span><br><span class="line">        last = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        next.prev = <span class="keyword">null</span>;</span><br><span class="line">    size--;</span><br><span class="line">    modCount++;</span><br><span class="line">    <span class="keyword">return</span> element;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<h4 id="removeLast-和removeFirst同理"><a href="#removeLast-和removeFirst同理" class="headerlink" title="removeLast 和removeFirst同理"></a>removeLast 和removeFirst同理</h4><h3 id="赋值取值操作"><a href="#赋值取值操作" class="headerlink" title="赋值取值操作"></a>赋值取值操作</h3><h4 id="get方法"><a href="#get方法" class="headerlink" title="get方法"></a>get方法</h4><div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> E <span class="title">get</span><span class="params">(<span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">    checkElementIndex(index);</span><br><span class="line">    <span class="comment">/* 得到index处节点的item信息 */</span></span><br><span class="line">    <span class="keyword">return</span> node(index).item;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Node&lt;E&gt; <span class="title">node</span><span class="params">(<span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// assert isElementIndex(index);</span></span><br><span class="line">        <span class="comment">// 分两个方向查找，1.如果给定的index小于size的一半</span></span><br><span class="line">    <span class="keyword">if</span> (index &lt; (size &gt;&gt; <span class="number">1</span>)) &#123;</span><br><span class="line">        Node&lt;E&gt; x = first;</span><br><span class="line">        <span class="comment">//从头开始</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; index; i++)</span><br><span class="line">            x = x.next;</span><br><span class="line">            <span class="comment">// 返回最后一个</span></span><br><span class="line">        <span class="keyword">return</span> x;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// 2.如果给定的index大于size的一半</span></span><br><span class="line">        Node&lt;E&gt; x = last;</span><br><span class="line">        <span class="comment">// 从尾部开始找</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = size - <span class="number">1</span>; i &gt; index; i--)</span><br><span class="line">            x = x.prev;</span><br><span class="line">            <span class="comment">//返回最后的那个</span></span><br><span class="line">        <span class="keyword">return</span> x;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<h4 id="set方法"><a href="#set方法" class="headerlink" title="set方法"></a>set方法</h4><div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> E <span class="title">set</span><span class="params">(<span class="keyword">int</span> index, E element)</span> </span>&#123;</span><br><span class="line">    checkElementIndex(index);</span><br><span class="line">    Node&lt;E&gt; x = node(index);</span><br><span class="line">    E oldVal = x.item;</span><br><span class="line">    x.item = element;</span><br><span class="line">    <span class="comment">/* set方法会返回原来的值 */</span></span><br><span class="line">    <span class="keyword">return</span> oldVal;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="LinkedList中的栈操作"><a href="#LinkedList中的栈操作" class="headerlink" title="LinkedList中的栈操作"></a>LinkedList中的栈操作</h3><h4 id="peek方法"><a href="#peek方法" class="headerlink" title="peek方法"></a>peek方法</h4><div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Retrieves, but does not remove, the head (first element) of this list.</span></span><br><span class="line"><span class="comment"> * 只是检索栈首元素，但并不弹出</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> the head of this list, or &#123;<span class="doctag">@code</span> null&#125; if this list is empty</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@since</span> 1.5</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> E <span class="title">peek</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> Node&lt;E&gt; f = first;</span><br><span class="line">    <span class="keyword">return</span> (f == <span class="keyword">null</span>) ? <span class="keyword">null</span> : f.item;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>同理 <code>peekFirst</code> 和 <code>peekLast</code></p>
+<h4 id="poll方法"><a href="#poll方法" class="headerlink" title="poll方法"></a>poll方法</h4><div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Retrieves and removes the head (first element) of this list.</span></span><br><span class="line"><span class="comment"> * 检索并且移除栈首元素 unlinkFirst是可以返回移除元素的</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> the head of this list, or &#123;<span class="doctag">@code</span> null&#125; if this list is empty</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@since</span> 1.5</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> E <span class="title">poll</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> Node&lt;E&gt; f = first;</span><br><span class="line">    <span class="keyword">return</span> (f == <span class="keyword">null</span>) ? <span class="keyword">null</span> : unlinkFirst(f);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>同理  <code>pollFirst</code> 和 <code>pollLast</code></p>
+<h4 id="push方法"><a href="#push方法" class="headerlink" title="push方法"></a>push方法</h4><div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Pushes an element onto the stack represented by this list.  In other</span></span><br><span class="line"><span class="comment"> * words, inserts the element at the front of this list.</span></span><br><span class="line"><span class="comment"> * 在栈首堆一个元素</span></span><br><span class="line"><span class="comment"> * &lt;p&gt;This method is equivalent to &#123;<span class="doctag">@link</span> #addFirst&#125;.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> e the element to push</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@since</span> 1.6</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">push</span><span class="params">(E e)</span> </span>&#123;</span><br><span class="line">    addFirst(e);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<h4 id="pop方法"><a href="#pop方法" class="headerlink" title="pop方法"></a>pop方法</h4><div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Pops an element from the stack represented by this list.  In other</span></span><br><span class="line"><span class="comment"> * words, removes and returns the first element of this list.</span></span><br><span class="line"><span class="comment"> * 出栈</span></span><br><span class="line"><span class="comment"> * &lt;p&gt;This method is equivalent to &#123;<span class="doctag">@link</span> #removeFirst()&#125;.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> the element at the front of this list (which is the top</span></span><br><span class="line"><span class="comment"> *         of the stack represented by this list)</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@throws</span> NoSuchElementException if this list is empty</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@since</span> 1.6</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> E <span class="title">pop</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> removeFirst();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<h4 id="offer方法"><a href="#offer方法" class="headerlink" title="offer方法"></a>offer方法</h4><p>实际上 <code>offer</code> 是调用的 <code>add</code> 方法，但是区别就在 <code>linkedlist</code> 继承了 <code>Dequ</code> 和 <code>List</code> 父类。一般当 <code>queue</code> 用的时候要用 <code>offer/push/pop</code>  而当使用 <code>list</code> 的时候用 <code>add/remove</code> 。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>通过查看LinkedList的源码可以发现：</p>
+<ol>
+<li>首先可以确定LinkedLIst是一个通过Node结构实现的双向链表</li>
+<li>其次通过add和remove方法可以看出它不向ArrayList一样，需要对容量进行扩容操作，而是通过‘指针’指向前后节点实现的‘连接’。</li>
+<li>然后通过get方法可以看出查找一个特定位置上的非常麻烦，需要遍历List，尽管使用了二分的方式进行了优化，但是查找性能依旧不能和ArrayList相比。</li>
+</ol>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+<div>
+      
+</div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/10/04/2018-10-04-ArrayList%E7%9A%84%E6%BA%90%E7%A0%81%E6%9F%A5%E7%9C%8B/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -466,31 +683,31 @@
 <p>其中 <strong>elementData数组是ArrayList的存储结构,也就是说ArrayList使用数组存储元素</strong>, 但同时是使用transient进行修饰的,也就是不能序列化的,但实际上ArrayList实现了Serializable接口,那么这么做的原因时什么?</p>
 <p>因为ArrayList具有自动扩容机制,元素到一定的大小就会自动扩容,这就会导致ArrayList中的元素一定不是满的,也就是说如果当前ArrayList的大小时50,实际元素可能远远小于50,此时就没有将全部elementData都序列化的必要了.</p>
 <p>所以,ArrayList提供了一个writeObject方法,专门对elementData进行序列化.里面使用对小于size的所有元素进行序列化,就避免了上面阐述的问题.</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;size; i++) &#123;</span><br><span class="line">    s.writeObject(elementData[i]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;size; i++) &#123;</span><br><span class="line">    s.writeObject(elementData[i]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
 
-<h2 id="构造函数源码"><a href="#构造函数源码" class="headerlink" title="构造函数源码"></a>构造函数源码</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 没有参数的情况下 */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">ArrayList</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 设置默认的内容为&#123;&#125;</span></span><br><span class="line">    <span class="keyword">this</span>.elementData = DEFAULTCAPACITY_EMPTY_ELEMENTDATA;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/* 默认是拥有默认容量（10）的空的 array list */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Object[] DEFAULTCAPACITY_EMPTY_ELEMENTDATA = &#123;&#125;;</span><br><span class="line"><span class="comment">/* 这个默认的容量是定义好的10  */</span></span><br><span class="line"> <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> DEFAULT_CAPACITY = <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 当参数是容量的大小的时候  */</span></span><br><span class="line"> <span class="function"><span class="keyword">public</span> <span class="title">ArrayList</span><span class="params">(<span class="keyword">int</span> initialCapacity)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (initialCapacity &gt; <span class="number">0</span>) &#123;</span><br><span class="line">      <span class="comment">/* 如果自定义初始容量大小*/</span></span><br><span class="line">        <span class="keyword">this</span>.elementData = <span class="keyword">new</span> Object[initialCapacity];</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (initialCapacity == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">this</span>.elementData = EMPTY_ELEMENTDATA;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="comment">/* 如果参数小于0 报参数异常的错误（IllegalArgumentException） */</span></span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"Illegal Capacity: "</span>+</span><br><span class="line">                                           initialCapacity);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/* 当参数是一个Collection结构的时候 */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">ArrayList</span><span class="params">(Collection&lt;? extends E&gt; c)</span> </span>&#123;</span><br><span class="line">     elementData = c.toArray();</span><br><span class="line">     <span class="keyword">if</span> ((size = elementData.length) != <span class="number">0</span>) &#123;</span><br><span class="line">         <span class="comment">// c.toArray might (incorrectly) not return Object[] (see 6260652)</span></span><br><span class="line">         <span class="keyword">if</span> (elementData.getClass() != Object[].class)</span><br><span class="line">         <span class="comment">/* 如果不是object类型的话 转换成object类型 */</span></span><br><span class="line">             elementData = Arrays.copyOf(elementData, size, Object[].class);</span><br><span class="line">     &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">         <span class="comment">// replace with empty array.</span></span><br><span class="line">         <span class="keyword">this</span>.elementData = EMPTY_ELEMENTDATA;</span><br><span class="line">     &#125;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<h2 id="构造函数源码"><a href="#构造函数源码" class="headerlink" title="构造函数源码"></a>构造函数源码</h2><div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 没有参数的情况下 */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">ArrayList</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 设置默认的内容为&#123;&#125;</span></span><br><span class="line">    <span class="keyword">this</span>.elementData = DEFAULTCAPACITY_EMPTY_ELEMENTDATA;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/* 默认是拥有默认容量（10）的空的 array list */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Object[] DEFAULTCAPACITY_EMPTY_ELEMENTDATA = &#123;&#125;;</span><br><span class="line"><span class="comment">/* 这个默认的容量是定义好的10  */</span></span><br><span class="line"> <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> DEFAULT_CAPACITY = <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 当参数是容量的大小的时候  */</span></span><br><span class="line"> <span class="function"><span class="keyword">public</span> <span class="title">ArrayList</span><span class="params">(<span class="keyword">int</span> initialCapacity)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (initialCapacity &gt; <span class="number">0</span>) &#123;</span><br><span class="line">      <span class="comment">/* 如果自定义初始容量大小*/</span></span><br><span class="line">        <span class="keyword">this</span>.elementData = <span class="keyword">new</span> Object[initialCapacity];</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (initialCapacity == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">this</span>.elementData = EMPTY_ELEMENTDATA;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="comment">/* 如果参数小于0 报参数异常的错误（IllegalArgumentException） */</span></span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"Illegal Capacity: "</span>+</span><br><span class="line">                                           initialCapacity);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/* 当参数是一个Collection结构的时候 */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">ArrayList</span><span class="params">(Collection&lt;? extends E&gt; c)</span> </span>&#123;</span><br><span class="line">     elementData = c.toArray();</span><br><span class="line">     <span class="keyword">if</span> ((size = elementData.length) != <span class="number">0</span>) &#123;</span><br><span class="line">         <span class="comment">// c.toArray might (incorrectly) not return Object[] (see 6260652)</span></span><br><span class="line">         <span class="keyword">if</span> (elementData.getClass() != Object[].class)</span><br><span class="line">         <span class="comment">/* 如果不是object类型的话 转换成object类型 */</span></span><br><span class="line">             elementData = Arrays.copyOf(elementData, size, Object[].class);</span><br><span class="line">     &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">         <span class="comment">// replace with empty array.</span></span><br><span class="line">         <span class="keyword">this</span>.elementData = EMPTY_ELEMENTDATA;</span><br><span class="line">     &#125;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure></div>
 
 <h2 id="常用方法源码"><a href="#常用方法源码" class="headerlink" title="常用方法源码"></a>常用方法源码</h2><p>在看源码之前先通过下面这张图片了解以下如果新建一个ArrayList后添加一个元素的大致过程：</p>
 <p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/ArrayList%E6%B7%BB%E5%8A%A0%E8%BF%87%E7%A8%8B%E5%88%86%E6%9E%90.png" alt="过程图"></p>
 <ul>
 <li>add 添加方法</li>
 </ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 只有一个参数的添加 */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">add</span><span class="params">(E e)</span> </span>&#123;</span><br><span class="line">    <span class="comment">/* 扩充容量 */</span></span><br><span class="line">    ensureCapacityInternal(size + <span class="number">1</span>);  <span class="comment">// Increments modCount!!</span></span><br><span class="line">    <span class="comment">/* ArrayList其实就是个数组 将新add的值放到数组的最后面 */</span></span><br><span class="line">    elementData[size++] = e;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">ensureCapacityInternal</span><span class="params">(<span class="keyword">int</span> minCapacity)</span> </span>&#123;</span><br><span class="line">      ensureExplicitCapacity(calculateCapacity(elementData, minCapacity));</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">calculateCapacity</span><span class="params">(Object[] elementData, <span class="keyword">int</span> minCapacity)</span> </span>&#123;</span><br><span class="line">  <span class="comment">/* 如果是空的话返回 默认或当前 */</span></span><br><span class="line">    <span class="keyword">if</span> (elementData == DEFAULTCAPACITY_EMPTY_ELEMENTDATA) &#123;</span><br><span class="line">    <span class="comment">// 如果elementData == &#123;&#125;时，返回给出的值和默认的DEFAULT_CAPACITY其中大的那个</span></span><br><span class="line">        <span class="keyword">return</span> Math.max(DEFAULT_CAPACITY, minCapacity);</span><br><span class="line">     &#125;</span><br><span class="line">    <span class="keyword">return</span> minCapacity;</span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">ensureExplicitCapacity</span><span class="params">(<span class="keyword">int</span> minCapacity)</span> </span>&#123;</span><br><span class="line">  <span class="comment">/* The number of times this list has been &lt;i&gt;structurally modified&lt;/i&gt;. */</span></span><br><span class="line">  <span class="comment">// 这个modCount 指的是数据结构改变的次数（比如添加、移除元素）</span></span><br><span class="line">    modCount++;</span><br><span class="line">    <span class="comment">// overflow-conscious code</span></span><br><span class="line">    <span class="keyword">if</span> (minCapacity - elementData.length &gt; <span class="number">0</span>)</span><br><span class="line">    <span class="comment">/* 如果当前的容量大于给定的长度的时候 需要扩充 */</span></span><br><span class="line">        grow(minCapacity);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">grow</span><span class="params">(<span class="keyword">int</span> minCapacity)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// overflow-conscious code</span></span><br><span class="line">    <span class="keyword">int</span> oldCapacity = elementData.length; <span class="comment">// 原长度</span></span><br><span class="line">    <span class="keyword">int</span> newCapacity = oldCapacity + (oldCapacity &gt;&gt; <span class="number">1</span>); <span class="comment">//新长度 右移运算。长度为1.5倍的原长度</span></span><br><span class="line">    <span class="keyword">if</span> (newCapacity - minCapacity &lt; <span class="number">0</span>)</span><br><span class="line">        newCapacity = minCapacity;</span><br><span class="line">   <span class="keyword">if</span> (newCapacity - MAX_ARRAY_SIZE &gt; <span class="number">0</span>)</span><br><span class="line">        newCapacity = hugeCapacity(minCapacity);</span><br><span class="line">    <span class="comment">// minCapacity is usually close to size, so this is a win:</span></span><br><span class="line">    <span class="comment">// 使用Arrays.copyof方法进行最终扩容，所以ArrayList添加元素时比较耗费性能。</span></span><br><span class="line">    elementData = Arrays.copyOf(elementData, newCapacity);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 只有一个参数的添加 */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">add</span><span class="params">(E e)</span> </span>&#123;</span><br><span class="line">    <span class="comment">/* 扩充容量 */</span></span><br><span class="line">    ensureCapacityInternal(size + <span class="number">1</span>);  <span class="comment">// Increments modCount!!</span></span><br><span class="line">    <span class="comment">/* ArrayList其实就是个数组 将新add的值放到数组的最后面 */</span></span><br><span class="line">    elementData[size++] = e;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">ensureCapacityInternal</span><span class="params">(<span class="keyword">int</span> minCapacity)</span> </span>&#123;</span><br><span class="line">      ensureExplicitCapacity(calculateCapacity(elementData, minCapacity));</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">calculateCapacity</span><span class="params">(Object[] elementData, <span class="keyword">int</span> minCapacity)</span> </span>&#123;</span><br><span class="line">  <span class="comment">/* 如果是空的话返回 默认或当前 */</span></span><br><span class="line">    <span class="keyword">if</span> (elementData == DEFAULTCAPACITY_EMPTY_ELEMENTDATA) &#123;</span><br><span class="line">    <span class="comment">// 如果elementData == &#123;&#125;时，返回给出的值和默认的DEFAULT_CAPACITY其中大的那个</span></span><br><span class="line">        <span class="keyword">return</span> Math.max(DEFAULT_CAPACITY, minCapacity);</span><br><span class="line">     &#125;</span><br><span class="line">    <span class="keyword">return</span> minCapacity;</span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">ensureExplicitCapacity</span><span class="params">(<span class="keyword">int</span> minCapacity)</span> </span>&#123;</span><br><span class="line">  <span class="comment">/* The number of times this list has been &lt;i&gt;structurally modified&lt;/i&gt;. */</span></span><br><span class="line">  <span class="comment">// 这个modCount 指的是数据结构改变的次数（比如添加、移除元素）</span></span><br><span class="line">    modCount++;</span><br><span class="line">    <span class="comment">// overflow-conscious code</span></span><br><span class="line">    <span class="keyword">if</span> (minCapacity - elementData.length &gt; <span class="number">0</span>)</span><br><span class="line">    <span class="comment">/* 如果当前的容量大于给定的长度的时候 需要扩充 */</span></span><br><span class="line">        grow(minCapacity);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">grow</span><span class="params">(<span class="keyword">int</span> minCapacity)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// overflow-conscious code</span></span><br><span class="line">    <span class="keyword">int</span> oldCapacity = elementData.length; <span class="comment">// 原长度</span></span><br><span class="line">    <span class="keyword">int</span> newCapacity = oldCapacity + (oldCapacity &gt;&gt; <span class="number">1</span>); <span class="comment">//新长度 右移运算。长度为1.5倍的原长度</span></span><br><span class="line">    <span class="keyword">if</span> (newCapacity - minCapacity &lt; <span class="number">0</span>)</span><br><span class="line">        newCapacity = minCapacity;</span><br><span class="line">   <span class="keyword">if</span> (newCapacity - MAX_ARRAY_SIZE &gt; <span class="number">0</span>)</span><br><span class="line">        newCapacity = hugeCapacity(minCapacity);</span><br><span class="line">    <span class="comment">// minCapacity is usually close to size, so this is a win:</span></span><br><span class="line">    <span class="comment">// 使用Arrays.copyof方法进行最终扩容，所以ArrayList添加元素时比较耗费性能。</span></span><br><span class="line">    elementData = Arrays.copyOf(elementData, newCapacity);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
 
 <ul>
 <li>remove 移除元素方法</li>
 </ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> E <span class="title">remove</span><span class="params">(<span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//如果超出 则抛出IndexOutOfBoundsException异常</span></span><br><span class="line">    rangeCheck(index);</span><br><span class="line"></span><br><span class="line">    modCount++;</span><br><span class="line">    E oldValue = elementData(index);</span><br><span class="line">    <span class="comment">/* 想要移除元素后面元素的个数*/</span></span><br><span class="line">    <span class="keyword">int</span> numMoved = size - index - <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">if</span> (numMoved &gt; <span class="number">0</span>)</span><br><span class="line">    <span class="comment">/* arraycopy是个native方法 相当于把index+1位置上的元素挪到index位置上 */</span></span><br><span class="line">        System.arraycopy(elementData, index+<span class="number">1</span>, elementData, index,</span><br><span class="line">                         numMoved);</span><br><span class="line">    elementData[--size] = <span class="keyword">null</span>; <span class="comment">//清空元素，利于GC </span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> oldValue;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 只会移除第一个符合条件的条目 */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">remove</span><span class="params">(Object o)</span> </span>&#123;</span><br><span class="line">      <span class="keyword">if</span> (o == <span class="keyword">null</span>) &#123;</span><br><span class="line">          <span class="keyword">for</span> (<span class="keyword">int</span> index = <span class="number">0</span>; index &lt; size; index++)</span><br><span class="line">              <span class="keyword">if</span> (elementData[index] == <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="comment">/* 这个fastRemove方法和上面的方法大相径庭  */</span></span><br><span class="line">                  fastRemove(index);</span><br><span class="line">                  <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">              &#125;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          <span class="keyword">for</span> (<span class="keyword">int</span> index = <span class="number">0</span>; index &lt; size; index++)</span><br><span class="line">              <span class="keyword">if</span> (o.equals(elementData[index])) &#123;</span><br><span class="line">                  fastRemove(index);</span><br><span class="line">                  <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">              &#125;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> E <span class="title">remove</span><span class="params">(<span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//如果超出 则抛出IndexOutOfBoundsException异常</span></span><br><span class="line">    rangeCheck(index);</span><br><span class="line"></span><br><span class="line">    modCount++;</span><br><span class="line">    E oldValue = elementData(index);</span><br><span class="line">    <span class="comment">/* 想要移除元素后面元素的个数*/</span></span><br><span class="line">    <span class="keyword">int</span> numMoved = size - index - <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">if</span> (numMoved &gt; <span class="number">0</span>)</span><br><span class="line">    <span class="comment">/* arraycopy是个native方法 相当于把index+1位置上的元素挪到index位置上 */</span></span><br><span class="line">        System.arraycopy(elementData, index+<span class="number">1</span>, elementData, index,</span><br><span class="line">                         numMoved);</span><br><span class="line">    elementData[--size] = <span class="keyword">null</span>; <span class="comment">//清空元素，利于GC </span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> oldValue;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 只会移除第一个符合条件的条目 */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">remove</span><span class="params">(Object o)</span> </span>&#123;</span><br><span class="line">      <span class="keyword">if</span> (o == <span class="keyword">null</span>) &#123;</span><br><span class="line">          <span class="keyword">for</span> (<span class="keyword">int</span> index = <span class="number">0</span>; index &lt; size; index++)</span><br><span class="line">              <span class="keyword">if</span> (elementData[index] == <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="comment">/* 这个fastRemove方法和上面的方法大相径庭  */</span></span><br><span class="line">                  fastRemove(index);</span><br><span class="line">                  <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">              &#125;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          <span class="keyword">for</span> (<span class="keyword">int</span> index = <span class="number">0</span>; index &lt; size; index++)</span><br><span class="line">              <span class="keyword">if</span> (o.equals(elementData[index])) &#123;</span><br><span class="line">                  fastRemove(index);</span><br><span class="line">                  <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">              &#125;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure></div>
 
 <ul>
 <li>contain 是否包含</li>
 </ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">contains</span><span class="params">(Object o)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">return</span> indexOf(o) &gt;= <span class="number">0</span>;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">indexOf</span><span class="params">(Object o)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">if</span> (o == <span class="keyword">null</span>) &#123;</span><br><span class="line">           <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; size; i++)</span><br><span class="line">               <span class="keyword">if</span> (elementData[i]==<span class="keyword">null</span>)</span><br><span class="line">                   <span class="keyword">return</span> i;</span><br><span class="line">       &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">         <span class="comment">/* 内部就是for循环一个一个判断的 */</span></span><br><span class="line">           <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; size; i++)</span><br><span class="line">               <span class="keyword">if</span> (o.equals(elementData[i]))</span><br><span class="line">                   <span class="keyword">return</span> i;</span><br><span class="line">                         &#125;</span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">contains</span><span class="params">(Object o)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">return</span> indexOf(o) &gt;= <span class="number">0</span>;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">indexOf</span><span class="params">(Object o)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">if</span> (o == <span class="keyword">null</span>) &#123;</span><br><span class="line">           <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; size; i++)</span><br><span class="line">               <span class="keyword">if</span> (elementData[i]==<span class="keyword">null</span>)</span><br><span class="line">                   <span class="keyword">return</span> i;</span><br><span class="line">       &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">         <span class="comment">/* 内部就是for循环一个一个判断的 */</span></span><br><span class="line">           <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; size; i++)</span><br><span class="line">               <span class="keyword">if</span> (o.equals(elementData[i]))</span><br><span class="line">                   <span class="keyword">return</span> i;</span><br><span class="line">                         &#125;</span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></div>
 
 <ul>
 <li>get 方法</li>
 </ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> E <span class="title">get</span><span class="params">(<span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">    rangeCheck(index);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> elementData(index);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/* 本质就是返回数组位置的元素 */</span></span><br><span class="line"><span class="function">E <span class="title">elementData</span><span class="params">(<span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> (E) elementData[index];</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> E <span class="title">get</span><span class="params">(<span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">    rangeCheck(index);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> elementData(index);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/* 本质就是返回数组位置的元素 */</span></span><br><span class="line"><span class="function">E <span class="title">elementData</span><span class="params">(<span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> (E) elementData[index];</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure></div>
 
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ol>
 <li>有序性,可重复性 —&gt; 因为内部使用数组实现,所以元素能够保证有序性且能够添加重复的元素</li>
@@ -681,19 +898,19 @@
           
             <h1 id="基础Java知识"><a href="#基础Java知识" class="headerlink" title="基础Java知识"></a>基础Java知识</h1><p>平常没事的时候会逛逛stackOverFlow,上面有很多非常基础的问题，并且回答者讲解的非常的透彻，我想通过整理上面的热门回答来梳理一下自己的Java基础知识。</p>
 <h2 id="热门"><a href="#热门" class="headerlink" title="热门"></a>热门</h2><h3 id="什么是NullPointerExpection-如何去尽可能的避免"><a href="#什么是NullPointerExpection-如何去尽可能的避免" class="headerlink" title="什么是NullPointerExpection,如何去尽可能的避免"></a>什么是NullPointerExpection,如何去尽可能的避免</h3><p>当你声明一个引用变量(对象)的时候，实际上是创建一个指向该对象的指针。参考如下代码</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> x ;</span><br><span class="line">x = <span class="number">10</span> ;</span><br></pre></td></tr></table></figure>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> x ;</span><br><span class="line">x = <span class="number">10</span> ;</span><br></pre></td></tr></table></figure></div>
 
 <p>在例子中，我们声明了变量 <code>x</code> 。因为是原始类型，系统会默认付给变量<code>x</code>初始值是0。但是第二行使用<code>x=10</code>，将数值10付给变量x，实际过程是将10写入变量x所指向的内存位置。<br>然而，当我们声明一个引用类型，对于int来说也就是其包装类型。会出现不一样的情形。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Integer num;</span><br><span class="line">num = <span class="keyword">new</span> Integer(<span class="number">10</span>);</span><br></pre></td></tr></table></figure>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Integer num;</span><br><span class="line">num = <span class="keyword">new</span> Integer(<span class="number">10</span>);</span><br></pre></td></tr></table></figure></div>
 
 <p>当你创建num的时候，系统不会默认创建一个默认值，因为他引用对象，然而，他会包含一个指针，这个指针虽然存在，但是他没有初始值，所以java会将变量的指针指向空(null)。<br>在第二行使用new关键字实例化了num，这时，会将变量num指针指向这个实例对象。</p>
 <p>在当用到这个变量之前未给变量做实例化时，也就是变量的指针还指向空时，运行后会出现NullPointerExpection 这个问题。</p>
 <p>可能觉得在实际codeing的时候不会出现上面的问题，但是实际上，每个方法的引用对象如果不判断传进来的值是否非空，都可能会出现这个问题</p>
 <p>错误的示范：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doSomething</span><span class="params">(SomeObject obj)</span> </span>&#123;</span><br><span class="line">   <span class="comment">//do something to obj</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 调用的时候 传递null值时,会出现空指针异常</span></span><br><span class="line">doSomething(<span class="keyword">null</span>);</span><br></pre></td></tr></table></figure>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doSomething</span><span class="params">(SomeObject obj)</span> </span>&#123;</span><br><span class="line">   <span class="comment">//do something to obj</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 调用的时候 传递null值时,会出现空指针异常</span></span><br><span class="line">doSomething(<span class="keyword">null</span>);</span><br></pre></td></tr></table></figure></div>
 
 <p>正确的示范：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doSomething</span><span class="params">(SomeObject obj)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(obj != <span class="keyword">null</span>) &#123;</span><br><span class="line">       <span class="comment">//do something</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">       <span class="comment">//do something else</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doSomething</span><span class="params">(SomeObject obj)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(obj != <span class="keyword">null</span>) &#123;</span><br><span class="line">       <span class="comment">//do something</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">       <span class="comment">//do something else</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
 
 <p>尽量在每次开发的过程当中，仔细斟酌变量是否可能为空，当可能为空时一定要做这种判断来预防空指针。保证代码的健壮性。</p>
 <h3 id="如何比较字符串"><a href="#如何比较字符串" class="headerlink" title="如何比较字符串"></a>如何比较字符串</h3><p>在当使用 <code>==</code> 比较字符串是可能会出现bug，这时可以用equals解决。所以引出一个问题，什么时候使用 <code>==</code> 什么时候使用equals</p>
@@ -706,15 +923,15 @@
 </ol>
 <p>equals是Object的方法，大部分类中也重写了equals方法，所以在比较对象的时候应该使用equals,而当比较基本数据类型如int的时候可以使用 <code>==</code></p>
 <h3 id="Java是传值还是传引用"><a href="#Java是传值还是传引用" class="headerlink" title="Java是传值还是传引用"></a>Java是传值还是传引用</h3><p><strong>Java是传值的</strong> 。但是，通常我们定位值的时候称他为 “引用” 。具一个非常典型的例子</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    Dog aDog = <span class="keyword">new</span> Dog(<span class="string">"Max"</span>);</span><br><span class="line">    <span class="comment">// we pass the object to foo</span></span><br><span class="line">    foo(aDog);</span><br><span class="line">    <span class="comment">// aDog variable is still pointing to the "Max" dog when foo(...) returns</span></span><br><span class="line">    aDog.getName().equals(<span class="string">"Max"</span>); <span class="comment">// true</span></span><br><span class="line">    aDog.getName().equals(<span class="string">"Fifi"</span>); <span class="comment">// false</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">foo</span><span class="params">(Dog d)</span> </span>&#123;</span><br><span class="line">    d.getName().equals(<span class="string">"Max"</span>); <span class="comment">// true</span></span><br><span class="line">    <span class="comment">// change d inside of foo() to point to a new Dog instance "Fifi"</span></span><br><span class="line">    d = <span class="keyword">new</span> Dog(<span class="string">"Fifi"</span>);</span><br><span class="line">    d.getName().equals(<span class="string">"Fifi"</span>); <span class="comment">// true</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    Dog aDog = <span class="keyword">new</span> Dog(<span class="string">"Max"</span>);</span><br><span class="line">    <span class="comment">// we pass the object to foo</span></span><br><span class="line">    foo(aDog);</span><br><span class="line">    <span class="comment">// aDog variable is still pointing to the "Max" dog when foo(...) returns</span></span><br><span class="line">    aDog.getName().equals(<span class="string">"Max"</span>); <span class="comment">// true</span></span><br><span class="line">    aDog.getName().equals(<span class="string">"Fifi"</span>); <span class="comment">// false</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">foo</span><span class="params">(Dog d)</span> </span>&#123;</span><br><span class="line">    d.getName().equals(<span class="string">"Max"</span>); <span class="comment">// true</span></span><br><span class="line">    <span class="comment">// change d inside of foo() to point to a new Dog instance "Fifi"</span></span><br><span class="line">    d = <span class="keyword">new</span> Dog(<span class="string">"Fifi"</span>);</span><br><span class="line">    d.getName().equals(<span class="string">"Fifi"</span>); <span class="comment">// true</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
 
 <p>虽然foo方法内改变了传进来的aDog的值，注意这里是 <code>值</code>，所以在调用完foo方法之后再去判断变量aDog的时候他的引用到的值没有变，变的只是当时传进去的值而不是变量的应用，所以可以说，对象的引用是按值传递的。如果这样还是迷糊的话，<br>还可以逆向来想，如果是传引用的话，在当foo方法改变了aDog的时候，也就是说明改变了aDog所引用到的真正的这个值。这样是不能成立。</p>
 <p>所以不管怎么想：Java是传值的！！</p>
 <h3 id="怎样快速打印出array数组内的值"><a href="#怎样快速打印出array数组内的值" class="headerlink" title="怎样快速打印出array数组内的值"></a>怎样快速打印出array数组内的值</h3><p>因为array并没有实现toString()方法，所以当使用array.toString()的时候会打印出类似 <code>[I@17f052a3</code> 的地址信息，在jdk1.5之后可以使用</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span>[] x = <span class="keyword">new</span> <span class="keyword">int</span>[]&#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>&#125;;</span><br><span class="line">String arrayString = Arrays.toString(x);</span><br><span class="line">System.out.println(arrayString);</span><br><span class="line"><span class="comment">//结果： [1, 2, 3, 4, 5]</span></span><br></pre></td></tr></table></figure>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span>[] x = <span class="keyword">new</span> <span class="keyword">int</span>[]&#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>&#125;;</span><br><span class="line">String arrayString = Arrays.toString(x);</span><br><span class="line">System.out.println(arrayString);</span><br><span class="line"><span class="comment">//结果： [1, 2, 3, 4, 5]</span></span><br></pre></td></tr></table></figure></div>
 
 <p>这样的方式可以非常方便的打印出数组内所有元素,嵌套数组可以使用deepToString方法。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">System.out.println(Arrays.toString(deepArray));</span><br><span class="line"><span class="comment">//output: [[Ljava.lang.String;@106d69c, [Ljava.lang.String;@52e922]</span></span><br><span class="line">System.out.println(Arrays.deepToString(deepArray));</span><br><span class="line">结果：[[John, Mary], [Alice, Bob]]</span><br></pre></td></tr></table></figure>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">System.out.println(Arrays.toString(deepArray));</span><br><span class="line"><span class="comment">//output: [[Ljava.lang.String;@106d69c, [Ljava.lang.String;@52e922]</span></span><br><span class="line">System.out.println(Arrays.deepToString(deepArray));</span><br><span class="line">结果：[[John, Mary], [Alice, Bob]]</span><br></pre></td></tr></table></figure></div>
 
 
           
@@ -896,16 +1113,16 @@
           
             <h1 id="bash相关问题总结"><a href="#bash相关问题总结" class="headerlink" title="bash相关问题总结"></a>bash相关问题总结</h1><h2 id="七月专题"><a href="#七月专题" class="headerlink" title="七月专题 - -"></a>七月专题 - -</h2><h3 id="关于bash中的-lt-lt-lt-的含义"><a href="#关于bash中的-lt-lt-lt-的含义" class="headerlink" title="关于bash中的 &lt;&lt;&lt; 的含义"></a>关于bash中的 <code>&lt;&lt;&lt;</code> 的含义</h3><p>在StackOverflow中有个例子非常的详细。。先贴连接 <a href="https://unix.stackexchange.com/questions/80362/what-does-mean" target="_blank" rel="noopener">What does &lt;&lt;&lt; mean? </a>以下是我的渣翻译，可能会翻译错。。</p>
 <p>我们可以这样对字符串进行处理</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;$string&quot; | command</span><br></pre></td></tr></table></figure>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;$string&quot; | command</span><br></pre></td></tr></table></figure></div>
 
 <p>然而在bash中，这样写（使用管道）就相当于把命令分到子shell中进行处理，考虑这种情况</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;hello world&quot; | read first second</span><br><span class="line">echo $second $first</span><br></pre></td></tr></table></figure>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;hello world&quot; | read first second</span><br><span class="line">echo $second $first</span><br></pre></td></tr></table></figure></div>
 
 <p>它会输出一个空行，子shell成功的读到了两个变量，但是随后子shell退出，两个变量就消失掉了。所以输出是没有结果的。应当这样写</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;hello world&quot; | &#123;</span><br><span class="line">    read first second</span><br><span class="line">    echo $second $first</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;hello world&quot; | &#123;</span><br><span class="line">    read first second</span><br><span class="line">    echo $second $first</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
 
 <p>但是这样还是没有解决这种分成子shell去执行的尴尬。这时候就能够使用 <code>&lt;&lt;&lt;</code> 了</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">read first second &lt;&lt;&lt; echo &quot;hello world&quot;</span><br></pre></td></tr></table></figure>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">read first second &lt;&lt;&lt; echo &quot;hello world&quot;</span><br></pre></td></tr></table></figure></div>
 
 <h3 id="关于-var-var是变量名"><a href="#关于-var-var是变量名" class="headerlink" title="关于${!var} var是变量名"></a>关于${!var} var是变量名</h3><p>使用${!var}的作用是当ver不存在的时候会原样输出，也就是显示${var}</p>
 <h3 id="关于bash中的trap命令的使用"><a href="#关于bash中的trap命令的使用" class="headerlink" title="关于bash中的trap命令的使用"></a>关于bash中的trap命令的使用</h3><p>trap可以强化bash脚本，让脚本更加稳定。</p>
@@ -1367,16 +1584,16 @@
 <li>和结构 （and list）</li>
 </ul>
 <p>这种结构会同时比较多个命令，如果前一个命令返回true，则下一个命令一次去执行。但是如果前一个命令返回false，那么后面都不去执行（命令链终止）。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># command-1 &amp;&amp; command-2 &amp;&amp; command-3 &amp;&amp; ... command-n</span><br><span class="line">if [ ! -z &quot;$1&quot; ] &amp;&amp; echo &quot;Argument #1 &#x3D; $1&quot; &amp;&amp; [ ! -z &quot;$2&quot; ] &amp;&amp;</span><br></pre></td></tr></table></figure>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># command-1 &amp;&amp; command-2 &amp;&amp; command-3 &amp;&amp; ... command-n</span><br><span class="line">if [ ! -z &quot;$1&quot; ] &amp;&amp; echo &quot;Argument #1 &#x3D; $1&quot; &amp;&amp; [ ! -z &quot;$2&quot; ] &amp;&amp;</span><br></pre></td></tr></table></figure></div>
 
 <ul>
 <li>与结构 （or list）</li>
 </ul>
 <p>这个结构和 and list正好相反，如果前一个命令返回false，则下一个命令依次去执行。如果前一个命令时ture，那么终止命令链。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># command-1 || command-2 || command-3 || ... command-n</span><br><span class="line">[ ! -f &quot;$file&quot; ] || (rm -f $file; echo &quot;File \&quot;$file\&quot; deleted.&quot;)</span><br></pre></td></tr></table></figure>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># command-1 || command-2 || command-3 || ... command-n</span><br><span class="line">[ ! -f &quot;$file&quot; ] || (rm -f $file; echo &quot;File \&quot;$file\&quot; deleted.&quot;)</span><br></pre></td></tr></table></figure></div>
 
 <h2 id="bash中的数组"><a href="#bash中的数组" class="headerlink" title="bash中的数组"></a>bash中的数组</h2><p>数组也是非常常见的一种数据结构，那么在bash中如何初始化和使用数组呢</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># 第一种方式为数组赋值</span><br><span class="line">area[11]&#x3D;23</span><br><span class="line">area[13]&#x3D;37</span><br><span class="line">area[51]&#x3D;UFOs</span><br><span class="line"># 第二种方式</span><br><span class="line">area2&#x3D;( zero one two three four )</span><br><span class="line"># 第三种方式</span><br><span class="line">area3&#x3D;([17]&#x3D;seventeen [24]&#x3D;twenty-four)</span><br></pre></td></tr></table></figure>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># 第一种方式为数组赋值</span><br><span class="line">area[11]&#x3D;23</span><br><span class="line">area[13]&#x3D;37</span><br><span class="line">area[51]&#x3D;UFOs</span><br><span class="line"># 第二种方式</span><br><span class="line">area2&#x3D;( zero one two three four )</span><br><span class="line"># 第三种方式</span><br><span class="line">area3&#x3D;([17]&#x3D;seventeen [24]&#x3D;twenty-four)</span><br></pre></td></tr></table></figure></div>
 
 <p>可以看到可以方便的使用小括号进行数组的初始化，以后会接触到更多关于bash数组的实例，比如写一个使用bash的冒泡排序。</p>
 <h2 id="Linux中的-dev和-proc"><a href="#Linux中的-dev和-proc" class="headerlink" title="Linux中的 /dev和 /proc"></a>Linux中的 <code>/dev</code>和 <code>/proc</code></h2><ul>
@@ -1405,7 +1622,7 @@
 <ul>
 <li>null 使用 <code>dev/null</code> 这个设备文件是一个”黑洞”，可以看作是一个只能够写文件。写进去的东西都会被清空，当然也可以使用从 <code>/dev/null</code> 写入到文件来实现清空文件内容的目的。</li>
 </ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cat newfile1 &gt; &#x2F;dev&#x2F;null #会什么也不输出</span><br><span class="line">cat &#x2F;dev&#x2F;null &gt; &#x2F;var&#x2F;log&#x2F;wtmp # 清空该文件内容</span><br></pre></td></tr></table></figure>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cat newfile1 &gt; &#x2F;dev&#x2F;null #会什么也不输出</span><br><span class="line">cat &#x2F;dev&#x2F;null &gt; &#x2F;var&#x2F;log&#x2F;wtmp # 清空该文件内容</span><br></pre></td></tr></table></figure></div>
 
 <ul>
 <li>zero 为指定目的的文件来清零（指定大小的文件）</li>
@@ -1590,14 +1807,14 @@
           
             <h1 id="bash中的函数"><a href="#bash中的函数" class="headerlink" title="bash中的函数"></a>bash中的函数</h1><p>其实bash函数和bash脚本时一样的，函数的使用如同使用一段bash脚本块一样。但是定义为bash函数执行更快。</p>
 <h2 id="函数定义与调用"><a href="#函数定义与调用" class="headerlink" title="函数定义与调用"></a>函数定义与调用</h2><p>与很多脚本语言一样，使用 <code>function</code> 作为关键词来声明函数。下面来使用一段例子代码来说明函数的定义的格式。乍一看是不是和js有点像呢。。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">function hello()&#123;</span><br><span class="line">echo &quot;使用函数会输出这句话&quot;</span><br><span class="line">return 1</span><br><span class="line">&#125;</span><br><span class="line">hello #使用函数</span><br></pre></td></tr></table></figure>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">function hello()&#123;</span><br><span class="line">echo &quot;使用函数会输出这句话&quot;</span><br><span class="line">return 1</span><br><span class="line">&#125;</span><br><span class="line">hello #使用函数</span><br></pre></td></tr></table></figure></div>
 
 <h2 id="函数的参数传递"><a href="#函数的参数传递" class="headerlink" title="函数的参数传递"></a>函数的参数传递</h2><p>与编写bash相似，参数使用 <code>$+位置的形式获取</code> 如$1获取紧跟在调用函数后的第一个参数的值。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">function hello()&#123;</span><br><span class="line">echo &quot;使用函数会输出这句话&quot;</span><br><span class="line">echo &quot;输出第一个参数 $1&quot;</span><br><span class="line">return 1</span><br><span class="line">&#125;</span><br><span class="line">hello world</span><br><span class="line"># 输出结果 ‘ 输出第一个参数 world ’</span><br></pre></td></tr></table></figure>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">function hello()&#123;</span><br><span class="line">echo &quot;使用函数会输出这句话&quot;</span><br><span class="line">echo &quot;输出第一个参数 $1&quot;</span><br><span class="line">return 1</span><br><span class="line">&#125;</span><br><span class="line">hello world</span><br><span class="line"># 输出结果 ‘ 输出第一个参数 world ’</span><br></pre></td></tr></table></figure></div>
 
 <h2 id="函数的返回值"><a href="#函数的返回值" class="headerlink" title="函数的返回值"></a>函数的返回值</h2><p>使用return来返回特定值 如上面的函数中使用到了 <code>return 1</code> ,在return后发生的语句都不能被执行。并且return的的值只能在1~256之间的数。使用$?来获取返回到值。</p>
 <h2 id="函数的嵌套"><a href="#函数的嵌套" class="headerlink" title="函数的嵌套"></a>函数的嵌套</h2><p>如同在Java js中使用函数类似，bash中的函数也允许使用嵌套结构。但是需要在外层函数调用内容函数。这是当然的了，因为在内部声明函数，却没有调用，这当然时不起作用的了。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">function x1()&#123;</span><br><span class="line">        echo &quot;在函数x1中！&quot;</span><br><span class="line">        function x2()&#123;</span><br><span class="line">        echo &quot;在函数x2中！&quot;</span><br><span class="line">        &#125;</span><br><span class="line">        x2 # 这里需要调用内层函数</span><br><span class="line">&#125;</span><br><span class="line">x1</span><br><span class="line">#结果：</span><br><span class="line">#在函数x1中！</span><br><span class="line">#在函数x2中！</span><br></pre></td></tr></table></figure>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">function x1()&#123;</span><br><span class="line">        echo &quot;在函数x1中！&quot;</span><br><span class="line">        function x2()&#123;</span><br><span class="line">        echo &quot;在函数x2中！&quot;</span><br><span class="line">        &#125;</span><br><span class="line">        x2 # 这里需要调用内层函数</span><br><span class="line">&#125;</span><br><span class="line">x1</span><br><span class="line">#结果：</span><br><span class="line">#在函数x1中！</span><br><span class="line">#在函数x2中！</span><br></pre></td></tr></table></figure></div>
 
 
           
@@ -1780,13 +1997,13 @@
             <h1 id="linux中的IO"><a href="#linux中的IO" class="headerlink" title="linux中的IO"></a>linux中的IO</h1><h2 id="分类"><a href="#分类" class="headerlink" title="分类"></a>分类</h2><p>linux中总有三种文件，一种时stdin（标准输入），stdout（标准输出），stderr（标准错误），可以重定向这些和其他任意文件，重定向的目的就是可以将文件中的任意内容作为输出或者输出源。</p>
 <h2 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h2><p>系统为每一个打开的文件分配一个文件描述符（FD），为标准输入stdin，标准输出stdout,标准错误stderr分别分配给0，1，2</p>
 <p>简单输入输出：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;helloworld&quot;  &gt; newfile1</span><br><span class="line">echo &quot;helloworld&quot; 1 &gt; newfile1 #等同于第一句</span><br><span class="line">echo &quot;helloworld&quot; 1 &gt;&gt; newfile1 #追加内容</span><br><span class="line"></span><br><span class="line">command &lt; newfile1 #标准输入 同理等同于cat 0 &lt; newfile1</span><br></pre></td></tr></table></figure>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;helloworld&quot;  &gt; newfile1</span><br><span class="line">echo &quot;helloworld&quot; 1 &gt; newfile1 #等同于第一句</span><br><span class="line">echo &quot;helloworld&quot; 1 &gt;&gt; newfile1 #追加内容</span><br><span class="line"></span><br><span class="line">command &lt; newfile1 #标准输入 同理等同于cat 0 &lt; newfile1</span><br></pre></td></tr></table></figure></div>
 
 <p>使用标准输出和标准错误输出</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ls 2&gt; newfile #将错误信息输出到newfile中</span><br><span class="line">ls &gt; newfile 2&gt;1&amp; #将标准输入和标准输出一起输出到newfile中</span><br><span class="line"># 其中&amp;表示和的关系</span><br></pre></td></tr></table></figure>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ls 2&gt; newfile #将错误信息输出到newfile中</span><br><span class="line">ls &gt; newfile 2&gt;1&amp; #将标准输入和标准输出一起输出到newfile中</span><br><span class="line"># 其中&amp;表示和的关系</span><br></pre></td></tr></table></figure></div>
 
 <p>绑定重定向</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ls &gt;&amp; m #把标准输出到文件描述符m中</span><br><span class="line">ls &lt; &amp;- #关闭标准输入</span><br><span class="line">n &lt; &amp;- #关闭输入文件描述符n</span><br><span class="line">n &gt; &amp;- #关闭输出文件描述符n</span><br><span class="line">1&gt;&amp;-, &gt;&amp;- # 关闭标准输出</span><br></pre></td></tr></table></figure>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ls &gt;&amp; m #把标准输出到文件描述符m中</span><br><span class="line">ls &lt; &amp;- #关闭标准输入</span><br><span class="line">n &lt; &amp;- #关闭输入文件描述符n</span><br><span class="line">n &gt; &amp;- #关闭输出文件描述符n</span><br><span class="line">1&gt;&amp;-, &gt;&amp;- # 关闭标准输出</span><br></pre></td></tr></table></figure></div>
 
 <h3 id="其实在linux-下一切都是文件。把所有都想成文件就好理解的多了。"><a href="#其实在linux-下一切都是文件。把所有都想成文件就好理解的多了。" class="headerlink" title="其实在linux 下一切都是文件。把所有都想成文件就好理解的多了。"></a>其实在linux 下一切都是文件。把所有都想成文件就好理解的多了。</h3>
           
@@ -1991,13 +2208,13 @@
 <li><p>uniq：使用uniq命令能够去除重复的行，通常和sort使用在管道当中。</p>
 </li>
 </ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ cat list_1.txt|uniq -c|sort -nr</span><br><span class="line">     5 this is the second line</span><br><span class="line">     3 this is the first line</span><br><span class="line">     1 this is the third line</span><br></pre></td></tr></table></figure>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ cat list_1.txt|uniq -c|sort -nr</span><br><span class="line">     5 this is the second line</span><br><span class="line">     3 this is the first line</span><br><span class="line">     1 this is the third line</span><br></pre></td></tr></table></figure></div>
 
 <ul>
 <li>expand:可以将tab转换成普通空格，unexpand可以将空格转换成tab，同样比较常见在管道命令当中。</li>
 </ul>
 <p>cut：从文件中提取字段的工具</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ cut -d &#39; &#39; -f 1,2 list_1.txt</span><br></pre></td></tr></table></figure>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ cut -d &#39; &#39; -f 1,2 list_1.txt</span><br></pre></td></tr></table></figure></div>
 
 <ul>
 <li><p>paste:合并两个文件的内容，是每行都对应合并。而不是一个文件合并到另一个文件的下面。</p>
@@ -2011,17 +2228,17 @@
 <li><p>grep：正则匹配出文件的内容，一般使用在管道中，用来匹配上一个输入或者文件的匹配到的内容</p>
 </li>
 </ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ cat list_1.txt| grep &quot;third&quot;  </span><br><span class="line">this is the third line</span><br><span class="line">              ^ 这里的third是红色的表示匹配到的内容</span><br></pre></td></tr></table></figure>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ cat list_1.txt| grep &quot;third&quot;  </span><br><span class="line">this is the third line</span><br><span class="line">              ^ 这里的third是红色的表示匹配到的内容</span><br></pre></td></tr></table></figure></div>
 
 <ul>
 <li>wc：输出文件的行数字数等信息</li>
 </ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ wc &#x2F;usr&#x2F;share&#x2F;doc&#x2F;sed-4.1.2&#x2F;README</span><br><span class="line">13  70  447 README</span><br><span class="line">[13 lines  70 words  447 characters]</span><br></pre></td></tr></table></figure>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ wc &#x2F;usr&#x2F;share&#x2F;doc&#x2F;sed-4.1.2&#x2F;README</span><br><span class="line">13  70  447 README</span><br><span class="line">[13 lines  70 words  447 characters]</span><br></pre></td></tr></table></figure></div>
 
 <ul>
 <li>tr 字符翻译的过滤器，将特定字符替换成其他字符</li>
 </ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ tr &quot;is&quot; &quot;*&quot; &lt; list_1.txt  </span><br><span class="line">th** ** the f*r*t l*ne</span><br><span class="line">th** ** the *econd l*ne</span><br><span class="line">th** ** the th*rd l*ne</span><br></pre></td></tr></table></figure>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ tr &quot;is&quot; &quot;*&quot; &lt; list_1.txt  </span><br><span class="line">th** ** the f*r*t l*ne</span><br><span class="line">th** ** the *econd l*ne</span><br><span class="line">th** ** the th*rd l*ne</span><br></pre></td></tr></table></figure></div>
 
 <ul>
 <li><p>nl nl和cat -b有着相似的意义，都能够连同行号打印出来，不同的是，nl可以将空行去除掉。</p>
@@ -2210,12 +2427,12 @@
             <h1 id="bash命令篇（三）"><a href="#bash命令篇（三）" class="headerlink" title="bash命令篇（三）"></a>bash命令篇（三）</h1><h2 id="bash中的关于通信的命令"><a href="#bash中的关于通信的命令" class="headerlink" title="bash中的关于通信的命令"></a>bash中的关于通信的命令</h2><ol>
 <li>host 通过ip或者域名搜索互联网的主机地址（使用DNS）</li>
 </ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ host www.baidu.com</span><br><span class="line">www.baidu.com has address 61.135.169.125</span><br><span class="line">www.baidu.com has address 61.135.169.121</span><br><span class="line">www.baidu.com is an alias for www.a.shifen.com.</span><br><span class="line">www.baidu.com is an alias for www.a.shifen.com.</span><br></pre></td></tr></table></figure>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ host www.baidu.com</span><br><span class="line">www.baidu.com has address 61.135.169.125</span><br><span class="line">www.baidu.com has address 61.135.169.121</span><br><span class="line">www.baidu.com is an alias for www.a.shifen.com.</span><br><span class="line">www.baidu.com is an alias for www.a.shifen.com.</span><br></pre></td></tr></table></figure></div>
 
 <ol start="2">
 <li>nslookup 向上寻找name server</li>
 </ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">$ nslookup  -sil 66.97.104.180 </span><br><span class="line">Server:		127.0.1.1</span><br><span class="line">Address:	127.0.1.1#53</span><br><span class="line"></span><br><span class="line">Non-authoritative answer:</span><br><span class="line">180.104.97.66.in-addr.arpa	name &#x3D; 66-97-104-180.dynamic.bugtusselwireless.com.</span><br><span class="line"></span><br><span class="line">Authoritative answers can be found from:</span><br><span class="line">104.97.66.in-addr.arpa	nameserver &#x3D; ns2.bugnet.net.</span><br><span class="line">104.97.66.in-addr.arpa	nameserver &#x3D; ns1.bugnet.net.</span><br><span class="line">ns1.bugnet.net	internet address &#x3D; 204.11.133.241</span><br><span class="line">ns2.bugnet.net	internet address &#x3D; 204.11.133.244</span><br></pre></td></tr></table></figure>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">$ nslookup  -sil 66.97.104.180 </span><br><span class="line">Server:		127.0.1.1</span><br><span class="line">Address:	127.0.1.1#53</span><br><span class="line"></span><br><span class="line">Non-authoritative answer:</span><br><span class="line">180.104.97.66.in-addr.arpa	name &#x3D; 66-97-104-180.dynamic.bugtusselwireless.com.</span><br><span class="line"></span><br><span class="line">Authoritative answers can be found from:</span><br><span class="line">104.97.66.in-addr.arpa	nameserver &#x3D; ns2.bugnet.net.</span><br><span class="line">104.97.66.in-addr.arpa	nameserver &#x3D; ns1.bugnet.net.</span><br><span class="line">ns1.bugnet.net	internet address &#x3D; 204.11.133.241</span><br><span class="line">ns2.bugnet.net	internet address &#x3D; 204.11.133.244</span><br></pre></td></tr></table></figure></div>
 
 <ol start="3">
 <li><p>ping 熟知的ping命令，常用来探测与另一个主机是否有网络链接</p>
@@ -2240,265 +2457,12 @@
 <li><p>bc：bc是现代linux下比较常见处理复杂运算的命令那个，可以计算浮点数。</p>
 </li>
 </ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">$bc -l -q</span><br><span class="line">4&#x2F;3                   &#x2F;*未指定精度默认保留整数*&#x2F;</span><br><span class="line">scale&#x3D;5               &#x2F;*指定精度为5*&#x2F;</span><br><span class="line">4&#x2F;3</span><br><span class="line">1.33333</span><br><span class="line">ibase&#x3D;2               &#x2F;*指定进制转换的输入机制为二进制，输出默认为是十进制*&#x2F;</span><br><span class="line">10</span><br><span class="line">4^2                   &#x2F;*指数运算，注：指数不能为浮点数*&#x2F;</span><br><span class="line">4*a(1)                &#x2F;*计算π值，a()是个函数：arctan()，好吧，老师教的都被狗吃了，π值是等于四倍的arctan(1)么？*&#x2F;</span><br><span class="line">3.14159265358979323844</span><br><span class="line">quit                  &#x2F;*退出*&#x2F;</span><br></pre></td></tr></table></figure>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">$bc -l -q</span><br><span class="line">4&#x2F;3                   &#x2F;*未指定精度默认保留整数*&#x2F;</span><br><span class="line">scale&#x3D;5               &#x2F;*指定精度为5*&#x2F;</span><br><span class="line">4&#x2F;3</span><br><span class="line">1.33333</span><br><span class="line">ibase&#x3D;2               &#x2F;*指定进制转换的输入机制为二进制，输出默认为是十进制*&#x2F;</span><br><span class="line">10</span><br><span class="line">4^2                   &#x2F;*指数运算，注：指数不能为浮点数*&#x2F;</span><br><span class="line">4*a(1)                &#x2F;*计算π值，a()是个函数：arctan()，好吧，老师教的都被狗吃了，π值是等于四倍的arctan(1)么？*&#x2F;</span><br><span class="line">3.14159265358979323844</span><br><span class="line">quit                  &#x2F;*退出*&#x2F;</span><br></pre></td></tr></table></figure></div>
 
 <ol start="3">
 <li>let: 表达式可以应用在let命令当中。</li>
 </ol>
 <h3 id="其实在我使用linux系统的几年里，感觉命令不能死记硬背，多用自然就会掌握了。但是有些比较冷门的命令还是背下来比较好-。"><a href="#其实在我使用linux系统的几年里，感觉命令不能死记硬背，多用自然就会掌握了。但是有些比较冷门的命令还是背下来比较好-。" class="headerlink" title="其实在我使用linux系统的几年里，感觉命令不能死记硬背，多用自然就会掌握了。但是有些比较冷门的命令还是背下来比较好 - -。"></a>其实在我使用linux系统的几年里，感觉命令不能死记硬背，多用自然就会掌握了。但是有些比较冷门的命令还是背下来比较好 - -。</h3>
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-<div>
-      
-</div>
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/06/24/2018-06-28-bash_12_bash%E7%AE%A1%E7%90%86%E5%91%98%E5%91%BD%E4%BB%A4/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="NanYin">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NanYin的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/24/2018-06-28-bash_12_bash%E7%AE%A1%E7%90%86%E5%91%98%E5%91%BD%E4%BB%A4/" itemprop="url">bash学习记录（十三）命令篇（4）</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-06-24T15:00:00Z">
-                2018-06-24
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Bash/" itemprop="url" rel="index">
-                    <span itemprop="name">Bash</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Words count in article&#58;</span>
-                
-                <span title="Words count in article">
-                  711
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Reading time &asymp;</span>
-                
-                <span title="Reading time">
-                  2
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="系统命令"><a href="#系统命令" class="headerlink" title="系统命令"></a>系统命令</h1><p>linux上提供非常多的有关于系统的命令，我只能挑出我比较常见的命令来记录下来。</p>
-<h2 id="用户与用户组"><a href="#用户与用户组" class="headerlink" title="用户与用户组"></a>用户与用户组</h2><ul>
-<li><p>users 显示所有登录用户</p>
-</li>
-<li><p>groups 列出当前用户和他所在的用户组</p>
-</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ groups</span><br><span class="line">nanyin adm cdrom sudo dip plugdev input lpadmin sambashare</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><p>chown 命令可以改变文件所属的用户或者用户组。也可以简单的理解给用户某些文件的权限。</p>
-</li>
-<li><p>chgrp 命令可以改变用户所属组。</p>
-</li>
-<li><p>useradd 可以为系统添加一个用户，并且在创建该用户的home文件夹。删除用户可以使用userdel命令进行删除。</p>
-</li>
-<li><p>usermod 命令可以改变用户属性，可以是密码也可以是用户组之类的</p>
-</li>
-<li><p>id 命令可以打印出用户及所在用户组的用户名和组名以及对应的id值</p>
-</li>
-<li><p>whoami 打印出当前用户的用户名称</p>
-</li>
-<li><p>passwd 设置，更改和管理用户的密码</p>
-</li>
-</ul>
-<h2 id="基本信息和状态"><a href="#基本信息和状态" class="headerlink" title="基本信息和状态"></a>基本信息和状态</h2><ul>
-<li><p>uname 可以输出系统的具体参数如内核版本等信息。</p>
-</li>
-<li><p>arch 可以输出系统基于多少位</p>
-</li>
-<li><p>nc （netcat）是用于连接和侦听TCP和UDP端口的完整工具包。</p>
-</li>
-<li><p>lsdev 输出设备，也就是硬件信息</p>
-</li>
-<li><p>df 格式化输出文件系统占用比 一般使用df -h</p>
-</li>
-<li><p>stat 输出文件的状态信息。</p>
-</li>
-</ul>
-<h2 id="系统工作流"><a href="#系统工作流" class="headerlink" title="系统工作流"></a>系统工作流</h2><ul>
-<li><p>ps 查看进程信息 通常后面加 <code>ax</code> 或者 <code>aux</code> 使用。</p>
-</li>
-<li><p>pstree 以树形结构展示进程信息。</p>
-</li>
-<li><p>top 输出cpu的信息使用 -b参数以text的形式输出。能够以静态的方式查看。</p>
-</li>
-<li><p>nice用于指定进程调节优先级的命令。</p>
-</li>
-<li><p>pidof 可以输出具体进程的id 如：<code>pidof xclock</code> 会输出 xclock的进程id号。</p>
-</li>
-</ul>
-<h2 id="网络"><a href="#网络" class="headerlink" title="网络"></a>网络</h2><ul>
-<li><p>nmap 网络映射和端口扫描（现在只记得大学时网络攻防里用过windows里有个工具叫nmap什么的。。）参数有很多。。</p>
-</li>
-<li><p>ifconfig 最熟的查看网络接口设置。</p>
-</li>
-<li><p>netstat 输出网络状态和信息，如路由表和连接状态等。</p>
-</li>
-<li><p>ip 可以查询和设置ip和访问网卡设别信息</p>
-</li>
-</ul>
-<h2 id="文件系统"><a href="#文件系统" class="headerlink" title="文件系统"></a>文件系统</h2><ul>
-<li><p>mount 挂载文件系统</p>
-</li>
-<li><p>umount 卸载设备</p>
-</li>
-<li><p>sync 强制立即从缓冲区写入数据以来达到立即更新数据的目的。</p>
-</li>
-<li><p>mkswap swapon swapoff 分别对应格式化为交换分区，启动交换分区，关闭交换分区。</p>
-</li>
-<li><p>fdisk 创建或更改分区表，也就是用来分区的工具。非常常见。当时我还是选择cfdisk</p>
-</li>
-<li><p>lspci 输出总线信息，和连接总线的设备信息。</p>
-</li>
-</ul>
-<h3 id="其实还有很多命令没有涉及到，如果想练习这些基本的系统命令的话，可以跟着arch-wiki-装一遍arch，装完后这里的命令就都能记住了。"><a href="#其实还有很多命令没有涉及到，如果想练习这些基本的系统命令的话，可以跟着arch-wiki-装一遍arch，装完后这里的命令就都能记住了。" class="headerlink" title="其实还有很多命令没有涉及到，如果想练习这些基本的系统命令的话，可以跟着arch wiki 装一遍arch，装完后这里的命令就都能记住了。"></a>其实还有很多命令没有涉及到，如果想练习这些基本的系统命令的话，可以跟着arch wiki 装一遍arch，装完后这里的命令就都能记住了。</h3>
           
         
       
@@ -2593,7 +2557,7 @@
               
                 <a href="/archives/%7C%7C%20archive">
               
-                  <span class="site-state-item-count">105</span>
+                  <span class="site-state-item-count">106</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -2675,15 +2639,15 @@
                </li>
              
                <li>
+                 <a href="/2020/05/20/%E6%B7%B1%E5%85%A5JVM%EF%BC%88%E4%B8%89%EF%BC%89JVM%E8%B0%83%E4%BC%98/" title="深入JVM（二）JVM垃圾回收器" target="_blank">深入JVM（二）JVM垃圾回收器</a>
+               </li>
+             
+               <li>
                  <a href="/2020/05/15/%E6%B7%B1%E5%85%A5JVM%EF%BC%88%E4%BA%8C%EF%BC%89JVM%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8/" title="深入JVM（二）JVM垃圾回收器" target="_blank">深入JVM（二）JVM垃圾回收器</a>
                </li>
              
                <li>
                  <a href="/2020/05/10/%E6%B7%B1%E5%85%A5JVM%EF%BC%88%E4%B8%80%EF%BC%89%E7%B1%BB%E5%8A%A0%E8%BD%BD%E8%BF%87%E7%A8%8B%E5%92%8C%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D/" title="深入JVM（一）类加载过程和内存分配" target="_blank">深入JVM（一）类加载过程和内存分配</a>
-               </li>
-             
-               <li>
-                 <a href="/2020/05/02/%E7%BA%BF%E4%B8%8A%E5%86%85%E5%AD%98%E6%BA%A2%E5%87%BA%E5%88%86%E6%9E%90/" title="线上内存溢出分析" target="_blank">线上内存溢出分析</a>
                </li>
              
            </ul>
@@ -2739,7 +2703,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共129.5k字</span>
+  <span class="post-count">博客全站共130.2k字</span>
 </div>
 
 

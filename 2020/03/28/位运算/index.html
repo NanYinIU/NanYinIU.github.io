@@ -429,10 +429,10 @@
         <h1 id="Java中的位运算"><a href="#Java中的位运算" class="headerlink" title="Java中的位运算"></a>Java中的位运算</h1><p>Java提供了多种位运算，包括 左移( &lt;&lt; )、右移( &gt;&gt; ) 、无符号右移( &gt;&gt;&gt; ) 、位与( &amp; ) 、位或( | )、位非( ~ )、位异或( ^ )，除了 ~ 为一元操作符，其他都为二元操作符。</p>
 <h2 id="左移和右移"><a href="#左移和右移" class="headerlink" title="左移和右移"></a>左移和右移</h2><h3 id="什么是左右移操作，产生的结果是什么"><a href="#什么是左右移操作，产生的结果是什么" class="headerlink" title="什么是左右移操作，产生的结果是什么"></a>什么是左右移操作，产生的结果是什么</h3><p>使用 符号 <code>&lt;&lt;</code> 对数字产生的影响就是左移，同理右移。下面通过例子来看左移（右移）的结果：</p>
 <p>在 <code>ArrayList</code> 中，使用了<code>grow()</code>方法进行List的扩容操作，其实，在<code>grow()</code>方法内部就使用到了右移操作。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">grow</span><span class="params">(<span class="keyword">int</span> minCapacity)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// overflow-conscious code</span></span><br><span class="line">        <span class="keyword">int</span> oldCapacity = elementData.length;</span><br><span class="line">        <span class="keyword">int</span> newCapacity = oldCapacity + (oldCapacity &gt;&gt; <span class="number">1</span>);</span><br><span class="line">        <span class="keyword">if</span> (newCapacity - minCapacity &lt; <span class="number">0</span>)</span><br><span class="line">            newCapacity = minCapacity;</span><br><span class="line">        <span class="keyword">if</span> (newCapacity - MAX_ARRAY_SIZE &gt; <span class="number">0</span>)</span><br><span class="line">            newCapacity = hugeCapacity(minCapacity);</span><br><span class="line">        <span class="comment">// minCapacity is usually close to size, so this is a win:</span></span><br><span class="line">        elementData = Arrays.copyOf(elementData, newCapacity);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">grow</span><span class="params">(<span class="keyword">int</span> minCapacity)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// overflow-conscious code</span></span><br><span class="line">        <span class="keyword">int</span> oldCapacity = elementData.length;</span><br><span class="line">        <span class="keyword">int</span> newCapacity = oldCapacity + (oldCapacity &gt;&gt; <span class="number">1</span>);</span><br><span class="line">        <span class="keyword">if</span> (newCapacity - minCapacity &lt; <span class="number">0</span>)</span><br><span class="line">            newCapacity = minCapacity;</span><br><span class="line">        <span class="keyword">if</span> (newCapacity - MAX_ARRAY_SIZE &gt; <span class="number">0</span>)</span><br><span class="line">            newCapacity = hugeCapacity(minCapacity);</span><br><span class="line">        <span class="comment">// minCapacity is usually close to size, so this is a win:</span></span><br><span class="line">        elementData = Arrays.copyOf(elementData, newCapacity);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></div>
 
 <p>grow() 函数的作用就是对 List 进行倍数的扩容，这个倍数就是 <code>x + x &gt;&gt; 1</code> ,具体产生的结果用主函数进行测试。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">System.out.println(<span class="number">10</span>+(<span class="number">10</span>&gt;&gt;<span class="number">1</span>));</span><br></pre></td></tr></table></figure>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">System.out.println(<span class="number">10</span>+(<span class="number">10</span>&gt;&gt;<span class="number">1</span>));</span><br></pre></td></tr></table></figure></div>
 
 <p>产生的结果为15.也就是说 <code>10&gt;&gt;1</code>的结果为5.那么计算过程是什么样的呢，才会产生这样的结果？</p>
 <h4 id="转化为二进制"><a href="#转化为二进制" class="headerlink" title="转化为二进制"></a>转化为二进制</h4><p>对位的运算，第一步一定是先转化为二进制，再对二进制进行计算。</p>
@@ -457,7 +457,7 @@
 <li>无符号反向补0</li>
 </ol>
 <h2 id="位与（-amp-）"><a href="#位与（-amp-）" class="headerlink" title="位与（&amp;）"></a>位与（&amp;）</h2><p>在HashMap中进行put元素的时候，会通过 <code>putVal()</code> 方法进行实际的计算和添加。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">final</span> V <span class="title">putVal</span><span class="params">(<span class="keyword">int</span> hash, K key, V value, <span class="keyword">boolean</span> onlyIfAbsent,</span></span></span><br><span class="line"><span class="function"><span class="params">                   <span class="keyword">boolean</span> evict)</span> </span>&#123;</span><br><span class="line">        Node&lt;K,V&gt;[] tab; Node&lt;K,V&gt; p; <span class="keyword">int</span> n, i;</span><br><span class="line">        <span class="keyword">if</span> ((tab = table) == <span class="keyword">null</span> || (n = tab.length) == <span class="number">0</span>)</span><br><span class="line">            n = (tab = resize()).length;</span><br><span class="line">            <span class="comment">// 使用 (n-1)&amp;hash 查找位置是否已经被占用</span></span><br><span class="line">        <span class="keyword">if</span> ((p = tab[i = (n - <span class="number">1</span>) &amp; hash]) == <span class="keyword">null</span>)</span><br><span class="line">            tab[i] = newNode(hash, key, value, <span class="keyword">null</span>);</span><br></pre></td></tr></table></figure>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">final</span> V <span class="title">putVal</span><span class="params">(<span class="keyword">int</span> hash, K key, V value, <span class="keyword">boolean</span> onlyIfAbsent,</span></span></span><br><span class="line"><span class="function"><span class="params">                   <span class="keyword">boolean</span> evict)</span> </span>&#123;</span><br><span class="line">        Node&lt;K,V&gt;[] tab; Node&lt;K,V&gt; p; <span class="keyword">int</span> n, i;</span><br><span class="line">        <span class="keyword">if</span> ((tab = table) == <span class="keyword">null</span> || (n = tab.length) == <span class="number">0</span>)</span><br><span class="line">            n = (tab = resize()).length;</span><br><span class="line">            <span class="comment">// 使用 (n-1)&amp;hash 查找位置是否已经被占用</span></span><br><span class="line">        <span class="keyword">if</span> ((p = tab[i = (n - <span class="number">1</span>) &amp; hash]) == <span class="keyword">null</span>)</span><br><span class="line">            tab[i] = newNode(hash, key, value, <span class="keyword">null</span>);</span><br></pre></td></tr></table></figure></div>
 
 <p>这里使用 &amp; 的作用其实是为了保证 hash 的值不超过范围。数组具有2的幂数长度，以用&amp;替换昂贵的取模运算。</p>
 <p>运算规则：第一个数的的第n位和第二个数的第n位如果都是1，那么结果的第n为也为1，否则为0 简化描述规则:<strong>同一为一,否则为零</strong></p>
@@ -481,7 +481,7 @@
 <li>按位“异或”运算可以使特定的位取反</li>
 <li>直接交换两个变量的值</li>
 </ol>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">a^=b</span><br><span class="line">b^=a</span><br><span class="line">a^=b</span><br></pre></td></tr></table></figure>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">a^=b</span><br><span class="line">b^=a</span><br><span class="line">a^=b</span><br></pre></td></tr></table></figure></div>
 
 <p>这样a的值与b的值就形成了互换。</p>
 
@@ -657,7 +657,7 @@
               
                 <a href="/archives/%7C%7C%20archive">
               
-                  <span class="site-state-item-count">105</span>
+                  <span class="site-state-item-count">106</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -739,15 +739,15 @@
                </li>
              
                <li>
+                 <a href="/2020/05/20/%E6%B7%B1%E5%85%A5JVM%EF%BC%88%E4%B8%89%EF%BC%89JVM%E8%B0%83%E4%BC%98/" title="深入JVM（二）JVM垃圾回收器" target="_blank">深入JVM（二）JVM垃圾回收器</a>
+               </li>
+             
+               <li>
                  <a href="/2020/05/15/%E6%B7%B1%E5%85%A5JVM%EF%BC%88%E4%BA%8C%EF%BC%89JVM%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8/" title="深入JVM（二）JVM垃圾回收器" target="_blank">深入JVM（二）JVM垃圾回收器</a>
                </li>
              
                <li>
                  <a href="/2020/05/10/%E6%B7%B1%E5%85%A5JVM%EF%BC%88%E4%B8%80%EF%BC%89%E7%B1%BB%E5%8A%A0%E8%BD%BD%E8%BF%87%E7%A8%8B%E5%92%8C%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D/" title="深入JVM（一）类加载过程和内存分配" target="_blank">深入JVM（一）类加载过程和内存分配</a>
-               </li>
-             
-               <li>
-                 <a href="/2020/05/02/%E7%BA%BF%E4%B8%8A%E5%86%85%E5%AD%98%E6%BA%A2%E5%87%BA%E5%88%86%E6%9E%90/" title="线上内存溢出分析" target="_blank">线上内存溢出分析</a>
                </li>
              
            </ul>
@@ -819,7 +819,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共129.5k字</span>
+  <span class="post-count">博客全站共130.2k字</span>
 </div>
 
 

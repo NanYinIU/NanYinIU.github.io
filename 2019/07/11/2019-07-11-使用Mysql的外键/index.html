@@ -429,7 +429,7 @@
         <h1 id="使用外键约束"><a href="#使用外键约束" class="headerlink" title="使用外键约束"></a>使用外键约束</h1><p>Mysql默认使用的是innoDB引擎，该引擎是支持外键的，下面来说说如何创建外键及各种外键使用的效果。</p>
 <h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><p>需要注意的是外键不支持虚拟构造出的列上。</p>
 <p>MySql支持外键，允许跨表交叉引用相关数据，有助于帮助保持数据的一致性。在create和alter表中的语句如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">-- 中括号内是非必写的</span><br><span class="line">[CONSTRAINT [symbol]] FOREIGN KEY</span><br><span class="line">    [index_name] (col_name, ...)</span><br><span class="line">    REFERENCES tbl_name (col_name,...)</span><br><span class="line">    [ON DELETE reference_option]</span><br><span class="line">    [ON UPDATE reference_option]</span><br><span class="line"></span><br><span class="line">reference_option:</span><br><span class="line">    RESTRICT | CASCADE | SET NULL | NO ACTION | SET DEFAULT</span><br><span class="line"></span><br><span class="line">CREATE TABLE child (</span><br><span class="line">    id INT,</span><br><span class="line">    parent_id INT,</span><br><span class="line">    -- 定义索引</span><br><span class="line">    INDEX par_ind (parent_id),</span><br><span class="line">    -- parent_id关联parent表中的id字段</span><br><span class="line">    -- 如果父表删除了，则子表也需要删除字段内容</span><br><span class="line">    FOREIGN KEY (parent_id)</span><br><span class="line">        REFERENCES parent(id)</span><br><span class="line">        ON DELETE CASCADE</span><br><span class="line">) ENGINE&#x3D;INNODB;</span><br><span class="line"></span><br><span class="line">-- 添加外键</span><br><span class="line">ALTER TABLE tb1 ADD FOREIGN KEY  (parent_id)</span><br><span class="line">        REFERENCES parent(id)</span><br><span class="line">        ON DELETE CASCADE</span><br><span class="line"></span><br><span class="line">-- 删除外键</span><br><span class="line">ALTER TABLE tbl_name DROP FOREIGN KEY fk_symbol;</span><br></pre></td></tr></table></figure>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">-- 中括号内是非必写的</span><br><span class="line">[CONSTRAINT [symbol]] FOREIGN KEY</span><br><span class="line">    [index_name] (col_name, ...)</span><br><span class="line">    REFERENCES tbl_name (col_name,...)</span><br><span class="line">    [ON DELETE reference_option]</span><br><span class="line">    [ON UPDATE reference_option]</span><br><span class="line"></span><br><span class="line">reference_option:</span><br><span class="line">    RESTRICT | CASCADE | SET NULL | NO ACTION | SET DEFAULT</span><br><span class="line"></span><br><span class="line">CREATE TABLE child (</span><br><span class="line">    id INT,</span><br><span class="line">    parent_id INT,</span><br><span class="line">    -- 定义索引</span><br><span class="line">    INDEX par_ind (parent_id),</span><br><span class="line">    -- parent_id关联parent表中的id字段</span><br><span class="line">    -- 如果父表删除了，则子表也需要删除字段内容</span><br><span class="line">    FOREIGN KEY (parent_id)</span><br><span class="line">        REFERENCES parent(id)</span><br><span class="line">        ON DELETE CASCADE</span><br><span class="line">) ENGINE&#x3D;INNODB;</span><br><span class="line"></span><br><span class="line">-- 添加外键</span><br><span class="line">ALTER TABLE tb1 ADD FOREIGN KEY  (parent_id)</span><br><span class="line">        REFERENCES parent(id)</span><br><span class="line">        ON DELETE CASCADE</span><br><span class="line"></span><br><span class="line">-- 删除外键</span><br><span class="line">ALTER TABLE tbl_name DROP FOREIGN KEY fk_symbol;</span><br></pre></td></tr></table></figure></div>
 
 <p><code>index_name</code> 指的是外键的标识，如果子表已经显式的定义了可以支持外键的索引（上面例子中的<code>par_ind</code>），则忽略。否则，mysql会依照以下规则隐式的创建一个外键索引。</p>
 <ul>
@@ -618,7 +618,7 @@
               
                 <a href="/archives/%7C%7C%20archive">
               
-                  <span class="site-state-item-count">105</span>
+                  <span class="site-state-item-count">106</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -700,15 +700,15 @@
                </li>
              
                <li>
+                 <a href="/2020/05/20/%E6%B7%B1%E5%85%A5JVM%EF%BC%88%E4%B8%89%EF%BC%89JVM%E8%B0%83%E4%BC%98/" title="深入JVM（二）JVM垃圾回收器" target="_blank">深入JVM（二）JVM垃圾回收器</a>
+               </li>
+             
+               <li>
                  <a href="/2020/05/15/%E6%B7%B1%E5%85%A5JVM%EF%BC%88%E4%BA%8C%EF%BC%89JVM%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8/" title="深入JVM（二）JVM垃圾回收器" target="_blank">深入JVM（二）JVM垃圾回收器</a>
                </li>
              
                <li>
                  <a href="/2020/05/10/%E6%B7%B1%E5%85%A5JVM%EF%BC%88%E4%B8%80%EF%BC%89%E7%B1%BB%E5%8A%A0%E8%BD%BD%E8%BF%87%E7%A8%8B%E5%92%8C%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D/" title="深入JVM（一）类加载过程和内存分配" target="_blank">深入JVM（一）类加载过程和内存分配</a>
-               </li>
-             
-               <li>
-                 <a href="/2020/05/02/%E7%BA%BF%E4%B8%8A%E5%86%85%E5%AD%98%E6%BA%A2%E5%87%BA%E5%88%86%E6%9E%90/" title="线上内存溢出分析" target="_blank">线上内存溢出分析</a>
                </li>
              
            </ul>
@@ -780,7 +780,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共129.5k字</span>
+  <span class="post-count">博客全站共130.2k字</span>
 </div>
 
 
