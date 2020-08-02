@@ -305,6 +305,337 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2020/04/05/Jav%20IO%E6%B5%85%E6%9E%90/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="NanYin">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NanYin的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/04/05/Jav%20IO%E6%B5%85%E6%9E%90/" itemprop="url">Java IO浅析</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-04-05T00:00:00Z">
+                2020-04-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  3.6k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  14
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Java中的IO操作"><a href="#Java中的IO操作" class="headerlink" title="Java中的IO操作"></a>Java中的IO操作</h1><p>Java总的来说有三类IO,效率不高,操作简单的BIO(blocking IO),非阻塞的NIO(New IO),和异步非阻塞IO,也就是升级版的NIO(Asynchronous I/O).</p>
+<h2 id="IO分类"><a href="#IO分类" class="headerlink" title="IO分类"></a>IO分类</h2><p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20200405193926.png" alt="IO分类"></p>
+<p>在学习这三类IO前,需要了解什么是阻塞.什么是异步.两个的含义有什么区别.</p>
+<blockquote>
+<p>同步和异步关注的是消息通信机制 (synchronous communication/ asynchronous communication)所谓同步，就是在发出一个<em>调用*时，在没有得到结果之前，该 *调用</em> 就不返回。但是一旦调用返回，就得到返回值了。换句话说，就是由<em>调用者</em>主动等待这个<em>调用</em>的结果。而异步则是相反，<em>调用</em>在发出之后，这个调用就直接返回了，但是没有返回结果。换句话说，当一个异步过程调用发出后，调用者不会立刻得到结果。而是在<em>调用</em>发出后，<em>被调用者</em>通过状态来通知调用者。</p>
+</blockquote>
+<blockquote>
+<p>阻塞和非阻塞关注的是程序在等待调用结果（消息，返回值）时的状态.阻塞调用是指调用结果返回之前，当前线程会被挂起。调用线程只有在得到结果之后才会重启线程。非阻塞调用指在不能立刻得到结果之前，该调用不会阻塞当前线程。</p>
+</blockquote>
+<h3 id="BIO"><a href="#BIO" class="headerlink" title="BIO"></a>BIO</h3><p>BIO过程就如同名字一样,是一个阻塞的IO,服务端通常为每一个客户端都建立一个独立的线程来通过调用accept()来监听客户端消息.如果想处理多个客户端请求则服务端需要建立等同数量的线程来处理这些消息,这就是普遍的一请求一应答的模型.处理完成后返回应答给客户端后销毁线程,因为线程是一个昂贵的资源,这样重复的新建线程,销毁线程,很浪费处理器资源,所以使用BIO同时能够尽可能的少创建线程,就可以用到线程池的方式实现,来达到服务端创建线程数远远小于客户端数的目的,但这种方法只是伪异步IO.</p>
+<p>在处理链接数量少的情况下,BIO的效率还不错,并且主要逻辑模型清晰明了,代码简单.但是在上万的链接的情况下,BIO处理起来就非常吃紧了.</p>
+<h3 id="NIO"><a href="#NIO" class="headerlink" title="NIO"></a>NIO</h3><p>NIO是一种同步非阻塞的I/O模型，在Java 1.4 中引入了NIO框架，对应 java.nio 包，提供了 Channel , Selector，Buffer等抽象。</p>
+<blockquote>
+<p>NIO中的N可以理解为Non-blocking，不单纯是New。它支持面向缓冲的，基于通道的I/O操作方法。 NIO提供了与传统BIO模型中的 Socket 和 ServerSocket 相对应的 SocketChannel 和 ServerSocketChannel 两种不同的套接字通道实现,两种通道都支持阻塞和非阻塞两种模式。阻塞模式使用就像传统中的支持一样，比较简单，但是性能和可靠性都不好；非阻塞模式正好与之相反。对于低负载、低并发的应用程序，可以使用同步阻塞I/O来提升开发速率和更好的维护性；对于高负载、高并发的（网络）应用，应使用 NIO 的非阻塞模式来开发。</p>
+</blockquote>
+<h4 id="NIO特性和NIO与传统IO的区别"><a href="#NIO特性和NIO与传统IO的区别" class="headerlink" title="NIO特性和NIO与传统IO的区别"></a>NIO特性和NIO与传统IO的区别</h4><ul>
+<li>传统IO(BIO)是一种阻塞IO模型,而NIO是非阻塞的IO模型,区别为当线程读取数据的时候,非阻塞IO可以不用等,而阻塞IO需要一直等待IO完成后才能继续.</li>
+<li>IO面向流,而NIO面向缓冲区.</li>
+<li>通道(channel) NIO通过通道进行数据读写.通道是双向的,而传统的IO是单向的.通道链接的都是Buffer,所以通道可以异步的读写.</li>
+<li>选择器(Selectors) NIO拥有选择器,而IO没有.选择器的作用就是用来使用单个线程来处理多个通道(NIO面向buffer,通道只与buffer交互).</li>
+</ul>
+<p><img src="https://camo.githubusercontent.com/3a68153ce17be90275df07a47409afaea91aff83/68747470733a2f2f6d792d626c6f672d746f2d7573652e6f73732d636e2d6265696a696e672e616c6979756e63732e636f6d2f323031392d322f536c6563746f722e706e67" alt="Selector图解"></p>
+<h3 id="AIO"><a href="#AIO" class="headerlink" title="AIO"></a>AIO</h3><p>AIO 也就是 NIO 2。在 Java 7 中引入了 NIO 的改进版 NIO 2,它是异步非阻塞的IO模型。异步 IO 是基于事件和回调机制实现的，也就是应用操作之后会直接返回，不会堵塞在那里，当后台处理完成，操作系统会通知相应的线程进行后续的操作。</p>
+<p>AIO 是异步IO的缩写，虽然 NIO 在网络操作中，提供了非阻塞的方法，但是 NIO 的 IO 行为还是同步的。对于 NIO 来说，我们的业务线程是在 IO 操作准备好时，得到通知，接着就由这个线程自行进行 IO 操作，IO操作本身是同步的。</p>
+<h2 id="BIO的流操作"><a href="#BIO的流操作" class="headerlink" title="BIO的流操作"></a>BIO的流操作</h2><p>根据上面的IO分类图可以看到IO流按照流的类型可以分为两类,一类是字节流,一类是字符流</p>
+<p>两者之间的区别在于</p>
+<p>操作单位不同,字节流以字节为单位进行数据传输,而字符流是以字符为单位进行传输<br>处理元素不同,字节流可处理所有类型数据,但字符流只可以处理以字符类型的数据,也就是说字符流只可处理纯文本数据</p>
+<h3 id="输入输出流"><a href="#输入输出流" class="headerlink" title="输入输出流"></a>输入输出流</h3><p>输入输出按照字面理解,就是流中的输入和输出</p>
+<table>
+<thead>
+<tr>
+<th>流类型</th>
+<th>输入</th>
+<th>输出</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>字节流</td>
+<td>InputStream</td>
+<td>OutputStream</td>
+</tr>
+<tr>
+<td>字符流</td>
+<td>Reader</td>
+<td>Writer</td>
+</tr>
+</tbody></table>
+<h3 id="字节流"><a href="#字节流" class="headerlink" title="字节流"></a>字节流</h3><h4 id="输入字节流-InputStream"><a href="#输入字节流-InputStream" class="headerlink" title="输入字节流 InputStream"></a>输入字节流 InputStream</h4><p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20200405200148.png" alt="InputStream"></p>
+<p>inputStream作为抽象类,必须依靠子类实现具体的操作.在抽象类中定义了如下几个方法:</p>
+<ol>
+<li>三个重载的read方法,用来读取数据,其中必须在子类中实现抽象的read方法</li>
+</ol>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">int</span> <span class="title">read</span><span class="params">()</span> <span class="keyword">throws</span> IOException</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 定义b.length读取范围</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">read</span><span class="params">(<span class="keyword">byte</span> b[])</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> read(b, <span class="number">0</span>, b.length);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">read</span><span class="params">(<span class="keyword">byte</span> b[], <span class="keyword">int</span> off, <span class="keyword">int</span> len)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (b == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException();</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (off &lt; <span class="number">0</span> || len &lt; <span class="number">0</span> || len &gt; b.length - off) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IndexOutOfBoundsException();</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (len == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 使用子类中的read进行数据读取</span></span><br><span class="line">    <span class="keyword">int</span> c = read();</span><br><span class="line">    <span class="comment">//....</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<ol start="2">
+<li><code>skip(long n)</code> 方法,用来掉过并丢弃n个字节的数据,并返回被丢弃的数据</li>
+<li><code>available()</code>方法,用来返回输入流中可以读取的字节数,子类需要单独实现该方法,否则会返回0;</li>
+<li><code>void close()</code> 方法,子类实现,用来关闭流</li>
+<li><code>synchronized void mark(int readlimit)</code>方法,用来标记输入流的当前位置,同样由子类来具体实现</li>
+<li><code>synchronized void reset()</code>方法,用来返回输入流最后一次调用mark方法的位置</li>
+</ol>
+<p>来看看几种不同的InputStream：</p>
+<ol>
+<li><code>FileInputStream</code> 把一个文件作为InputStream，实现对文件的读取操作</li>
+<li><code>ByteArrayInputStream</code> 把内存中的一个缓冲区作为InputStream使用</li>
+<li><code>StringBufferInputStream</code> 把一个String对象作为InputStream</li>
+<li><code>PipedInputStream</code> 实现了pipe的概念，主要在线程中使用</li>
+<li><code>SequenceInputStream</code>把多个InputStream合并为一个InputStream</li>
+</ol>
+<h4 id="输出字节流-outputStream"><a href="#输出字节流-outputStream" class="headerlink" title="输出字节流 outputStream"></a>输出字节流 outputStream</h4><ol>
+<li>OutputStream提供了3个重载的write方法来做数据的输出</li>
+</ol>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 将参数b中的字节写到输出流 </span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">write</span><span class="params">(<span class="keyword">byte</span> b[ ])</span></span></span><br><span class="line"><span class="function"><span class="comment">// 将参数b的从偏移量off开始的len个字节写到输出流</span></span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">write</span><span class="params">(<span class="keyword">byte</span> b[ ], <span class="keyword">int</span> off, <span class="keyword">int</span> len)</span></span></span><br><span class="line"><span class="function"><span class="comment">// 先将int转换为byte类型，把低字节写入到输出流中</span></span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">write</span><span class="params">(<span class="keyword">int</span> b)</span></span></span><br></pre></td></tr></table></figure></div>
+
+<ol start="2">
+<li><code>public void flush()</code> 将数据缓冲区中数据全部输出，并清空缓冲区。</li>
+<li><code>public void close()</code> 关闭输出流并释放与流相关的系统资源。</li>
+</ol>
+<h3 id="字符流"><a href="#字符流" class="headerlink" title="字符流"></a>字符流</h3><h4 id="字符输入流-Reader"><a href="#字符输入流-Reader" class="headerlink" title="字符输入流 Reader"></a>字符输入流 Reader</h4><p>字符输入流和字节流相似,同样定义了read相关方法,但是不同的点在于Reader操作char而不是byte,并且在声明Reader时,将自身作为一个对象,在相关操作上使用synchronized进行同步操作.</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="title">Reader</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.lock = <span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 实现方法</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">read</span><span class="params">(<span class="keyword">char</span> cbuf[], <span class="keyword">int</span> off, <span class="keyword">int</span> len)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">            <span class="comment">// ...</span></span><br></pre></td></tr></table></figure></div>
+
+<p>同理字符输出流 Writer</p>
+<h3 id="如何使用BIO流"><a href="#如何使用BIO流" class="headerlink" title="如何使用BIO流"></a>如何使用BIO流</h3><ol>
+<li>首先确定是输入还是输出</li>
+<li>其次确认对象是否为纯文本,如果是纯文本可以选择 字符流的 <code>Reader</code> 和 <code>Wirter</code> ,否则需要使用字节流的 <code>inputStream</code> 和 <code>outputStream</code></li>
+<li>然后确定是否要通过流转换来达到增加处理效率的目的,如果需要则使用 <code>InputStreamReader</code> 等进行转换</li>
+<li>最后,需要确认是否需要使用buffer缓冲来提高效率</li>
+</ol>
+<ul>
+<li>inputStream 字节输入流</li>
+</ul>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">inputStreamTest</span><span class="params">()</span></span>&#123;</span><br><span class="line">    String filePath = <span class="string">"/Users/gaoguoxing/Work/temp/attachment/20200403/65bf6a2b0dbf3049dc08e800c2ac617385bb.xml"</span>;</span><br><span class="line">    <span class="keyword">try</span> (InputStream in</span><br><span class="line">                 = <span class="keyword">new</span> FileInputStream(filePath)</span><br><span class="line">    ) &#123;</span><br><span class="line">        <span class="comment">// 获取文件IO流</span></span><br><span class="line">        <span class="keyword">byte</span>[] content = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">100</span>];</span><br><span class="line">        StringBuffer bf = <span class="keyword">new</span> StringBuffer();</span><br><span class="line">        <span class="comment">// 没有返回 -1</span></span><br><span class="line">        <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (in.read(content) &lt; <span class="number">0</span>) &#123;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            bf.append(<span class="keyword">new</span> String(content));</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(bf.toString());</span><br><span class="line">    &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<ul>
+<li>outputStream 字节输出流</li>
+</ul>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">outputStreamTest</span><span class="params">()</span></span>&#123;</span><br><span class="line">    String content = <span class="string">"this is my content"</span>;</span><br><span class="line">    <span class="keyword">try</span> (OutputStream out = <span class="keyword">new</span> FileOutputStream(<span class="string">"copy.txt"</span>)) &#123;</span><br><span class="line">        out.write(content.getBytes());</span><br><span class="line">    &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">        e.printStackTrace();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<ul>
+<li>Reader 字符输入流</li>
+</ul>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">readerTest</span><span class="params">()</span></span>&#123;</span><br><span class="line">    String filePath = <span class="string">"/Users/gaoguoxing/Work/temp/attachment/20200403/65bf6a2b0dbf3049dc08e800c2ac617385bb.xml"</span>;</span><br><span class="line">    String s;</span><br><span class="line">    <span class="keyword">try</span>(BufferedReader in = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> FileReader(filePath))) &#123;</span><br><span class="line">        <span class="keyword">while</span> ((s = in.readLine()) != <span class="keyword">null</span>)&#123;</span><br><span class="line">            System.out.println(s);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">        e.printStackTrace();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<ul>
+<li>Writer 字符输出流</li>
+</ul>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">writerTest</span><span class="params">()</span></span>&#123;</span><br><span class="line">    String content = <span class="string">"this is my content"</span>;</span><br><span class="line">    <span class="keyword">try</span> (FileWriter out = <span class="keyword">new</span> FileWriter(<span class="string">"copy.txt"</span>);) &#123;</span><br><span class="line">        out.write(content + <span class="string">"\n"</span>);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">        e.printStackTrace();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="NIO操作"><a href="#NIO操作" class="headerlink" title="NIO操作"></a>NIO操作</h2><p>在NIO特性一章中提到了NIO是面向Buffer的，双向的数据处理形式。因为NIO分为buffer缓冲区和Channel管道，NIO使用管道操作缓冲区,可以说Channel不与数据打交道，它只负责运输数据。更可以抽象的简单理解为Channel管道为铁路，buffer缓冲区为火车(运载着货物)，火车可以去，同样也可以回（双向的）。</p>
+<h3 id="Buffer-缓冲区"><a href="#Buffer-缓冲区" class="headerlink" title="Buffer 缓冲区"></a>Buffer 缓冲区</h3><p>Buffer是具体的原始类型的容器，Buffer是一个线性的、有限的原始类型元素的集合。Buffer中有三个必要的属性：capacity、limit、position</p>
+<ul>
+<li>capacity:buffer中包含的元素数量</li>
+<li>limit：buffer中的limit是缓冲区里的数据的总数</li>
+<li>position：buffer中position是下一个即将被读写的元素</li>
+</ul>
+<p>每个实现子类都需要实现两种方法：get和put，两个是相对的操作，也就是理解为读写数据，每次操作时，都会从buffer中的当前position开始，增长transferred个数量的元素，这里的transferred就是get和put的元素数量。如果使用get操作，超出了limit，那么会出现 BufferUnderflowException ，相反如果使用get超出limit，就会出现 BufferOverflowException，这两种情况下，数据都不会被改变。</p>
+<p>Buffer中提供了clear()、 filp()、 rewind()方法用来访问Buffer中的position, limit, 和capacity的值。</p>
+<ul>
+<li>clear() 清空读缓冲区中的内容，之后可以使用put写数据,将limit设置为capacity，将position设置为0</li>
+<li>filp() 切换成读模式,之后可以使用 get 读数据，将limlit设置为当前position，再将position设置为0</li>
+<li>rewind() 可重复读缓冲区的内容</li>
+</ul>
+<p>下面通过几个实例来看Buffer相关的方法：</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 分配capacity大小</span></span><br><span class="line">ByteBuffer byteBuffer = ByteBuffer.allocate(<span class="number">1024</span>);</span><br><span class="line"><span class="comment">// 初始时4个核心变量的值</span></span><br><span class="line">System.out.println(<span class="string">"limit:"</span>+byteBuffer.limit()); <span class="comment">// 1024</span></span><br><span class="line">System.out.println(<span class="string">"position:"</span>+byteBuffer.position()); <span class="comment">// 0</span></span><br><span class="line">System.out.println(<span class="string">"capacity:"</span>+byteBuffer.capacity());  <span class="comment">// 1024</span></span><br><span class="line">System.out.println(<span class="string">"mark:"</span> + byteBuffer.mark());</span><br><span class="line"><span class="comment">//mark:java.nio.HeapByteBuffer[pos=0 lim=1024 cap=1024]</span></span><br><span class="line"></span><br><span class="line">byteBuffer.put(<span class="string">"hello world"</span>.getBytes());</span><br><span class="line"><span class="comment">// 调用mark方法会返回this也就会输出当前buffer</span></span><br><span class="line">System.out.println(<span class="string">"mark:"</span> + byteBuffer.mark());</span><br><span class="line"><span class="comment">// mark:java.nio.HeapByteBuffer[pos=11 lim=1024 cap=1024]</span></span><br><span class="line"><span class="comment">// 在执行put操作后,当前位置发生了变化</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 切换成读模式</span></span><br><span class="line">byteBuffer.flip();</span><br><span class="line">System.out.println(<span class="string">"mark:"</span> + byteBuffer.mark());</span><br><span class="line"><span class="comment">// mark:java.nio.HeapByteBuffer[pos=0 lim=11 cap=1024]</span></span><br><span class="line"><span class="comment">// 切换成读模式,limit设置为原来的当前位置,当前位置设置为0</span></span><br><span class="line"><span class="keyword">byte</span>[] bytes = <span class="keyword">new</span> <span class="keyword">byte</span>[byteBuffer.limit()];</span><br><span class="line">byteBuffer.get(bytes);</span><br><span class="line"><span class="comment">// 这样使用get读的时候,只能获取到 0~limit 之间的内容</span></span><br><span class="line">System.out.println(<span class="keyword">new</span> String(bytes));</span><br><span class="line"></span><br><span class="line"><span class="comment">// 清空，再次可以向buffer中写数据</span></span><br><span class="line">byteBuffer.clear();</span><br><span class="line">byteBuffer.put(<span class="string">"HELLO WORLD"</span>.getBytes());</span><br><span class="line"><span class="comment">//mark:java.nio.HeapByteBuffer[pos=11 lim=1024 cap=1024]</span></span><br><span class="line">System.out.println(<span class="string">"mark:"</span> + byteBuffer.mark());</span><br><span class="line"></span><br><span class="line"><span class="comment">// 切换成读模式</span></span><br><span class="line">byteBuffer.flip();</span><br><span class="line"><span class="comment">//mark:java.nio.HeapByteBuffer[pos=0 lim=11 cap=1024]</span></span><br><span class="line">System.out.println(<span class="string">"mark:"</span> + byteBuffer.mark());</span><br><span class="line">bytes = <span class="keyword">new</span> <span class="keyword">byte</span>[byteBuffer.limit()];</span><br><span class="line">byteBuffer.get(bytes);</span><br><span class="line">System.out.println(<span class="keyword">new</span> String(bytes));</span><br><span class="line"></span><br><span class="line"><span class="comment">// 重复读</span></span><br><span class="line">System.out.println(<span class="string">"mark:"</span> + byteBuffer.mark());</span><br><span class="line"><span class="comment">//mark:java.nio.HeapByteBuffer[pos=11 lim=11 cap=1024]</span></span><br><span class="line"><span class="comment">// 使用get之后,pos变为了limit,在读的话会出现异常,</span></span><br><span class="line"><span class="comment">// 如果再读,只能使用rewind方法</span></span><br><span class="line">byteBuffer.rewind();</span><br><span class="line"><span class="comment">//mark:java.nio.HeapByteBuffer[pos=0 lim=11 cap=1024]</span></span><br><span class="line">System.out.println(<span class="string">"mark:"</span> + byteBuffer.mark());</span><br><span class="line">bytes = <span class="keyword">new</span> <span class="keyword">byte</span>[byteBuffer.limit()];</span><br><span class="line">byteBuffer.get(bytes);</span><br><span class="line">System.out.println(<span class="keyword">new</span> String(bytes));</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="Channel-管道"><a href="#Channel-管道" class="headerlink" title="Channel 管道"></a>Channel 管道</h3><p>Channel是IO操作的核心,Channel表示与一些硬件设备,文件,网络等实体的开放连接,能够进行多个不同的IO操作(读与写).</p>
+<p>Channel有开关的状态,只要channel创建,则channel的状态就是open的,如果chennel一旦被关闭,那么如果再有后续调用channel的io操作,都会出现异常.(类似jdbc的connection),以防万一,可以调用isopen()方法检测是否被关闭了</p>
+<p>再NIO中几个重要的Channel实现类:</p>
+<ul>
+<li><strong>FileChannel：</strong> 用于文件的数据读写</li>
+<li><strong>DatagramChannel：</strong> 用于UDP的数据读写</li>
+<li><strong>SocketChannel：</strong> 用于TCP的数据读写，一般是客户端实现</li>
+<li><strong>ServerSocketChannel:</strong> 允许我们监听TCP链接请求，每个请求会创建会一个SocketChannel，一般是服务器实现</li>
+</ul>
+<p>用FileChannel来演示创建和传输的过程.</p>
+<h4 id="创建channel"><a href="#创建channel" class="headerlink" title="创建channel"></a>创建channel</h4><p>有两种方式创建channel,一种是使用file或者fileStream创建cannel,另一种使用FileChannel的静态方法创建</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 1. 使用randomAccessFile 创建channel</span></span><br><span class="line">RandomAccessFile randomAccessFile = <span class="keyword">new</span> RandomAccessFile(<span class="string">"a.txt"</span>,<span class="string">"rw"</span>);</span><br><span class="line">FileChannel in = randomAccessFile.getChannel();</span><br><span class="line"><span class="comment">// 2. 使用静态方法创建</span></span><br><span class="line">FileChannel out = FileChannel.open(Paths.get(<span class="string">"b.txt"</span>), StandardOpenOption.WRITE);</span><br><span class="line"><span class="comment">// 3. 通过FileInputStream 创建channel</span></span><br><span class="line">FileInputStream inputStream = <span class="keyword">new</span> FileInputStream(<span class="string">"xxx.txt"</span>);</span><br><span class="line">inputStream.getChannel();</span><br></pre></td></tr></table></figure></div>
+
+<h4 id="数据读写"><a href="#数据读写" class="headerlink" title="数据读写"></a>数据读写</h4><p>使用channel进行数据读写,类似普通的BIO使用buffer.但是需要注意的是,每次都需要将buffer打开读模式,再读,读完后使用clear清空buffer</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">ByteBuffer readBuffer = ByteBuffer.allocate(<span class="number">1024</span>);</span><br><span class="line"><span class="keyword">while</span>(in.read(readBuffer) != -<span class="number">1</span>)&#123;</span><br><span class="line">    readBuffer.flip();</span><br><span class="line">    out.write(readBuffer);</span><br><span class="line">    readBuffer.clear();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>还可以直接使用通道的transferTo直接复制到另外一个通道中,完成复制</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 使用通道的transferTo</span></span><br><span class="line">in.transferTo(<span class="number">0</span>,in.size(),out);</span><br></pre></td></tr></table></figure></div>
+
+<h4 id="关闭资源"><a href="#关闭资源" class="headerlink" title="关闭资源"></a>关闭资源</h4><p>最后需要手动将channel关掉(必须)</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">in.close();</span><br><span class="line">out.close();</span><br></pre></td></tr></table></figure></div>
+
+<p>另外这时候可以使用 try-with-resource 进行简化,整体过程可以参考如下代码:</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span> (</span><br><span class="line">        <span class="comment">// 创建资源</span></span><br><span class="line">        RandomAccessFile randomAccessFile = <span class="keyword">new</span> RandomAccessFile(<span class="string">"a.txt"</span>, <span class="string">"rw"</span>);</span><br><span class="line">        FileChannel in = randomAccessFile.getChannel();</span><br><span class="line">        FileChannel out = FileChannel.open(Paths.get(<span class="string">"b.txt"</span>), StandardOpenOption.WRITE);</span><br><span class="line">) &#123;</span><br><span class="line">    <span class="comment">// 设置buffer</span></span><br><span class="line">    ByteBuffer readBuffer = ByteBuffer.allocate(<span class="number">1024</span>);</span><br><span class="line">    <span class="comment">// 将通道中的数据放到缓冲区</span></span><br><span class="line">    <span class="keyword">while</span> (in.read(readBuffer) != -<span class="number">1</span>) &#123;</span><br><span class="line">        <span class="comment">// 切换成读模式</span></span><br><span class="line">        readBuffer.flip();</span><br><span class="line">        <span class="comment">// 向通道内写入buffer</span></span><br><span class="line">        out.write(readBuffer);</span><br><span class="line">        <span class="comment">// 清空本次的buffer</span></span><br><span class="line">        readBuffer.clear();</span><br><span class="line">    &#125;</span><br><span class="line">&#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">    e.printStackTrace();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+
+
+
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+<div>
+      
+</div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2020/03/29/%E7%BA%BF%E7%A8%8B%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2692,247 +3023,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/12/01/%EF%BC%88%E4%B8%80%EF%BC%89%20%E5%B0%86%E7%B1%BB%E5%8A%A0%E5%85%A5%E5%88%B0%E5%AE%B9%E5%99%A8%E4%B8%AD%E7%9A%84%E6%96%B9%E5%BC%8F/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="NanYin">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NanYin的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/12/01/%EF%BC%88%E4%B8%80%EF%BC%89%20%E5%B0%86%E7%B1%BB%E5%8A%A0%E5%85%A5%E5%88%B0%E5%AE%B9%E5%99%A8%E4%B8%AD%E7%9A%84%E6%96%B9%E5%BC%8F/" itemprop="url">将类添加至容器中的四种方法</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-12-01T12:00:00Z">
-                2019-12-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Spring/" itemprop="url" rel="index">
-                    <span itemprop="name">Spring</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Words count in article&#58;</span>
-                
-                <span title="Words count in article">
-                  1.3k
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Reading time &asymp;</span>
-                
-                <span title="Reading time">
-                  5
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="将类添加至容器中的四种方法"><a href="#将类添加至容器中的四种方法" class="headerlink" title="将类添加至容器中的四种方法"></a>将类添加至容器中的四种方法</h1><p>在Spring中,有四种方法可以将现有的类的实例添加到容器中.在了解之前需要了解以下两种作用域.</p>
-<p>Spring在创建对象的时候共有四种作用域可选.分别为常用的<code>singleton</code>、<code>prototype</code>.和在web应用开发中的<code>request</code>和<code>session</code>.</p>
-<p>下面针对常用的<code>singleton</code>、<code>prototype</code>来了解bean的作用域(SCOPE)</p>
-<h2 id="Spring的作用域"><a href="#Spring的作用域" class="headerlink" title="Spring的作用域"></a>Spring的作用域</h2><h3 id="1-Singleton-单例"><a href="#1-Singleton-单例" class="headerlink" title="1. Singleton 单例"></a>1. Singleton 单例</h3><p>Singleton为Spring对象的默认的创建方式,也就是说Spring在创建Bean的时候默认是单例的.</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">/准备对象Person</span><br><span class="line"><span class="meta">@Configurable</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestConfig</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Person <span class="title">person</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"创建Bean实例！"</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Person(<span class="string">"li"</span>, <span class="string">"lei"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//测试</span></span><br><span class="line">ApplicationContext applicationContext = <span class="keyword">new</span> AnnotationConfigApplicationContext(TestConfig.class);</span><br><span class="line"><span class="comment">// 获取两次对象,并且在这是就会打印 「创建Bean实例」</span></span><br><span class="line">Person person = (Person) applicationContext.getBean(<span class="string">"person"</span>);</span><br><span class="line">Person person_copy = (Person) applicationContext.getBean(<span class="string">"person"</span>);</span><br><span class="line"><span class="comment">// 这里返回true,说明两个对象是相同的对象</span></span><br><span class="line">System.out.println(person == person_copy);</span><br></pre></td></tr></table></figure></div>
-
-<p>运行结果：</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">创建Bean实例！</span><br><span class="line">容器创建成功。。接下来创建对象！</span><br><span class="line"><span class="keyword">true</span></span><br></pre></td></tr></table></figure></div>
-
-<blockquote>
-<p>并且需要注意的时,在Spring创建Singleton对象的时候,是在容器创建后立即创建的.</p>
-</blockquote>
-<h3 id="2-prototype-原型"><a href="#2-prototype-原型" class="headerlink" title="2. prototype 原型"></a>2. prototype 原型</h3><p>同样上述的代码,在@Bean下面增加<code>@Scope(&quot;prototype&quot;)</code>后,会注意到结果的不同.运行时在进行结果的观察:</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">容器创建成功。。接下来创建对象！</span><br><span class="line">创建Bean实例！</span><br><span class="line">创建Bean实例！</span><br><span class="line"><span class="keyword">false</span></span><br></pre></td></tr></table></figure></div>
-
-<table>
-<thead>
-<tr>
-<th>类型</th>
-<th>是否单例</th>
-<th>创建时间</th>
-<th>是否销毁</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Singleton</td>
-<td>单例</td>
-<td>默认在容器启动时创建</td>
-<td>容器关闭后销毁</td>
-</tr>
-<tr>
-<td>prototype</td>
-<td>多实例</td>
-<td>在获取对象时创建</td>
-<td>不会调用销毁方法</td>
-</tr>
-</tbody></table>
-<h2 id="一、Configuration注解和Bean注解"><a href="#一、Configuration注解和Bean注解" class="headerlink" title="一、Configuration注解和Bean注解"></a>一、Configuration注解和Bean注解</h2><p>代替了原来的Spring配置文件,在类上标注<code>Configuration</code>注解说明这个类是Spring的配置类.</p>
-<p>在方法上使用<code>Bean</code>注解,则会将返回值作为实例添加到容器中,方法名称作为Bean的ID.</p>
-<p>一般使用这种方法将第三方的包中的类加入到容器中,如Shiro的配置类.</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">使用@Confiuration注解声明配置类</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Configurable</span></span><br><span class="line"><span class="meta">@ComponentScan</span>(<span class="string">"com.nanyin"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestConfig</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="meta">@Scope</span>(<span class="string">"prototype"</span>) <span class="comment">//声明多实例</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Person <span class="title">person</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"创建Bean实例！"</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Person(<span class="string">"li"</span>, <span class="string">"lei"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
-
-<h2 id="二、componentScan包扫描注解"><a href="#二、componentScan包扫描注解" class="headerlink" title="二、componentScan包扫描注解"></a>二、componentScan包扫描注解</h2><p>在面对自己写的<code>@Component</code>,<code>@Service</code>,<code>@Controller</code>,<code>@Repository</code>则不需要使用第一个中的使用@Bean注解一个一个的添加到配置类中,只需要配置<code>@ComponentSacn</code>就行了.它会自动扫描路径下的所有这些注解的类加入到容器中.</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configurable</span></span><br><span class="line"><span class="meta">@ComponentScan</span>(<span class="string">"com.nanyin"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestConfig</span> </span>&#123;</span><br><span class="line">   </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
-
-<h2 id="三、import注解"><a href="#三、import注解" class="headerlink" title="三、import注解"></a>三、import注解</h2><h3 id="1-直接导入-Configuration配置类"><a href="#1-直接导入-Configuration配置类" class="headerlink" title="1. 直接导入@Configuration配置类"></a>1. 直接导入@Configuration配置类</h3><p>能够使用<code>@Import(value=xxx.class)</code> 其中value是数组,可以一次性导入多个配置类.批量的导入配置文件中的所有声明的bean.</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 新的实体</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Dog</span> </span>&#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Configurable</span></span><br><span class="line"><span class="comment">// 需要导入TestConfig中配置的所有bean</span></span><br><span class="line"><span class="meta">@Import</span>(value=TestConfig.class)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ImportConfig</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Dog <span class="title">dog</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"创建Bean实例！"</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Dog();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Configurable</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestConfig</span> </span>&#123;</span><br><span class="line">  <span class="comment">// 这里配置了一个person</span></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Person <span class="title">person</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"创建Bean实例！"</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Person(<span class="string">"li"</span>, <span class="string">"lei"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 测试</span></span><br><span class="line"> <span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">importTest</span><span class="params">()</span></span>&#123;</span><br><span class="line">    ApplicationContext applicationContext = <span class="keyword">new</span> AnnotationConfigApplicationContext(ImportConfig.class);</span><br><span class="line">    String[] names = applicationContext.getBeanDefinitionNames();</span><br><span class="line">    <span class="comment">// 打印出所有添加到容器中的名称</span></span><br><span class="line">    <span class="keyword">for</span> (String temp :</span><br><span class="line">            names) &#123;</span><br><span class="line">        System.out.println(temp);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">结果:</span><br><span class="line">importConfig</span><br><span class="line">person</span><br><span class="line">com.nanyin.config.TestConfig</span><br><span class="line">dog</span><br></pre></td></tr></table></figure></div>
-
-<p>导入了<code>TestConfig</code>配置类和其中的person实例</p>
-<h3 id="2-使用importSelector自定义导入"><a href="#2-使用importSelector自定义导入" class="headerlink" title="2. 使用importSelector自定义导入"></a>2. 使用importSelector自定义导入</h3><p>除了使用 <code>@import</code> 直接导入指定的类外,还可以导入 继承<code>importSelector</code>接口的类,并且在实现类中进行自定义操作.</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyImportSelector</span> <span class="keyword">implements</span> <span class="title">ImportSelector</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> String[] selectImports(AnnotationMetadata importingClassMetadata) &#123;</span><br><span class="line">      <span class="comment">// 可以通过importingClassMetadata获取类注解上的所有信息</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> String[]&#123;Dog.class.getName()&#125;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Configurable</span></span><br><span class="line"><span class="comment">// @Import 可以导入数组(多个) class,如上面提到的 TestConfig配置类,这里把MyImportSelector也添加进去</span></span><br><span class="line"><span class="meta">@Import</span>(value=&#123;TestConfig.class,MyImportSelector.class&#125;)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ImportConfig</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">importTest</span><span class="params">()</span></span>&#123;</span><br><span class="line">    ApplicationContext applicationContext = <span class="keyword">new</span> AnnotationConfigApplicationContext(ImportConfig.class);</span><br><span class="line">    String[] names = applicationContext.getBeanDefinitionNames();</span><br><span class="line">    <span class="keyword">for</span> (String temp :</span><br><span class="line">            names) &#123;</span><br><span class="line">        System.out.println(temp);</span><br><span class="line">    &#125;</span><br><span class="line">    ((AnnotationConfigApplicationContext) applicationContext).close();;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//执行测试后</span></span><br><span class="line"><span class="comment">// importConfig</span></span><br><span class="line"><span class="comment">// person</span></span><br><span class="line"><span class="comment">// com.nanyin.config.TestConfig</span></span><br><span class="line"><span class="comment">// com.nanyin.entity.Dog</span></span><br></pre></td></tr></table></figure></div>
-
-<h3 id="3-使用-importBeanDefinitionRegister"><a href="#3-使用-importBeanDefinitionRegister" class="headerlink" title="3. 使用 importBeanDefinitionRegister"></a>3. 使用 importBeanDefinitionRegister</h3><p>可以使用 <code>importBeanDefinitionRegister</code> 自定义注册bean,因为在接口中有BeanRegiest作为参数,通过参数调用Registe相关方法.</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyimportBeanDefinitionRegistrar</span> <span class="keyword">implements</span> <span class="title">ImportBeanDefinitionRegistrar</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">registerBeanDefinitions</span><span class="params">(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry)</span> </span>&#123;</span><br><span class="line">        AnnotatedGenericBeanDefinition beanDefinition = <span class="keyword">new</span> AnnotatedGenericBeanDefinition(Dog.class);</span><br><span class="line">        <span class="comment">// 前面字符串是ID,后面是BeanDefinition</span></span><br><span class="line">        registry.registerBeanDefinition(<span class="string">"dogx"</span>,beanDefinition);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Import</span>(MyimportBeanDefinitionRegistrar.class)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ImportConfig</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Dog <span class="title">dog</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"创建Bean实例！"</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Dog();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 结果通过 registry 注册了 dogx</span></span><br><span class="line"><span class="comment">// importConfig</span></span><br><span class="line"><span class="comment">// dog</span></span><br><span class="line"><span class="comment">// dogx</span></span><br></pre></td></tr></table></figure></div>
-
-<blockquote>
-<p>后面的两种方法在SpringBoot源码中会经常看到,所以还是挺重要的.</p>
-</blockquote>
-<hr>
-<h2 id="四、使用FactoryBean注册bean"><a href="#四、使用FactoryBean注册bean" class="headerlink" title="四、使用FactoryBean注册bean"></a>四、使用FactoryBean注册bean</h2><p>用于创建复杂的bean时,会用到FactoryBean.</p>
-<p>如果继承 <code>FactoryBean</code> 接口实现,则这个就不能当作一个普通的bean使用了,他暴露出来的获取的对象是 <code>getObject()</code>方法获取的工厂中的对象,而不是他自身.默认创建的时FactoryBean的对象实例，而不是工厂实例，如果想获取工厂的实例，在getBean的时候在对象ID前加上<code>&amp;</code>符号。</p>
-<p>具体实例:</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyFactoryBean</span> <span class="keyword">implements</span> <span class="title">FactoryBean</span>&lt;<span class="title">Dog</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 返回的实例对象</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Dog <span class="title">getObject</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Dog();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 返回的类型</span></span><br><span class="line">    <span class="keyword">public</span> Class&lt;?&gt; getObjectType() &#123;</span><br><span class="line">        <span class="keyword">return</span> Dog.class;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 默认为true,如果时false则为多实例</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isSingleton</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-<div>
-      
-</div>
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2987,7 +3077,7 @@
               
                 <a href="/archives/%7C%7C%20archive">
               
-                  <span class="site-state-item-count">107</span>
+                  <span class="site-state-item-count">108</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -2998,7 +3088,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-count">15</span>
                   <span class="site-state-item-name">categories</span>
                 </a>
               </div>
@@ -3009,7 +3099,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-count">19</span>
                   <span class="site-state-item-name">tags</span>
                 </a>
               </div>
@@ -3061,6 +3151,10 @@
              
              
                <li>
+                 <a href="/2020/08/01/%E5%9F%BA%E4%BA%8EWebService%E7%9A%84Java%E5%BC%80%E5%8F%91%E5%AE%9E%E8%B7%B5/" title="基于Java的WebService实践" target="_blank">基于Java的WebService实践</a>
+               </li>
+             
+               <li>
                  <a href="/2020/06/10/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%B8%8E%E9%AB%98%E5%B9%B6%E5%8F%91/" title="多线程实践" target="_blank">多线程实践</a>
                </li>
              
@@ -3074,10 +3168,6 @@
              
                <li>
                  <a href="/2020/05/22/%EF%BC%88%E4%BA%8C%EF%BC%89Bean%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/" title="（二）Bean的生命周期" target="_blank">（二）Bean的生命周期</a>
-               </li>
-             
-               <li>
-                 <a href="/2020/05/20/%E6%B7%B1%E5%85%A5JVM%EF%BC%88%E4%B8%89%EF%BC%89JVM%E8%B0%83%E4%BC%98/" title="深入JVM（三）JVM调优" target="_blank">深入JVM（三）JVM调优</a>
                </li>
              
            </ul>
@@ -3133,7 +3223,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共135.9k字</span>
+  <span class="post-count">博客全站共137.3k字</span>
 </div>
 
 

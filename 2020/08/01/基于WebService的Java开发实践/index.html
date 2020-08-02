@@ -1,0 +1,1335 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Java,WebService," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="NanYin的博客" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="背景在很多Java项目中，仍然会使用基于WebService的数据传输接口，而webservice实际上就是http+xml。而在实践过程中，主要需要注意接收和发送的格式。 实践被调用接口如果处于被调用方，则需要声明出一个WebService服务，也就是生成、发布一个WSDL文件。    什么是WSDL？   WSDL – WebService Description Language – Web">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于Java的WebService实践">
+<meta property="og:url" content="https://nanyiniu.github.io/2020/08/01/%E5%9F%BA%E4%BA%8EWebService%E7%9A%84Java%E5%BC%80%E5%8F%91%E5%AE%9E%E8%B7%B5/index.html">
+<meta property="og:site_name" content="NanYin的博客">
+<meta property="og:description" content="背景在很多Java项目中，仍然会使用基于WebService的数据传输接口，而webservice实际上就是http+xml。而在实践过程中，主要需要注意接收和发送的格式。 实践被调用接口如果处于被调用方，则需要声明出一个WebService服务，也就是生成、发布一个WSDL文件。    什么是WSDL？   WSDL – WebService Description Language – Web">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-08-01T15:00:00.000Z">
+<meta property="article:modified_time" content="2020-08-02T02:48:12.128Z">
+<meta property="article:author" content="NanYin">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="WebService">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://nanyiniu.github.io/2020/08/01/基于WebService的Java开发实践/"/>
+
+
+
+
+
+  <title>基于Java的WebService实践 | NanYin的博客</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+<a href="https://github.com/NanYinIU" target="_blank" rel="noopener" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">NanYin的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">记录生活点滴</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            Search
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="Searching..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2020/08/01/%E5%9F%BA%E4%BA%8EWebService%E7%9A%84Java%E5%BC%80%E5%8F%91%E5%AE%9E%E8%B7%B5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="NanYin">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NanYin的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">基于Java的WebService实践</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-08-01T15:00:00Z">
+                2020-08-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/WebService/" itemprop="url" rel="index">
+                    <span itemprop="name">WebService</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  1.4k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  6
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>在很多Java项目中，仍然会使用基于WebService的数据传输接口，而webservice实际上就是http+xml。而在实践过程中，主要需要注意接收和发送的格式。</p>
+<h1 id="实践"><a href="#实践" class="headerlink" title="实践"></a>实践</h1><h2 id="被调用接口"><a href="#被调用接口" class="headerlink" title="被调用接口"></a>被调用接口</h2><p>如果处于被调用方，则需要声明出一个WebService服务，也就是生成、发布一个WSDL文件。</p>
+<blockquote>
+<p>  什么是WSDL？</p>
+<p>  WSDL – <strong>WebService Description Language</strong> – Web服务描述语言。</p>
+<ul>
+<li>通过XML形式说明服务在什么地方－地址。</li>
+<li>通过XML形式说明服务提供什么样的方法 – 如何调用。</li>
+</ul>
+</blockquote>
+<h3 id="将接口声明为一个ws服务"><a href="#将接口声明为一个ws服务" class="headerlink" title="将接口声明为一个ws服务"></a>将接口声明为一个ws服务</h3><p>在Java中可以依靠javax.jws包中的相关注解来实现一个WebService接口</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@WebService</span></span><br><span class="line"><span class="meta">@SOAPBinding</span>(style = SOAPBinding.Style.RPC)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">testWebservice</span> </span>&#123;</span><br><span class="line">  </span><br><span class="line">  <span class="meta">@WebMethod</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> ResponseRoot <span class="title">test</span><span class="params">(@WebParam(name = <span class="string">"item"</span>)</span> Item item, </span></span><br><span class="line"><span class="function">                             @<span class="title">WebParam</span><span class="params">(name = <span class="string">"MessageHeader"</span>)</span> MessageHeaderRoot header) </span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<ol>
+<li>使用 @WebService 注解标注该接口为一个WebService接口，可以修改服务名、端口名、命名空间等信息，如<br><code>@WebService(targetNamespace = &quot;http://ujn.cn/&quot;,serviceName = &quot;UserService&quot;, portName = &quot;UserPort&quot;)</code></li>
+<li>使用 @SOAPBinding 注解标注绑定的形式，根据绑定的不同的形式，客户端使用不同的调用约定进行调用。<ol>
+<li>Document Wrapped(默认使用方式）</li>
+<li>Document Bare</li>
+<li>RPC</li>
+</ol>
+</li>
+<li>使用 @WebMethod 方法标注为一个WebService中的一个方法服务</li>
+<li>最后实现接口中的方法即可，如果需要返回信息，直接封装为一个对象即可，如上面代码中的ResponseRoot对象。最后会解析出一个对象。</li>
+</ol>
+<h3 id="添加XML对象"><a href="#添加XML对象" class="headerlink" title="添加XML对象"></a>添加XML对象</h3><p>在上面的代码中可以看到不管是接受还是返回，都是面向对象的，然而最后都需要形成为一个XML文档，那么，是如何将这些对象解析为有一整个XML对象的呢？</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@XmlRootElement</span>(name = <span class="string">"MessageHeader"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MessageHeaderRoot</span> <span class="keyword">implements</span> <span class="title">Serializable</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> serialVersionUID = <span class="number">1848365930921924635L</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@XmlElement</span>(name = <span class="string">"GUID"</span>)</span><br><span class="line">    <span class="keyword">private</span> String guid;</span><br><span class="line">    <span class="meta">@XmlElement</span>(name = <span class="string">"SEND_DATE"</span>)</span><br><span class="line">    <span class="keyword">private</span> String sendDate;</span><br><span class="line">    <span class="meta">@XmlTransient</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getGuid</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> guid;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setGuid</span><span class="params">(String guid)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.guid = guid;</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="meta">@XmlTransient</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getSendDate</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> sendDate;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setSendDate</span><span class="params">(String sendDate)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.sendDate = sendDate;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<ol>
+<li>使用 <code>@XmlRootElement</code> 注解标注在对象上，说明此对象是一个可解析为XML节点的对象。</li>
+<li>复杂对象必须继承 <code>Serializable</code> 接口，进行序列化。</li>
+<li>使用 <code>@XmlElement(name = &quot;GUID&quot;)</code> 注解，声明出其中的子节点和子节点的名称。</li>
+<li>在get方法上添加 <code>@XmlTransient</code> 注解，否则会报对象节点重复的错误。</li>
+<li>对对象通过以上的配置，可以完整的XML类型的数据映射到对象上，从而实现进一步的处理。</li>
+</ol>
+<h3 id="形成可接受的XML格式"><a href="#形成可接受的XML格式" class="headerlink" title="形成可接受的XML格式"></a>形成可接受的XML格式</h3><div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="XML"><figure class="iseeu highlight /xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">soapenv:Envelope</span> <span class="attr">xmlns:soapenv</span>=<span class="string">"http://schemas.xmlsoap.org/soap/envelope/"</span> <span class="attr">xmlns:web</span>=<span class="string">"http://webService.test.com/"</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">soapenv:Header</span>/&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">soapenv:Body</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">web:addPersonAndUnit</span>&gt;</span></span><br><span class="line">         <span class="tag">&lt;<span class="name">item</span>&gt;</span></span><br><span class="line">        	<span class="comment">&lt;!--内部对象体:--&gt;</span></span><br><span class="line">         <span class="tag">&lt;/<span class="name">item</span>&gt;</span></span><br><span class="line">         <span class="tag">&lt;<span class="name">MessageHeader</span>&gt;</span></span><br><span class="line">          <span class="comment">&lt;!--内部对象体:--&gt;</span></span><br><span class="line">         <span class="tag">&lt;/<span class="name">MessageHeader</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">web:addPersonAndUnit</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;/<span class="name">soapenv:Body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">soapenv:Envelope</span>&gt;</span></span><br></pre></td></tr></table></figure></div>
+
+<blockquote>
+<p>  可以使用SOAP-UI 这个工具进行生成，使用免费版，添加SOAP服务，后点击方法的request则会自动生成格式。</p>
+</blockquote>
+<h2 id="接口调用"><a href="#接口调用" class="headerlink" title="接口调用"></a>接口调用</h2><p>在调用其他服务的接口时，对方法等没有特殊的要求，只需要遵守对方特定的接口格式即可。在接口调用时，同样有多种调用的方式，在此处我使用xml格式拼接，http服务直接调用的方式。</p>
+<h3 id="XML格式拼接"><a href="#XML格式拼接" class="headerlink" title="XML格式拼接"></a>XML格式拼接</h3><div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">ResQuestionBean resQuestionBean = <span class="keyword">new</span> ResQuestionBean();</span><br><span class="line">resQuestionBean.setQuestionCode(questionCode);</span><br><span class="line">resQuestionBean.setQuestionStatus(statusName);</span><br><span class="line">resQuestionBean.setUploader(personCode);</span><br><span class="line">resQuestionBean.setUploaderTime(DateUtil.format(<span class="keyword">new</span> Date()));</span><br><span class="line">StringBuilder resultXml = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">resultXml.append(XmlUtils.objectToXML(resQuestionBean));</span><br></pre></td></tr></table></figure></div>
+
+<ol>
+<li>声明出一个返回对象 resQuestionBean ，对对象中的数据进行装载。</li>
+<li>使用objectToXML方法将对象转换为XML字符串。</li>
+</ol>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">objectToXML</span><span class="params">(Object object)</span> <span class="keyword">throws</span> JAXBException </span>&#123;</span><br><span class="line">  JAXBContext context = JAXBContext.newInstance(object.getClass());</span><br><span class="line">  Marshaller m = context.createMarshaller();</span><br><span class="line">  <span class="comment">// 设置格式化输出</span></span><br><span class="line">  m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);</span><br><span class="line">  m.setProperty(Marshaller.JAXB_FRAGMENT, <span class="keyword">true</span>);</span><br><span class="line">  <span class="comment">// 不进行转义字符的处理</span></span><br><span class="line">  m.setProperty(CharacterEscapeHandler.class.getName(), <span class="keyword">new</span> CharacterEscapeHandler() &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">escape</span><span class="params">(<span class="keyword">char</span>[] ch, <span class="keyword">int</span> start,<span class="keyword">int</span> length, <span class="keyword">boolean</span> isAttVal, Writer writer)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">      writer.write(ch, start, length);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;);</span><br><span class="line">  Writer w = <span class="keyword">new</span> StringWriter();</span><br><span class="line">  m.marshal(object, w);</span><br><span class="line">  <span class="keyword">return</span> w.toString();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="通过HTTP调用方法，推送数据"><a href="#通过HTTP调用方法，推送数据" class="headerlink" title="通过HTTP调用方法，推送数据"></a>通过HTTP调用方法，推送数据</h3><div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">synchronized</span> String <span class="title">doSend</span><span class="params">(String address, String invokeMethod, </span></span></span><br><span class="line"><span class="function"><span class="params">                                   String guid, String recvSys, </span></span></span><br><span class="line"><span class="function"><span class="params">                                   String invokeDate, String dataXml)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">  <span class="comment">//enum 选择系统，地址url  http post方式</span></span><br><span class="line">  StringBuffer strBuf = <span class="keyword">null</span>;</span><br><span class="line">  URL url = <span class="keyword">new</span> URL(address);</span><br><span class="line">  HttpURLConnection huc = (HttpURLConnection) url.openConnection();</span><br><span class="line">  huc.setRequestMethod(<span class="string">"POST"</span>);</span><br><span class="line">  <span class="comment">//设置数据格式</span></span><br><span class="line">  huc.setRequestProperty(<span class="string">"content-type"</span>, <span class="string">"text/xml;charset=utf-8"</span>);</span><br><span class="line">  huc.setConnectTimeout(<span class="number">10000</span>);</span><br><span class="line">  huc.setUseCaches(<span class="keyword">false</span>);</span><br><span class="line">  huc.setReadTimeout(<span class="number">10000</span>);</span><br><span class="line">  huc.setDoInput(<span class="keyword">true</span>);</span><br><span class="line">  huc.setDoOutput(<span class="keyword">true</span>);</span><br><span class="line">  huc.setInstanceFollowRedirects(<span class="keyword">false</span>);</span><br><span class="line">  DataOutputStream dos = <span class="keyword">new</span> DataOutputStream(huc.getOutputStream());</span><br><span class="line">  dos.write(buildSendXml(invokeMethod, guid, recvSys, invokeDate, dataXml).getBytes(<span class="string">"utf-8"</span>));</span><br><span class="line"></span><br><span class="line">  dos.flush();</span><br><span class="line">  BufferedReader reader = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(huc.getInputStream(), <span class="string">"utf-8"</span>));</span><br><span class="line">  String line = <span class="keyword">null</span>;</span><br><span class="line">  strBuf = <span class="keyword">new</span> StringBuffer();</span><br><span class="line">  <span class="keyword">while</span> ((line = reader.readLine()) != <span class="keyword">null</span>) &#123;</span><br><span class="line">    strBuf.append(line);</span><br><span class="line">  &#125;</span><br><span class="line">  dos.close();</span><br><span class="line">  reader.close();</span><br><span class="line">  <span class="keyword">return</span> strBuf.toString();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<ol>
+<li>设置地址、调用方式等http的基本信息后，使用write方法将数据写入到请求中。</li>
+<li>使用reader读取返回数据，并返回、解析，形成最终数据后返回给前台做最终的处理</li>
+</ol>
+<h4 id="最后XML整体拼接"><a href="#最后XML整体拼接" class="headerlink" title="最后XML整体拼接"></a>最后XML整体拼接</h4><p>在 buildSendXml 方法中，将第一步格式化为XML的Object进行拼接。</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> String <span class="title">buildSendXml</span><span class="params">(String invokeMethod, String guid, </span></span></span><br><span class="line"><span class="function"><span class="params">                            String invokeDate,</span></span></span><br><span class="line"><span class="function"><span class="params">                            String data, String itemTag, String methodTag)</span> </span>&#123;</span><br><span class="line">  StringBuffer sb = <span class="keyword">new</span> StringBuffer();</span><br><span class="line">  sb.append(<span class="string">"&lt;soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:urn=\"urn:sap-com:document:sap:rfc:functions\"&gt;"</span> +</span><br><span class="line">            <span class="string">"&lt;soapenv:Header/&gt;"</span> +</span><br><span class="line">            <span class="string">"&lt;soapenv:Body&gt;"</span> +</span><br><span class="line">            <span class="string">"&lt;"</span> + methodTag + <span class="string">":"</span> + invokeMethod + <span class="string">"&gt;"</span> +</span><br><span class="line">            <span class="string">"   &lt;MessageHeader&gt;"</span> +</span><br><span class="line">            <span class="string">"      &lt;GUID&gt;"</span> + guid + <span class="string">"&lt;/GUID&gt;"</span> +</span><br><span class="line">            <span class="string">"      &lt;SEND_DATE&gt;"</span> + invokeDate + <span class="string">"&lt;/SEND_DATE&gt;"</span> +</span><br><span class="line">            <span class="string">"   &lt;/MessageHeader&gt;"</span> +</span><br><span class="line">            <span class="string">"      &lt;"</span> + itemTag + <span class="string">"&gt;"</span>);</span><br><span class="line">  sb.append(data);</span><br><span class="line">  sb.append(<span class="string">"    &lt;"</span> + itemTag + <span class="string">"&gt;"</span> +</span><br><span class="line">            <span class="string">"&lt;/urn:"</span> + invokeMethod + <span class="string">"&gt; "</span> +</span><br><span class="line">            <span class="string">"  &lt;/soapenv:Body&gt;"</span> +</span><br><span class="line">            <span class="string">"&lt;/soapenv:Envelope&gt;"</span>);</span><br><span class="line">  <span class="keyword">return</span> sb.toString();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+
+
+<blockquote>
+<ol>
+<li>接口无法联通后的再次重试问题</li>
+<li>此篇文章写于WebService接口联合调试前，可能存在问题与风险未被发现。如果有请与我联系并进行规避。</li>
+<li>如果有更好、更便捷的接口编写方案，欢迎一起讨论。</li>
+</ol>
+</blockquote>
+
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+        <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+      
+    </div>
+<div>
+      
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2020/08/01/%E5%9F%BA%E4%BA%8EWebService%E7%9A%84Java%E5%BC%80%E5%8F%91%E5%AE%9E%E8%B7%B5/">基于Java的WebService实践</a></p>
+  <p><span>文章作者:</span><a href="/" title="访问 NanYin 的个人博客">NanYin</a></p>
+  <p><span>发布时间:</span>2020年08月01日 - 15:08</p>
+  <p><span>最后更新:</span>2020年08月02日 - 10:08</p>
+  <p><span>原始链接:</span><a href="/2020/08/01/%E5%9F%BA%E4%BA%8EWebService%E7%9A%84Java%E5%BC%80%E5%8F%91%E5%AE%9E%E8%B7%B5/" title="基于Java的WebService实践">https://nanyiniu.github.io/2020/08/01/%E5%9F%BA%E4%BA%8EWebService%E7%9A%84Java%E5%BC%80%E5%8F%91%E5%AE%9E%E8%B7%B5/</a>
+    <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="https://nanyiniu.github.io/2020/08/01/%E5%9F%BA%E4%BA%8EWebService%E7%9A%84Java%E5%BC%80%E5%8F%91%E5%AE%9E%E8%B7%B5/"  aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+    $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+    });
+    });  
+</script>
+
+
+      
+</div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag"><i class="fa fa-tag"></i> Java</a>
+          
+            <a href="/tags/WebService/" rel="tag"><i class="fa fa-tag"></i> WebService</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/06/10/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%B8%8E%E9%AB%98%E5%B9%B6%E5%8F%91/" rel="next" title="多线程实践">
+                <i class="fa fa-chevron-left"></i> 多线程实践
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="lv-container" data-id="city" data-uid="MTAyMC80NDc5NC8yMTMxNQ=="></div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png"
+                alt="NanYin" />
+            
+              <p class="site-author-name" itemprop="name">NanYin</p>
+              <p class="site-description motion-element" itemprop="description">Was mich nicht umbringt, macht mich starker.</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">108</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/NanYinIU" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="1977713379@qq.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-block">
+           <div class="links-of-blogroll-title">
+             <!-- modify icon to fire by szw -->
+             <i class="fa fa-history fa-" aria-hidden="true"></i>
+             近期文章
+           </div>
+           <ul class="links-of-blogroll-list">
+             
+             
+               <li>
+                 <a href="/2020/08/01/%E5%9F%BA%E4%BA%8EWebService%E7%9A%84Java%E5%BC%80%E5%8F%91%E5%AE%9E%E8%B7%B5/" title="基于Java的WebService实践" target="_blank">基于Java的WebService实践</a>
+               </li>
+             
+               <li>
+                 <a href="/2020/06/10/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%B8%8E%E9%AB%98%E5%B9%B6%E5%8F%91/" title="多线程实践" target="_blank">多线程实践</a>
+               </li>
+             
+               <li>
+                 <a href="/2020/05/22/%EF%BC%88%E5%9B%9B%EF%BC%89AOP%E5%88%87%E9%9D%A2%E4%BD%BF%E7%94%A8%E4%B8%8E%E5%8E%9F%E7%90%86/" title="（四）AOP切面使用与原理" target="_blank">（四）AOP切面使用与原理</a>
+               </li>
+             
+               <li>
+                 <a href="/2020/05/22/%EF%BC%88%E4%B8%89%EF%BC%89%E8%87%AA%E5%8A%A8%E8%A3%85%E9%85%8D/" title="（三）自动装配" target="_blank">（三）自动装配</a>
+               </li>
+             
+               <li>
+                 <a href="/2020/05/22/%EF%BC%88%E4%BA%8C%EF%BC%89Bean%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/" title="（二）Bean的生命周期" target="_blank">（二）Bean的生命周期</a>
+               </li>
+             
+           </ul>
+         </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#背景"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#实践"><span class="nav-number">2.</span> <span class="nav-text">实践</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#被调用接口"><span class="nav-number">2.1.</span> <span class="nav-text">被调用接口</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#将接口声明为一个ws服务"><span class="nav-number">2.1.1.</span> <span class="nav-text">将接口声明为一个ws服务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#添加XML对象"><span class="nav-number">2.1.2.</span> <span class="nav-text">添加XML对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#形成可接受的XML格式"><span class="nav-number">2.1.3.</span> <span class="nav-text">形成可接受的XML格式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#接口调用"><span class="nav-number">2.2.</span> <span class="nav-text">接口调用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#XML格式拼接"><span class="nav-number">2.2.1.</span> <span class="nav-text">XML格式拼接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#通过HTTP调用方法，推送数据"><span class="nav-number">2.2.2.</span> <span class="nav-text">通过HTTP调用方法，推送数据</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#最后XML整体拼接"><span class="nav-number">2.2.2.1.</span> <span class="nav-text">最后XML整体拼接</span></a></li></ol></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">NanYin</span>
+
+</div>
+
+
+  <span class="post-meta-divider">|</span>
+
+
+<div class="powered-by">
+<i class="fa fa-user-md"></i><span id="busuanzi_container_site_uv">
+  本站访客数:<span id="busuanzi_value_site_uv"></span>
+</span>
+</div>
+
+<span class="post-meta-divider">|</span>
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共137.3k字</span>
+</div>
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+<!-- 代码块复制功能 -->
+<script type="text/javascript" src="/js/src/clipboard.min.js"></script>
+<script type="text/javascript" src="/js/src/clipboard-use.js"></script>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>

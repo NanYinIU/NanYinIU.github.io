@@ -305,6 +305,297 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/01/04/2019-01-25-%E8%BF%87%E7%A8%8B%E9%97%AE%E9%A2%98/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="NanYin">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NanYin的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/01/04/2019-01-25-%E8%BF%87%E7%A8%8B%E9%97%AE%E9%A2%98/" itemprop="url">SpringBoot过程问题</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-01-04T12:00:00Z">
+                2019-01-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Spring/" itemprop="url" rel="index">
+                    <span itemprop="name">Spring</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  1.5k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  6
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="SpringBoot过程问题"><a href="#SpringBoot过程问题" class="headerlink" title="SpringBoot过程问题"></a>SpringBoot过程问题</h1><h2 id="spring注解相关"><a href="#spring注解相关" class="headerlink" title="spring注解相关"></a>spring注解相关</h2><h3 id="RestController"><a href="#RestController" class="headerlink" title="@RestController"></a><code>@RestController</code></h3><p>​    <code>@RestController</code> 是<code>spring 4.0</code>来引入的简化的<code>RESTful WEB</code>应用的创建，是一个结合<code>@Constroller</code>和<code>@ResponseBody</code>的注解，不用每个类都使用<code>ResponseBody</code>注解来达到处理请求的目的。</p>
+<p>​    控制器使用<code>@RestController</code>注释进行注释，因此不需要<code>@ResponseBody</code>。</p>
+<h3 id="RequestMapping"><a href="#RequestMapping" class="headerlink" title="@RequestMapping"></a><code>@RequestMapping</code></h3><p><code>@RequestMapping</code>的注解中的参数：</p>
+<p>name ： 在4.0后引入的，开始我错把name当value用，结果出现 <code>[java.lang.IllegalStateException: Ambiguous mapping found. Cannot map &#39;appController&#39; bean method]</code> 类似这种错误。其实name就是一个名字而已,没有什么特殊含义，但是官方文档中指出 <code>在类型级别和方法级别支持！在两个级别上使用时，组合名称通过串联以“＃”作为分隔符派生</code> 。使用上，官方说明是主要可以通过使用Spring jsp tag包里面的mvcUrl，来生成jsp到controller的链接。</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">@RequestMapping(&quot;&#x2F;people&quot;)</span><br><span class="line"> class PersonController &#123;</span><br><span class="line"></span><br><span class="line">   @RequestMapping(&quot;&#x2F;&#123;id&#125;&quot;)</span><br><span class="line">   public HttpEntity getPerson(@PathVariable String id) &#123; ... &#125;</span><br><span class="line"></span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure></div>
+
+
+
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;%@ taglib uri&#x3D;&quot;http:&#x2F;&#x2F;www.springframework.org&#x2F;tags&quot; prefix&#x3D;&quot;s&quot; %&gt;</span><br><span class="line"></span><br><span class="line"> &lt;a href&#x3D;&quot;$&#123;s:mvcUrl(&#39;PC#getPerson&#39;).arg(0,&quot;123&quot;).build()&#125;&quot;&gt;Get Person&lt;&#x2F;a&gt;</span><br></pre></td></tr></table></figure></div>
+
+<p>value:用来表示主要映射,是常用的</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">@RequestMapping(value &#x3D; &quot;&#x2F;user&quot;,method &#x3D; RequestMethod.GET,produces &#x3D; &quot;application&#x2F;json&quot;)</span><br><span class="line">    public @ResponseBody</span><br><span class="line">    List&lt;User&gt; findUsers() &#123;</span><br><span class="line">        return userService.findUsers();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>path: 指定访问的uri地址</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">@RequestMapping(path &#x3D; &quot;&#x2F;user&quot;,method &#x3D; RequestMethod.POST,name &#x3D; &quot;this is user&#96;s post methods&quot;)</span><br><span class="line">    public String insertUser()&#123;</span><br><span class="line">        userService.saveUser();</span><br><span class="line">        return null;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>method:映射的HTTP的访问方法，有GET, POST, HEAD, OPTIONS, PUT, PATCH, DELETE, TRACE</p>
+<p>consumes： 指定<strong>处理请求的提交内容类型（Content-Type）</strong>，例如application/json, text/html;</p>
+<p>produces: 指定<strong>返回的内容类型</strong>，仅当request请求头中的(Accept)类型中包含该指定类型才返回；</p>
+<p>params： 指定request中必须包含某些参数值时，才让该方法处理。</p>
+<p>headers： 指定request中必须包含某些指定的header值，才能让该方法处理请求。</p>
+<h3 id="Jpa常用注解"><a href="#Jpa常用注解" class="headerlink" title="Jpa常用注解"></a><code>Jpa</code>常用注解</h3><h4 id="Entity"><a href="#Entity" class="headerlink" title="@Entity"></a>@Entity</h4><p>标注在类外侧，标注着这个类是一个实体类。</p>
+<h4 id="Table"><a href="#Table" class="headerlink" title="@Table"></a><code>@Table</code></h4><p>​    标注在类外侧，标注实体的主表，其中有 <code>catalog</code>,<code>indexes</code>, <code>name</code>, <code>schema</code>，分别注明为：指定database的目录，索引，名称，和表的结构描述 </p>
+<p>​    注意：schema定义了表、每个表的字段，还有表和字段之间的关系。 </p>
+<h4 id="Id"><a href="#Id" class="headerlink" title="@Id"></a>@Id</h4><p>表示是实体类的主键</p>
+<h4 id="GeneratedValue"><a href="#GeneratedValue" class="headerlink" title="@GeneratedValue"></a>@GeneratedValue</h4><p>​    提供主键的值得生成策略规范。GeneratedValue注释可以与Id注释一起应用于实体或映射超类的主键属性或字段，派生主键不支持该注解。提供两个可选值：1. <a href="https://docs.oracle.com/javaee/7/api/javax/persistence/GeneratedValue.html#generator--" target="_blank" rel="noopener">generator</a> ：要在SequenceGenerator或TableGenerator注解中指定的主键生成器的名称。2. <a href="https://docs.oracle.com/javaee/7/api/javax/persistence/GeneratedValue.html#strategy--" target="_blank" rel="noopener">strategy</a> 生成策略，有四个可选值AUTO,INDENTITY,SEQUENCE 和 TABLE ，默认为AUTO</p>
+<h4 id="Column"><a href="#Column" class="headerlink" title="@Column"></a>@Column</h4><p>指定持久属性或字段的映射列。如果未指定Column注释，则应用默认值。</p>
+<p><a href="https://docs.oracle.com/javaee/7/api/javax/persistence/Column.html#updatable--" target="_blank" rel="noopener">updatable</a>：是否包含在框架自动生成的update语句中。</p>
+<p>其他可以通过例子一看便知：</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">@Column(name&#x3D;&quot;description&quot;, nullable&#x3D;false, length&#x3D;512)</span><br><span class="line">public String getDescription() &#123; return description; &#125;</span><br></pre></td></tr></table></figure></div>
+
+<h4 id="Transient"><a href="#Transient" class="headerlink" title="@Transient"></a>@Transient</h4><p><code>@Transient</code>表示该属性并非一个到数据库表的字段的映射,<code>ORM</code>框架将忽略该属性.<br>如果一个属性并非数据库表的字段映射,就<strong>务必</strong>将其标示为<code>@Transient</code>,否则,<code>ORM</code>框架默认其注解为<code>@Basic</code>.</p>
+<h4 id="ManyToOne"><a href="#ManyToOne" class="headerlink" title="@ManyToOne"></a>@ManyToOne</h4><p>表示一个多对一的映射,该注解标注的属性通常是数据库表的外键</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;订单Order和用户User是一个ManyToOne的关系</span><br><span class="line">&#x2F;&#x2F;在Order类中定义</span><br><span class="line">@ManyToOne()</span><br><span class="line">@JoinColumn(name&#x3D;”USER”)</span><br><span class="line">public User getUser() &#123;</span><br><span class="line">    return user;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<h4 id="JoinColumn"><a href="#JoinColumn" class="headerlink" title="@JoinColumn"></a>@JoinColumn</h4><p>​    指定用于连接实体关联或元素集合的列。如果JoinColumn注解本身是默认的，则假定使用单个连接列并应用默认值。其默认的名称为实体User的名称+下划线+实体User的主键名称。也就是USER_ID.</p>
+<h4 id="OneToMany"><a href="#OneToMany" class="headerlink" title="@OneToMany"></a>@OneToMany</h4><p>@OneToMany描述一个一对多的关联,该属性应该为集体类型,在数据库中并没有实际字段.例如:实体User和Order是OneToMany的关系,则实体User被删除时,其关联的实体Order也应该被全部删除</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@OneTyMany(cascade&#x3D;ALL)</span><br><span class="line">public List getOrders() &#123;</span><br><span class="line">    return orders;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<h4 id="OneToOne"><a href="#OneToOne" class="headerlink" title="@OneToOne"></a>@OneToOne</h4><p>描述一对一的关系</p>
+<p>如User表和person表，一个是基本信息一个是详细信息</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@OneToOne(fetch&#x3D;FetchType.LAZY) &#x2F;&#x2F; Fetch是抓取策略，如果不写，自动的策略是LAZY</span><br><span class="line">public Person getPerson() &#123;</span><br><span class="line">    return person;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<h4 id="ManyToMany"><a href="#ManyToMany" class="headerlink" title="@ManyToMany"></a>@ManyToMany</h4><p>@ManyToMany 描述一个多对多的关联.多对多关联上是两个一对多关联,但是在ManyToMany描述中,中间表是由ORM框架自动处理</p>
+<h4 id="Embedded"><a href="#Embedded" class="headerlink" title="@Embedded"></a>@Embedded</h4><p>@Embedded将几个字段组合成一个类,并作为整个Entity的一个属性.</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">@Embeddable</span><br><span class="line">public class Address &#123;city,street,zip&#125;</span><br><span class="line">    @Entity</span><br><span class="line">public class User &#123;</span><br><span class="line">    @Embedded</span><br><span class="line">    public Address getAddress() &#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<table>
+<thead>
+<tr>
+<th>注解</th>
+<th><strong>说明</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>@Null</td>
+<td>被注释的元素必须为 null</td>
+</tr>
+<tr>
+<td>@NotNull</td>
+<td>被注释的元素必须不为 null</td>
+</tr>
+<tr>
+<td>@AssertTrue</td>
+<td>被注释的元素必须为 true</td>
+</tr>
+<tr>
+<td>@Min(value)</td>
+<td>被注释的元素必须是一个数字，其值必须大于等于指定的最小值,同理@Max(value)</td>
+</tr>
+<tr>
+<td>@DecimalMin(value)</td>
+<td>被注释的元素必须是一个数字，其值必须大于等于指定的最小值，同理@DecimalMax(value)</td>
+</tr>
+<tr>
+<td>@Size(max=, min=)</td>
+<td>被注释的元素的大小必须在指定的范围内</td>
+</tr>
+<tr>
+<td>@Past</td>
+<td>被注释的元素必须是一个过去的日期，同理@Future</td>
+</tr>
+<tr>
+<td>@Pattern(regex=,flag=)</td>
+<td>符合正则</td>
+</tr>
+<tr>
+<td>Hibernate Validator 附加的 constraint</td>
+<td></td>
+</tr>
+<tr>
+<td>@NotBlank(message =)</td>
+<td>验证字符串非null，且长度必须大于0，message表示提示信息</td>
+</tr>
+<tr>
+<td>@Email</td>
+<td>邮箱验证</td>
+</tr>
+<tr>
+<td>@Range(min=,max=,message=)</td>
+<td>被注释的元素必须在合适的范围内</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<h2 id="spring-boot-配置问题"><a href="#spring-boot-配置问题" class="headerlink" title="spring boot 配置问题"></a>spring boot 配置问题</h2><h3 id="spring2-0后静态资源访问不到的问题"><a href="#spring2-0后静态资源访问不到的问题" class="headerlink" title="spring2.0后静态资源访问不到的问题"></a>spring2.0后静态资源访问不到的问题</h3><p>需要手动写配置类进行静态资源配置</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">@Configuration</span><br><span class="line">public class WebMvcConfig implements WebMvcConfigurer &#123;</span><br><span class="line">    &#x2F;**</span><br><span class="line">     * 添加静态资源文件，外部可以直接访问地址</span><br><span class="line">     * @param registry</span><br><span class="line">     *&#x2F;</span><br><span class="line">    @Override</span><br><span class="line">    public void addResourceHandlers(ResourceHandlerRegistry registry) &#123;</span><br><span class="line">        registry.addResourceHandler(&quot;&#x2F;static&#x2F;**&quot;).addResourceLocations(&quot;classpath:&#x2F;static&#x2F;&quot;);</span><br><span class="line">        registry.addResourceHandler(&quot;&#x2F;templates&#x2F;**&quot;).addResourceLocations(&quot;classpath:&#x2F;templates&#x2F;&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="配置SpringBoot-Jpa默认mysql生成表引擎为InnoDB"><a href="#配置SpringBoot-Jpa默认mysql生成表引擎为InnoDB" class="headerlink" title="配置SpringBoot Jpa默认mysql生成表引擎为InnoDB"></a>配置<code>SpringBoot Jpa</code>默认<code>mysql</code>生成表引擎为<code>InnoDB</code></h3><p>在配置文件<code>appliction.properties</code>中加入</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">spring.jpa.database-platform&#x3D;org.hibernate.dialect.MySQL5InnoDBDialect</span><br></pre></td></tr></table></figure></div>
+
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+<div>
+      
+</div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/12/29/2018-12-18-Pop!_Os%E7%9A%84Ibus%E8%BE%93%E5%85%A5%E6%B3%95%E4%B8%8A%E6%96%B9panel%E5%9B%BE%E6%A0%87%E6%B6%88%E5%A4%B1%E7%9A%84%E9%97%AE%E9%A2%98/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2109,216 +2400,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/10/16/2018-10-15-HashSet%E5%92%8CHashTable%E7%9A%84%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="NanYin">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NanYin的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/10/16/2018-10-15-HashSet%E5%92%8CHashTable%E7%9A%84%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" itemprop="url">HashSet和HashTable的的源码分析</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-10-15T22:05:00Z">
-                2018-10-15
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Java/" itemprop="url" rel="index">
-                    <span itemprop="name">Java</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Words count in article&#58;</span>
-                
-                <span title="Words count in article">
-                  786
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Reading time &asymp;</span>
-                
-                <span title="Reading time">
-                  3
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
-
-<ul>
-<li><a href="#hashset和hashtable的的源码分析">HashSet和HashTable的的源码分析</a><ul>
-<li><a href="#hashset">HashSet</a><ul>
-<li><a href="#hashset结构源码">HashSet结构源码</a></li>
-<li><a href="#hashset的基本方法">HashSet的基本方法</a></li>
-<li><a href="#hashset的iterator和contains方法">HashSet的Iterator和contains方法</a></li>
-</ul>
-</li>
-<li><a href="#hashtable">HashTable</a></li>
-</ul>
-</li>
-</ul>
-<!-- /TOC -->
-
-<h1 id="HashSet和HashTable的的源码分析"><a href="#HashSet和HashTable的的源码分析" class="headerlink" title="HashSet和HashTable的的源码分析"></a>HashSet和HashTable的的源码分析</h1><h2 id="HashSet"><a href="#HashSet" class="headerlink" title="HashSet"></a>HashSet</h2><p>HashSet其实就是使用HashMap来实现的，方法都是依靠Hash Map的方法。如hashSet构造，hashSet的添加等操作。这样能够实现hashset去重。因为hashMap的key不能重复。这样就能看上篇，当hashMap遇到key值重复的处理。</p>
-<h3 id="HashSet结构源码"><a href="#HashSet结构源码" class="headerlink" title="HashSet结构源码"></a>HashSet结构源码</h3><p>HashSet的结构就相当于HashMap只将key值put进去，但是Value值却为空的new Object。可以看作为只有key的HashMap.</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 可以看到hashSet的这几个构造方法和HashMap息息相关 */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">transient</span> HashMap&lt;E,Object&gt; map;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">HashSet</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    map = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">HashSet</span><span class="params">(Collection&lt;? extends E&gt; c)</span> </span>&#123;</span><br><span class="line">    map = <span class="keyword">new</span> HashMap&lt;&gt;(Math.max((<span class="keyword">int</span>) (c.size()/.<span class="number">75f</span>) + <span class="number">1</span>, <span class="number">16</span>));</span><br><span class="line">    addAll(c);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">HashSet</span><span class="params">(<span class="keyword">int</span> initialCapacity, <span class="keyword">float</span> loadFactor)</span> </span>&#123;</span><br><span class="line">    map = <span class="keyword">new</span> HashMap&lt;&gt;(initialCapacity, loadFactor);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">HashSet</span><span class="params">(<span class="keyword">int</span> initialCapacity)</span> </span>&#123;</span><br><span class="line">    map = <span class="keyword">new</span> HashMap&lt;&gt;(initialCapacity);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">HashSet(<span class="keyword">int</span> initialCapacity, <span class="keyword">float</span> loadFactor, <span class="keyword">boolean</span> dummy) &#123;</span><br><span class="line">    map = <span class="keyword">new</span> LinkedHashMap&lt;&gt;(initialCapacity, loadFactor);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
-
-<h3 id="HashSet的基本方法"><a href="#HashSet的基本方法" class="headerlink" title="HashSet的基本方法"></a>HashSet的基本方法</h3><p>add和remove和size等基本方法都是调用HashMap的</p>
-<p>如add方法:</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">add</span><span class="params">(E e)</span> </span>&#123;</span><br><span class="line">  <span class="comment">/* 这里的PRESENT等于new Object() */</span></span><br><span class="line">       <span class="keyword">return</span> map.put(e, PRESENT)==<span class="keyword">null</span>;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure></div>
-
-<h3 id="HashSet的Iterator和contains方法"><a href="#HashSet的Iterator和contains方法" class="headerlink" title="HashSet的Iterator和contains方法"></a>HashSet的Iterator和contains方法</h3><p>同样的也是调用的HashMap的基本方法，但是需要先得到Map的keySet集合</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Iterator&lt;E&gt; <span class="title">iterator</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> map.keySet().iterator();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">contains</span><span class="params">(Object o)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> map.containsKey(o);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
-
-<h2 id="HashTable"><a href="#HashTable" class="headerlink" title="HashTable"></a>HashTable</h2><p>首先HashTable和HashMap的结构类似。但是有最重要的区别就是HashTable是synchronized的，也就是线程安全的。在他的基本方法前都有synchronized锁所限制。</p>
-<p>结构就不看了，只看一个Put方法</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/* 其实大致和HashMap是类似的也是使用Entry作为基本结构 */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> V <span class="title">put</span><span class="params">(K key, V value)</span> </span>&#123;</span><br><span class="line">     <span class="comment">// Make sure the value is not null</span></span><br><span class="line">     <span class="keyword">if</span> (value == <span class="keyword">null</span>) &#123;</span><br><span class="line">         <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException();</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="comment">// Makes sure the key is not already in the hashtable.</span></span><br><span class="line">     Entry&lt;?,?&gt; tab[] = table;</span><br><span class="line">     <span class="keyword">int</span> hash = key.hashCode();</span><br><span class="line">     <span class="comment">/* 这里的0x7FFFFFFF 是32-bit的int的最大值 */</span></span><br><span class="line">     <span class="keyword">int</span> index = (hash &amp; <span class="number">0x7FFFFFFF</span>) % tab.length;</span><br><span class="line">     <span class="meta">@SuppressWarnings</span>(<span class="string">"unchecked"</span>)</span><br><span class="line">     Entry&lt;K,V&gt; entry = (Entry&lt;K,V&gt;)tab[index];</span><br><span class="line">     <span class="comment">/* 如果这个entry存在，也就是键值重复 */</span></span><br><span class="line">     <span class="keyword">for</span>(; entry != <span class="keyword">null</span> ; entry = entry.next) &#123;</span><br><span class="line">         <span class="keyword">if</span> ((entry.hash == hash) &amp;&amp; entry.key.equals(key)) &#123;</span><br><span class="line">             V old = entry.value;</span><br><span class="line">             entry.value = value;</span><br><span class="line">             <span class="keyword">return</span> old;</span><br><span class="line">         &#125;</span><br><span class="line">     &#125;</span><br><span class="line">    <span class="comment">/* 否则添加Entry节点 */</span></span><br><span class="line">     addEntry(hash, key, value, index);</span><br><span class="line">     <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line"> <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">addEntry</span><span class="params">(<span class="keyword">int</span> hash, K key, V value, <span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">    modCount++;</span><br><span class="line"></span><br><span class="line">    Entry&lt;?,?&gt; tab[] = table;</span><br><span class="line">    <span class="keyword">if</span> (count &gt;= threshold) &#123;</span><br><span class="line">      <span class="comment">/* 如果当前count大于阈值的大小 重新生成table size和hash值 */</span></span><br><span class="line">        <span class="comment">// Rehash the table if the threshold is exceeded</span></span><br><span class="line">        rehash();</span><br><span class="line"></span><br><span class="line">        tab = table;</span><br><span class="line">        hash = key.hashCode();</span><br><span class="line">        index = (hash &amp; <span class="number">0x7FFFFFFF</span>) % tab.length;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Creates the new entry.</span></span><br><span class="line">    <span class="meta">@SuppressWarnings</span>(<span class="string">"unchecked"</span>)</span><br><span class="line">    Entry&lt;K,V&gt; e = (Entry&lt;K,V&gt;) tab[index];</span><br><span class="line">    tab[index] = <span class="keyword">new</span> Entry&lt;&gt;(hash, key, value, e);</span><br><span class="line">    count++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
-
-<p>通过上面的代码可以看出HashTable和HashMap的结构还是有差异的，HashMap是纵向的列表当出现相同的hash值的时候，扩展出横向列表，当横向的列表到达一定的长度的时候，这个横向的链表就会自动整理成红黑树的形式，而hashTable不存在横向的这种结构的，当count&gt;=阈值的时候就会把Hash重置，使之不会出现hash值重复的情况。可以说hashTable比较hashMap的结构更简单，但是效率会比HashMap的低。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-<div>
-      
-</div>
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2373,7 +2454,7 @@
               
                 <a href="/archives/%7C%7C%20archive">
               
-                  <span class="site-state-item-count">107</span>
+                  <span class="site-state-item-count">108</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -2384,7 +2465,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-count">15</span>
                   <span class="site-state-item-name">categories</span>
                 </a>
               </div>
@@ -2395,7 +2476,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-count">19</span>
                   <span class="site-state-item-name">tags</span>
                 </a>
               </div>
@@ -2447,6 +2528,10 @@
              
              
                <li>
+                 <a href="/2020/08/01/%E5%9F%BA%E4%BA%8EWebService%E7%9A%84Java%E5%BC%80%E5%8F%91%E5%AE%9E%E8%B7%B5/" title="基于Java的WebService实践" target="_blank">基于Java的WebService实践</a>
+               </li>
+             
+               <li>
                  <a href="/2020/06/10/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%B8%8E%E9%AB%98%E5%B9%B6%E5%8F%91/" title="多线程实践" target="_blank">多线程实践</a>
                </li>
              
@@ -2460,10 +2545,6 @@
              
                <li>
                  <a href="/2020/05/22/%EF%BC%88%E4%BA%8C%EF%BC%89Bean%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/" title="（二）Bean的生命周期" target="_blank">（二）Bean的生命周期</a>
-               </li>
-             
-               <li>
-                 <a href="/2020/05/20/%E6%B7%B1%E5%85%A5JVM%EF%BC%88%E4%B8%89%EF%BC%89JVM%E8%B0%83%E4%BC%98/" title="深入JVM（三）JVM调优" target="_blank">深入JVM（三）JVM调优</a>
                </li>
              
            </ul>
@@ -2519,7 +2600,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共135.9k字</span>
+  <span class="post-count">博客全站共137.3k字</span>
 </div>
 
 

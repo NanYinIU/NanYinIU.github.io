@@ -305,6 +305,207 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/04/29/2019-04-29-Hibernate%E9%87%8D%E7%82%B9%E6%80%BB%E7%BB%93/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="NanYin">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NanYin的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/04/29/2019-04-29-Hibernate%E9%87%8D%E7%82%B9%E6%80%BB%E7%BB%93/" itemprop="url">Hibernate重点知识总结</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-04-29T12:00:00Z">
+                2019-04-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Hibernate/" itemprop="url" rel="index">
+                    <span itemprop="name">Hibernate</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  1.4k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  4
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Hibernate重点知识总结"><a href="#Hibernate重点知识总结" class="headerlink" title="Hibernate重点知识总结"></a>Hibernate重点知识总结</h1><h2 id="Hibernate的三种状态"><a href="#Hibernate的三种状态" class="headerlink" title="Hibernate的三种状态"></a>Hibernate的三种状态</h2><ol>
+<li>瞬时态(transient):当实体还未和session关联,如new Person(“1”);</li>
+<li>持久态(persistent): 通过get或者load得到的实体类,这时的状态都是持久态.</li>
+<li>游离态(detached): 当通过get或者load得到持久态的对象后,执行删除delete时,这时已经脱离session.因delete而变为游离态可有save或者saveOrUpate转化为持久态.或则当session关闭后,session中的对象就变为游离态.</li>
+</ol>
+<h2 id="hibernate中update和saveOrUpdate的区别"><a href="#hibernate中update和saveOrUpdate的区别" class="headerlink" title="hibernate中update和saveOrUpdate的区别"></a>hibernate中update和saveOrUpdate的区别</h2><p>update只能是对象有主键时起作用,而saveOrUpdate则在对象没有主键时执行插入操作.对应的update操作只能操作游离态的对象,而不能对瞬时态的对象操作.而saveOrUpdate则两种状态的对象都可以操作.</p>
+<h2 id="hibernate中的update和merge方法的区别"><a href="#hibernate中的update和merge方法的区别" class="headerlink" title="hibernate中的update和merge方法的区别"></a>hibernate中的update和merge方法的区别</h2><p>当执行update方法的时候,一个session中具有与当前update相同的持久化标识(identifier)的实例,使用upate操作后会报错,而使用merge后把处理自由态的po对象A的属性copy到session当中处于持久态的po的属性中，执行完成后原来是持久状态还是持久态，而我们提供的A还是自由态。</p>
+<h2 id="hibernate中get和load的区别"><a href="#hibernate中get和load的区别" class="headerlink" title="hibernate中get和load的区别"></a>hibernate中get和load的区别</h2><p>一句话，hibernate对于load方法认为该数据在数据库中一定存在，可以放心的使用代理来延迟加载，如果在使用过程中发现了问题，只能抛异常；而对于get方法，hibernate一定要获取到真实的数据，否则返回null。</p>
+<h2 id="hibernate中list和iterator的区别"><a href="#hibernate中list和iterator的区别" class="headerlink" title="hibernate中list和iterator的区别"></a>hibernate中list和iterator的区别</h2><p>(1)、List方式是1次性把所有的数据全部取到内存中，构造一个超大的结果集，主要的时间开销是这一步，这一步的时间开销要远远超过JDBC和 Iterator方式下构造结果集的时间开销，并且内存开销也很惊人；而对结果集的遍历操作，速度则是非常的惊人（经过测试，30万记录的内 存遍历不到100ms，由于这一步不受JDBC影响，因此结果可信）。因此，List方式适合于对结果集进行反复多次操作的情况，例如分页显示，往后往前 遍历，跳到第一行，跳到最后一行等等。</p>
+<p>(2)、Iterator方式只取记录id到内存中，并没有把所有数据取到内存中，因此构造结果集的时间开销很小，比JDBC和List方式都要少，并且内 存开销也小很多。而对结果集的遍历的操作的时候，Iterator仍然要访问数据库，所有主要的时间开销都花在这里。因此，Iterator方式适合于只 对结果集进行1次遍历操作的情况，并且Iterator方式特别适合于从超大结果集中取少量数据，这种情况Iterator性能非常好。</p>
+<p>总结: list把数据一次加载到内存,再进行遍历操作就非常快了.而Iterator方式只会把id放到内存中,但是再次遍历时仍然要访问数据库查询数据,适合一次遍历的情况.</p>
+<h2 id="hibernate中的inverse属性"><a href="#hibernate中的inverse属性" class="headerlink" title="hibernate中的inverse属性"></a>hibernate中的inverse属性</h2><p>设置inverse=“false”为主控方,由主控方类维护对象间的关系.比如再many-to-one的关系中,再one的一方设置<code>inverse=&quot;true&quot;</code>这样能够提高效率,比如班级里一个老师多个学生,老师记住多个学生比较困难,而学生记住一个老师很容易.同理one-to-many.再多对多的关系中,再任意一方设置<code>inverse=&#39;true&#39;</code>即可.</p>
+<h2 id="hibernate中的cascade属性"><a href="#hibernate中的cascade属性" class="headerlink" title="hibernate中的cascade属性"></a>hibernate中的cascade属性</h2><p>级联操作：指当主控方执行某项操作时，是否要对被关联方也执行相同的操作。</p>
+<h2 id="什么情况下懒加载能够有效的提高效率"><a href="#什么情况下懒加载能够有效的提高效率" class="headerlink" title="什么情况下懒加载能够有效的提高效率"></a>什么情况下懒加载能够有效的提高效率</h2><p>懒加载是当用到对象的时候再从数据库加载数据,持久化来使用.从这句话中就可以理解为,因为及联的关系,一个表的数据可能会带出多张表的数据,这时候使用懒加载就能够实现效率的提高,没必要一次性把所有数据都加载出来,而是用时加载.hibernate默认是使用懒加载的,当然可以使用lazy=false来禁用懒加载.</p>
+<h2 id="什么是hibernate的二级缓存"><a href="#什么是hibernate的二级缓存" class="headerlink" title="什么是hibernate的二级缓存"></a>什么是hibernate的二级缓存</h2><p>缓存就是将以前的数据存放到内存中,当查询数据的时候,现在内存中查询,是否有这个对象,如果没有再从数据库中查询对象,这样大大的提高了查询的效率.</p>
+<p>Hibenate的session就是一级缓存,当查询数据的时候都会先从session中查询对象是否存在,不存在才从数据库查询.但是session是非线程安全的,多线程共享的情况下会出现问题.并且session是表示的是一段会话,表示的是一次事务,基于以上两点,所以在一次事务完成后,session就应立即关闭.所以这里说的一级缓存意义不大.</p>
+<p>Hibernate的二级缓存其实就是使用外部缓存,如Echache或者redis等,使用配置文件配置缓存策略等.</p>
+<h2 id="Hibernate中使用hibernateTemplate的好处有哪些"><a href="#Hibernate中使用hibernateTemplate的好处有哪些" class="headerlink" title="Hibernate中使用hibernateTemplate的好处有哪些?"></a>Hibernate中使用hibernateTemplate的好处有哪些?</h2><ol>
+<li>HibernateTemplate简化了与Hibernate Session的交互</li>
+<li>常见的函数简化为单个方法调用。</li>
+<li>异常会自动捕获并转换为运行时异常</li>
+<li>session 自动关闭</li>
+</ol>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+<div>
+      
+</div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/04/24/2019-04-24-JVM%E7%9B%B8%E5%85%B3%E7%9F%A5%E8%AF%86%E6%95%B4%E7%90%86/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2796,297 +2997,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/01/04/2019-01-25-%E8%BF%87%E7%A8%8B%E9%97%AE%E9%A2%98/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="NanYin">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NanYin的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/01/04/2019-01-25-%E8%BF%87%E7%A8%8B%E9%97%AE%E9%A2%98/" itemprop="url">SpringBoot过程问题</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-01-04T12:00:00Z">
-                2019-01-04
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Spring/" itemprop="url" rel="index">
-                    <span itemprop="name">Spring</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Words count in article&#58;</span>
-                
-                <span title="Words count in article">
-                  1.5k
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Reading time &asymp;</span>
-                
-                <span title="Reading time">
-                  6
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="SpringBoot过程问题"><a href="#SpringBoot过程问题" class="headerlink" title="SpringBoot过程问题"></a>SpringBoot过程问题</h1><h2 id="spring注解相关"><a href="#spring注解相关" class="headerlink" title="spring注解相关"></a>spring注解相关</h2><h3 id="RestController"><a href="#RestController" class="headerlink" title="@RestController"></a><code>@RestController</code></h3><p>​    <code>@RestController</code> 是<code>spring 4.0</code>来引入的简化的<code>RESTful WEB</code>应用的创建，是一个结合<code>@Constroller</code>和<code>@ResponseBody</code>的注解，不用每个类都使用<code>ResponseBody</code>注解来达到处理请求的目的。</p>
-<p>​    控制器使用<code>@RestController</code>注释进行注释，因此不需要<code>@ResponseBody</code>。</p>
-<h3 id="RequestMapping"><a href="#RequestMapping" class="headerlink" title="@RequestMapping"></a><code>@RequestMapping</code></h3><p><code>@RequestMapping</code>的注解中的参数：</p>
-<p>name ： 在4.0后引入的，开始我错把name当value用，结果出现 <code>[java.lang.IllegalStateException: Ambiguous mapping found. Cannot map &#39;appController&#39; bean method]</code> 类似这种错误。其实name就是一个名字而已,没有什么特殊含义，但是官方文档中指出 <code>在类型级别和方法级别支持！在两个级别上使用时，组合名称通过串联以“＃”作为分隔符派生</code> 。使用上，官方说明是主要可以通过使用Spring jsp tag包里面的mvcUrl，来生成jsp到controller的链接。</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">@RequestMapping(&quot;&#x2F;people&quot;)</span><br><span class="line"> class PersonController &#123;</span><br><span class="line"></span><br><span class="line">   @RequestMapping(&quot;&#x2F;&#123;id&#125;&quot;)</span><br><span class="line">   public HttpEntity getPerson(@PathVariable String id) &#123; ... &#125;</span><br><span class="line"></span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure></div>
-
-
-
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;%@ taglib uri&#x3D;&quot;http:&#x2F;&#x2F;www.springframework.org&#x2F;tags&quot; prefix&#x3D;&quot;s&quot; %&gt;</span><br><span class="line"></span><br><span class="line"> &lt;a href&#x3D;&quot;$&#123;s:mvcUrl(&#39;PC#getPerson&#39;).arg(0,&quot;123&quot;).build()&#125;&quot;&gt;Get Person&lt;&#x2F;a&gt;</span><br></pre></td></tr></table></figure></div>
-
-<p>value:用来表示主要映射,是常用的</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">@RequestMapping(value &#x3D; &quot;&#x2F;user&quot;,method &#x3D; RequestMethod.GET,produces &#x3D; &quot;application&#x2F;json&quot;)</span><br><span class="line">    public @ResponseBody</span><br><span class="line">    List&lt;User&gt; findUsers() &#123;</span><br><span class="line">        return userService.findUsers();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></div>
-
-<p>path: 指定访问的uri地址</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">@RequestMapping(path &#x3D; &quot;&#x2F;user&quot;,method &#x3D; RequestMethod.POST,name &#x3D; &quot;this is user&#96;s post methods&quot;)</span><br><span class="line">    public String insertUser()&#123;</span><br><span class="line">        userService.saveUser();</span><br><span class="line">        return null;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></div>
-
-<p>method:映射的HTTP的访问方法，有GET, POST, HEAD, OPTIONS, PUT, PATCH, DELETE, TRACE</p>
-<p>consumes： 指定<strong>处理请求的提交内容类型（Content-Type）</strong>，例如application/json, text/html;</p>
-<p>produces: 指定<strong>返回的内容类型</strong>，仅当request请求头中的(Accept)类型中包含该指定类型才返回；</p>
-<p>params： 指定request中必须包含某些参数值时，才让该方法处理。</p>
-<p>headers： 指定request中必须包含某些指定的header值，才能让该方法处理请求。</p>
-<h3 id="Jpa常用注解"><a href="#Jpa常用注解" class="headerlink" title="Jpa常用注解"></a><code>Jpa</code>常用注解</h3><h4 id="Entity"><a href="#Entity" class="headerlink" title="@Entity"></a>@Entity</h4><p>标注在类外侧，标注着这个类是一个实体类。</p>
-<h4 id="Table"><a href="#Table" class="headerlink" title="@Table"></a><code>@Table</code></h4><p>​    标注在类外侧，标注实体的主表，其中有 <code>catalog</code>,<code>indexes</code>, <code>name</code>, <code>schema</code>，分别注明为：指定database的目录，索引，名称，和表的结构描述 </p>
-<p>​    注意：schema定义了表、每个表的字段，还有表和字段之间的关系。 </p>
-<h4 id="Id"><a href="#Id" class="headerlink" title="@Id"></a>@Id</h4><p>表示是实体类的主键</p>
-<h4 id="GeneratedValue"><a href="#GeneratedValue" class="headerlink" title="@GeneratedValue"></a>@GeneratedValue</h4><p>​    提供主键的值得生成策略规范。GeneratedValue注释可以与Id注释一起应用于实体或映射超类的主键属性或字段，派生主键不支持该注解。提供两个可选值：1. <a href="https://docs.oracle.com/javaee/7/api/javax/persistence/GeneratedValue.html#generator--" target="_blank" rel="noopener">generator</a> ：要在SequenceGenerator或TableGenerator注解中指定的主键生成器的名称。2. <a href="https://docs.oracle.com/javaee/7/api/javax/persistence/GeneratedValue.html#strategy--" target="_blank" rel="noopener">strategy</a> 生成策略，有四个可选值AUTO,INDENTITY,SEQUENCE 和 TABLE ，默认为AUTO</p>
-<h4 id="Column"><a href="#Column" class="headerlink" title="@Column"></a>@Column</h4><p>指定持久属性或字段的映射列。如果未指定Column注释，则应用默认值。</p>
-<p><a href="https://docs.oracle.com/javaee/7/api/javax/persistence/Column.html#updatable--" target="_blank" rel="noopener">updatable</a>：是否包含在框架自动生成的update语句中。</p>
-<p>其他可以通过例子一看便知：</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">@Column(name&#x3D;&quot;description&quot;, nullable&#x3D;false, length&#x3D;512)</span><br><span class="line">public String getDescription() &#123; return description; &#125;</span><br></pre></td></tr></table></figure></div>
-
-<h4 id="Transient"><a href="#Transient" class="headerlink" title="@Transient"></a>@Transient</h4><p><code>@Transient</code>表示该属性并非一个到数据库表的字段的映射,<code>ORM</code>框架将忽略该属性.<br>如果一个属性并非数据库表的字段映射,就<strong>务必</strong>将其标示为<code>@Transient</code>,否则,<code>ORM</code>框架默认其注解为<code>@Basic</code>.</p>
-<h4 id="ManyToOne"><a href="#ManyToOne" class="headerlink" title="@ManyToOne"></a>@ManyToOne</h4><p>表示一个多对一的映射,该注解标注的属性通常是数据库表的外键</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;订单Order和用户User是一个ManyToOne的关系</span><br><span class="line">&#x2F;&#x2F;在Order类中定义</span><br><span class="line">@ManyToOne()</span><br><span class="line">@JoinColumn(name&#x3D;”USER”)</span><br><span class="line">public User getUser() &#123;</span><br><span class="line">    return user;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
-
-<h4 id="JoinColumn"><a href="#JoinColumn" class="headerlink" title="@JoinColumn"></a>@JoinColumn</h4><p>​    指定用于连接实体关联或元素集合的列。如果JoinColumn注解本身是默认的，则假定使用单个连接列并应用默认值。其默认的名称为实体User的名称+下划线+实体User的主键名称。也就是USER_ID.</p>
-<h4 id="OneToMany"><a href="#OneToMany" class="headerlink" title="@OneToMany"></a>@OneToMany</h4><p>@OneToMany描述一个一对多的关联,该属性应该为集体类型,在数据库中并没有实际字段.例如:实体User和Order是OneToMany的关系,则实体User被删除时,其关联的实体Order也应该被全部删除</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@OneTyMany(cascade&#x3D;ALL)</span><br><span class="line">public List getOrders() &#123;</span><br><span class="line">    return orders;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
-
-<h4 id="OneToOne"><a href="#OneToOne" class="headerlink" title="@OneToOne"></a>@OneToOne</h4><p>描述一对一的关系</p>
-<p>如User表和person表，一个是基本信息一个是详细信息</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@OneToOne(fetch&#x3D;FetchType.LAZY) &#x2F;&#x2F; Fetch是抓取策略，如果不写，自动的策略是LAZY</span><br><span class="line">public Person getPerson() &#123;</span><br><span class="line">    return person;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
-
-<h4 id="ManyToMany"><a href="#ManyToMany" class="headerlink" title="@ManyToMany"></a>@ManyToMany</h4><p>@ManyToMany 描述一个多对多的关联.多对多关联上是两个一对多关联,但是在ManyToMany描述中,中间表是由ORM框架自动处理</p>
-<h4 id="Embedded"><a href="#Embedded" class="headerlink" title="@Embedded"></a>@Embedded</h4><p>@Embedded将几个字段组合成一个类,并作为整个Entity的一个属性.</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">@Embeddable</span><br><span class="line">public class Address &#123;city,street,zip&#125;</span><br><span class="line">    @Entity</span><br><span class="line">public class User &#123;</span><br><span class="line">    @Embedded</span><br><span class="line">    public Address getAddress() &#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
-
-<table>
-<thead>
-<tr>
-<th>注解</th>
-<th><strong>说明</strong></th>
-</tr>
-</thead>
-<tbody><tr>
-<td>@Null</td>
-<td>被注释的元素必须为 null</td>
-</tr>
-<tr>
-<td>@NotNull</td>
-<td>被注释的元素必须不为 null</td>
-</tr>
-<tr>
-<td>@AssertTrue</td>
-<td>被注释的元素必须为 true</td>
-</tr>
-<tr>
-<td>@Min(value)</td>
-<td>被注释的元素必须是一个数字，其值必须大于等于指定的最小值,同理@Max(value)</td>
-</tr>
-<tr>
-<td>@DecimalMin(value)</td>
-<td>被注释的元素必须是一个数字，其值必须大于等于指定的最小值，同理@DecimalMax(value)</td>
-</tr>
-<tr>
-<td>@Size(max=, min=)</td>
-<td>被注释的元素的大小必须在指定的范围内</td>
-</tr>
-<tr>
-<td>@Past</td>
-<td>被注释的元素必须是一个过去的日期，同理@Future</td>
-</tr>
-<tr>
-<td>@Pattern(regex=,flag=)</td>
-<td>符合正则</td>
-</tr>
-<tr>
-<td>Hibernate Validator 附加的 constraint</td>
-<td></td>
-</tr>
-<tr>
-<td>@NotBlank(message =)</td>
-<td>验证字符串非null，且长度必须大于0，message表示提示信息</td>
-</tr>
-<tr>
-<td>@Email</td>
-<td>邮箱验证</td>
-</tr>
-<tr>
-<td>@Range(min=,max=,message=)</td>
-<td>被注释的元素必须在合适的范围内</td>
-</tr>
-<tr>
-<td></td>
-<td></td>
-</tr>
-</tbody></table>
-<h2 id="spring-boot-配置问题"><a href="#spring-boot-配置问题" class="headerlink" title="spring boot 配置问题"></a>spring boot 配置问题</h2><h3 id="spring2-0后静态资源访问不到的问题"><a href="#spring2-0后静态资源访问不到的问题" class="headerlink" title="spring2.0后静态资源访问不到的问题"></a>spring2.0后静态资源访问不到的问题</h3><p>需要手动写配置类进行静态资源配置</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">@Configuration</span><br><span class="line">public class WebMvcConfig implements WebMvcConfigurer &#123;</span><br><span class="line">    &#x2F;**</span><br><span class="line">     * 添加静态资源文件，外部可以直接访问地址</span><br><span class="line">     * @param registry</span><br><span class="line">     *&#x2F;</span><br><span class="line">    @Override</span><br><span class="line">    public void addResourceHandlers(ResourceHandlerRegistry registry) &#123;</span><br><span class="line">        registry.addResourceHandler(&quot;&#x2F;static&#x2F;**&quot;).addResourceLocations(&quot;classpath:&#x2F;static&#x2F;&quot;);</span><br><span class="line">        registry.addResourceHandler(&quot;&#x2F;templates&#x2F;**&quot;).addResourceLocations(&quot;classpath:&#x2F;templates&#x2F;&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
-
-<h3 id="配置SpringBoot-Jpa默认mysql生成表引擎为InnoDB"><a href="#配置SpringBoot-Jpa默认mysql生成表引擎为InnoDB" class="headerlink" title="配置SpringBoot Jpa默认mysql生成表引擎为InnoDB"></a>配置<code>SpringBoot Jpa</code>默认<code>mysql</code>生成表引擎为<code>InnoDB</code></h3><p>在配置文件<code>appliction.properties</code>中加入</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">spring.jpa.database-platform&#x3D;org.hibernate.dialect.MySQL5InnoDBDialect</span><br></pre></td></tr></table></figure></div>
-
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-<div>
-      
-</div>
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -3141,7 +3051,7 @@
               
                 <a href="/archives/%7C%7C%20archive">
               
-                  <span class="site-state-item-count">107</span>
+                  <span class="site-state-item-count">108</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -3152,7 +3062,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-count">15</span>
                   <span class="site-state-item-name">categories</span>
                 </a>
               </div>
@@ -3163,7 +3073,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-count">19</span>
                   <span class="site-state-item-name">tags</span>
                 </a>
               </div>
@@ -3215,6 +3125,10 @@
              
              
                <li>
+                 <a href="/2020/08/01/%E5%9F%BA%E4%BA%8EWebService%E7%9A%84Java%E5%BC%80%E5%8F%91%E5%AE%9E%E8%B7%B5/" title="基于Java的WebService实践" target="_blank">基于Java的WebService实践</a>
+               </li>
+             
+               <li>
                  <a href="/2020/06/10/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%B8%8E%E9%AB%98%E5%B9%B6%E5%8F%91/" title="多线程实践" target="_blank">多线程实践</a>
                </li>
              
@@ -3228,10 +3142,6 @@
              
                <li>
                  <a href="/2020/05/22/%EF%BC%88%E4%BA%8C%EF%BC%89Bean%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/" title="（二）Bean的生命周期" target="_blank">（二）Bean的生命周期</a>
-               </li>
-             
-               <li>
-                 <a href="/2020/05/20/%E6%B7%B1%E5%85%A5JVM%EF%BC%88%E4%B8%89%EF%BC%89JVM%E8%B0%83%E4%BC%98/" title="深入JVM（三）JVM调优" target="_blank">深入JVM（三）JVM调优</a>
                </li>
              
            </ul>
@@ -3287,7 +3197,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共135.9k字</span>
+  <span class="post-count">博客全站共137.3k字</span>
 </div>
 
 
