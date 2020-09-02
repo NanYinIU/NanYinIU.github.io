@@ -305,6 +305,195 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/07/01/2018-07-01-bash_13_bash%E4%B8%AD%E7%9A%84%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="NanYin">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NanYin的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/07/01/2018-07-01-bash_13_bash%E4%B8%AD%E7%9A%84%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA/" itemprop="url">bash学习记录（十四）linux中的IO</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-07-01T15:00:00Z">
+                2018-07-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Bash/" itemprop="url" rel="index">
+                    <span itemprop="name">Bash</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  320
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  1
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="linux中的IO"><a href="#linux中的IO" class="headerlink" title="linux中的IO"></a>linux中的IO</h1><h2 id="分类"><a href="#分类" class="headerlink" title="分类"></a>分类</h2><p>linux中总有三种文件，一种时stdin（标准输入），stdout（标准输出），stderr（标准错误），可以重定向这些和其他任意文件，重定向的目的就是可以将文件中的任意内容作为输出或者输出源。</p>
+<h2 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h2><p>系统为每一个打开的文件分配一个文件描述符（FD），为标准输入stdin，标准输出stdout,标准错误stderr分别分配给0，1，2</p>
+<p>简单输入输出：</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;helloworld&quot;  &gt; newfile1</span><br><span class="line">echo &quot;helloworld&quot; 1 &gt; newfile1 #等同于第一句</span><br><span class="line">echo &quot;helloworld&quot; 1 &gt;&gt; newfile1 #追加内容</span><br><span class="line"></span><br><span class="line">command &lt; newfile1 #标准输入 同理等同于cat 0 &lt; newfile1</span><br></pre></td></tr></table></figure></div>
+
+<p>使用标准输出和标准错误输出</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ls 2&gt; newfile #将错误信息输出到newfile中</span><br><span class="line">ls &gt; newfile 2&gt;1&amp; #将标准输入和标准输出一起输出到newfile中</span><br><span class="line"># 其中&amp;表示和的关系</span><br></pre></td></tr></table></figure></div>
+
+<p>绑定重定向</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ls &gt;&amp; m #把标准输出到文件描述符m中</span><br><span class="line">ls &lt; &amp;- #关闭标准输入</span><br><span class="line">n &lt; &amp;- #关闭输入文件描述符n</span><br><span class="line">n &gt; &amp;- #关闭输出文件描述符n</span><br><span class="line">1&gt;&amp;-, &gt;&amp;- # 关闭标准输出</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="其实在linux-下一切都是文件。把所有都想成文件就好理解的多了。"><a href="#其实在linux-下一切都是文件。把所有都想成文件就好理解的多了。" class="headerlink" title="其实在linux 下一切都是文件。把所有都想成文件就好理解的多了。"></a>其实在linux 下一切都是文件。把所有都想成文件就好理解的多了。</h3>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+<div>
+      
+</div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/06/24/2018-06-24-bash_10_bash%E5%91%BD%E4%BB%A4%E7%AF%87%EF%BC%88%E4%BA%8C%EF%BC%89/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -493,222 +682,6 @@
 </li>
 </ul>
 <h3 id="这类命令真的很多，需要积累的东西也很多，我在这里就做个简单的说明，具体的使用可以-man-命令-查看具体的使用方法。也是学习的一种方式！！"><a href="#这类命令真的很多，需要积累的东西也很多，我在这里就做个简单的说明，具体的使用可以-man-命令-查看具体的使用方法。也是学习的一种方式！！" class="headerlink" title="这类命令真的很多，需要积累的东西也很多，我在这里就做个简单的说明，具体的使用可以 man 命令 查看具体的使用方法。也是学习的一种方式！！"></a>这类命令真的很多，需要积累的东西也很多，我在这里就做个简单的说明，具体的使用可以 man 命令 查看具体的使用方法。也是学习的一种方式！！</h3>
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-<div>
-      
-</div>
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/06/24/2018-06-27-bash_11_bash%E5%91%BD%E4%BB%A4%E7%AF%87%EF%BC%88%E4%B8%89%EF%BC%89/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="NanYin">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NanYin的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/24/2018-06-27-bash_11_bash%E5%91%BD%E4%BB%A4%E7%AF%87%EF%BC%88%E4%B8%89%EF%BC%89/" itemprop="url">bash学习记录（十二）命令篇（3）</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-06-24T15:00:00Z">
-                2018-06-24
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Bash/" itemprop="url" rel="index">
-                    <span itemprop="name">Bash</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Words count in article&#58;</span>
-                
-                <span title="Words count in article">
-                  577
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Reading time &asymp;</span>
-                
-                <span title="Reading time">
-                  2
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="bash命令篇（三）"><a href="#bash命令篇（三）" class="headerlink" title="bash命令篇（三）"></a>bash命令篇（三）</h1><h2 id="bash中的关于通信的命令"><a href="#bash中的关于通信的命令" class="headerlink" title="bash中的关于通信的命令"></a>bash中的关于通信的命令</h2><ol>
-<li>host 通过ip或者域名搜索互联网的主机地址（使用DNS）</li>
-</ol>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ host www.baidu.com</span><br><span class="line">www.baidu.com has address 61.135.169.125</span><br><span class="line">www.baidu.com has address 61.135.169.121</span><br><span class="line">www.baidu.com is an alias for www.a.shifen.com.</span><br><span class="line">www.baidu.com is an alias for www.a.shifen.com.</span><br></pre></td></tr></table></figure></div>
-
-<ol start="2">
-<li>nslookup 向上寻找name server</li>
-</ol>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">$ nslookup  -sil 66.97.104.180 </span><br><span class="line">Server:		127.0.1.1</span><br><span class="line">Address:	127.0.1.1#53</span><br><span class="line"></span><br><span class="line">Non-authoritative answer:</span><br><span class="line">180.104.97.66.in-addr.arpa	name &#x3D; 66-97-104-180.dynamic.bugtusselwireless.com.</span><br><span class="line"></span><br><span class="line">Authoritative answers can be found from:</span><br><span class="line">104.97.66.in-addr.arpa	nameserver &#x3D; ns2.bugnet.net.</span><br><span class="line">104.97.66.in-addr.arpa	nameserver &#x3D; ns1.bugnet.net.</span><br><span class="line">ns1.bugnet.net	internet address &#x3D; 204.11.133.241</span><br><span class="line">ns2.bugnet.net	internet address &#x3D; 204.11.133.244</span><br></pre></td></tr></table></figure></div>
-
-<ol start="3">
-<li><p>ping 熟知的ping命令，常用来探测与另一个主机是否有网络链接</p>
-</li>
-<li><p>ftp 从远程主机下载或者上传给远程主机的协议。</p>
-</li>
-<li><p>telnt 链接远程主机的协议</p>
-</li>
-<li><p>wget 使用非交互式的从网站web或者ftp站点下载文件。</p>
-</li>
-<li><p>rcp 远程拷贝，在两台不同的机器间拷贝。</p>
-</li>
-<li><p>ssh <code>secure shell</code> 他代替了telnt rcp等命令。</p>
-</li>
-<li><p>scp <code>secure cp</code> 他用来代替rcp命令，需要登录授权的远程拷贝文件的命令。</p>
-<p> 这里只是简略的谈谈常见的关于机器交互的命令，这些都是熟能生巧的东西，最重要的是要上手练习。</p>
-</li>
-</ol>
-<h2 id="数学运算符"><a href="#数学运算符" class="headerlink" title="数学运算符"></a>数学运算符</h2><ol>
-<li><p>dc：dc是使用逆波兰表示法进行计算，如 11 +   ，3 6 *</p>
-</li>
-<li><p>bc：bc是现代linux下比较常见处理复杂运算的命令那个，可以计算浮点数。</p>
-</li>
-</ol>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">$bc -l -q</span><br><span class="line">4&#x2F;3                   &#x2F;*未指定精度默认保留整数*&#x2F;</span><br><span class="line">scale&#x3D;5               &#x2F;*指定精度为5*&#x2F;</span><br><span class="line">4&#x2F;3</span><br><span class="line">1.33333</span><br><span class="line">ibase&#x3D;2               &#x2F;*指定进制转换的输入机制为二进制，输出默认为是十进制*&#x2F;</span><br><span class="line">10</span><br><span class="line">4^2                   &#x2F;*指数运算，注：指数不能为浮点数*&#x2F;</span><br><span class="line">4*a(1)                &#x2F;*计算π值，a()是个函数：arctan()，好吧，老师教的都被狗吃了，π值是等于四倍的arctan(1)么？*&#x2F;</span><br><span class="line">3.14159265358979323844</span><br><span class="line">quit                  &#x2F;*退出*&#x2F;</span><br></pre></td></tr></table></figure></div>
-
-<ol start="3">
-<li>let: 表达式可以应用在let命令当中。</li>
-</ol>
-<h3 id="其实在我使用linux系统的几年里，感觉命令不能死记硬背，多用自然就会掌握了。但是有些比较冷门的命令还是背下来比较好-。"><a href="#其实在我使用linux系统的几年里，感觉命令不能死记硬背，多用自然就会掌握了。但是有些比较冷门的命令还是背下来比较好-。" class="headerlink" title="其实在我使用linux系统的几年里，感觉命令不能死记硬背，多用自然就会掌握了。但是有些比较冷门的命令还是背下来比较好 - -。"></a>其实在我使用linux系统的几年里，感觉命令不能死记硬背，多用自然就会掌握了。但是有些比较冷门的命令还是背下来比较好 - -。</h3>
           
         
       
@@ -962,6 +935,222 @@
 </li>
 </ul>
 <h3 id="其实还有很多命令没有涉及到，如果想练习这些基本的系统命令的话，可以跟着arch-wiki-装一遍arch，装完后这里的命令就都能记住了。"><a href="#其实还有很多命令没有涉及到，如果想练习这些基本的系统命令的话，可以跟着arch-wiki-装一遍arch，装完后这里的命令就都能记住了。" class="headerlink" title="其实还有很多命令没有涉及到，如果想练习这些基本的系统命令的话，可以跟着arch wiki 装一遍arch，装完后这里的命令就都能记住了。"></a>其实还有很多命令没有涉及到，如果想练习这些基本的系统命令的话，可以跟着arch wiki 装一遍arch，装完后这里的命令就都能记住了。</h3>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+<div>
+      
+</div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/06/24/2018-06-27-bash_11_bash%E5%91%BD%E4%BB%A4%E7%AF%87%EF%BC%88%E4%B8%89%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="NanYin">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NanYin的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/06/24/2018-06-27-bash_11_bash%E5%91%BD%E4%BB%A4%E7%AF%87%EF%BC%88%E4%B8%89%EF%BC%89/" itemprop="url">bash学习记录（十二）命令篇（3）</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-06-24T15:00:00Z">
+                2018-06-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Bash/" itemprop="url" rel="index">
+                    <span itemprop="name">Bash</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  577
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  2
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="bash命令篇（三）"><a href="#bash命令篇（三）" class="headerlink" title="bash命令篇（三）"></a>bash命令篇（三）</h1><h2 id="bash中的关于通信的命令"><a href="#bash中的关于通信的命令" class="headerlink" title="bash中的关于通信的命令"></a>bash中的关于通信的命令</h2><ol>
+<li>host 通过ip或者域名搜索互联网的主机地址（使用DNS）</li>
+</ol>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ host www.baidu.com</span><br><span class="line">www.baidu.com has address 61.135.169.125</span><br><span class="line">www.baidu.com has address 61.135.169.121</span><br><span class="line">www.baidu.com is an alias for www.a.shifen.com.</span><br><span class="line">www.baidu.com is an alias for www.a.shifen.com.</span><br></pre></td></tr></table></figure></div>
+
+<ol start="2">
+<li>nslookup 向上寻找name server</li>
+</ol>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">$ nslookup  -sil 66.97.104.180 </span><br><span class="line">Server:		127.0.1.1</span><br><span class="line">Address:	127.0.1.1#53</span><br><span class="line"></span><br><span class="line">Non-authoritative answer:</span><br><span class="line">180.104.97.66.in-addr.arpa	name &#x3D; 66-97-104-180.dynamic.bugtusselwireless.com.</span><br><span class="line"></span><br><span class="line">Authoritative answers can be found from:</span><br><span class="line">104.97.66.in-addr.arpa	nameserver &#x3D; ns2.bugnet.net.</span><br><span class="line">104.97.66.in-addr.arpa	nameserver &#x3D; ns1.bugnet.net.</span><br><span class="line">ns1.bugnet.net	internet address &#x3D; 204.11.133.241</span><br><span class="line">ns2.bugnet.net	internet address &#x3D; 204.11.133.244</span><br></pre></td></tr></table></figure></div>
+
+<ol start="3">
+<li><p>ping 熟知的ping命令，常用来探测与另一个主机是否有网络链接</p>
+</li>
+<li><p>ftp 从远程主机下载或者上传给远程主机的协议。</p>
+</li>
+<li><p>telnt 链接远程主机的协议</p>
+</li>
+<li><p>wget 使用非交互式的从网站web或者ftp站点下载文件。</p>
+</li>
+<li><p>rcp 远程拷贝，在两台不同的机器间拷贝。</p>
+</li>
+<li><p>ssh <code>secure shell</code> 他代替了telnt rcp等命令。</p>
+</li>
+<li><p>scp <code>secure cp</code> 他用来代替rcp命令，需要登录授权的远程拷贝文件的命令。</p>
+<p> 这里只是简略的谈谈常见的关于机器交互的命令，这些都是熟能生巧的东西，最重要的是要上手练习。</p>
+</li>
+</ol>
+<h2 id="数学运算符"><a href="#数学运算符" class="headerlink" title="数学运算符"></a>数学运算符</h2><ol>
+<li><p>dc：dc是使用逆波兰表示法进行计算，如 11 +   ，3 6 *</p>
+</li>
+<li><p>bc：bc是现代linux下比较常见处理复杂运算的命令那个，可以计算浮点数。</p>
+</li>
+</ol>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">$bc -l -q</span><br><span class="line">4&#x2F;3                   &#x2F;*未指定精度默认保留整数*&#x2F;</span><br><span class="line">scale&#x3D;5               &#x2F;*指定精度为5*&#x2F;</span><br><span class="line">4&#x2F;3</span><br><span class="line">1.33333</span><br><span class="line">ibase&#x3D;2               &#x2F;*指定进制转换的输入机制为二进制，输出默认为是十进制*&#x2F;</span><br><span class="line">10</span><br><span class="line">4^2                   &#x2F;*指数运算，注：指数不能为浮点数*&#x2F;</span><br><span class="line">4*a(1)                &#x2F;*计算π值，a()是个函数：arctan()，好吧，老师教的都被狗吃了，π值是等于四倍的arctan(1)么？*&#x2F;</span><br><span class="line">3.14159265358979323844</span><br><span class="line">quit                  &#x2F;*退出*&#x2F;</span><br></pre></td></tr></table></figure></div>
+
+<ol start="3">
+<li>let: 表达式可以应用在let命令当中。</li>
+</ol>
+<h3 id="其实在我使用linux系统的几年里，感觉命令不能死记硬背，多用自然就会掌握了。但是有些比较冷门的命令还是背下来比较好-。"><a href="#其实在我使用linux系统的几年里，感觉命令不能死记硬背，多用自然就会掌握了。但是有些比较冷门的命令还是背下来比较好-。" class="headerlink" title="其实在我使用linux系统的几年里，感觉命令不能死记硬背，多用自然就会掌握了。但是有些比较冷门的命令还是背下来比较好 - -。"></a>其实在我使用linux系统的几年里，感觉命令不能死记硬背，多用自然就会掌握了。但是有些比较冷门的命令还是背下来比较好 - -。</h3>
           
         
       
@@ -1620,6 +1809,194 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/06/12/2018-06-16-bash_09_%E5%91%BD%E4%BB%A4%E7%BD%AE%E6%8D%A2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="NanYin">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NanYin的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/06/12/2018-06-16-bash_09_%E5%91%BD%E4%BB%A4%E7%BD%AE%E6%8D%A2/" itemprop="url">bash学习记录（九）命令置换和算数扩展</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-06-11T17:00:00Z">
+                2018-06-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Bash/" itemprop="url" rel="index">
+                    <span itemprop="name">Bash</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  213
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  1
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="命令置换"><a href="#命令置换" class="headerlink" title="命令置换"></a>命令置换</h1><p>命令置换可以输出一条或者多条命令的输出。可以让命令在不同语境下起作用，最常见的是使用  <code>\</code>`` 符号进行对命令的包裹，这样就能够输出使用命令得出的结果。可以成为另外一个命令的参数，也可以成为循环的参数。</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">echo &#96;hostname&#96;</span><br><span class="line">echo $(&quot;hostname&quot;)</span><br><span class="line"># 两种使用都可以，都能够达到命令置换的目的</span><br></pre></td></tr></table></figure></div>
+
+<h1 id="算数运算"><a href="#算数运算" class="headerlink" title="算数运算"></a>算数运算</h1><p>使用反引号，双括号，和let进行相对来说简单</p>
+<h2 id="使用反引号"><a href="#使用反引号" class="headerlink" title="使用反引号"></a>使用反引号</h2><p>使用反引号内用expr命令进行整型数的运算。</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">z&#x3D;&#96;expr $z+1&#96;</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="使用双括号和let进行运算"><a href="#使用双括号和let进行运算" class="headerlink" title="使用双括号和let进行运算"></a>使用双括号和let进行运算</h2><div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">z&#x3D;$((z+3))</span><br><span class="line"></span><br><span class="line">let z&#x3D;z+3</span><br><span class="line">let &quot;z +&#x3D; 3&quot;  #  Quotes permit the use of spaces in variable assignment.</span><br></pre></td></tr></table></figure></div>
+
+<p>今天的内容有点少。。。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+<div>
+      
+</div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/06/12/2018-06-12-bash_08_bash%E4%B8%AD%E7%9A%84%E5%BE%AA%E7%8E%AF%E5%92%8C%E5%88%86%E6%94%AF%EF%BC%88%E4%BA%8C%EF%BC%89/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1768,194 +2145,6 @@
 <p>简单实例，这个例子不完整需要再去考虑很多东西。</p>
 <div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">PS3&#x3D;&quot;Choose your favorite vegetable:&quot;</span><br><span class="line">select vegetable in &quot;beans&quot; &quot;carrots&quot; &quot;potatoes&quot;</span><br><span class="line">do</span><br><span class="line">	if [[ $vegetable &#x3D; &quot;beans&quot; ]] || [[ $vegetable &#x3D; &quot;carrots&quot; ]] || [[$vegetable &#x3D; &quot;potatoes&quot; ]]</span><br><span class="line">		then </span><br><span class="line">			echo </span><br><span class="line">			echo &quot;your favorite veggie is $vegetable&quot;</span><br><span class="line">			echo </span><br><span class="line">			continue</span><br><span class="line">		else</span><br><span class="line">			echo &quot;your vegetable not on this list&quot;</span><br><span class="line">			break</span><br><span class="line">		fi</span><br><span class="line"></span><br><span class="line">done</span><br></pre></td></tr></table></figure></div>
 
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-<div>
-      
-</div>
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/06/12/2018-06-16-bash_09_%E5%91%BD%E4%BB%A4%E7%BD%AE%E6%8D%A2/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="NanYin">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NanYin的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/12/2018-06-16-bash_09_%E5%91%BD%E4%BB%A4%E7%BD%AE%E6%8D%A2/" itemprop="url">bash学习记录（九）命令置换和算数扩展</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-06-11T17:00:00Z">
-                2018-06-11
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Bash/" itemprop="url" rel="index">
-                    <span itemprop="name">Bash</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Words count in article&#58;</span>
-                
-                <span title="Words count in article">
-                  213
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Reading time &asymp;</span>
-                
-                <span title="Reading time">
-                  1
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="命令置换"><a href="#命令置换" class="headerlink" title="命令置换"></a>命令置换</h1><p>命令置换可以输出一条或者多条命令的输出。可以让命令在不同语境下起作用，最常见的是使用  <code>\</code>`` 符号进行对命令的包裹，这样就能够输出使用命令得出的结果。可以成为另外一个命令的参数，也可以成为循环的参数。</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">echo &#96;hostname&#96;</span><br><span class="line">echo $(&quot;hostname&quot;)</span><br><span class="line"># 两种使用都可以，都能够达到命令置换的目的</span><br></pre></td></tr></table></figure></div>
-
-<h1 id="算数运算"><a href="#算数运算" class="headerlink" title="算数运算"></a>算数运算</h1><p>使用反引号，双括号，和let进行相对来说简单</p>
-<h2 id="使用反引号"><a href="#使用反引号" class="headerlink" title="使用反引号"></a>使用反引号</h2><p>使用反引号内用expr命令进行整型数的运算。</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">z&#x3D;&#96;expr $z+1&#96;</span><br></pre></td></tr></table></figure></div>
-
-<h2 id="使用双括号和let进行运算"><a href="#使用双括号和let进行运算" class="headerlink" title="使用双括号和let进行运算"></a>使用双括号和let进行运算</h2><div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">z&#x3D;$((z+3))</span><br><span class="line"></span><br><span class="line">let z&#x3D;z+3</span><br><span class="line">let &quot;z +&#x3D; 3&quot;  #  Quotes permit the use of spaces in variable assignment.</span><br></pre></td></tr></table></figure></div>
-
-<p>今天的内容有点少。。。</p>
 
           
         
@@ -2211,358 +2400,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/05/02/2018-05-05-bash_05_%E6%93%8D%E4%BD%9C%E5%8F%98%E9%87%8F%202/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="NanYin">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NanYin的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/05/02/2018-05-05-bash_05_%E6%93%8D%E4%BD%9C%E5%8F%98%E9%87%8F%202/" itemprop="url">bash学习记录（五） bash中关于变量的更多的知识</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-05-01T17:00:00Z">
-                2018-05-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Words count in article&#58;</span>
-                
-                <span title="Words count in article">
-                  2.2k
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Reading time &asymp;</span>
-                
-                <span title="Reading time">
-                  9
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="字符串操作"><a href="#字符串操作" class="headerlink" title="字符串操作"></a>字符串操作</h1><p>bash支持很多关于字符串的操作，不过可惜的是，这些操作缺乏统一性，有一些是使用参数等，另外一些是通过内建命令<code>expr</code>命令来实现，这会导致不同的语法功能的重叠，会比较混乱，下面简单介绍一下使用参数和命令的实现字符串的操作。</p>
-<ul>
-<li><p>字符串长度（String Length）</p>
-<ol>
-<li><p>$(#string) 这里是和C语言中的strlen()是相同的。</p>
-</li>
-<li><p>expr length $string 同样表示string串的长度。</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="BASH"><figure class="iseeu highlight /bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#! /bin/bash</span></span><br><span class="line">string=abcdefgHIGKL</span><br><span class="line"><span class="comment">#使用第一种方法$(#string)</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"string的长度是：<span class="variable">$&#123;#string&#125;</span>"</span></span><br><span class="line"><span class="comment">#使用第二种方法使用expr内建命令 优点简单易懂</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"string的长度是：`expr length <span class="variable">$string</span>`"</span></span><br><span class="line">`</span><br></pre></td></tr></table></figure></div>
-</li>
-</ol>
-</li>
-<li><p>字符串从开头匹配子字串的长度</p>
-<p>  方法如下：</p>
-  <div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="BASH"><figure class="iseeu highlight /bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">stringZ=abcABC123ABCab </span><br><span class="line"><span class="built_in">echo</span> `expr match <span class="string">"<span class="variable">$stringZ</span>"</span> <span class="string">'abc[A-Z]*.2'</span>`</span><br><span class="line"><span class="built_in">echo</span> `expr <span class="variable">$stringZ</span> : <span class="string">'abc[A-Z]*.2'</span>`</span><br></pre></td></tr></table></figure></div>
-</li>
-<li><p>匹配到子串的位置 (index)</p>
-  <div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="BASH"><figure class="iseeu highlight /bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> `expr index <span class="variable">$stringZ</span> <span class="string">'abc[A-Z]*.2'</span>`</span><br></pre></td></tr></table></figure></div>
-</li>
-<li><p>子字符串的截取</p>
-<ol>
-<li><p>${string:position} 从positon位置截取字符串string。</p>
-</li>
-<li><p>${string:positong:length} 从positon位置截取字符串string，并且限定截取长度为length。</p>
-</li>
-<li><p>expr substr $string $positon $length 意思同上。</p>
-</li>
-<li><p>expr match $string ‘\(substring \)’ 这里的substring是正则表达式。</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="BASH"><figure class="iseeu highlight /bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#截取字符串</span></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$&#123;stringZ:5&#125;</span></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$&#123;stringZ:5:4&#125;</span></span><br><span class="line"><span class="built_in">echo</span> `expr substr <span class="variable">$stringZ</span> 5 4`</span><br><span class="line"><span class="built_in">echo</span> `expr match <span class="variable">$stringZ</span> <span class="string">'\(abc[A-Z]*.2\)'</span>`</span><br></pre></td></tr></table></figure></div>
-</li>
-</ol>
-</li>
-<li><p>从字符串中移除子字符串</p>
-<ol>
-<li><p>${string#substring} substring是子字符串。并且需要注意的是：<strong>该方法表示的是向后移除该子字符串最短匹配到的字符串。</strong></p>
-</li>
-<li><p>${string##substring} 与上面的正好相反。<strong>该方法表示的是向后移除该字符串最长匹配到的字符串。</strong></p>
-</li>
-<li><p>${string%substring} <strong>该方法表示的是由后向前移除该子字符串最短匹配到的字符串。</strong></p>
-</li>
-<li><p>${string%%substring} <strong>该方法表示的是由后向前移除该字符串最长匹配到的字符串。</strong></p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="BASH"><figure class="iseeu highlight /bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="string">"移除字符串"</span></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$&#123;stringZ#a*b&#125;</span> </span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$&#123;stringZ##a*b&#125;</span></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$&#123;stringZ%a*c&#125;</span></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$&#123;stringZ%%a*c&#125;</span></span><br><span class="line"><span class="comment">#结果：</span></span><br><span class="line"><span class="comment">#ABC123ABCabc</span></span><br><span class="line"><span class="comment">#c</span></span><br><span class="line"><span class="comment">#abcABC123ABC</span></span><br><span class="line"><span class="comment">#</span></span><br></pre></td></tr></table></figure></div>
-</li>
-</ol>
-</li>
-<li><p>子字符串替换</p>
-<ol>
-<li><p>${string/substring/replacement}  替换第一个匹配到substring的字符串，替换为replacement。</p>
-</li>
-<li><p>${string//substring/replacement} 替换所有匹配到的字符。</p>
-</li>
-<li><p>${string/#substring/replacement} 替换由前向后匹配到的字符。</p>
-</li>
-<li><p>${string/%substring/replacement} 替换由后向前匹配到的字符。</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="BASH"><figure class="iseeu highlight /bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="string">"---------字符串替换---------"</span></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$&#123;stringZ/abc/xyz&#125;</span></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$&#123;stringZ//abc/xyz&#125;</span></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$&#123;stringZ/#abc/xyz&#125;</span></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$&#123;stringZ/%abc/xyz&#125;</span></span><br><span class="line"><span class="comment">#结果：</span></span><br><span class="line"><span class="comment">#xyzABC123ABCabc</span></span><br><span class="line"><span class="comment">#xyzABC123ABCxyz</span></span><br><span class="line"><span class="comment">#xyzABC123ABCabc</span></span><br><span class="line"><span class="comment">#abcABC123ABCxyz</span></span><br></pre></td></tr></table></figure></div>
-
-</li>
-</ol>
-</li>
-</ul>
-<h2 id="使用awk操作字符串"><a href="#使用awk操作字符串" class="headerlink" title="使用awk操作字符串"></a>使用awk操作字符串</h2><p>现学先卖，<a href="http://blog.jobbole.com/109089/" target="_blank" rel="noopener">三十分钟学会AWK</a>,快速了解和应用awk。</p>
-<p>基于以上，使用awk练习。</p>
-<p>工作流分为大致三部分， read-&gt;excute-&gt;repeat,实现对文本的处理。</p>
-<h3 id="程序机构"><a href="#程序机构" class="headerlink" title="程序机构"></a>程序机构</h3><ul>
-<li><p>BEGIN 语法：<code>BEGIN {awk-commands}</code> 是可以省略的部分块，主要作用是声明变量，初始化变量，</p>
-</li>
-<li><p>BODY块 ：<code>{commonds}</code>，是必须填写的部分，主要作用是处理文本，会对输入的每一行都执行body块中的命令，并且body是没有关键字的。</p>
-</li>
-</ul>
-<p>-END ：<code>END {commands}</code>,同BEGIN，是可以省略的部分</p>
-<h3 id="基础语法"><a href="#基础语法" class="headerlink" title="基础语法"></a>基础语法</h3><ul>
-<li><p>awk命令行，可以通过执行<code>awk [-option] files</code>来实现对files文件的处理。 如 <code>awk {print} mark.txt</code> 这里就不具体举例了，开头的链接里讲的非常详细，这里只做简单的记录和查看。</p>
-</li>
-<li><p>使用命令文件方式 <code>awk -f command.awk marks.txt</code> 使用-f参数，可以使用文件中的命令。</p>
-</li>
-<li><p>awk基本选项 ： 这里不具体总结，linux环境下终端 <code>man awk</code>可以看到非常多的选项。</p>
-</li>
-</ul>
-<h3 id="基本使用示例"><a href="#基本使用示例" class="headerlink" title="基本使用示例"></a>基本使用示例</h3><ol>
-<li><p>基本打印文件内容</p>
- <div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="BASH"><figure class="iseeu highlight /bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ awk <span class="string">'&#123;print&#125;'</span> mark.txt </span><br><span class="line">1)  Amit    Physics  80</span><br><span class="line">2)  Rahul   Maths    90</span><br><span class="line">3)  Shyam   Biology  87</span><br><span class="line">4)  Kedar   English  85</span><br><span class="line">5)  Hari    History  89</span><br></pre></td></tr></table></figure></div>
-</li>
-<li><p>打印具体项内容</p>
- <div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="BASH"><figure class="iseeu highlight /bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ awk <span class="string">'&#123;print $1 "\t" $2 &#125;'</span> mark.txt</span><br><span class="line">1)      Amit</span><br><span class="line">2)      Rahul</span><br><span class="line">3)      Shyam</span><br><span class="line">4)      Kedar</span><br><span class="line">5)      Hari</span><br></pre></td></tr></table></figure></div>
-</li>
-<li><p>添加限定条件的打印内容</p>
- <div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="BASH"><figure class="iseeu highlight /bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ awk  <span class="string">'/a/  &#123;print $1 "\t" $2 &#125;'</span> mark.txt</span><br><span class="line">2)      Rahul</span><br><span class="line">3)      Shyam</span><br><span class="line">4)      Kedar</span><br><span class="line">5)      Hari</span><br></pre></td></tr></table></figure></div>
-
-<p> 结果只显示匹配到a的行</p>
-</li>
-<li><p>打印匹配到的行数</p>
- <div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="BASH"><figure class="iseeu highlight /bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ awk <span class="string">'BEGIN&#123;count=0&#125; /a/ &#123; count++&#125; END&#123;print count&#125;'</span> mark.txt</span><br><span class="line">4</span><br></pre></td></tr></table></figure></div>
-</li>
-<li><p>打印字符数量超过16的行</p>
- <div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="BASH"><figure class="iseeu highlight /bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ awk <span class="string">'length($0) &gt; 18'</span> marks.txt</span><br><span class="line">3) Shyam   Biology   87</span><br><span class="line">4) Kedar   English   85</span><br></pre></td></tr></table></figure></div>
-
-</li>
-</ol>
-<p>NOTE:在这里的参数和bash中的参数类似。$0当前行，$1之后表示对应文件的行的列。</p>
-<h3 id="内建变量"><a href="#内建变量" class="headerlink" title="内建变量"></a>内建变量</h3><p>AWK提供了很多内建变量提供使用，能够起到很大的作用。</p>
-<h4 id="标准awk变量"><a href="#标准awk变量" class="headerlink" title="标准awk变量"></a>标准awk变量</h4><ul>
-<li><p>ARGC 命令行参数个数</p>
-  <div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="BASH"><figure class="iseeu highlight /bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ awk <span class="string">'BEGIN&#123;print "argument=",ARGC&#125;'</span> one two three</span><br><span class="line">argument= 4</span><br></pre></td></tr></table></figure></div>
-</li>
-<li><p>ARGV  命令行参数数组 如 <code>ARGV[1]=...</code></p>
-</li>
-<li><p>CONVFMT  数字的约定格式，默认值是%.6g</p>
-</li>
-<li><p>ENVIRON 环境变量 </p>
-  <div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="BASH"><figure class="iseeu highlight /bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ awk <span class="string">'BEGIN &#123;print "User is",ENVIRON["USER"]&#125;'</span></span><br><span class="line">User is nanyin</span><br></pre></td></tr></table></figure></div>
-</li>
-<li><p>FILENAME 当前文件的名称</p>
-  <div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="BASH"><figure class="iseeu highlight /bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ awk <span class="string">'END&#123;print "this file name is", FILENAME&#125;'</span> mark.txt</span><br><span class="line">this file name is mark.txt</span><br></pre></td></tr></table></figure></div>
-</li>
-<li><p>FS 分割符 默认是空格也可以使用-F设置分割符</p>
-</li>
-<li><p>NF 当前行的字段数目</p>
-  <div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="BASH"><figure class="iseeu highlight /bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ awk <span class="string">'END&#123;print NF&#125;'</span> mark.txt</span><br><span class="line">4</span><br></pre></td></tr></table></figure></div>
-</li>
-<li><p>NR 行号 </p>
-</li>
-<li><p>FNR 当前文件的行号</p>
-</li>
-<li><p>OFS 输出字段分隔符</p>
-</li>
-<li><p>ORS 输出行分割符</p>
-</li>
-<li><p>RLENGTH 表示match函数匹配字符床的长度</p>
-  <div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="BASH"><figure class="iseeu highlight /bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ awk <span class="string">'BEGIN &#123;if(match("One  Three","ree")) &#123;print RLENGTH&#125;&#125;'</span></span><br><span class="line">3</span><br></pre></td></tr></table></figure></div>
-</li>
-<li><p>RSTART 表示match函数第一次匹配到的位置</p>
-  <div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="BASH"><figure class="iseeu highlight /bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ awk <span class="string">'BEGIN &#123;if(match("One  Three","ree")) &#123;print RSTART&#125;&#125;'</span> </span><br><span class="line">8</span><br></pre></td></tr></table></figure></div>
-
-</li>
-</ul>
-<h3 id="操作符"><a href="#操作符" class="headerlink" title="操作符"></a>操作符</h3><p>与C语言的操作符基本相同，如数字的一元二元三元操作等，字符串的链接，数组元素等</p>
-<h3 id="正则表达式"><a href="#正则表达式" class="headerlink" title="正则表达式"></a>正则表达式</h3><p>AWK对正则的处理非常强大，通常你一个小小的正则表达式能够处理很复杂的问题。关于正则，有时间整理一篇专门关于正则的文章。</p>
-<h3 id="数组"><a href="#数组" class="headerlink" title="数组"></a>数组</h3><p>AWK支持关联数组，也就是说，不仅可以使用数字索引的数组，还可以使用字符串作为索引。删除数组元素使用delete语句</p>
-<h3 id="流程控制"><a href="#流程控制" class="headerlink" title="流程控制"></a>流程控制</h3><p>流程控制if while for 与C相同</p>
-<h3 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h3><p>查手册吧。。一次性看不完。。。。<a href="https://www.gnu.org/software/gawk/manual/gawk.html#Built_002din" target="_blank" rel="noopener">内建函数手册</a>，这里有在这章比较重要的字符串函数。接下来就来看看有哪些函数比较重要。</p>
-<h4 id="AWK对字符串操作的函数"><a href="#AWK对字符串操作的函数" class="headerlink" title="AWK对字符串操作的函数"></a>AWK对字符串操作的函数</h4><p> 整理出awk对字符串的几个具体函数操作。</p>
-<ol>
-<li><p>asort(source,dest,how) </p>
-</li>
-<li><p>asorti(source,dest,how)</p>
-<p>以上两个函数的how先不解释，前两个参数分别为source数组和排序方式，第二个可以不写，默认使用第一位的进行排位。</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="BASH"><figure class="iseeu highlight /bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">awk <span class="string">'BEGIN&#123;a[0]="xiaohong";a[1]="aiaolan";asort(a);for(i=2;i&gt;=0;i--) &#123;print a[i]&#125;&#125;'</span></span><br><span class="line">    xiaohong</span><br><span class="line">    aiaolan</span><br><span class="line">`</span><br></pre></td></tr></table></figure></div>
-
-<p>asorti()函数会将顺序替换到数组的value处如：</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="BASH"><figure class="iseeu highlight /bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">awk <span class="string">'BEGIN&#123;a[0]="xiaohong";a[1]="aiaolan";asorti(a);for(i=2;i&gt;=0;i--) &#123;print a[i]&#125;&#125;'</span></span><br><span class="line">    1</span><br><span class="line">    0</span><br></pre></td></tr></table></figure></div>
-</li>
-<li><p>gensub(regexp,replacement,how[,target]) 类似gsub和sub</p>
-<p>替换匹配到的正则<em>regexp</em>为replacement.如果how是g或者G(global的简写),则表示替换所有使用regexp匹配到的字符串,target是目标字符串</p>
-<p>如果使用regexp未匹配到，则返回原始target的值</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="BASH"><figure class="iseeu highlight /bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 第一个</span></span><br><span class="line"><span class="built_in">echo</span> a b c a d | gawk <span class="string">'&#123;print gensub(/a/,"AA",2)&#125;'</span> </span><br><span class="line">a b c AA d</span><br><span class="line"><span class="comment"># 第二个</span></span><br><span class="line">awk <span class="string">'</span></span><br><span class="line"><span class="string">BEGIN&#123;</span></span><br><span class="line"><span class="string">a="abc def"</span></span><br><span class="line"><span class="string">b = gensub(/(.+) (.+)/,"\\2 \\1","g",a)</span></span><br><span class="line"><span class="string">print b</span></span><br><span class="line"><span class="string">&#125;'</span></span><br><span class="line">def abc</span><br></pre></td></tr></table></figure></div>
-
-</li>
-</ol>
-<ol start="4">
-<li><p>gsub(regexp,replacement[,target]) </p>
-<p> gsub中的‘g’其实是表示的是global,寻找目标的匹配到从左最长的，不重叠的,找到并且替换掉。</p>
- <div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="BASH"><figure class="iseeu highlight /bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123; gsub(/Britain/, <span class="string">"United Kingdom"</span>); <span class="built_in">print</span> &#125;</span><br></pre></td></tr></table></figure></div>
-
-<p> 返回的值为匹配到的次数</p>
-</li>
-<li><p>index(in,find)</p>
-<p> 寻找in串内符合find匹配到的字符的index位置</p>
- <div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="BASH"><figure class="iseeu highlight /bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ awk <span class="string">'BEGIN&#123;</span></span><br><span class="line"><span class="string">quote&gt; print index("hello","lo")&#125;'</span></span><br><span class="line">4</span><br></pre></td></tr></table></figure></div>
-</li>
-<li><p>length([string]) 顾名思义，不解释了</p>
- <div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="BASH"><figure class="iseeu highlight /bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ awk <span class="string">'BEGIN&#123;print length("hello")&#125;'</span></span><br><span class="line">5</span><br></pre></td></tr></table></figure></div>
-<p> NOTE: If no argument is supplied, length() returns the length of $0. </p>
-</li>
-<li><p>match(string,regexp,[,array]) </p>
-<p> 使用正则匹配字符串，返回匹配到的位置，若未匹配到返回0</p>
-</li>
-<li><p>split(string,array[,fieldsep[,seps]])</p>
-<p> 分割string字符串，使用array存放分割后产生的字符组，使用fieldsep组为分割符，seps存放每次分割产生的分割符。一个分割出来的存放到array[1]中，第二个存放到array[2]中，以此类推。如果分割符fieldsep不写，则默认分割符为空格。</p>
- <div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="BASH"><figure class="iseeu highlight /bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ awk <span class="string">'BEGIN&#123;print split("cul-de-sac",a,"-",seps);for(i=1;i&lt;4;i++)&#123;print a[i]&#125;&#125;'</span> </span><br><span class="line">3</span><br><span class="line">cul</span><br><span class="line">de</span><br><span class="line">sac</span><br></pre></td></tr></table></figure></div>
-</li>
-<li><p>sprintf(format,expression1,..)</p>
-<p> 是printf的功能，并且能够返回字符串</p>
-</li>
-<li><p>strtonum (str)</p>
-<p>类似java的parseInt()函数，由String字符串转成数字</p>
-</li>
-<li><p>sub（regexp,replacement[,target]）</p>
-<p>最左最长匹配原则进行匹配，sub个gsub的作用相同，分割字符串，并进行替换</p>
-</li>
-<li><p>substr(string,start[,end])</p>
-<p>分割字符串</p>
-</li>
-<li><p>tolower(string) &amp; toupper(string)</p>
-<p>大小写转换</p>
-</li>
-</ol>
-<p>关于awk的就总结到这了。。十分基础的总结。。推荐文档，清晰明了。下一篇打算先整理整理正则表达式。现在哪里都会用到正则，还是很有必要看看正则的。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-<div>
-      
-</div>
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2617,7 +2454,7 @@
               
                 <a href="/archives/%7C%7C%20archive">
               
-                  <span class="site-state-item-count">108</span>
+                  <span class="site-state-item-count">109</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -2628,7 +2465,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-count">16</span>
                   <span class="site-state-item-name">categories</span>
                 </a>
               </div>
@@ -2639,7 +2476,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-count">20</span>
                   <span class="site-state-item-name">tags</span>
                 </a>
               </div>
@@ -2691,6 +2528,10 @@
              
              
                <li>
+                 <a href="/2020/09/01/%E4%BB%A3%E7%A0%81%E6%B3%A8%E9%87%8A%E8%A7%84%E8%8C%83/" title="IDEA设置代码注释模板和JavaDoc文档生成" target="_blank">IDEA设置代码注释模板和JavaDoc文档生成</a>
+               </li>
+             
+               <li>
                  <a href="/2020/08/01/%E5%9F%BA%E4%BA%8EWebService%E7%9A%84Java%E5%BC%80%E5%8F%91%E5%AE%9E%E8%B7%B5/" title="基于Java的WebService实践" target="_blank">基于Java的WebService实践</a>
                </li>
              
@@ -2704,10 +2545,6 @@
              
                <li>
                  <a href="/2020/05/22/%EF%BC%88%E4%B8%89%EF%BC%89%E8%87%AA%E5%8A%A8%E8%A3%85%E9%85%8D/" title="（三）自动装配" target="_blank">（三）自动装配</a>
-               </li>
-             
-               <li>
-                 <a href="/2020/05/22/%EF%BC%88%E4%BA%8C%EF%BC%89Bean%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/" title="（二）Bean的生命周期" target="_blank">（二）Bean的生命周期</a>
                </li>
              
            </ul>
@@ -2763,7 +2600,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共138.5k字</span>
+  <span class="post-count">博客全站共139.1k字</span>
 </div>
 
 
