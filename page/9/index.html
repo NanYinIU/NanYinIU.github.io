@@ -305,6 +305,218 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/10/18/2018-10-17-Java%E4%B8%AD%E7%9A%84%E6%A0%88%E5%92%8C%E9%98%9F%E5%88%97/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="NanYin">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NanYin的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/10/18/2018-10-17-Java%E4%B8%AD%E7%9A%84%E6%A0%88%E5%92%8C%E9%98%9F%E5%88%97/" itemprop="url">Java中的栈和队列</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-10-17T22:05:00Z">
+                2018-10-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  438
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  1
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <!-- vim-markdown-toc GFM -->
+
+<ul>
+<li><a href="#java中的栈和队列">java中的栈和队列</a><ul>
+<li><a href="#stack-栈">Stack 栈</a><ul>
+<li><a href="#push方法和pop方法">push方法和pop方法</a></li>
+<li><a href="#peek方法">peek方法</a></li>
+</ul>
+</li>
+<li><a href="#queue-队列">Queue 队列</a><ul>
+<li><a href="#offer-方法和-pull方法">offer 方法和 pull方法</a></li>
+<li><a href="#add方法和remove方法">add方法和remove方法</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<!-- vim-markdown-toc -->
+
+<h1 id="java中的栈和队列"><a href="#java中的栈和队列" class="headerlink" title="java中的栈和队列"></a>java中的栈和队列</h1><h2 id="Stack-栈"><a href="#Stack-栈" class="headerlink" title="Stack 栈"></a>Stack 栈</h2><p>栈是一个后进先出的数据结构，有这样的数据结构功能的还有Dequ类，推荐使用Dequ</p>
+<h3 id="push方法和pop方法"><a href="#push方法和pop方法" class="headerlink" title="push方法和pop方法"></a>push方法和pop方法</h3><p>push方法是向栈顶放值</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">public E push(E item) &#123;</span><br><span class="line">&#x2F;&#x2F; 这里调用父类Vector的addElement方法</span><br><span class="line">        addElement(item);</span><br><span class="line"></span><br><span class="line">        return item;</span><br><span class="line">    &#125;</span><br><span class="line">&#x2F;&#x2F; addElement方法是加锁的方法 调用element实际上就是数组长度加一并且在该问之上付值</span><br><span class="line">public synchronized void addElement(E obj) &#123;</span><br><span class="line">        modCount++;</span><br><span class="line">        ensureCapacityHelper(elementCount + 1);</span><br><span class="line">        elementData[elementCount++] &#x3D; obj;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>pop方法是在将栈顶的值出栈</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 同样加锁的方法 调用方法 移除在数组最后位置的元素</span><br><span class="line">public synchronized E pop() &#123;</span><br><span class="line">        E       obj;</span><br><span class="line">        int     len &#x3D; size();</span><br><span class="line"></span><br><span class="line">        obj &#x3D; peek();</span><br><span class="line">        removeElementAt(len - 1);</span><br><span class="line"></span><br><span class="line">        return obj;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="peek方法"><a href="#peek方法" class="headerlink" title="peek方法"></a>peek方法</h3><p>peek方法是看一下栈顶元素的值，但不做任何操作</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">public synchronized E peek() &#123;</span><br><span class="line">        int     len &#x3D; size();</span><br><span class="line"></span><br><span class="line">        if (len &#x3D;&#x3D; 0)</span><br><span class="line">            throw new EmptyStackException();</span><br><span class="line">        return elementAt(len - 1);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>这几个方法和linkedList类中的对应的方法非常像，所以其实LindedList也可以当作栈用。</p>
+<h2 id="Queue-队列"><a href="#Queue-队列" class="headerlink" title="Queue 队列"></a>Queue 队列</h2><p>队列和栈相反，是一个先进后出的数据结构，想成现实中的排队再明白不过了。</p>
+<h3 id="offer-方法和-pull方法"><a href="#offer-方法和-pull方法" class="headerlink" title="offer 方法和 pull方法"></a>offer 方法和 pull方法</h3><p>offer方法可以将元素放入队列当中，pull可以将元素从头部移除。</p>
+<h3 id="add方法和remove方法"><a href="#add方法和remove方法" class="headerlink" title="add方法和remove方法"></a>add方法和remove方法</h3><p>add和remove方法分别调用offer和pull方法，不同的是，如果队列满了，add方法会抛出异常，而offer方法会返回null。如果队列空了，remove方法会抛出异常，而pull方法会返回null。</p>
+<p>以后会提及队列的实现类以及Dequ相关类。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+<div>
+      
+</div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/10/16/2018-10-15-HashSet%E5%92%8CHashTable%E7%9A%84%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2277,195 +2489,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/07/03/2018-07-03-bash_14_bash%E4%B8%AD%E7%9A%84%E5%87%BD%E6%95%B0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="NanYin">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NanYin的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/07/03/2018-07-03-bash_14_bash%E4%B8%AD%E7%9A%84%E5%87%BD%E6%95%B0/" itemprop="url">bash学习记录（十五）bash中的函数定义与使用</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-07-03T15:00:00Z">
-                2018-07-03
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Bash/" itemprop="url" rel="index">
-                    <span itemprop="name">Bash</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Words count in article&#58;</span>
-                
-                <span title="Words count in article">
-                  409
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Reading time &asymp;</span>
-                
-                <span title="Reading time">
-                  1
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="bash中的函数"><a href="#bash中的函数" class="headerlink" title="bash中的函数"></a>bash中的函数</h1><p>其实bash函数和bash脚本时一样的，函数的使用如同使用一段bash脚本块一样。但是定义为bash函数执行更快。</p>
-<h2 id="函数定义与调用"><a href="#函数定义与调用" class="headerlink" title="函数定义与调用"></a>函数定义与调用</h2><p>与很多脚本语言一样，使用 <code>function</code> 作为关键词来声明函数。下面来使用一段例子代码来说明函数的定义的格式。乍一看是不是和js有点像呢。。</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">function hello()&#123;</span><br><span class="line">echo &quot;使用函数会输出这句话&quot;</span><br><span class="line">return 1</span><br><span class="line">&#125;</span><br><span class="line">hello #使用函数</span><br></pre></td></tr></table></figure></div>
-
-<h2 id="函数的参数传递"><a href="#函数的参数传递" class="headerlink" title="函数的参数传递"></a>函数的参数传递</h2><p>与编写bash相似，参数使用 <code>$+位置的形式获取</code> 如$1获取紧跟在调用函数后的第一个参数的值。</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">function hello()&#123;</span><br><span class="line">echo &quot;使用函数会输出这句话&quot;</span><br><span class="line">echo &quot;输出第一个参数 $1&quot;</span><br><span class="line">return 1</span><br><span class="line">&#125;</span><br><span class="line">hello world</span><br><span class="line"># 输出结果 ‘ 输出第一个参数 world ’</span><br></pre></td></tr></table></figure></div>
-
-<h2 id="函数的返回值"><a href="#函数的返回值" class="headerlink" title="函数的返回值"></a>函数的返回值</h2><p>使用return来返回特定值 如上面的函数中使用到了 <code>return 1</code> ,在return后发生的语句都不能被执行。并且return的的值只能在1~256之间的数。使用$?来获取返回到值。</p>
-<h2 id="函数的嵌套"><a href="#函数的嵌套" class="headerlink" title="函数的嵌套"></a>函数的嵌套</h2><p>如同在Java js中使用函数类似，bash中的函数也允许使用嵌套结构。但是需要在外层函数调用内容函数。这是当然的了，因为在内部声明函数，却没有调用，这当然时不起作用的了。</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">function x1()&#123;</span><br><span class="line">        echo &quot;在函数x1中！&quot;</span><br><span class="line">        function x2()&#123;</span><br><span class="line">        echo &quot;在函数x2中！&quot;</span><br><span class="line">        &#125;</span><br><span class="line">        x2 # 这里需要调用内层函数</span><br><span class="line">&#125;</span><br><span class="line">x1</span><br><span class="line">#结果：</span><br><span class="line">#在函数x1中！</span><br><span class="line">#在函数x2中！</span><br></pre></td></tr></table></figure></div>
-
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-<div>
-      
-</div>
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2594,6 +2617,10 @@
              
              
                <li>
+                 <a href="/2020/09/03/markdown%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95/" title="Markdown语法入门" target="_blank">Markdown语法入门</a>
+               </li>
+             
+               <li>
                  <a href="/2020/09/01/%E4%BB%A3%E7%A0%81%E6%B3%A8%E9%87%8A%E8%A7%84%E8%8C%83/" title="IDEA设置代码注释模板和JavaDoc文档生成" target="_blank">IDEA设置代码注释模板和JavaDoc文档生成</a>
                </li>
              
@@ -2607,10 +2634,6 @@
              
                <li>
                  <a href="/2020/05/22/%EF%BC%88%E5%9B%9B%EF%BC%89AOP%E5%88%87%E9%9D%A2%E4%BD%BF%E7%94%A8%E4%B8%8E%E5%8E%9F%E7%90%86/" title="（四）AOP切面使用与原理" target="_blank">（四）AOP切面使用与原理</a>
-               </li>
-             
-               <li>
-                 <a href="/2020/05/22/%EF%BC%88%E4%B8%89%EF%BC%89%E8%87%AA%E5%8A%A8%E8%A3%85%E9%85%8D/" title="（三）自动装配" target="_blank">（三）自动装配</a>
                </li>
              
            </ul>
@@ -2666,7 +2689,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共139.1k字</span>
+  <span class="post-count">博客全站共139.2k字</span>
 </div>
 
 

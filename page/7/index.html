@@ -567,6 +567,246 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/05/05/2019-05-05-Spring_Framework%E9%87%8D%E7%82%B9%E5%AD%A6%E4%B9%A0%202/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="NanYin">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NanYin的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/05/05/2019-05-05-Spring_Framework%E9%87%8D%E7%82%B9%E5%AD%A6%E4%B9%A0%202/" itemprop="url">Spring重点知识学习</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-05-05T12:00:00Z">
+                2019-05-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  2.3k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  8
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Spring-Framework"><a href="#Spring-Framework" class="headerlink" title="Spring Framework"></a>Spring Framework</h1><p>使用spring可以轻易的创建一个企业级应用,它使用Java语言所有的企业级环境中的所有东西,spring是开源的,拥有庞大而活跃的社区来提供持续的支持.</p>
+<h2 id="Spring-Core"><a href="#Spring-Core" class="headerlink" title="Spring Core"></a>Spring Core</h2><p>spring分为多个模块,其中core为其中的一个,里面包含spring的核心技术点</p>
+<h3 id="IOC容器-控制反转"><a href="#IOC容器-控制反转" class="headerlink" title="IOC容器(控制反转)"></a>IOC容器(控制反转)</h3><p>IOC也被成为依赖注入,这是由一个对象定义他所依赖的关系的过程.当创建这个bean的时候也同时创建这些依赖供其使用.这样的整个过程就是反转控制的过程,比如说建房子,以前需要砖,瓦,水泥才能建造房子,如果不实用ioc时,就是自己去造砖,造瓦,然后使用.<br>现在使用ioc容器,只需要把砖,瓦,水泥写到清单上,ioc容器自动把这些准备好供使用,省去来自己制造的过程.</p>
+<p><code>org.springframework.beans</code> 和 <code>org.springframework.context</code> 是spring实现IOC容器的基础.<code>BeanFactory</code>接口是能够管理任何对象的高级的配置接口,<code>ApplicationContext</code>是BeanFactory的子接口.因为:</p>
+<ul>
+<li>更容易和Spring 的AOP特性相结合</li>
+<li>消息资源处理,用于国际化问题</li>
+<li>事件发布</li>
+<li>用于特定的上下文比如web应用程序的<code>WebApplicationContext</code></li>
+</ul>
+<p>简单来说就是<code>BeanFactory</code>提供了基本的功能,而<code>ApplicationContext</code>提供了更多的企业定制化的功能.</p>
+<p><code>ApplicationContext</code>代表了IOC容器,提供了初始化、配置、组装beans.通过配置元数据来获取有关初始化..等的指令.这里所指的配置元数据可以通过配置文件,注解或者java代码来实现.通过配置元数据来体现对象和其依赖.</p>
+<p>下图为官网提供的spring工作的简化图:</p>
+<p><img src="https://docs.spring.io/spring/docs/current/spring-framework-reference/images/container-magic.png" alt="IOC容器"></p>
+<h3 id="SpringBean的生命周期"><a href="#SpringBean的生命周期" class="headerlink" title="SpringBean的生命周期"></a>SpringBean的生命周期</h3><p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190531170713.png" alt="生命周期"><br>生命周期大概包含这几个阶段:</p>
+<ol>
+<li>实例化Bean对象,这时还未进行依赖注入,最后将bean加入到beanwapper中.</li>
+<li>设置对象属性.Spring根据BeanDefinition中的信息进行依赖注入.并且通过BeanWrapper提供的设置属性的接口完成依赖注入。</li>
+<li>注入Aware接口,检测是否是想相关Aware接口,并装配相关接口的方法.</li>
+<li>BeanPostProcessor 此时bean已经成功被构造,通过实现这个接口来自定义前置和后置的处理规则.</li>
+<li>调用initialzingBean和int-methods,这时对象成功被初始化</li>
+<li>最后调用disposableBean的afterpropertiesSet方法和destroy-methods来实现指定对象销毁.</li>
+</ol>
+<h3 id="Spring-AOP"><a href="#Spring-AOP" class="headerlink" title="Spring AOP"></a>Spring AOP</h3><p>AOP的意思是面向切面编程,在理解面向切面前,不得不说面向对象.什么是面向对象,面向对象编程就是将事务对象化,依据对象进行层级化,面向对象通过封装继承多态的方式实现了对象层次结构,但是实际应用时可能会遇到需要横向的进行业务处理,典型的就如日志,因为在实际代码编写时,不能每次在写方法前后都加入相同的代码,这样即浪费时间,又导致代码冗余.所以面向切面编程必不可少.</p>
+<p>AOP将多个相同的业务代码整合,形成一个通用的<code>“切面”</code>,通过切面可以分割出<code>“核心关注点”</code>和<code>“横切关注点”</code>,核心关注点就是实际的核心业务关注的代码逻辑部分,横切关注点就是公共的代码的实现.</p>
+<p>其中AOP中有几个比较关键的概念:</p>
+<ol>
+<li>横切关注点:对哪些方法进行拦截,拦截后如何处理.这些关注点叫做横切关注点</li>
+<li>切面:切面就是对横切关注点的抽象,就如同类对事物的抽象类似</li>
+<li>连接点(joinpoint):被拦截到的点,可以通过连接点获取被拦截的参数等信息</li>
+<li>切入点:连接点进行拦截的定义</li>
+<li>织入:横切的过程叫做织入</li>
+</ol>
+<h4 id="简单的代码实现-注解"><a href="#简单的代码实现-注解" class="headerlink" title="简单的代码实现(注解)"></a>简单的代码实现(注解)</h4><p>下面代码使用注解的方式实现的Spring AOP,配置文件同理,需要配置切面(主要是切点和通知方法)</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="comment">// 标志为AOP @Aspect</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ServiceLog</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Logger logger = LoggerFactory.getLogger(ServiceLog.class);</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    HttpSession httpSession;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 前置通知 切入点前执行</span></span><br><span class="line">    <span class="meta">@Before</span>(<span class="string">"execution(* com.nanyin.jreact.service.serviceImpl..*.*(..))"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handelServiceMethodBefore</span><span class="params">(JoinPoint joinpoint)</span></span>&#123; <span class="comment">//JoinPoint 为连接点,通过连接点可获取参数等</span></span><br><span class="line">        <span class="keyword">try</span>&#123;</span><br><span class="line">            String username = (String) httpSession.getAttribute(<span class="string">"user"</span>);</span><br><span class="line">            BaseUtil.setUser(Optional.ofNullable(username).orElse(<span class="string">"空 "</span>));</span><br><span class="line">        &#125;<span class="keyword">catch</span> (Exception e)&#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 后置通知 切入点后执行</span></span><br><span class="line">    <span class="meta">@After</span>(<span class="string">"execution(* com.nanyin.jreact.service.serviceImpl..*.*(..))"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handelServiceMethodAfter</span><span class="params">(JoinPoint joinpoint)</span></span>&#123;</span><br><span class="line">        <span class="keyword">try</span>&#123;</span><br><span class="line">            String username = (String) httpSession.getAttribute(<span class="string">"user"</span>);</span><br><span class="line">            BaseUtil.setUser(Optional.ofNullable(username).orElse(<span class="string">"空 "</span>));</span><br><span class="line">        &#125;<span class="keyword">catch</span> (Exception e)&#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<h4 id="JDK动态代理和CGLIB代理"><a href="#JDK动态代理和CGLIB代理" class="headerlink" title="JDK动态代理和CGLIB代理"></a>JDK动态代理和CGLIB代理</h4><p>两者都可以实现AOP代理功能,但是jdk代理需要代理类和委托类都实现系统的接口,但是实际应用的时候这种情况非常少,这时候会自动使用CGLIB实现动态代理</p>
+<h3 id="Spring事务管理"><a href="#Spring事务管理" class="headerlink" title="Spring事务管理"></a>Spring事务管理</h3><p>事务包含四个基本特性,也就是常说的ACID,分别为原子性,一致性,隔离性,持久性</p>
+<h4 id="事务的接口"><a href="#事务的接口" class="headerlink" title="事务的接口"></a>事务的接口</h4><ol>
+<li>PlatformTransactionManager： （平台）事务管理器</li>
+</ol>
+<blockquote>
+<p>spring 不直接管理事务,而是实现不同的事务管理器,将事务交给框架处理,如为ibaits 和 hibernate 有不同的实现.</p>
+</blockquote>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="XML"><figure class="iseeu highlight /xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 事务管理器 xml 配置 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"transactionManager"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">class</span>=<span class="string">"org.springframework.jdbc.datasource.DataSourceTransactionManager"</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 数据源 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"dataSource"</span> <span class="attr">ref</span>=<span class="string">"dataSource"</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure></div>
+
+<ol start="2">
+<li>TransactionDefinition： 事务定义信息(事务隔离级别、传播行为、超时、只读、回滚规则)</li>
+</ol>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">TransactionDefinition</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 返回事务的传播行为</span></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">getPropagationBehavior</span><span class="params">()</span></span>; </span><br><span class="line">    <span class="comment">// 返回事务的隔离级别，事务管理器根据它来控制另外一个事务可以看到本事务内的哪些数据</span></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">getIsolationLevel</span><span class="params">()</span></span>; </span><br><span class="line">    <span class="comment">//返回事务的名字</span></span><br><span class="line">    <span class="function">String <span class="title">getName</span><span class="params">()</span>；</span></span><br><span class="line"><span class="function">    <span class="comment">// 返回事务必须在多少秒内完成</span></span></span><br><span class="line"><span class="function">    <span class="keyword">int</span> <span class="title">getTimeout</span><span class="params">()</span></span>;  </span><br><span class="line">    <span class="comment">// 返回是否优化为只读事务。</span></span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">isReadOnly</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<ol start="3">
+<li>TransactionStatus： 用来记录事务运行状态</li>
+</ol>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">TransactionStatus</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">isNewTransaction</span><span class="params">()</span></span>; <span class="comment">// 是否是新的事物</span></span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">hasSavepoint</span><span class="params">()</span></span>; <span class="comment">// 是否有恢复点</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">setRollbackOnly</span><span class="params">()</span></span>;  <span class="comment">// 设置为只回滚</span></span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">isRollbackOnly</span><span class="params">()</span></span>; <span class="comment">// 是否为只回滚</span></span><br><span class="line">    <span class="keyword">boolean</span> isCompleted; <span class="comment">// 是否已完成</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="自定义注解"><a href="#自定义注解" class="headerlink" title="自定义注解"></a>自定义注解</h3><h4 id="构造注解"><a href="#构造注解" class="headerlink" title="构造注解"></a>构造注解</h4><p>注解使用<code>@interface</code>来标识为一个注解,具体使用可以参考如下:</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// @Target原注解的意义是表明作用域，比如type就是表示要标注到类接口上</span></span><br><span class="line"><span class="meta">@Target</span>(&#123;ElementType.TYPE&#125;)</span><br><span class="line"><span class="comment">// 表示作用域</span></span><br><span class="line"><span class="meta">@Retention</span>(RetentionPolicy.RUNTIME)</span><br><span class="line"><span class="comment">// 表明其他注解能够继承该注解</span></span><br><span class="line"><span class="meta">@Inherited</span></span><br><span class="line"><span class="comment">// javadoc会包含</span></span><br><span class="line"><span class="meta">@Documented</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> TableDescription &#123;</span><br><span class="line">    <span class="function">String <span class="title">description</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>其中该注解的作用就是1.标注在类接口上2.作用在运行时,能够通过反射得到接口中的内容3.能够让其他注解继承该注解4.能够生成javaddoc文档</p>
+<p>下面来重点关注第一个和第二个元注解:</p>
+<ol>
+<li>@Target是这个注解的作用域，ElementType.METHOD是这个注解的作用域的列表，METHOD是方法声明，除此之外，还有：CONSTRUCTOR（构造方法声明）,FIELD（字段声明）,LOCAL VARIABLE（局部变量声明）,METHOD（方法声明）,PACKAGE（包声明）,PARAMETER（参数声明）,TYPE（类接口）</li>
+<li>@Retention是它的生命周期，前面不是说注解按照运行机制有一个分类嘛，RUNTIME就是在运行时存在，可以通过反射读取。除此之外，还有: SOURCE（只在源码显示，编译时丢弃）,CLASS（编译时记录到class中，运行时忽略）,RUNTIME（运行时存在，可以通过反射读取）</li>
+</ol>
+<h4 id="如何使用自定义注解"><a href="#如何使用自定义注解" class="headerlink" title="如何使用自定义注解"></a>如何使用自定义注解</h4><ul>
+<li>添加注解</li>
+</ul>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="meta">@Table</span>(name = <span class="string">"person"</span>)</span><br><span class="line"><span class="comment">// 这里使用到了上面的自定义注解TableDescription</span></span><br><span class="line"><span class="meta">@TableDescription</span>(description = <span class="string">"this is person table"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Id</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">long</span> id;</span><br><span class="line">    <span class="meta">@Column</span>(name = <span class="string">"name"</span>,length = <span class="number">128</span>)</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Column</span>(name = <span class="string">"age"</span>,length = <span class="number">3</span>)</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">short</span> age;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<ul>
+<li>获得注解内容</li>
+</ul>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testAnn</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">try</span>&#123;</span><br><span class="line">    <span class="comment">// 反射获取类</span></span><br><span class="line">        Class clazz = Class.forName(<span class="string">"com.nanyin.jreact.entry.Person"</span>);</span><br><span class="line">        Boolean exist = clazz.isAnnotationPresent(TableDescription.class);</span><br><span class="line">        <span class="keyword">if</span>(exist)&#123;</span><br><span class="line">           <span class="comment">//如果注解在类中存在</span></span><br><span class="line">           TableDescription tableDescription = (TableDescription) clazz.getAnnotation(TableDescription.class);</span><br><span class="line">           <span class="comment">// 获得注解内容</span></span><br><span class="line">            System.out.println(tableDescription.description());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;<span class="keyword">catch</span> (ClassNotFoundException c)&#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>上面只是简单的掩饰注解的用法,但实际上业务会比这难上许多.</p>
+<h3 id="springMVC-工作流程"><a href="#springMVC-工作流程" class="headerlink" title="springMVC 工作流程"></a>springMVC 工作流程</h3><p>先上一张图:来自<a href="https://www.cnblogs.com/xiaoxi/p/6164383.html" target="_blank" rel="noopener">https://www.cnblogs.com/xiaoxi/p/6164383.html</a><br><img src="https://i.loli.net/2019/05/12/5cd7cf13c933c.jpg" alt="SpringMvc工作原理"></p>
+<p>由图中可以看到SpringMvc中最重要的起到中枢的是<code>DispatcherServlet</code>(前端控制器).</p>
+<ol>
+<li>在DispatcherServlet接受到客户端请求后,使用 <code>handlerMapping</code> 进行映射处理.在生成处理器映射器之后, 返回一个handler,如果有拦截器的化还生成拦截器.交给 <code>DispatcherServlet</code> 进行下一步处理.</li>
+<li>第二步交给 <code>handlerAdatper</code> (处理器适器) <code>HandlerAdapter</code> 经过适配调用具体的处理器( <code>Controller</code> ，也叫后端控制器)。Controller执行完成返回ModelAndView。</li>
+<li>第三步,DispatcherServlet将最终的结果交给 <code>viewResolver</code> 试图解析器进行视图解析</li>
+<li>DispatcherServlet 根据返回的view进行视图渲染,最终返回给客户端用户.</li>
+</ol>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+<div>
+      
+</div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/04/29/2019-04-29-Hibernate%E9%87%8D%E7%82%B9%E6%80%BB%E7%BB%93/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2617,316 +2857,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/01/04/2019-01-04-Ubuntu%E9%85%8D%E7%BD%AE%E5%85%A8%E8%BF%87%E7%A8%8B%202/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="NanYin">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NanYin的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/01/04/2019-01-04-Ubuntu%E9%85%8D%E7%BD%AE%E5%85%A8%E8%BF%87%E7%A8%8B%202/" itemprop="url">Ubuntu18.04 配置全过程</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-01-04T12:00:00Z">
-                2019-01-04
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Words count in article&#58;</span>
-                
-                <span title="Words count in article">
-                  2.2k
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Reading time &asymp;</span>
-                
-                <span title="Reading time">
-                  10
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Ubuntu18-04-配置全过程"><a href="#Ubuntu18-04-配置全过程" class="headerlink" title="Ubuntu18.04 配置全过程"></a>Ubuntu18.04 配置全过程</h1><p>因为最近在弄win10双系统，又因为PopOs在装机的时候设置grub比较麻烦，所以换成最新的Ubuntu稳定版来做成win/ubunut双系统。</p>
-<h2 id="安装问题"><a href="#安装问题" class="headerlink" title="安装问题"></a>安装问题</h2><p>在装机的需要使用grub做启动引导。所以设置保留BIOS启动区域而不是挂载/boot。亲身经历，UEFI启动模式下，Ubuntu的引导挂载应该是biosgrub，否则出错。导致无法家在grub。</p>
-<h2 id="界面配置"><a href="#界面配置" class="headerlink" title="界面配置"></a>界面配置</h2><h3 id="安装gnome-tweak-tool"><a href="#安装gnome-tweak-tool" class="headerlink" title="安装gnome-tweak-tool"></a>安装gnome-tweak-tool</h3><div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install gnome-tweak-tool</span><br></pre></td></tr></table></figure></div>
-
-<p>如果需要更改shell则需要安装：</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install gnome-shell-extensions</span><br></pre></td></tr></table></figure></div>
-
-<p>这样就能轻松愉快的使用gnome-tewak-tool了。</p>
-<h3 id="主题方案"><a href="#主题方案" class="headerlink" title="主题方案"></a>主题方案</h3><h4 id="主界面"><a href="#主界面" class="headerlink" title="主界面"></a>主界面</h4><p>因为前一阵使用Pop!_OS发现它默认的主题非常好看，所以下载Popos默认的主题，然后在gnome-tweak-tool中设置好就ok了，<a href="https://github.com/pop-os/gtk-theme" target="_blank" rel="noopener">这里是PopOs的gtk主题地址</a>。但是发现PopOs默认的输入法输入框是默认米黄色的，打字的时候不太显眼，所以在基础上添加了如下代码。添加方法：</p>
-<ol>
-<li>根据说明下载Pop-theme</li>
-</ol>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo add-apt-repository ppa:system76&#x2F;pop</span><br><span class="line">sudo apt update</span><br><span class="line">sudo apt install pop-theme</span><br></pre></td></tr></table></figure></div>
-
-<ol start="2">
-<li>定位到 <code>/usr/share/themes/Pop/gnome-shell/</code> 的gnome-shell.css和Pop.css 将IBus的界面代码替换成如下代码</li>
-</ol>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line">.candidate-popup-content &#123;</span><br><span class="line">  padding: 8px;</span><br><span class="line">  spacing: 0;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.candidate-index &#123;</span><br><span class="line">  padding: 0 4px 0 0;</span><br><span class="line">  color: rgba(255, 255, 255, 0.5);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.candidate-box:selected .candidate-index &#123;</span><br><span class="line">  color: rgba(255, 255, 255, 0.5);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.candidate-box &#123;</span><br><span class="line">  transition-duration: 0ms;</span><br><span class="line">  min-height: 28px;</span><br><span class="line">  padding: 0 8px;</span><br><span class="line">  border-radius: 8px;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.candidate-box:hover &#123;</span><br><span class="line">  background-color: rgba(255, 255, 255, 0.06);</span><br><span class="line">  color: rgba(255, 255, 255, 0.9);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.candidate-box:active &#123;</span><br><span class="line">background-color: rgba(255, 255, 255, 0.1);</span><br><span class="line">  color: rgba(255, 255, 255, 0.9);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.candidate-box:selected &#123;</span><br><span class="line">  background-color: #0046DB;</span><br><span class="line">  color: rgba(255, 255, 255, 0.85);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.candidate-page-button-box &#123;</span><br><span class="line">  height: 28px;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.vertical .candidate-page-button-box &#123;</span><br><span class="line">  padding-top: 0;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.horizontal .candidate-page-button-box &#123;</span><br><span class="line">  padding-left: 0;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.candidate-page-button &#123;</span><br><span class="line">  min-width: 28px;</span><br><span class="line">  min-height: 28px;</span><br><span class="line">  padding: 0;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.candidate-page-button-previous &#123;</span><br><span class="line">  border-radius: 8px;</span><br><span class="line">  border-right-width: 0;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.candidate-page-button-next &#123;</span><br><span class="line">  border-radius: 8px;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.candidate-page-button-icon &#123;</span><br><span class="line">  icon-size: 1.23077em;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
-
-<p>最后成品：</p>
-<p><img src="https://wx4.sinaimg.cn/large/006tNc79gy1g2dt15yse2j318u0miagk.jpg" alt="输入法"></p>
-<ol start="3">
-<li>应用程序窗口用的是 macOS High Sierra  主题，仿照MAC的窗口。比较漂亮。<a href="https://www.gnome-look.org/p/1013714/" target="_blank" rel="noopener">macOS High Sierra 主题</a>，下载下来后解压后放到 <code>/usr/share/themes</code> 下，之后就能在gnome-tweak-tool中看到了，设置完成后可以看到如下效果。</li>
-</ol>
-<p><img src="https://wx4.sinaimg.cn/large/006tNc79gy1g2dt17ye4jj31900u01dj.jpg" alt="主题"></p>
-<h4 id="gdm主题"><a href="#gdm主题" class="headerlink" title="gdm主题"></a>gdm主题</h4><p>gdm主题选用类似MAC登陆的主题，界面美观，而且还有毛玻璃效果。<a href="https://www.gnome-look.org/p/1207015/" target="_blank" rel="noopener">High Ubunterra</a>下载后解压之后，直接命令行执行./install.sh。之后直接右键设置后，直接将锁屏界面直接设置好。其实主要目的的就是将 <code>/usr/share/gnome-shell/theme</code> 中的ubuntu.css替换掉。</p>
-<h4 id="grub主题"><a href="#grub主题" class="headerlink" title="grub主题"></a>grub主题</h4><p>grub的主题比较少，推荐的就是<a href="https://www.gnome-look.org/p/1000140/" target="_blank" rel="noopener">Breeze GRUB2 theme</a> 是一款比较漂亮美观的主题。具体成果界面可以点击链接地址查看。</p>
-<p>普通主题需要作如下顺序的操作，但是 Breeze Grub2 theme 有脚本，直接执行解压后的脚本程序，就ok了。</p>
-<ol>
-<li>创建grub的主题文件夹</li>
-</ol>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo mkdir &#x2F;boot&#x2F;grub&#x2F;themes</span><br></pre></td></tr></table></figure></div>
-
-<ol start="2">
-<li>将主题包移动到这个目录下</li>
-</ol>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo cp 主题包名 &#x2F;boot&#x2F;grub&#x2F;themes&#x2F;</span><br></pre></td></tr></table></figure></div>
-
-<ol start="3">
-<li>修改主题的配置文件</li>
-</ol>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo vim &#x2F;etc&#x2F;grub.d&#x2F;00_header</span><br></pre></td></tr></table></figure></div>
-
-<ol start="4">
-<li>在配置文件中添加</li>
-</ol>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">GRUB_THEME&#x3D;&quot;&#x2F;boot&#x2F;grub&#x2F;themes&#x2F;主题包名&#x2F;theme.txt&quot;</span><br><span class="line">GRUB_GFXMODE&#x3D;&quot;1920x1080x32&quot;</span><br></pre></td></tr></table></figure></div>
-
-<ol start="5">
-<li>最后执行 update-grub 命令</li>
-</ol>
-<h3 id="gnome拓展推荐"><a href="#gnome拓展推荐" class="headerlink" title="gnome拓展推荐"></a>gnome拓展推荐</h3><p>我没有什么特殊的拓展安装，在Ubuntu系统下，一般安装如下拓展。</p>
-<ol>
-<li><p>User themes 可以使用用户目录下的主题</p>
-</li>
-<li><p>removeable Drive Menu 当插入移除设备的时候在上方有状态图标提醒。</p>
-</li>
-<li><p>Caffeine 可以关闭屏保和自动挂起，很好用。</p>
-</li>
-<li><p>Dash To Dock 如果你不喜欢ubuntu的侧边dock可以尝试这个dock，比较美观的dock，可以设置在侧边或者在底下。</p>
-</li>
-<li><p>openWeather 可以在顶部栏中查看天气，点击可以查看最近天气，需要手动添加地址。</p>
-</li>
-<li><p>ClipBord Indicator 是可以记录粘贴板的内容，有时可以避免重复复制的操作。</p>
-</li>
-</ol>
-<p>推荐的有这几个，但是gnome-shell拓展可谓非常的多，并且大多数都非常好用，可以去 <a href="https://extensions.gnome.org/" target="_blank" rel="noopener">gnome extensions 官网</a> 看一看，看有没有更适合自己的。</p>
-<h3 id="配置Vim和终端"><a href="#配置Vim和终端" class="headerlink" title="配置Vim和终端"></a>配置Vim和终端</h3><h4 id="配置vim"><a href="#配置vim" class="headerlink" title="配置vim"></a>配置vim</h4><p>我vim使用的是vundle插件管理器，首先要安装vundle.</p>
-<p>首先要下载git</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install git</span><br></pre></td></tr></table></figure></div>
-
-<p>然后安装vundle</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https:&#x2F;&#x2F;github.com&#x2F;VundleVim&#x2F;Vundle.vim.git ~&#x2F;.vim&#x2F;bundle&#x2F;Vundle.vi</span><br></pre></td></tr></table></figure></div>
-
-<p>将如下配置替换到.vimrc 中，首先要进行备份哦！！！</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line">set nocompatible &quot; be iMproved, required</span><br><span class="line">filetype off &quot; required</span><br><span class="line">set number</span><br><span class="line">let mapleader&#x3D;&quot;,&quot;</span><br><span class="line">set rtp+&#x3D;~&#x2F;.vim&#x2F;bundle&#x2F;Vundle.vim</span><br><span class="line">call vundle#begin()</span><br><span class="line"></span><br><span class="line">Plugin &#39;VundleVim&#x2F;Vundle.vim&#39;</span><br><span class="line">Plugin &#39;scrooloose&#x2F;nerdtree&#39;</span><br><span class="line">Plugin &#39;kien&#x2F;ctrlp.vim&#39;</span><br><span class="line">Plugin &#39;junegunn&#x2F;fzf&#39;</span><br><span class="line">Plugin &#39;Shougo&#x2F;neocomplete.vim&#39;</span><br><span class="line">Plugin &#39;vim-airline&#x2F;vim-airline&#39;</span><br><span class="line">Plugin &#39;vim-airline&#x2F;vim-airline-themes&#39;</span><br><span class="line">Plugin &#39;terryma&#x2F;vim-smooth-scroll&#39;</span><br><span class="line">Plugin &#39;terryma&#x2F;vim-expand-region&#39;</span><br><span class="line">Plugin &#39;tpope&#x2F;vim-commentary&#39;</span><br><span class="line">Plugin &#39;tpope&#x2F;vim-surround&#39;</span><br><span class="line">Plugin &#39;godlygeek&#x2F;tabular&#39;</span><br><span class="line">Plugin &#39;plasticboy&#x2F;vim-markdown&#39;</span><br><span class="line">Plugin &#39;tpope&#x2F;vim-fugitive&#39;</span><br><span class="line">Plugin &#39;airblade&#x2F;vim-gitgutter&#39;</span><br><span class="line">Plugin &#39;justinmk&#x2F;vim-sneak&#39;</span><br><span class="line">Plugin &#39;powerline&#x2F;fonts&#39;</span><br><span class="line">Plugin &#39;scrooloose&#x2F;nerdcommenter&#39; </span><br><span class="line">Plugin &#39;suan&#x2F;vim-instant-markdown&#39;</span><br><span class="line">Plugin &#39;mzlogin&#x2F;vim-markdown-toc&#39;</span><br><span class="line">call vundle#end()            &quot; required</span><br><span class="line">filetype plugin indent on</span><br><span class="line">&quot; let g:airline_powerline_fonts &#x3D; 1</span><br><span class="line">map &lt;C-n&gt; :NERDTreeToggle&lt;CR&gt;</span><br><span class="line">&quot; smooth-scroll</span><br><span class="line">function SmoothScroll(up)</span><br><span class="line">    if a:up</span><br><span class="line">        let scrollaction&#x3D;&quot;^Y&quot;</span><br><span class="line">    else</span><br><span class="line">        let scrollaction&#x3D;&quot;^E&quot;</span><br><span class="line">    endif</span><br><span class="line">    exec &quot;normal &quot; . scrollaction</span><br><span class="line">    redraw</span><br><span class="line">    let counter&#x3D;1</span><br><span class="line">    while counter&lt;&amp;scroll</span><br><span class="line">        let counter+&#x3D;1</span><br><span class="line">        sleep 10m</span><br><span class="line">        redraw</span><br><span class="line">        exec &quot;normal &quot; . scrollaction</span><br><span class="line">    endwhile</span><br><span class="line">endfunction</span><br><span class="line">noremap &lt;silent&gt; &lt;c-u&gt; :call smooth_scroll#up(&amp;scroll, 15, 2)&lt;CR&gt;</span><br><span class="line">noremap &lt;silent&gt; &lt;c-d&gt; :call smooth_scroll#down(&amp;scroll, 15, 2)&lt;CR&gt;</span><br><span class="line">noremap &lt;silent&gt; &lt;c-b&gt; :call smooth_scroll#up(&amp;scroll*2, 10, 4)&lt;CR&gt;</span><br><span class="line">noremap &lt;silent&gt; &lt;c-f&gt; :call smooth_scroll#down(&amp;scroll*2, 10, 4)&lt;CR&gt;</span><br><span class="line">set mouse&#x3D; </span><br><span class="line">map &lt;ScrollWheelUp&gt; &lt;C-Y&gt;</span><br><span class="line">map &lt;ScrollWheelDown&gt; &lt;C-E&gt;</span><br><span class="line">&quot;高亮错误</span><br><span class="line">&quot; let g:syntastic_enable_highlighting&#x3D;1</span><br><span class="line">&quot; 快速选中</span><br><span class="line">&quot; let g:expand_region_use_select_mode &#x3D; 1</span><br><span class="line">&quot; map w &lt;Plug&gt;(expand_region_expand)</span><br><span class="line">&quot; map W &lt;Plug&gt;(expand_region_shrink)</span><br><span class="line">&quot; markdown setting</span><br><span class="line">let g:vim_markdown_toc_autofit &#x3D; 1</span><br><span class="line">let g:vim_markdown_autowrite &#x3D; 1</span><br><span class="line">let g:vim_markdown_folding_disabled &#x3D; 1</span><br><span class="line">set updatetime&#x3D;100</span><br><span class="line">let g:gitgutter_grep&#x3D;&#39;&#39;</span><br><span class="line">let g:gitgutter_terminal_reports_focus&#x3D;0</span><br></pre></td></tr></table></figure></div>
-
-<p>最后在vim中使用<code>:PluginInstall</code> 安装插件。具体的插件的作用以后会专门写一篇来介绍。也可自行百度。</p>
-<h4 id="配置终端"><a href="#配置终端" class="headerlink" title="配置终端"></a>配置终端</h4><p>我使用的是zsh，首先安装zsh</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install zsh</span><br></pre></td></tr></table></figure></div>
-
-<p>然后配置将zsh为默认</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo chsh -s &#x2F;bin&#x2F;zsh</span><br></pre></td></tr></table></figure></div>
-
-<p>最后使用著名的oh-my-zsh 来装点B吧。</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sh -c &quot;$(curl -fsSL https:&#x2F;&#x2F;raw.github.com&#x2F;robbyrussell&#x2F;oh-my-zsh&#x2F;master&#x2F;tools&#x2F;install.sh)&quot;</span><br></pre></td></tr></table></figure></div>
-
-<h3 id="配置git环境和github连接"><a href="#配置git环境和github连接" class="headerlink" title="配置git环境和github连接"></a>配置git环境和github连接</h3><p>安装好git后，配置git</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git config --global user.name &quot;你的github用户名&quot;</span><br><span class="line">git config --global user.email &quot;你的github邮箱地址&quot;</span><br></pre></td></tr></table></figure></div>
-
-<p>生成密钥，一路enter就可以</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen -t rsa -C &quot;你自己的github对应的邮箱地址&quot;</span><br></pre></td></tr></table></figure></div>
-
-<p>将文件中生成的密钥复制到github上的配置中去</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim ~&#x2F;.ssh&#x2F;id_rsa.pub</span><br></pre></td></tr></table></figure></div>
-
-<p>检查是否配置成功</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh -T git@github.com</span><br></pre></td></tr></table></figure></div>
-
-<h3 id="配置Java开发环境"><a href="#配置Java开发环境" class="headerlink" title="配置Java开发环境"></a>配置Java开发环境</h3><h4 id="JDK"><a href="#JDK" class="headerlink" title="JDK"></a>JDK</h4><ol>
-<li>在<a href="https://www.oracle.com/technetwork/java/javase/downloads/index.html" target="_blank" rel="noopener">官网</a>下载jdk源码,并在解压前创建 <code>/usr/local/java</code> 文件夹</li>
-</ol>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkdir &#x2F;usr&#x2F;local&#x2F;java</span><br></pre></td></tr></table></figure></div>
-
-<ol start="2">
-<li>将文件解压到刚创建的文件夹中，也可以解压到当前文件夹下，然后移动到刚才创建的文件夹下。</li>
-</ol>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">tar -xzvf jdk1.8.0_191.tar.gz </span><br><span class="line"></span><br><span class="line">mv jdk1.8.0_191 &#x2F;usr&#x2F;local&#x2F;java&#x2F;</span><br></pre></td></tr></table></figure></div>
-
-<ol start="3">
-<li>使用vim编辑<code>/etc/profile</code> 文件,在结尾处添加如下内容</li>
-</ol>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">export JAVA_HOME&#x3D;&#x2F;usr&#x2F;local&#x2F;java&#x2F;jdk1.8.0_191 </span><br><span class="line">export PATH&#x3D;$JAVA_HOME&#x2F;bin:$PATH </span><br><span class="line">export CLASSPATH&#x3D;.:$JAVA_HOME&#x2F;lib&#x2F;dt.jar:$JAVA_HOME&#x2F;lib&#x2F;tools.jar</span><br></pre></td></tr></table></figure></div>
-
-<ol start="4">
-<li>执行 <code>source /etc/profile</code> 刷新配置文件，然后使用 <code>java -version</code>来查看是否成功。</li>
-</ol>
-<p><img src="https://wx3.sinaimg.cn/large/006tNc79gy1g2dt166451j318s03waav.jpg" alt="java"></p>
-<h4 id="Maven"><a href="#Maven" class="headerlink" title="Maven"></a>Maven</h4><ol>
-<li><p>在<a href="http://maven.apache.org/download.cgi" target="_blank" rel="noopener">官网</a> 下载源码包，同样解压前创建 <code>/usr/local/maven</code>文件夹</p>
-</li>
-<li><p>将文件解压到<code>/usr/local/maven</code>中。</p>
-</li>
-<li><p>使用vim编辑 <code>/etc/profile</code>文件，在末尾添加如下内容</p>
-</li>
-</ol>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">export MAVEN_HOME&#x3D;&#x2F;usr&#x2F;local&#x2F;maven&#x2F;apache-maven-3.6.0</span><br><span class="line">export PATH&#x3D;$MAVEN_HOME&#x2F;bin:$PATH</span><br></pre></td></tr></table></figure></div>
-
-<ol start="4">
-<li><p>同样使用<code>source /etc/profile</code> 命令刷新配置文件，使用<code>mvn -v</code> 命令查看是否安装成功。 </p>
-</li>
-<li><p>配置阿里maven镜像</p>
-</li>
-</ol>
-<p>编辑 <code>/usr/local/maven/apache-maven-3.6.0/conf/setting.xml</code>，在<code>&lt;mirrors&gt;&lt;/mirrors&gt;</code>标签内添加如下内容</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;mirror&gt;</span><br><span class="line">      &lt;id&gt;alimaven&lt;&#x2F;id&gt;</span><br><span class="line">      &lt;name&gt;aliyun maven&lt;&#x2F;name&gt;</span><br><span class="line">  　　&lt;url&gt;http:&#x2F;&#x2F;maven.aliyun.com&#x2F;nexus&#x2F;content&#x2F;groups&#x2F;public&#x2F;&lt;&#x2F;url&gt;</span><br><span class="line">      &lt;mirrorOf&gt;central&lt;&#x2F;mirrorOf&gt;        </span><br><span class="line">    &lt;&#x2F;mirror&gt;</span><br></pre></td></tr></table></figure></div>
-
-<p><img src="https://wx1.sinaimg.cn/large/006tNc79gy1g2dt176wswj319k068di3.jpg" alt="maven"></p>
-<h3 id="Mysql安装和数据库管理软件推荐"><a href="#Mysql安装和数据库管理软件推荐" class="headerlink" title="Mysql安装和数据库管理软件推荐"></a>Mysql安装和数据库管理软件推荐</h3><ol>
-<li>进入<a href="https://dev.mysql.com/downloads/repo/apt/" target="_blank" rel="noopener">官网</a>下载ubuntu的deb包，直接使用命令安装</li>
-</ol>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo dpkg -i mysql-apt-config_0.8.11-1_all.deb</span><br></pre></td></tr></table></figure></div>
-
-<ol start="2">
-<li>刷新源列表</li>
-</ol>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get update</span><br></pre></td></tr></table></figure></div>
-
-<ol start="3">
-<li>安装mysql</li>
-</ol>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install mysql-server mysql-client</span><br></pre></td></tr></table></figure></div>
-
-<p>其中会让你输入密码，输入就行了。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-<div>
-      
-</div>
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -3055,6 +2985,10 @@
              
              
                <li>
+                 <a href="/2020/09/03/markdown%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95/" title="Markdown语法入门" target="_blank">Markdown语法入门</a>
+               </li>
+             
+               <li>
                  <a href="/2020/09/01/%E4%BB%A3%E7%A0%81%E6%B3%A8%E9%87%8A%E8%A7%84%E8%8C%83/" title="IDEA设置代码注释模板和JavaDoc文档生成" target="_blank">IDEA设置代码注释模板和JavaDoc文档生成</a>
                </li>
              
@@ -3068,10 +3002,6 @@
              
                <li>
                  <a href="/2020/05/22/%EF%BC%88%E5%9B%9B%EF%BC%89AOP%E5%88%87%E9%9D%A2%E4%BD%BF%E7%94%A8%E4%B8%8E%E5%8E%9F%E7%90%86/" title="（四）AOP切面使用与原理" target="_blank">（四）AOP切面使用与原理</a>
-               </li>
-             
-               <li>
-                 <a href="/2020/05/22/%EF%BC%88%E4%B8%89%EF%BC%89%E8%87%AA%E5%8A%A8%E8%A3%85%E9%85%8D/" title="（三）自动装配" target="_blank">（三）自动装配</a>
                </li>
              
            </ul>
@@ -3127,7 +3057,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共139.1k字</span>
+  <span class="post-count">博客全站共139.2k字</span>
 </div>
 
 
