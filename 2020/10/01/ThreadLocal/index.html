@@ -88,17 +88,17 @@
 
 
 
-<meta name="description" content="ThreadLocalThreadLocal被称为线程本地变量，每个线程都单独有一份ThreadLocal。各线程之间的ThreadLocal是不共享的。在多线程与高并发中，谈到进程时，各个进程之间是相互独立的，拥有独立的运行空间、内存。而ThreadLocal完成的工作就是在线程层级，做了独立的空间。 ThreadLocal结构ThreadLocal本身不具备什么数据结构，他的实现是依附于 Th">
+<meta name="description" content="ThreadLocalThreadLocal 被称为线程本地变量，每个线程都单独有一份 ThreadLocal 。各线程之间的 ThreadLocal 是不共享的。在[多线程与高并发](https:&#x2F;&#x2F;nanyiniu.github.io&#x2F;2020&#x2F;06&#x2F;10&#x2F; 多线程与高并发 &#x2F;) 中，谈到进程时，各个进程之间是相互独立的，拥有独立的运行空间、内存。而 ThreadLocal 完成的工作就是在线">
 <meta property="og:type" content="article">
 <meta property="og:title" content="ThreadLocal">
 <meta property="og:url" content="https://nanyiniu.github.io/2020/10/01/ThreadLocal/index.html">
 <meta property="og:site_name" content="NanYin的博客">
-<meta property="og:description" content="ThreadLocalThreadLocal被称为线程本地变量，每个线程都单独有一份ThreadLocal。各线程之间的ThreadLocal是不共享的。在多线程与高并发中，谈到进程时，各个进程之间是相互独立的，拥有独立的运行空间、内存。而ThreadLocal完成的工作就是在线程层级，做了独立的空间。 ThreadLocal结构ThreadLocal本身不具备什么数据结构，他的实现是依附于 Th">
+<meta property="og:description" content="ThreadLocalThreadLocal 被称为线程本地变量，每个线程都单独有一份 ThreadLocal 。各线程之间的 ThreadLocal 是不共享的。在[多线程与高并发](https:&#x2F;&#x2F;nanyiniu.github.io&#x2F;2020&#x2F;06&#x2F;10&#x2F; 多线程与高并发 &#x2F;) 中，谈到进程时，各个进程之间是相互独立的，拥有独立的运行空间、内存。而 ThreadLocal 完成的工作就是在线">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://gitee.com/NanYinIU/Pic/raw/master/img/20200520162730.png">
 <meta property="og:image" content="https://gitee.com/NanYinIU/Pic/raw/master/img/20200520160700.png">
 <meta property="article:published_time" content="2020-10-01T12:00:00.000Z">
-<meta property="article:modified_time" content="2020-10-01T08:14:13.582Z">
+<meta property="article:modified_time" content="2020-10-01T09:04:45.411Z">
 <meta property="article:author" content="NanYin">
 <meta property="article:tag" content="Java">
 <meta property="article:tag" content="ThreadLocal">
@@ -393,7 +393,7 @@
                   <span class="post-meta-item-text">Words count in article&#58;</span>
                 
                 <span title="Words count in article">
-                  547
+                  572
                 </span>
               
 
@@ -409,7 +409,7 @@
                   <span class="post-meta-item-text">Reading time &asymp;</span>
                 
                 <span title="Reading time">
-                  1
+                  2
                 </span>
               
             </div>
@@ -430,17 +430,17 @@
       
 
       
-        <h1 id="ThreadLocal"><a href="#ThreadLocal" class="headerlink" title="ThreadLocal"></a>ThreadLocal</h1><p>ThreadLocal被称为线程本地变量，每个线程都单独有一份ThreadLocal。各线程之间的ThreadLocal是不共享的。在<a href="quiver:///notes/DD96188A-2B81-4F42-8C69-DA7CB341A5A2">多线程与高并发</a>中，谈到进程时，各个进程之间是相互独立的，拥有独立的运行空间、内存。而ThreadLocal完成的工作就是在线程层级，做了独立的空间。</p>
-<h2 id="ThreadLocal结构"><a href="#ThreadLocal结构" class="headerlink" title="ThreadLocal结构"></a>ThreadLocal结构</h2><p>ThreadLocal本身不具备什么数据结构，他的实现是依附于 ThreadLocalMap 。</p>
-<p>每次ThreadLocal执行set方法后，实际上是使用ThreadLocalMap的set方法，将ThreadLocal作为key，value作为value放入到ThreadLocalMap中。</p>
-<p>而实际上的ThreadLocalMap是由Entry来实现，而Entry中的key是WeakReference包裹的ThreadLocal。</p>
+        <h1 id="ThreadLocal"><a href="#ThreadLocal" class="headerlink" title="ThreadLocal"></a>ThreadLocal</h1><p>ThreadLocal 被称为线程本地变量，每个线程都单独有一份 ThreadLocal 。各线程之间的 ThreadLocal 是不共享的。在[多线程与高并发](<a href="https://nanyiniu.github.io/2020/06/10/">https://nanyiniu.github.io/2020/06/10/</a> 多线程与高并发 /) 中，谈到进程时，各个进程之间是相互独立的，拥有独立的运行空间、内存。而 ThreadLocal 完成的工作就是在线程层级，做了独立的空间。</p>
+<h2 id="ThreadLocal-结构"><a href="#ThreadLocal-结构" class="headerlink" title="ThreadLocal 结构"></a>ThreadLocal 结构</h2><p>ThreadLocal 本身不具备什么数据结构，他的实现是依附于 ThreadLocalMap 。</p>
+<p>每次 ThreadLocal 执行 set 方法后，实际上是使用 ThreadLocalMap 的 set 方法，将 ThreadLocal 作为 key，value 作为 value 放入到 ThreadLocalMap 中。</p>
+<p>而实际上的 ThreadLocalMap 是由 Entry 来实现，而 Entry 中的 key 是 WeakReference 包裹的 ThreadLocal。</p>
 <p>过程如下图：</p>
-<p><img src="https://gitee.com/NanYinIU/Pic/raw/master/img/20200520162730.png" alt="图1"></p>
-<p>结构引用：其中虚线表示弱引用 </p>
-<p><img src="https://gitee.com/NanYinIU/Pic/raw/master/img/20200520160700.png" alt="图2"></p>
-<h3 id="为什么要使用弱引用？"><a href="#为什么要使用弱引用？" class="headerlink" title="为什么要使用弱引用？"></a>为什么要使用弱引用？</h3><p>原因在于防止内存溢出，那为什么弱引用就能够够避免呢？再次之前需要先了解什么是弱引用-&gt;<a href="quiver:///notes/32A2DDCA-9EB5-49FE-B6FA-28629C4BE35F">Java的四种引用类型</a>。</p>
-<p>只要进行垃圾回收，那么弱引用就会被回收掉。那么，可以看图2中的结构。如果需要ThreadLocal引用被断开，也就是TL ref被设为null，因为 ThreadLocal 与 Entry 中的 key 是弱引用关系，所以，只要这边的强引用（tl ref）断开，则下一次垃圾回收，就一定能把 ThreadLocal 回收掉。</p>
-<p>如果不理解，那么举个反例，如果ThreadLocal 与 Entry 中的 key 是强引用关系，此时tl ref和这个 threadlocal 断开。此时，还需要将 threadLocalMap 这边的引用断开，才能够将 threadlocal 进行回收，而 threadLocalMap 是线程Thread中的一部分，声明周期和Thread相同。所以，造成的结果就是，只要线程运行着，threadLocal就不会被回收。</p>
+<p><img src="https://gitee.com/NanYinIU/Pic/raw/master/img/20200520162730.png" alt="图 1"></p>
+<p>结构引用：其中虚线表示弱引用</p>
+<p><img src="https://gitee.com/NanYinIU/Pic/raw/master/img/20200520160700.png" alt="图 2"></p>
+<h3 id="为什么要使用弱引用？"><a href="#为什么要使用弱引用？" class="headerlink" title="为什么要使用弱引用？"></a>为什么要使用弱引用？</h3><p>原因在于防止内存溢出，那为什么弱引用就能够够避免呢？再次之前需要先了解什么是弱引用 -&gt;<a href="https://nanyiniu.github.io/2020/09/28/Java%E7%9A%84%E5%9B%9B%E7%A7%8D%E5%BC%95%E7%94%A8%E7%B1%BB%E5%9E%8B/">Java 的四种引用类型</a>。</p>
+<p>只要进行垃圾回收，那么弱引用就会被回收掉。那么，可以看图 2 中的结构。如果需要 ThreadLocal 引用被断开，也就是 TL ref 被设为 null，因为 ThreadLocal 与 Entry 中的 key 是弱引用关系，所以，只要这边的强引用（tl ref）断开，则下一次垃圾回收，就一定能把 ThreadLocal 回收掉。</p>
+<p>如果不理解，那么举个反例，如果 ThreadLocal 与 Entry 中的 key 是强引用关系，此时 tl ref 和这个 threadlocal 断开。此时，还需要将 threadLocalMap 这边的引用断开，才能够将 threadlocal 进行回收，而 threadLocalMap 是线程 Thread 中的一部分，声明周期和 Thread 相同。所以，造成的结果就是，只要线程运行着，threadLocal 就不会被回收。</p>
 <h2 id="ThreadLocal-的内存溢出"><a href="#ThreadLocal-的内存溢出" class="headerlink" title="ThreadLocal 的内存溢出"></a>ThreadLocal 的内存溢出</h2><p>除去上面分析的如果使用强引用会导致内存溢出外，还有一种情况会导致 ThreadLocal 的内存溢出</p>
 <p>如果 tl ref 和 threadLocal 之间的强引用断开后，此时的 threadlocal 变为 null 存在于 Entry 中，也就是说内存中保存着 key 为 null 的 entry，同样无法回收，导致内存溢出。</p>
 <p>解决方式是，用完 threadLocal 后，使用 remove 方法进行手动释放。</p>
@@ -473,7 +473,7 @@
   <p><span>本文标题:</span><a href="/2020/10/01/ThreadLocal/">ThreadLocal</a></p>
   <p><span>文章作者:</span><a href="/" title="访问 NanYin 的个人博客">NanYin</a></p>
   <p><span>发布时间:</span>2020年10月01日 - 12:10</p>
-  <p><span>最后更新:</span>2020年10月01日 - 16:10</p>
+  <p><span>最后更新:</span>2020年10月01日 - 17:10</p>
   <p><span>原始链接:</span><a href="/2020/10/01/ThreadLocal/" title="ThreadLocal">https://nanyiniu.github.io/2020/10/01/ThreadLocal/</a>
     <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="https://nanyiniu.github.io/2020/10/01/ThreadLocal/"  aria-label="复制成功！"></i></span>
   </p>
@@ -727,7 +727,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#ThreadLocal"><span class="nav-number">1.</span> <span class="nav-text">ThreadLocal</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ThreadLocal结构"><span class="nav-number">1.1.</span> <span class="nav-text">ThreadLocal结构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么要使用弱引用？"><span class="nav-number">1.1.1.</span> <span class="nav-text">为什么要使用弱引用？</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ThreadLocal-的内存溢出"><span class="nav-number">1.2.</span> <span class="nav-text">ThreadLocal 的内存溢出</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#ThreadLocal"><span class="nav-number">1.</span> <span class="nav-text">ThreadLocal</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ThreadLocal-结构"><span class="nav-number">1.1.</span> <span class="nav-text">ThreadLocal 结构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么要使用弱引用？"><span class="nav-number">1.1.1.</span> <span class="nav-text">为什么要使用弱引用？</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ThreadLocal-的内存溢出"><span class="nav-number">1.2.</span> <span class="nav-text">ThreadLocal 的内存溢出</span></a></li></ol></li></ol></div>
             
 
           </div>
