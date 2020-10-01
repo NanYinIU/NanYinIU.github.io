@@ -305,6 +305,223 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/05/27/2019-05-27-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E8%B4%A3%E4%BB%BB%E9%93%BE%E6%A8%A1%E5%BC%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="NanYin">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NanYin的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/05/27/2019-05-27-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E8%B4%A3%E4%BB%BB%E9%93%BE%E6%A8%A1%E5%BC%8F/" itemprop="url">设计模式之责任链模式</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-05-27T12:00:00Z">
+                2019-05-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" itemprop="url" rel="index">
+                    <span itemprop="name">设计模式</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  1.1k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  4
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="设计模式之责任链模式"><a href="#设计模式之责任链模式" class="headerlink" title="设计模式之责任链模式"></a>设计模式之责任链模式</h1><p>责任链模式是一种对象的行为模式.通过为多个对象处理客户端请求的方式,实现降低发送者与接收者之间的耦合性.对象链由一个对象对下一个对象的引用组成一条链,请求在这个链上传递,直到这个链上的某一个对象处理它.</p>
+<p><img src="https://i.loli.net/2019/05/27/5ceb9a338d29c93932.png" alt="..."></p>
+<p>King只需要下达命令,具体谁来做并不关心,然而这个命令会通过commander, officer,soldier,这三类人只需要来执行各自负责的部分,如果没有自己负责的那么就给下一个职责的人就行了.这就是责任链模式.下面根据例子类图来分析责任链中的结构关系.</p>
+<h3 id="责任链的结构"><a href="#责任链的结构" class="headerlink" title="责任链的结构"></a>责任链的结构</h3><p>责任链的基本机构由下面三部分组成:</p>
+<ul>
+<li>抽象处理者 RequestHandler,定义接口方法,使用handler方法规定实现类通过该方法来规范子类的实现.</li>
+<li>具体处理者 通过继承RequestHandler实现其中的handle方法</li>
+<li>请求Request,客户端通过方法将request放入处理者链中,处理者一次执行这个request.request在构成的责任链上进行传递,具体处理人根据条件判断是否需要处理,如果不需要处理,流转至下一个人.</li>
+</ul>
+<blockquote>
+<p>正常的责任链模式请求总是会被处理的,并且请求不会被多次处理.</p>
+</blockquote>
+<p>在日常工作时,经常会遇到请假审批的情况.现在构建一个场景,当一个人在项目中,那么就让项目经理审批通过即可,否则需要他对应部门的主管审批通过.如张三发起请求,请求先到项目经理处,发现不属于项目成员,则再提交至张三的部门主管处,进行审批.</p>
+<h3 id="责任链模式的使用环境"><a href="#责任链模式的使用环境" class="headerlink" title="责任链模式的使用环境"></a>责任链模式的使用环境</h3><p>1、有多个对象可以处理同一个请求，具体哪个对象处理该请求由运行时刻自动确定。<br>2、在不明确指定接收者的情况下，向多个对象中的一个提交一个请求。<br>3、可动态指定一组对象处理请求</p>
+<h3 id="场景实现"><a href="#场景实现" class="headerlink" title="场景实现"></a>场景实现</h3><p>通过类图可以看到继承和调用关系:</p>
+<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20200331204434.png" alt="责任链类图"></p>
+<p>下面看具体实现:</p>
+<ol>
+<li>抽象处理者,定义一个LeaveHandler,作为请假处理人的抽象类</li>
+</ol>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">LeaveHandler</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 设置下一个处理人,通过next构成责任链,链上就是处理人</span></span><br><span class="line">    <span class="keyword">public</span> LeaveHandler next;</span><br><span class="line">    <span class="comment">// 构造函数</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">LeaveHandler</span><span class="params">(LeaveHandler next)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.next = next;</span><br><span class="line">    &#125;</span><br><span class="line">   <span class="comment">// 抽象方法，处理请假方法</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> LeaveHandler <span class="title">handle</span><span class="params">(LeaveRequest request)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<ol start="2">
+<li>具体处理者,定义两个具体处理人,分别为部门主管的 <code>LeaderHandler</code> 和 项目主管的 <code>ManagerHandler</code> 都继承自抽象类</li>
+</ol>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ManagerHandler</span> <span class="keyword">extends</span> <span class="title">LeaveHandler</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Logger logger = LoggerFactory.getLogger(ManagerHandler.class);</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ManagerHandler</span><span class="params">(LeaveHandler next)</span> </span>&#123;<span class="keyword">super</span>(next);&#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> LeaveHandler <span class="title">handle</span><span class="params">(LeaveRequest request)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 如果人员不再项目中，流转到下一个人，如果在项目中，直接审批通过</span></span><br><span class="line">        <span class="keyword">if</span>(request.isInProject())&#123;</span><br><span class="line">            logger.info(<span class="string">"项目经理对&#123;&#125;在&#123;&#125;请假审批通过！！"</span>,request.getName(),request.getDate());</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            logger.info(<span class="string">"&#123;&#125; 不在项目人员中，流转到下一审批人！！"</span>,request.getName());</span><br><span class="line">            <span class="comment">// 流转到下一人</span></span><br><span class="line">            next.handle(request);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LeaderHandler</span> <span class="keyword">extends</span> <span class="title">LeaveHandler</span> </span>&#123;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Logger logger = LoggerFactory.getLogger(LeaderHandler.class);</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">LeaderHandler</span><span class="params">(LeaveHandler next)</span> </span>&#123;<span class="keyword">super</span>(next);&#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> LeaveHandler <span class="title">handle</span><span class="params">(LeaveRequest request)</span> </span>&#123;</span><br><span class="line">        logger.info(<span class="string">"部门主管对&#123;&#125;在&#123;&#125;请假审批通过！！"</span>,request.getName(),request.getDate());</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<ol start="3">
+<li>请求Request,定义一个请假请求LeaveRequest,包含请假人姓名和请求时间</li>
+</ol>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LeaveRequest</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> String date;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span> inProject;</span><br><span class="line"><span class="comment">//  .... 省略get set</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">LeaveRequest</span><span class="params">(String name, String date, <span class="keyword">boolean</span> inProject)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">        <span class="keyword">this</span>.date = date;</span><br><span class="line">        <span class="keyword">this</span>.inProject = inProject;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<ol start="4">
+<li>client 调用者执行请假的流程</li>
+</ol>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Client</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 添加请求</span></span><br><span class="line">        LeaveRequest request = <span class="keyword">new</span> LeaveRequest(<span class="string">"zhangsan"</span>,<span class="string">"0919"</span>,<span class="keyword">true</span>);</span><br><span class="line">        LeaveRequest request2 = <span class="keyword">new</span> LeaveRequest(<span class="string">"lisi"</span>,<span class="string">"0929"</span>,<span class="keyword">false</span>);</span><br><span class="line">        <span class="comment">// 设置责任链</span></span><br><span class="line">        LeaveHandler manageHandler = <span class="keyword">new</span> ManagerHandler(<span class="keyword">new</span> LeaderHandler(<span class="keyword">null</span>));</span><br><span class="line">        <span class="comment">// 责任链处理</span></span><br><span class="line">        manageHandler.handle(request).handle(request2);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>最后的执行结果:</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">项目经理对zhangsan在<span class="number">0919</span>请假审批通过！！</span><br><span class="line">lisi 不在项目人员中，流转到下一审批人！！</span><br><span class="line">部门主管对lisi在<span class="number">0929</span>请假审批通过！！</span><br></pre></td></tr></table></figure></div>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+<div>
+      
+</div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/05/05/2019-05-05-Spring_Framework%E9%87%8D%E7%82%B9%E5%AD%A6%E4%B9%A0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2487,376 +2704,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/01/29/2019-01-29-%E5%9F%BA%E6%9C%ACLlinux%E5%91%BD%E4%BB%A4(%E5%BF%85%E9%A1%BB%E6%8E%8C%E6%8F%A1)/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="NanYin">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NanYin的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/01/29/2019-01-29-%E5%9F%BA%E6%9C%ACLlinux%E5%91%BD%E4%BB%A4(%E5%BF%85%E9%A1%BB%E6%8E%8C%E6%8F%A1)/" itemprop="url">Linux常用命令整理</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-01-29T12:00:00Z">
-                2019-01-29
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Linux/" itemprop="url" rel="index">
-                    <span itemprop="name">Linux</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Words count in article&#58;</span>
-                
-                <span title="Words count in article">
-                  1.4k
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Reading time &asymp;</span>
-                
-                <span title="Reading time">
-                  5
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="linux中必须掌握的基本命令"><a href="#linux中必须掌握的基本命令" class="headerlink" title="linux中必须掌握的基本命令"></a>linux中必须掌握的基本命令</h1><p>在开始前，我推荐安装 <a href="https://github.com/tldr-pages/tldr" target="_blank" rel="noopener">trdr（too long dont read）</a>工具，用来简化man命令，来实现查看命令含义和用法的作用。</p>
-<h2 id="一-、系统工作命令"><a href="#一-、系统工作命令" class="headerlink" title="一 、系统工作命令"></a>一 、系统工作命令</h2><ol>
-<li><p><code>echo</code></p>
-<p><code>echo</code>命令一般用于shell中打印变量或者字符串的作用，主要用来显示和提醒。</p>
-<ul>
-<li>输出一段信息 如：<code>echo &quot;hello world&quot;</code> 其中<code>&quot;</code>不是必须的 </li>
-<li>输出一段带环境变量的信息 如：<code>echo &quot;My Path is $PATH&quot;</code> </li>
-<li>输出并不带换行符号 如：<code>echo  -n &quot;Hello World&quot;</code></li>
-<li>输出一段激活转依字符 如： <code>echo -e &quot;Column 1 \t Column 2&quot;</code></li>
-</ul>
-</li>
-<li><p><code>date</code> </p>
-<p><code>date</code> 命令主要用来设置和打印系统时间。</p>
-<ul>
-<li>输出默认时区格式的事件 <code>date +&quot;%c&quot;</code></li>
-<li>输出当前事件按照UTC和iso格式输出 <code>date -u +&quot;%Y-%m-%dT%H:%M:%SZ&quot;</code></li>
-<li>输出事件戳 <code>date +&quot;%s&quot;</code></li>
-</ul>
-</li>
-<li><p><code>reboot</code> 命令主要用来重启系统</p>
-<ul>
-<li>重启系统 <code>reboot</code></li>
-<li>强制重启 <code>reboot -f</code></li>
-</ul>
-</li>
-<li><p><code>poweroff</code> 命令用户关机</p>
-</li>
-<li><p><code>wget</code> 命令 用于从web中下载文件，支持 <code>http</code>,<code>https</code>,<code>ftp</code></p>
-<ul>
-<li>获取URL中的内容到<code>foo</code>中 <code>wget https://example.com/foo</code></li>
-<li>获取URL中的内容到bar中 <code>wget -O bar https://example.com/foo</code></li>
-<li>继续未完成的下载 <code>wget -c https://example.com</code></li>
-<li>后台下载 <code>wget -q https://example.com</code></li>
-</ul>
-</li>
-<li><p><code>ps</code>命令主要用于查看正在运行的进程的信息</p>
-<ul>
-<li>打印全部正在执行的进程 <code>ps aux</code></li>
-<li>打印全部正在执行的进程并且伴有完整的命令串 <code>ps auxww</code></li>
-<li>通过 <code>grep</code> 管道过滤 <code>ps aux | grep &quot;tomcat&quot;</code></li>
-<li>得到进程的父进程<code>pid</code> :<code>ps -o ppid= -p pid</code> </li>
-</ul>
-</li>
-<li><p><code>top</code>命令 主要用户动态的实时的显示正在运行的程序</p>
-<ul>
-<li><code>top -i</code> 不显示空闲或者是僵尸进程</li>
-<li><code>top -u $user</code> 显示指定用户的进程 </li>
-<li><code>top -p PID</code> 只显示指定进程PID</li>
-<li><code>top -p $(pgrep -d &#39;,&#39; process_name)</code> 通过进程名来查询</li>
-</ul>
-</li>
-<li><p><code>pidof</code> 命令主要用于查找指定进程的id号</p>
-<ul>
-<li><code>pidof -s</code> 进返回一个进程号</li>
-<li><code>pidof</code> -c 仅显示具有相同root目录下的进程</li>
-</ul>
-</li>
-</ol>
-<h2 id="二、系统状态"><a href="#二、系统状态" class="headerlink" title="二、系统状态"></a>二、系统状态</h2><ol>
-<li><code>ifconfig</code> 命令主要用于网络接口的查看和配置</li>
-</ol>
-<ul>
-<li><code>Ifconfig eth0</code> 查看etho0接口网络设置</li>
-<li><code>ifconfig -a</code> 查看所有接口的详细信息</li>
-<li><code>ifconfig eth0 down</code> 关闭接口eth0</li>
-<li><code>ifconfig eth0 ipaddr</code> 设置端口ip地址</li>
-</ul>
-<ol start="2">
-<li><code>uname</code> 打印出现当前机器和系统的相关信息</li>
-</ol>
-<ul>
-<li><code>uname -n</code> 打印当前的<code>hostname</code></li>
-<li><code>uname -a</code> 打印当前可用的系统的信息，包括硬件软件。</li>
-</ul>
-<ol start="3">
-<li><code>who</code> 打印哪些用户登录再这台机器上</li>
-</ol>
-<ul>
-<li><code>who</code> 显示<code>username</code>等比较全的信息</li>
-<li><code>who am i</code> 打印出当前用户 </li>
-</ul>
-<ol start="4">
-<li><code>last</code> 用于查看当前用户最近的登录信息</li>
-</ol>
-<h2 id="三、文件和目录"><a href="#三、文件和目录" class="headerlink" title="三、文件和目录"></a>三、文件和目录</h2><ol>
-<li><p><code>pwd</code> 用于打印当前目录</p>
-</li>
-<li><p><code>cd</code> 用于切换目录</p>
-</li>
-<li><p><code>ls</code> 用于罗列目录下的文件或者文件夹</p>
-</li>
-</ol>
-<ul>
-<li><code>ls -l</code>按行罗列文件或文件夹</li>
-<li><code>ls -a</code> 显示所有文件，包括隐藏的文件。</li>
-<li><code>ls -lh</code> 按照大小排泄排列</li>
-</ul>
-<ol start="4">
-<li><code>touch</code> 命令主要用于改变文件的访问时间和修改时间。</li>
-</ol>
-<ul>
-<li><code>touch filename</code> 以当前时间创建文件</li>
-<li><code>touch -t yyyy-mm-dd filename</code> 以某一时间来改变文件时间</li>
-</ul>
-<ol start="5">
-<li><code>mkdir</code> 命令主要用于创建文件</li>
-</ol>
-<ul>
-<li><code>mkdir dir</code> 创建文件夹</li>
-<li><code>mkdir -p /path/dir</code> 创建指定路径下的文件</li>
-</ul>
-<ol start="6">
-<li><code>cp</code> 命令主要用于文件的复制</li>
-</ol>
-<ul>
-<li><code>cp path/to/file.ext path/to/copy.ext</code> 复制文件到另一个地址</li>
-<li><code>cp path/to/file.ext path/to/target_parent_directory</code> 复制文件到指定地址，并且保持文件名不变</li>
-<li><code>cp -r path/to/directory path/to/copy</code> 递归的复制整个文件夹及其中的内容到指定目录</li>
-<li><code>cp -i *.txt path/to/target_directory</code> 以交互的模式复制文件到指定文件夹中</li>
-</ul>
-<ol start="7">
-<li><code>mv</code> 命令主要用于移动文件</li>
-</ol>
-<ul>
-<li><code>mv source target</code> 移动文件</li>
-<li><code>mv -f</code> 强制移动，覆盖现有文件时不要提示</li>
-</ul>
-<ol start="8">
-<li><code>rm</code>命令主要用于删除文件</li>
-</ol>
-<ul>
-<li><code>rm path/to/file path/to/another/file</code> 删除特定文件夹中的文件</li>
-<li><code>rm -r path/to/directory</code> 递归删除文件夹及文件夹中的文件</li>
-<li><code>rm -rf</code> 递归删除，并且不要提示信息</li>
-</ul>
-<ol start="9">
-<li><code>dd</code> 命令主要用于转化和复制文件,制作usb镜像</li>
-</ol>
-<ul>
-<li>Clone a drive to another drive with 4MB block and ignore error <code>dd if=/dev/source_drive of=/dev/dest_drive bs=4m conv=noerror</code></li>
-</ul>
-<ol start="10">
-<li><code>file</code>命令主要用于确定文件类型</li>
-</ol>
-<ul>
-<li><code>file filename</code> 输出文件类型</li>
-<li><code>file -s filename</code> 用于特殊的文件或者设备文件。</li>
-</ul>
-<h2 id="四、文本编辑命令"><a href="#四、文本编辑命令" class="headerlink" title="四、文本编辑命令"></a>四、文本编辑命令</h2><ol>
-<li><code>cat</code> 打印和串联文件</li>
-</ol>
-<ul>
-<li><code>cat file</code> 打印文件内容到标准输出</li>
-<li><code>cat file1 file2  &gt; targetFile</code> 将多个文件内容串联到目标文件中</li>
-<li><code>cat -n file</code> 打印出行数到标准输出</li>
-</ul>
-<ol start="2">
-<li><code>more</code> 用于互动的阅读文件内容，可以上下滚动</li>
-</ol>
-<ul>
-<li><code>more file</code> 打开文件，<code>&lt;space&gt;</code>用于移动到下一页，<code>/</code>用于搜索文件内容， <code>q</code>用于退出当前界面</li>
-</ul>
-<ol start="3">
-<li><code>head</code> 输出文件开始的部分</li>
-</ol>
-<ul>
-<li><code>head -n count_of_line filename</code> 查看文件的前n行</li>
-<li><code>head -c number_of_byte filename</code> 查看文件的前n个字节</li>
-</ul>
-<ol start="4">
-<li><code>tail</code> 输出文件最后的部分</li>
-</ol>
-<ul>
-<li><code>tail -n num file</code>打印出文件最后num行 </li>
-<li><code>tail -n +num file</code> 打印出文件从num开始的几行</li>
-<li><code>tail -f file</code> 保持阅读状态直到 <code>Ctrl + c</code></li>
-</ul>
-<ol start="5">
-<li><code>wc</code>命令用于统计文件的单词，字节，行数 </li>
-</ol>
-<ul>
-<li><code>wc -l filename</code> 统计文件的行数</li>
-<li><code>wc -w filename</code> 统计文件的字数</li>
-<li><code>wc -c filename</code> 统计文件的字节数</li>
-</ul>
-<ol start="6">
-<li><code>显示文件的状态</code> </li>
-</ol>
-<ul>
-<li><code>stat filename</code> 显示文件的属性比如大小，权限等。</li>
-<li><code>stat -x filename</code>格式化显示文件的详细属性信息。</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-<div>
-      
-</div>
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2911,7 +2758,7 @@
               
                 <a href="/archives/%7C%7C%20archive">
               
-                  <span class="site-state-item-count">109</span>
+                  <span class="site-state-item-count">110</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -2933,7 +2780,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-count">21</span>
                   <span class="site-state-item-name">tags</span>
                 </a>
               </div>
@@ -2985,6 +2832,10 @@
              
              
                <li>
+                 <a href="/2020/10/01/ThreadLocal/" title="ThreadLocal" target="_blank">ThreadLocal</a>
+               </li>
+             
+               <li>
                  <a href="/2020/09/03/markdown%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95/" title="Markdown语法入门" target="_blank">Markdown语法入门</a>
                </li>
              
@@ -2998,10 +2849,6 @@
              
                <li>
                  <a href="/2020/06/10/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%B8%8E%E9%AB%98%E5%B9%B6%E5%8F%91/" title="多线程实践" target="_blank">多线程实践</a>
-               </li>
-             
-               <li>
-                 <a href="/2020/05/22/%EF%BC%88%E5%9B%9B%EF%BC%89AOP%E5%88%87%E9%9D%A2%E4%BD%BF%E7%94%A8%E4%B8%8E%E5%8E%9F%E7%90%86/" title="（四）AOP切面使用与原理" target="_blank">（四）AOP切面使用与原理</a>
                </li>
              
            </ul>
@@ -3057,7 +2904,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共139.2k字</span>
+  <span class="post-count">博客全站共139.8k字</span>
 </div>
 
 

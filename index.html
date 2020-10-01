@@ -305,6 +305,198 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2020/10/01/ThreadLocal/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="NanYin">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NanYin的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/10/01/ThreadLocal/" itemprop="url">ThreadLocal</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-10-01T12:00:00Z">
+                2020-10-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" itemprop="url" rel="index">
+                    <span itemprop="name">多线程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  547
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  1
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="ThreadLocal"><a href="#ThreadLocal" class="headerlink" title="ThreadLocal"></a>ThreadLocal</h1><p>ThreadLocal被称为线程本地变量，每个线程都单独有一份ThreadLocal。各线程之间的ThreadLocal是不共享的。在<a href="quiver:///notes/DD96188A-2B81-4F42-8C69-DA7CB341A5A2">多线程与高并发</a>中，谈到进程时，各个进程之间是相互独立的，拥有独立的运行空间、内存。而ThreadLocal完成的工作就是在线程层级，做了独立的空间。</p>
+<h2 id="ThreadLocal结构"><a href="#ThreadLocal结构" class="headerlink" title="ThreadLocal结构"></a>ThreadLocal结构</h2><p>ThreadLocal本身不具备什么数据结构，他的实现是依附于 ThreadLocalMap 。</p>
+<p>每次ThreadLocal执行set方法后，实际上是使用ThreadLocalMap的set方法，将ThreadLocal作为key，value作为value放入到ThreadLocalMap中。</p>
+<p>而实际上的ThreadLocalMap是由Entry来实现，而Entry中的key是WeakReference包裹的ThreadLocal。</p>
+<p>过程如下图：</p>
+<p><img src="https://gitee.com/NanYinIU/Pic/raw/master/img/20200520162730.png" alt="图1"></p>
+<p>结构引用：其中虚线表示弱引用 </p>
+<p><img src="https://gitee.com/NanYinIU/Pic/raw/master/img/20200520160700.png" alt="图2"></p>
+<h3 id="为什么要使用弱引用？"><a href="#为什么要使用弱引用？" class="headerlink" title="为什么要使用弱引用？"></a>为什么要使用弱引用？</h3><p>原因在于防止内存溢出，那为什么弱引用就能够够避免呢？再次之前需要先了解什么是弱引用-&gt;<a href="quiver:///notes/32A2DDCA-9EB5-49FE-B6FA-28629C4BE35F">Java的四种引用类型</a>。</p>
+<p>只要进行垃圾回收，那么弱引用就会被回收掉。那么，可以看图2中的结构。如果需要ThreadLocal引用被断开，也就是TL ref被设为null，因为 ThreadLocal 与 Entry 中的 key 是弱引用关系，所以，只要这边的强引用（tl ref）断开，则下一次垃圾回收，就一定能把 ThreadLocal 回收掉。</p>
+<p>如果不理解，那么举个反例，如果ThreadLocal 与 Entry 中的 key 是强引用关系，此时tl ref和这个 threadlocal 断开。此时，还需要将 threadLocalMap 这边的引用断开，才能够将 threadlocal 进行回收，而 threadLocalMap 是线程Thread中的一部分，声明周期和Thread相同。所以，造成的结果就是，只要线程运行着，threadLocal就不会被回收。</p>
+<h2 id="ThreadLocal-的内存溢出"><a href="#ThreadLocal-的内存溢出" class="headerlink" title="ThreadLocal 的内存溢出"></a>ThreadLocal 的内存溢出</h2><p>除去上面分析的如果使用强引用会导致内存溢出外，还有一种情况会导致 ThreadLocal 的内存溢出</p>
+<p>如果 tl ref 和 threadLocal 之间的强引用断开后，此时的 threadlocal 变为 null 存在于 Entry 中，也就是说内存中保存着 key 为 null 的 entry，同样无法回收，导致内存溢出。</p>
+<p>解决方式是，用完 threadLocal 后，使用 remove 方法进行手动释放。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+<div>
+      
+</div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2020/09/03/markdown%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2543,273 +2735,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2020/05/10/%E6%B7%B1%E5%85%A5JVM%EF%BC%88%E4%B8%80%EF%BC%89%E7%B1%BB%E5%8A%A0%E8%BD%BD%E8%BF%87%E7%A8%8B%E5%92%8C%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="NanYin">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NanYin的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2020/05/10/%E6%B7%B1%E5%85%A5JVM%EF%BC%88%E4%B8%80%EF%BC%89%E7%B1%BB%E5%8A%A0%E8%BD%BD%E8%BF%87%E7%A8%8B%E5%92%8C%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D/" itemprop="url">深入JVM（一）类加载过程和内存分配</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-05-10T15:00:00Z">
-                2020-05-10
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/JVM/" itemprop="url" rel="index">
-                    <span itemprop="name">JVM</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Words count in article&#58;</span>
-                
-                <span title="Words count in article">
-                  3.8k
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Reading time &asymp;</span>
-                
-                <span title="Reading time">
-                  14
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="深入JVM（一）类加载过程和内存分配"><a href="#深入JVM（一）类加载过程和内存分配" class="headerlink" title="深入JVM（一）类加载过程和内存分配"></a>深入JVM（一）类加载过程和内存分配</h1><blockquote>
-<p>本篇需要完成的内容是完成对对象从加载到创建过程的分析，与过程中的内存分配的方式等进行总结</p>
-</blockquote>
-<h1 id="内存区域"><a href="#内存区域" class="headerlink" title="内存区域"></a>内存区域</h1><p>在分析对象创建过程前，需要先了解Java虚拟机中对内存区域的划分与管理。</p>
-<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20200518205233.png" alt="Untitled"></p>
-<p><strong>红色部分的方法区在1.8之后已经被移除，变为元数据区，红色内的运行时常量池已经成为堆中的一部分使用！！</strong></p>
-<p>上图中展示了Java虚拟机在运行时对管理的内存区域的划分。其中，分为线程私有的程序计数器、本地方法栈、虚拟机栈和线程共享的堆与方法区和直接内存。</p>
-<h2 id="1-程序计数器"><a href="#1-程序计数器" class="headerlink" title="1. 程序计数器"></a>1. 程序计数器</h2><p>程序计数器是线程私有的、当前线程所执行的字节码的行号指示器，就像名字一样，它是可以看做计数的，每一条指令执行完后，会挪动程序计数器的指针，并指向下一条指令。（就像在平时debug一样）。</p>
-<ul>
-<li>占用大小：程序计数器占用非常小的部分</li>
-<li>生命周期：跟随线程的创建而创建，销毁而销毁</li>
-<li>作用：简单来说可以执行该线程执行字节码的位置。在多线程切换的情况下也能够知道当前线程执行的位置。</li>
-</ul>
-<h2 id="2-Java虚拟机栈"><a href="#2-Java虚拟机栈" class="headerlink" title="2. Java虚拟机栈"></a>2. Java虚拟机栈</h2><p>虚拟机栈有一个一个的栈针组成，而每一个栈针内由<strong>局部变量表、操作数栈、动态链接、方法出口信息</strong>组成。线程的方法调用过程（方法调用链）会将其中的每一个方法依次压入栈中，最后在调用过后，依次出栈，也就是说，方法执行的过程也就是栈针压栈到弹出的过程。</p>
-<p>一个线程中方法的调用链可能会很长，很多方法都同时处于执行状态。对于JVM说，在活动线程中，只有位于JVM虚拟机栈栈顶的元素才是有效的，即称为<strong>当前栈帧，</strong>也就是<strong>当前执行的方法。</strong></p>
-<h3 id="局部变量表"><a href="#局部变量表" class="headerlink" title="局部变量表"></a>局部变量表</h3><p>局部变量表是我们在使用和了解Java虚拟机栈的主要部分，是变量值的存储空间，主要存放了编译时可知的基本数据类型（boolean、byte、char、short、int、float、long、double）和方法引用（reference）。在编译时，局部变量表的空间就确定下来。</p>
-<h3 id="操作数栈"><a href="#操作数栈" class="headerlink" title="操作数栈"></a>操作数栈</h3><p>操作数栈在方法执行的过程中，起到了对常量或者变量暂存和计算的作用，当方法开始时，操作数栈时空的，随着方法的进行，会将局部变量表中或者实例对象中，复制常量变量到操作数栈，再随着方法的执行，进行数据的运算。最后出栈返回给方法调用者。</p>
-<p>和局部变量表相同的是，操作数栈的栈的深度在编译时就已经确认下来。</p>
-<h3 id="动态链接"><a href="#动态链接" class="headerlink" title="动态链接"></a>动态链接</h3><p>一个方法调用另一个方法时，会通过寻找符号引用的方式查找到直接内存地址。而方法的符号引用存在于<strong>运行时常量池</strong>中。</p>
-<p>在每一个栈针中，会通过栈针中的动态链接，来持有方法的符号引用。能够动态的寻找到方法对应的内存地址完成调用。</p>
-<h3 id="方法出口信息"><a href="#方法出口信息" class="headerlink" title="方法出口信息"></a>方法出口信息</h3><p>方法返回时可能需要在栈帧中保存一些信息，用来于恢复调用者（调用当前方法的方法）的执行状态。</p>
-<p>如果正常返回，会在调用者的栈针中保存调用方法的返回值，而被调用者的栈针可能会保存调用者当前程序计数器的值。</p>
-<p>如果异常退出，也就是在调用过程中发现异常，调用者的返回值将由异常处理器返回，而被调用者中就不可能存在调用者的计数器值。</p>
-<h3 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h3><p>通过下面的代码，来看虚拟机栈的调用返回过程和操作数栈的入栈出栈过程。</p>
-<p>源程序：</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">NewObject</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        NewObject newObject = <span class="keyword">new</span> NewObject();</span><br><span class="line">        newObject.add();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">add</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">int</span> a = <span class="number">5</span>;</span><br><span class="line">        <span class="keyword">int</span> b = <span class="number">6</span>;</span><br><span class="line">        <span class="keyword">return</span> a+b;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
-
-<p>反编译后的程序：</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(java.lang.String[])</span></span>;</span><br><span class="line">    Code:</span><br><span class="line">       0: new           #2                  // class com/java8/Jvm/NewObject 半初始化申请内存地址</span><br><span class="line">       <span class="number">3</span>: dup                               <span class="comment">// 复制栈顶数值并将复制值压入栈顶</span></span><br><span class="line">       4: invokespecial #3                  // Method "&lt;init&gt;":()V 构造初始化</span><br><span class="line">       <span class="number">7</span>: astore_1                          <span class="comment">// 建立关联，将初始化后的存到变量newObject上</span></span><br><span class="line">       <span class="number">8</span>: aload_1                           <span class="comment">// 从本地变量上加载newObject</span></span><br><span class="line">       9: invokevirtual #4                  // Method add:()I 执行add()方法</span><br><span class="line">      <span class="number">12</span>: pop                               <span class="comment">// 栈顶数值弹出</span></span><br><span class="line">      <span class="number">13</span>: <span class="keyword">return</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">add</span><span class="params">()</span></span>;</span><br><span class="line">    Code:</span><br><span class="line">       <span class="number">0</span>: iconst_5 <span class="comment">// 将5推至操作数栈顶</span></span><br><span class="line">       <span class="number">1</span>: istore_1 <span class="comment">// 将栈顶int型数值存入第1个本地变量 也就是a，保存到局部变量表中</span></span><br><span class="line">       <span class="number">2</span>: bipush        <span class="number">6</span> <span class="comment">//将单字节的常量值6推送至操作数栈顶</span></span><br><span class="line">       <span class="number">4</span>: istore_2 <span class="comment">// 将栈顶int型数值存入第2个本地变量 也就是b，保存到局部变量表中</span></span><br><span class="line">       <span class="number">5</span>: iload_1 <span class="comment">// 将第1个int型本地变量推送至操作数栈顶</span></span><br><span class="line">       <span class="number">6</span>: iload_2 <span class="comment">// 将第2个int型本地变量推送至操作数栈顶</span></span><br><span class="line">       <span class="number">7</span>: iadd  <span class="comment">// 将栈顶两int型数值相加并将结果压入操作数栈顶</span></span><br><span class="line">       <span class="number">8</span>: ireturn <span class="comment">//返回</span></span><br></pre></td></tr></table></figure></div>
-
-<p>调用过程是：先通过在main方法里面创建一个newObject对象，再调用其中的add方法。其中newObject的过程先略过，后面讲，先看add方法执行的过程。</p>
-<p>在add方法内，每次会将int类型的值先推到栈顶，然后执行赋值操作，将赋值的变量保存到局部变量表中，最后计算后将结果return。</p>
-<h2 id="3-本地方法栈"><a href="#3-本地方法栈" class="headerlink" title="3. 本地方法栈"></a>3. 本地方法栈</h2><p>虚拟机栈为虚拟机执行 Java 方法 （也就是字节码）服务，而本地方法栈则为虚拟机使用到的 Native 方法服务。</p>
-<p>和虚拟机栈相同，每次方法执行时，都会创建一个栈针，存放本地方法的局部变量表、操作数栈、动态链接、方法出口信息。</p>
-<h2 id="4-堆"><a href="#4-堆" class="headerlink" title="4. 堆"></a>4. 堆</h2><p>堆是Java虚拟机管理内存中的最大的部分，也是进行GC主要部分。几乎所有的实例变量在堆中分配内存，少数小的对象可能在栈上分配。</p>
-<blockquote>
-<p>在栈上分配的好处，首先快，其次不需要额外的垃圾回收的介入即可完成内存的释放。</p>
-</blockquote>
-<p>在1.7之后，字符串常量池从方法区中挪到了堆中</p>
-<h2 id="5-方法区"><a href="#5-方法区" class="headerlink" title="5. 方法区"></a>5. 方法区</h2><p>方法区和堆一样是线程共享的内容，它用于存储已被虚拟机加载的类信息、常量、静态变量、即时编译器编译后的代码等数据。</p>
-<p>方法区是Java虚拟机定义的规范，在1.7之前，Hotspot虚拟机使用永久代实现方法区。在1.7后，使用了元空间区实现方法区。两者的差异在于元空间使用的是直接内存，整个永久代有一个 JVM 本身设置固定大小上限，无法进行调整，而元空间使用的是直接内存，受本机可用内存的限制，虽然元空间仍旧可能溢出，但是比原来出现的几率会更小。</p>
-<h3 id="运行时常量池"><a href="#运行时常量池" class="headerlink" title="运行时常量池"></a>运行时常量池</h3><p>有三个比较容易混淆的概念，什么是类常量池，什么是运行时常量池，什么是字符串常量池，三者的区别是什么。</p>
-<ul>
-<li>类常量池存在于字节码文件中，在字节码文件中存在类的常量池，其中存放两个类常量：字面量和符号引用，其中字面量的含义就是文本字符串和final修饰的常量值等。符号引用包含import的包、类和接口的全限定名、字段名称和描述符、方法类型和引用等等。</li>
-<li>运行时常量池存在于内存中，在类加载的过程时，会将存在于字节码中的类常量池中的内容加载到运行时常量池中。相较于类常量池，运行时常量池具有动态性，不一定是在编译时期就确定的放入的。</li>
-<li>字符串常量池，也叫做StringTable，在java7之后被放到了堆内，存放了字符串常量和字符串对象的引用。在class中的内容加载到运行时常量池后，在解析阶段，会把符号引用替换为直接引用，解析的过程会去查询字符串常量池，以保证运行时常量池所引用的字符串与字符串常量池中是一致的。</li>
-</ul>
-<p>下图表示运行时常量池中的内容：</p>
-<p><img src="http://my-blog-to-use.oss-cn-beijing.aliyuncs.com/18-9-14/26038433.jpg" alt="http://my-blog-to-use.oss-cn-beijing.aliyuncs.com/18-9-14/26038433.jpg"></p>
-<p><a href="https://blog.csdn.net/wangbiao007/article/details/78545189" target="_blank" rel="noopener">方法区和常量池_Java_屌丝程序员的奋斗之路-CSDN博客</a></p>
-<h2 id="6-直接内存"><a href="#6-直接内存" class="headerlink" title="6. 直接内存"></a>6. 直接内存</h2><p>直接内存并不是虚拟机运行时数据区的一部分，也不是虚拟机规范中定义的内存区域，但是这部分内存也被频繁地使用。</p>
-<h1 id="对象创建过程和对象布局"><a href="#对象创建过程和对象布局" class="headerlink" title="对象创建过程和对象布局"></a>对象创建过程和对象布局</h1><h2 id="对象的创建过程"><a href="#对象的创建过程" class="headerlink" title="对象的创建过程"></a>对象的创建过程</h2><p>使用new关键字创建对象的过程分为5步，类加载检查、内存分配、初始化零值、设置对象头、执行init方法。参考下图：</p>
-<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20200518205307.png" alt="Untitled 1"></p>
-<h3 id="1-类加载检查"><a href="#1-类加载检查" class="headerlink" title="1. 类加载检查"></a>1. 类加载检查</h3><p>虚拟机遇到new指令时，会先进行类加载检查，如果再运行时常量池中未发现类的符号引用，则先去加载、解析、初始化类这一些列类加载到内存中的过程。</p>
-<h3 id="2-分配内存"><a href="#2-分配内存" class="headerlink" title="2. 分配内存"></a>2. 分配内存</h3><p>在类加载到内存后，对象在堆中分配的大小已经确定，利用<code>指针碰撞</code>或者<code>空闲列表</code>的方式将堆中指定大小的空间分配给新创建的类对象。</p>
-<h3 id="3-初始化零值"><a href="#3-初始化零值" class="headerlink" title="3. 初始化零值"></a>3. 初始化零值</h3><p>在为对象分配完内存后，首先需要对对象的初始化零值，来保证对象不手动赋值也能够正常被访问。此时的对象处于半初始化状态。</p>
-<h3 id="4-设置对象头"><a href="#4-设置对象头" class="headerlink" title="4. 设置对象头"></a>4. 设置对象头</h3><p>在初始化零值后，还需要为对象设置头部信息，包括Mark Word、Kclass Word、数组长度（如果是数组的话），具体会在后面提到。</p>
-<h3 id="5-执行init方法"><a href="#5-执行init方法" class="headerlink" title="5. 执行init方法"></a>5. 执行init方法</h3><p>通过init方法，为对象真正的赋值，当执行init方法后，一个需要的对象才产生出来。</p>
-<p>下面通过反编译的代码来看创建一个Object对象的过程：</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(java.lang.String[])</span></span>;</span><br><span class="line">    Code:</span><br><span class="line">       0: new           #2                  // class java/lang/Object 申请内存空间</span><br><span class="line">       <span class="number">3</span>: dup</span><br><span class="line">       4: invokespecial #1                  // Method java/lang/Object."&lt;init&gt;":()V  构造初始化</span><br><span class="line">       <span class="number">7</span>: astore_1                          <span class="comment">// 建立关联，将初始化后的存到变量Object上</span></span><br><span class="line">       <span class="number">8</span>: <span class="keyword">return</span></span><br></pre></td></tr></table></figure></div>
-
-<p>通过javap反编译可以看出一个对象，通过使用new命令后在堆中申请一块内存空间后，将o推到栈顶，使用invokespecial命令进行初始化，最后使用astore命令将对象o和创建的对象关联到一起。</p>
-<h2 id="对象布局"><a href="#对象布局" class="headerlink" title="对象布局"></a>对象布局</h2><p>一个对象包含三个部分，分别为对象头、实例数据（对象体）、Padding对其字节。</p>
-<h3 id="对象头（Header）"><a href="#对象头（Header）" class="headerlink" title="对象头（Header）"></a>对象头（Header）</h3><p>在对象头中包含了三个部分：Mark Word、Class Pointer、数组长度（如果是数组）</p>
-<ul>
-<li>Mark Word：MarkWord中包含了自身的hashcode，gc的分代信息和锁标志位等，其中当上锁、上不同的锁的时候，头部信息都会出现不同的变化，具体占用长度和信息可以参考下图：</li>
-</ul>
-<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20200518205334.png" alt="Untitled 2"></p>
-<ul>
-<li>Class Pointer： 在Class Pointer中包含了对方法区中的类元数据的引用，在64位系统下，如果不开启指针压缩时，会比32位多占二分之一的空间，所以在1.6之后，通过使用JVM的参数<code>-XX:+UseCompressedOops</code>可以开启指针压缩将原来的8字节压缩为现在的4字节。</li>
-<li>数组长度：如果当前对象时数组时，会额外产生一部分空间存储数组的长度</li>
-</ul>
-<h3 id="实例数据（Instance-Data）"><a href="#实例数据（Instance-Data）" class="headerlink" title="实例数据（Instance Data）"></a>实例数据（Instance Data）</h3><p>对象中主要的内容，存放实例数据，包括了对象的所有成员变量，其大小由各个成员变量的大小决定。</p>
-<h3 id="对其字节（Padding）"><a href="#对其字节（Padding）" class="headerlink" title="对其字节（Padding）"></a>对其字节（Padding）</h3><p>Java对象占用空间是8字节对齐的，即所有Java对象占用bytes数必须是8的倍数。</p>
-<h3 id="观察对象空间实例"><a href="#观察对象空间实例" class="headerlink" title="观察对象空间实例"></a>观察对象空间实例</h3><div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">      Object o = <span class="keyword">new</span> Object();</span><br><span class="line">      System.out.println(ClassLayout.parseInstance(o).toPrintable());</span><br><span class="line">      <span class="keyword">int</span>[] arr = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">10</span>];</span><br><span class="line">      System.out.println(ClassLayout.parseInstance(arr).toPrintable());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
-
-<p>当使用上面的方式创建一个对象o和一个数组对象arr时，利用openjdk的jol（Java Object Layout）工具进行内存的分析，产生如下的分析结果：</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">java.lang.Object object internals:</span><br><span class="line"> OFFSET  SIZE   TYPE DESCRIPTION                               VALUE</span><br><span class="line">      <span class="number">0</span>     <span class="number">4</span>        (object header)                           <span class="number">01</span> <span class="number">00</span> <span class="number">00</span> <span class="number">00</span> (<span class="number">00000001</span> <span class="number">00000000</span> <span class="number">00000000</span> <span class="number">00000000</span>) (<span class="number">1</span>)</span><br><span class="line">      <span class="number">4</span>     <span class="number">4</span>        (object header)                           <span class="number">00</span> <span class="number">00</span> <span class="number">00</span> <span class="number">00</span> (<span class="number">00000000</span> <span class="number">00000000</span> <span class="number">00000000</span> <span class="number">00000000</span>) (<span class="number">0</span>)</span><br><span class="line">      <span class="number">8</span>     <span class="number">4</span>        (object header)                           e5 <span class="number">01</span> <span class="number">00</span> f8 (<span class="number">11100101</span> <span class="number">00000001</span> <span class="number">00000000</span> <span class="number">11111000</span>) (-<span class="number">134217243</span>)</span><br><span class="line">     <span class="number">12</span>     <span class="number">4</span>        (loss due to the next object alignment)</span><br><span class="line">Instance size: <span class="number">16</span> bytes</span><br><span class="line">Space losses: <span class="number">0</span> bytes internal + <span class="number">4</span> bytes external = <span class="number">4</span> bytes total</span><br><span class="line"></span><br><span class="line">[I object internals:</span><br><span class="line"> OFFSET  SIZE   TYPE DESCRIPTION                               VALUE</span><br><span class="line">      <span class="number">0</span>     <span class="number">4</span>        (object header)                           <span class="number">01</span> <span class="number">00</span> <span class="number">00</span> <span class="number">00</span> (<span class="number">00000001</span> <span class="number">00000000</span> <span class="number">00000000</span> <span class="number">00000000</span>) (<span class="number">1</span>)</span><br><span class="line">      <span class="number">4</span>     <span class="number">4</span>        (object header)                           <span class="number">00</span> <span class="number">00</span> <span class="number">00</span> <span class="number">00</span> (<span class="number">00000000</span> <span class="number">00000000</span> <span class="number">00000000</span> <span class="number">00000000</span>) (<span class="number">0</span>)</span><br><span class="line">      <span class="number">8</span>     <span class="number">4</span>        (object header)                           <span class="number">6</span>d <span class="number">01</span> <span class="number">00</span> f8 (<span class="number">01101101</span> <span class="number">00000001</span> <span class="number">00000000</span> <span class="number">11111000</span>) (-<span class="number">134217363</span>)</span><br><span class="line">     <span class="number">12</span>     <span class="number">4</span>        (object header)                           <span class="number">0</span>a <span class="number">00</span> <span class="number">00</span> <span class="number">00</span> (<span class="number">00001010</span> <span class="number">00000000</span> <span class="number">00000000</span> <span class="number">00000000</span>) (<span class="number">10</span>)</span><br><span class="line">     <span class="number">16</span>    <span class="number">40</span>    <span class="keyword">int</span> [I.&lt;elements&gt;                             N/A</span><br><span class="line">Instance size: <span class="number">56</span> bytes</span><br><span class="line">Space losses: <span class="number">0</span> bytes internal + <span class="number">0</span> bytes external = <span class="number">0</span> bytes total</span><br></pre></td></tr></table></figure></div>
-
-<p>因为当前环境为64位，所以生成对象的大小应为8的倍数。可以看到对象o的layout中，前8个字节表示64位的MarkWord，之后4个字节表示KlassWord，最后四个字节并没有内容，是loss掉的，用于补齐字节用的，保证能够被8整除。</p>
-<p>而在下面的数组对象arr中，可以看到最后的四个字节并不是对其，而是存储量数组的长度，而最后的字节表示了对象体，也就是初始化的数组内容。</p>
-<p>在使用 <code>-XX:-UseCompressedOops</code> 关闭指针压缩时，观察对象o所占大小，发现大小未发生变化，然而原来的padding字节不见了，class pointer 变为了8个字节，一共16个字节，所以不需要padding来对其空间。</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">java.lang.Object object internals:</span><br><span class="line"> OFFSET  SIZE   TYPE DESCRIPTION                               VALUE</span><br><span class="line">      <span class="number">0</span>     <span class="number">4</span>        (object header)                           <span class="number">01</span> <span class="number">00</span> <span class="number">00</span> <span class="number">00</span> (<span class="number">00000001</span> <span class="number">00000000</span> <span class="number">00000000</span> <span class="number">00000000</span>) (<span class="number">1</span>)</span><br><span class="line">      <span class="number">4</span>     <span class="number">4</span>        (object header)                           <span class="number">00</span> <span class="number">00</span> <span class="number">00</span> <span class="number">00</span> (<span class="number">00000000</span> <span class="number">00000000</span> <span class="number">00000000</span> <span class="number">00000000</span>) (<span class="number">0</span>)</span><br><span class="line">      <span class="number">8</span>     <span class="number">4</span>        (object header)                           <span class="number">00</span> <span class="number">1</span>c b6 <span class="number">0</span>d (<span class="number">00000000</span> <span class="number">00011100</span> <span class="number">10110110</span> <span class="number">00001101</span>) (<span class="number">230038528</span>)</span><br><span class="line">     <span class="number">12</span>     <span class="number">4</span>        (object header)                           <span class="number">01</span> <span class="number">00</span> <span class="number">00</span> <span class="number">00</span> (<span class="number">00000001</span> <span class="number">00000000</span> <span class="number">00000000</span> <span class="number">00000000</span>) (<span class="number">1</span>)</span><br><span class="line">Instance size: <span class="number">16</span> bytes</span><br><span class="line">Space losses: <span class="number">0</span> bytes internal + <span class="number">0</span> bytes external = <span class="number">0</span> bytes total</span><br></pre></td></tr></table></figure></div>
-
-<h2 id="补充：javap和jol工具"><a href="#补充：javap和jol工具" class="headerlink" title="补充：javap和jol工具"></a>补充：javap和jol工具</h2><ol>
-<li>使用JDK中自带的javap对class文件进行反编译，能够获得反编译到的执行过程。</li>
-<li>使用IDEA中的插件：Jclasslib可以更具体的看反编译的代码和常量池中的内容</li>
-<li>使用jol可以查看对象布局，使用方法，将OpenJDK中的jol的jar包加入到项目中，在main方法中使用ClassLayout静态方法解析对象后输出：</li>
-</ol>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="XML"><figure class="iseeu highlight /xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.openjdk.jol<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>jol-core<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>0.10<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure></div>
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-<div>
-      
-</div>
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2864,7 +2789,7 @@
               
                 <a href="/archives/%7C%7C%20archive">
               
-                  <span class="site-state-item-count">109</span>
+                  <span class="site-state-item-count">110</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -2886,7 +2811,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-count">21</span>
                   <span class="site-state-item-name">tags</span>
                 </a>
               </div>
@@ -2938,6 +2863,10 @@
              
              
                <li>
+                 <a href="/2020/10/01/ThreadLocal/" title="ThreadLocal" target="_blank">ThreadLocal</a>
+               </li>
+             
+               <li>
                  <a href="/2020/09/03/markdown%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95/" title="Markdown语法入门" target="_blank">Markdown语法入门</a>
                </li>
              
@@ -2951,10 +2880,6 @@
              
                <li>
                  <a href="/2020/06/10/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%B8%8E%E9%AB%98%E5%B9%B6%E5%8F%91/" title="多线程实践" target="_blank">多线程实践</a>
-               </li>
-             
-               <li>
-                 <a href="/2020/05/22/%EF%BC%88%E5%9B%9B%EF%BC%89AOP%E5%88%87%E9%9D%A2%E4%BD%BF%E7%94%A8%E4%B8%8E%E5%8E%9F%E7%90%86/" title="（四）AOP切面使用与原理" target="_blank">（四）AOP切面使用与原理</a>
                </li>
              
            </ul>
@@ -3010,7 +2935,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共139.2k字</span>
+  <span class="post-count">博客全站共139.8k字</span>
 </div>
 
 

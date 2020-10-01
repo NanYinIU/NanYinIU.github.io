@@ -305,6 +305,226 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/12/20/Spring%E4%BB%8E%E9%9B%B6%E5%AD%A6%E8%B5%B7%E4%B9%8B%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%89%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="NanYin">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NanYin的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/12/20/Spring%E4%BB%8E%E9%9B%B6%E5%AD%A6%E8%B5%B7%E4%B9%8B%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%89%EF%BC%89/" itemprop="url">Spring的Bean的注册</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-12-20T15:00:00Z">
+                2019-12-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Spring/" itemprop="url" rel="index">
+                    <span itemprop="name">Spring</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  2k
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  8
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Bean的注册"><a href="#Bean的注册" class="headerlink" title="Bean的注册"></a>Bean的注册</h1><p>在上一篇文章中提到了在使用<code>invokeBeanFactoryPostProcessors(beanFactory)</code> 方法中，<br>调用了 <code>ConfigurationClassPostProcessor</code> 中的 <code>postProcessBeanDefinitionRegistry</code> 方法，<br>实现了对configuration配置文件中的内容得到加载和解析。完成对标注为Bean的方法注册「regist」到容器中。</p>
+<p>下面就针对这一注册配置文件内的Bean的过程进行源码的分析：</p>
+<h2 id="ConfigurationClassPostProcessor"><a href="#ConfigurationClassPostProcessor" class="headerlink" title="ConfigurationClassPostProcessor"></a>ConfigurationClassPostProcessor</h2><p>在 <code>invokeBeanFactoryPostProcessor</code> 方法中，<br>循环调用类中的后置方法 <code>postProcessBeanDefinitionRegistry</code> ,<br>其中包括了 <code>ConfigurationClassPostProcessor</code> 类。<br>根据名字也能看出这个类是配置文件类的后置处理类。那么就之间看代码，了解配置文件的后置处理器都做了些什么。</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">postProcessBeanDefinitionRegistry</span><span class="params">(BeanDefinitionRegistry registry)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> registryId = System.identityHashCode(registry);</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span>.registriesPostProcessed.contains(registryId)) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(</span><br><span class="line">                <span class="string">"postProcessBeanDefinitionRegistry already called on this post-processor against "</span> + registry);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span>.factoriesPostProcessed.contains(registryId)) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(</span><br><span class="line">                <span class="string">"postProcessBeanFactory already called on this post-processor against "</span> + registry);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">this</span>.registriesPostProcessed.add(registryId);</span><br><span class="line">    processConfigBeanDefinitions(registry);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<p>下面对 processConfigBeanDefinitions 中的方法一步一步看：</p>
+<h3 id="使用processConfigBeanDefinitions解析注册Bean"><a href="#使用processConfigBeanDefinitions解析注册Bean" class="headerlink" title="使用processConfigBeanDefinitions解析注册Bean"></a>使用processConfigBeanDefinitions解析注册Bean</h3><div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">processConfigBeanDefinitions</span><span class="params">(BeanDefinitionRegistry registry)</span> </span>&#123;</span><br><span class="line">    List&lt;BeanDefinitionHolder&gt; configCandidates = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">    <span class="comment">// 获得所有的已经注册的Bean，其中包括Spring内置的Processor，</span></span><br><span class="line">    <span class="comment">// 当然也包括自己写的@Configuration类</span></span><br><span class="line">    String[] candidateNames = registry.getBeanDefinitionNames();</span><br><span class="line">    <span class="comment">// 对每个候选的Bean进行筛选</span></span><br><span class="line">    <span class="keyword">for</span> (String beanName : candidateNames) &#123;</span><br><span class="line">        BeanDefinition beanDef = registry.getBeanDefinition(beanName);</span><br><span class="line">        <span class="keyword">if</span> (beanDef.getAttribute(ConfigurationClassUtils.CONFIGURATION_CLASS_ATTRIBUTE) != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (logger.isDebugEnabled()) &#123;</span><br><span class="line">                logger.debug(<span class="string">"Bean definition has already been processed as a configuration class: "</span> + beanDef);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (ConfigurationClassUtils.checkConfigurationClassCandidate(beanDef, <span class="keyword">this</span>.metadataReaderFactory)) &#123;</span><br><span class="line">        <span class="comment">// 如果是使用AnnotatedBeanDefinition定义（@Configuration）,如果是</span></span><br><span class="line">        <span class="comment">// 设置一些属性如根据proxyBeanMethods指定用来避免运行时创建CGLIB的子类等等。。</span></span><br><span class="line">            configCandidates.add(<span class="keyword">new</span> BeanDefinitionHolder(beanDef, beanName));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Return immediately if no @Configuration classes were found</span></span><br><span class="line">    <span class="keyword">if</span> (configCandidates.isEmpty()) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 对给定的Order（@Order）进行排序</span></span><br><span class="line">    configCandidates.sort((bd1, bd2) -&gt; &#123;</span><br><span class="line">        <span class="keyword">int</span> i1 = ConfigurationClassUtils.getOrder(bd1.getBeanDefinition());</span><br><span class="line">        <span class="keyword">int</span> i2 = ConfigurationClassUtils.getOrder(bd2.getBeanDefinition());</span><br><span class="line">        <span class="keyword">return</span> Integer.compare(i1, i2);</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//设置Bean的名称的生成策略</span></span><br><span class="line">    SingletonBeanRegistry sbr = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">if</span> (registry <span class="keyword">instanceof</span> SingletonBeanRegistry) &#123;</span><br><span class="line">        sbr = (SingletonBeanRegistry) registry;</span><br><span class="line">        <span class="keyword">if</span> (!<span class="keyword">this</span>.localBeanNameGeneratorSet) &#123;</span><br><span class="line">        <span class="comment">// 如果没有设置默认的名称生成策略</span></span><br><span class="line">            BeanNameGenerator generator = (BeanNameGenerator) sbr.getSingleton(</span><br><span class="line">                    AnnotationConfigUtils.CONFIGURATION_BEAN_NAME_GENERATOR);</span><br><span class="line">            <span class="keyword">if</span> (generator != <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="keyword">this</span>.componentScanBeanNameGenerator = generator;</span><br><span class="line">                <span class="keyword">this</span>.importBeanNameGenerator = generator;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span>.environment == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">this</span>.environment = <span class="keyword">new</span> StandardEnvironment();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 解析所有的@Configuration类，首先先声明出一个解析器</span></span><br><span class="line">    ConfigurationClassParser parser = <span class="keyword">new</span> ConfigurationClassParser(</span><br><span class="line">            <span class="keyword">this</span>.metadataReaderFactory, <span class="keyword">this</span>.problemReporter, <span class="keyword">this</span>.environment,</span><br><span class="line">            <span class="keyword">this</span>.resourceLoader, <span class="keyword">this</span>.componentScanBeanNameGenerator, registry);</span><br><span class="line"></span><br><span class="line">    Set&lt;BeanDefinitionHolder&gt; candidates = <span class="keyword">new</span> LinkedHashSet&lt;&gt;(configCandidates);</span><br><span class="line">    Set&lt;ConfigurationClass&gt; alreadyParsed = <span class="keyword">new</span> HashSet&lt;&gt;(configCandidates.size());</span><br><span class="line">    <span class="keyword">do</span> &#123;</span><br><span class="line">        <span class="comment">// 使用解析器对所有的配置类进行解析，在解析的过程中</span></span><br><span class="line">        <span class="comment">// 完成对Bean的注册</span></span><br><span class="line">        parser.parse(candidates);</span><br><span class="line">        <span class="comment">// 进行验证</span></span><br><span class="line">        parser.validate();</span><br><span class="line">        <span class="comment">// 通过parser处理得到了配置文件下的Bean</span></span><br><span class="line">        Set&lt;ConfigurationClass&gt; configClasses = <span class="keyword">new</span> LinkedHashSet&lt;&gt;(parser.getConfigurationClasses());</span><br><span class="line">        <span class="comment">// 移除所有的已经解析过的Bean'</span></span><br><span class="line">        configClasses.removeAll(alreadyParsed);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Read the model and create bean definitions based on its content</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">this</span>.reader == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">this</span>.reader = <span class="keyword">new</span> ConfigurationClassBeanDefinitionReader(</span><br><span class="line">                    registry, <span class="keyword">this</span>.sourceExtractor, <span class="keyword">this</span>.resourceLoader, <span class="keyword">this</span>.environment,</span><br><span class="line">                    <span class="keyword">this</span>.importBeanNameGenerator, parser.getImportRegistry());</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">this</span>.reader.loadBeanDefinitions(configClasses);</span><br><span class="line">        <span class="comment">// 对所有已经解析的Bean进行标记</span></span><br><span class="line">        alreadyParsed.addAll(configClasses);</span><br><span class="line"></span><br><span class="line">        candidates.clear();</span><br><span class="line">        <span class="comment">// 如果registry中的Bean定义数量 大于 candidateNames 的数量，说明在Bean注册过程中</span></span><br><span class="line">        <span class="comment">// 产生了其他Bean，重复过程注册这个Bean</span></span><br><span class="line">        <span class="keyword">if</span> (registry.getBeanDefinitionCount() &gt; candidateNames.length) &#123;</span><br><span class="line">            <span class="comment">// 。。。。。省略</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span> (!candidates.isEmpty());</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 将ImportRegistry注册为Bean，以支持ImportAware @Configuration类</span></span><br><span class="line">    <span class="keyword">if</span> (sbr != <span class="keyword">null</span> &amp;&amp; !sbr.containsSingleton(IMPORT_REGISTRY_BEAN_NAME)) &#123;</span><br><span class="line">        sbr.registerSingleton(IMPORT_REGISTRY_BEAN_NAME, parser.getImportRegistry());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p><strong>上述代码完成了的过程大致分为这几步</strong></p>
+<ol>
+<li>找出Config配置类，包括使用@Configuration注解标注的配置类</li>
+<li>根据@Order进行进行顺序的调整</li>
+<li>解析所有的@Configuration内的Bean，完成对配置类中所有 <strong>Bean的注册</strong>。</li>
+<li>验证并进行标记Bean已经被解析注册</li>
+</ol>
+<p>其中最重要的就是第3步，需要找出Bean，并进行注册</p>
+<h4 id="parse方法解析并完成注册Bean的。"><a href="#parse方法解析并完成注册Bean的。" class="headerlink" title="parse方法解析并完成注册Bean的。"></a>parse方法解析并完成注册Bean的。</h4><div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">parse</span><span class="params">(Set&lt;BeanDefinitionHolder&gt; configCandidates)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (BeanDefinitionHolder holder : configCandidates) &#123;</span><br><span class="line">    <span class="comment">// 获得配置类的定义信息</span></span><br><span class="line">        BeanDefinition bd = holder.getBeanDefinition();</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">           <span class="comment">// 如果是使用注解方式配置类</span></span><br><span class="line">            <span class="keyword">if</span> (bd <span class="keyword">instanceof</span> AnnotatedBeanDefinition) &#123;</span><br><span class="line">                parse(((AnnotatedBeanDefinition) bd).getMetadata(), holder.getBeanName());</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// else if ...  if .... etc</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// etc ....</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">this</span>.deferredImportSelectorHandler.process();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">parse</span><span class="params">(AnnotationMetadata metadata, String beanName)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    processConfigurationClass(<span class="keyword">new</span> ConfigurationClass(metadata, beanName));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>如果使用注解方式进行配置类的配置的情况，最后会调用 <code>processConfigurationClass</code> 方法进行处理。</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">processConfigurationClass</span><span class="params">(ConfigurationClass configClass)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="comment">// 根据Contional注解来判断是否需要跳过配置类的处理</span></span><br><span class="line">    <span class="comment">// 如果需要跳过，则直接进行return</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span>.conditionEvaluator.shouldSkip(configClass.getMetadata(), ConfigurationPhase.PARSE_CONFIGURATION)) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    ConfigurationClass existingClass = <span class="keyword">this</span>.configurationClasses.get(configClass);</span><br><span class="line">    <span class="keyword">if</span> (existingClass != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="comment">//如果已经存在的情况</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 递归处理配置类及其超类层次结构</span></span><br><span class="line">    SourceClass sourceClass = asSourceClass(configClass);</span><br><span class="line">    <span class="keyword">do</span> &#123;</span><br><span class="line">        sourceClass = doProcessConfigurationClass(configClass, sourceClass);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span> (sourceClass != <span class="keyword">null</span>);</span><br><span class="line">    <span class="keyword">this</span>.configurationClasses.put(configClass, configClass);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>最后会递归使用 <code>doProcessConfigurationClass</code> 进行处理配置类和其超类.</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">final</span> SourceClass <span class="title">doProcessConfigurationClass</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">    ConfigurationClass configClass, SourceClass sourceClass)</span></span></span><br><span class="line"><span class="function">    <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="comment">//如果在配置文件上有标注Component注解，则会递归处理任何成员类</span></span><br><span class="line">    <span class="keyword">if</span> (configClass.getMetadata().isAnnotated(Component.class.getName())) &#123;</span><br><span class="line">        processMemberClasses(configClass, sourceClass);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 处理 @PropertySource 注解,用于加载指定的配置文件</span></span><br><span class="line">    <span class="keyword">for</span> (AnnotationAttributes propertySource : AnnotationConfigUtils.attributesForRepeatable(</span><br><span class="line">            sourceClass.getMetadata(), PropertySources.class,</span><br><span class="line">            org.springframework.context.annotation.PropertySource.class)) &#123;</span><br><span class="line">            <span class="comment">// ... etc ...</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 处理所有的 @ComponentScan 注解</span></span><br><span class="line">    Set&lt;AnnotationAttributes&gt; componentScans = AnnotationConfigUtils.attributesForRepeatable(</span><br><span class="line">				sourceClass.getMetadata(), ComponentScans.class, ComponentScan.class);</span><br><span class="line">    <span class="keyword">if</span> (!componentScans.isEmpty() &amp;&amp;</span><br><span class="line">            !<span class="keyword">this</span>.conditionEvaluator.shouldSkip(sourceClass.getMetadata(), ConfigurationPhase.REGISTER_BEAN)) &#123;</span><br><span class="line">            <span class="comment">// 获取每一个  componentScans 的配置信息</span></span><br><span class="line">        <span class="keyword">for</span> (AnnotationAttributes componentScan : componentScans) &#123;</span><br><span class="line">        <span class="comment">// 如果有 scan 类，则立即执行解析、扫描</span></span><br><span class="line">            Set&lt;BeanDefinitionHolder&gt; scannedBeanDefinitions =</span><br><span class="line">                    <span class="keyword">this</span>.componentScanParser.parse(componentScan, sourceClass.getMetadata().getClassName());</span><br><span class="line">            <span class="comment">//检查扫描的定义集是否有其他配置类，并在需要时递归解析</span></span><br><span class="line">            <span class="keyword">for</span> (BeanDefinitionHolder holder : scannedBeanDefinitions) &#123;</span><br><span class="line">                BeanDefinition bdCand = holder.getBeanDefinition().getOriginatingBeanDefinition();</span><br><span class="line">                <span class="keyword">if</span> (bdCand == <span class="keyword">null</span>) &#123;</span><br><span class="line">                    bdCand = holder.getBeanDefinition();</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">if</span> (ConfigurationClassUtils.checkConfigurationClassCandidate(bdCand, <span class="keyword">this</span>.metadataReaderFactory)) &#123;</span><br><span class="line">                    parse(bdCand.getBeanClassName(), holder.getBeanName());</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 处理所有的 @Import 注解</span></span><br><span class="line">    processImports(configClass, sourceClass, getImports(sourceClass), <span class="keyword">true</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Process any @ImportResource annotations</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 处理@Bean方法</span></span><br><span class="line">    Set&lt;MethodMetadata&gt; beanMethods = retrieveBeanMethodMetadata(sourceClass);</span><br><span class="line">    <span class="keyword">for</span> (MethodMetadata methodMetadata : beanMethods) &#123;</span><br><span class="line">        configClass.addBeanMethod(<span class="keyword">new</span> BeanMethod(methodMetadata, configClass));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//处理接口上的默认方法</span></span><br><span class="line">    processInterfaces(configClass, sourceClass);</span><br><span class="line">    <span class="comment">// 处理超类</span></span><br><span class="line">    <span class="keyword">if</span> (sourceClass.getMetadata().hasSuperClass()) &#123;</span><br><span class="line">        String superclass = sourceClass.getMetadata().getSuperClassName();</span><br><span class="line">        <span class="keyword">if</span> (superclass != <span class="keyword">null</span> &amp;&amp; !superclass.startsWith(<span class="string">"java"</span>) &amp;&amp;</span><br><span class="line">                !<span class="keyword">this</span>.knownSuperclasses.containsKey(superclass)) &#123;</span><br><span class="line">            <span class="keyword">this</span>.knownSuperclasses.put(superclass, configClass);</span><br><span class="line">            <span class="comment">// Superclass found, return its annotation metadata and recurse</span></span><br><span class="line">            <span class="keyword">return</span> sourceClass.getSuperClass();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 如果没有超类，处理完成。</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;</span><br></pre></td></tr></table></figure></div>
+
+<p>总结在使用 doProcessConfigurationClass 方法时，大致会有这样几步：</p>
+<ol>
+<li>如果标记有 <code>@Component</code> 注解，则会先去递归处理成员类,那么他是如何进行递归处理的呢，看主要方法的调用就能够理解：<br>processMemberClasses -&gt; processConfigurationClass -&gt; doProcessConfigurationClass -&gt; processMemberClasses<br>每次都会递归的先处理成员类。</li>
+<li>处理 <code>@PropertySource</code> 注解,作用为加载指定的配置文件</li>
+<li>处理所有的 <code>@ComponentScan</code> 注解，如果配置文件中标记有 <code>@ComponentSacn</code> 或者 <code>@ComponentScans</code> 注解的话，会先去解析对应路径下的Bean，包装成 <code>BeanDefinitionHolder</code> 再次进行parse。</li>
+<li>处理所有的 <code>@Import</code> 注解,处理所有使用Import注解引入的配置文件</li>
+<li>处理所有的 <code>@ImportResource</code> 注解</li>
+<li>处理所有 <code>@Bean</code> 方法,添加为 BeanMethod，解析配置文件中配置为@Bean的方法，添加到configClass中的BeanMethod中</li>
+<li>处理接口的默认方法</li>
+<li>按照以上逻辑进行递归的处理超类。</li>
+</ol>
+<p>在方法中，可以找时间画一张图来解析这个方法真正做了写什么。[todo] 。</p>
+<h2 id="注册的精简过程"><a href="#注册的精简过程" class="headerlink" title="注册的精简过程"></a>注册的精简过程</h2><p>最后的parse方法是关键，经过以上步骤可以,在本章节需要特别注意的是 @ComponentSacn  和 处理所有的 @Bean 这两步：</p>
+<p>在处理 @ComponentSacn 中，将直接将根据路径解析出来的Bean使用 <code>componentScanParser.parse</code> 方法，最终在 <code>registerBeanDefinition</code>() 方法中注册进去。</p>
+<p>而在处理@Bean方法的时候，是将Bean方法包装成BeanMethod 放到 <code>this.beanMethods</code> 中，等待在 <code>parse()</code> 后 <code>this.reader.loadBeanDefinitions(configClasses);</code> 中进行操作.</p>
+<p>而在前面说的loadBeanDefinitions 中会将前面提到的 Import、ImportReource和 BeanMethod 统一进行注册。</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (configClass.isImported()) &#123;</span><br><span class="line">    registerBeanDefinitionForImportedConfigurationClass(configClass);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">for</span> (BeanMethod beanMethod : configClass.getBeanMethods()) &#123;</span><br><span class="line">    loadBeanDefinitionsForBeanMethod(beanMethod);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">loadBeanDefinitionsFromImportedResources(configClass.getImportedResources());</span><br><span class="line">loadBeanDefinitionsFromRegistrars(configClass.getImportBeanDefinitionRegistrars())</span><br></pre></td></tr></table></figure></div>
+
+<p>在loadBeanDefinitionsForBeanMethod中，进行了对解析出来的使用@Bean标注的方法进行注册。从而完成注册Bean的主线功能。不具体进行梳理这个方法的过程，大致为构建一个BeanDefintion后，通过registerBeanDefinition方法进行注册,放到beanDefinitionMap中。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+<div>
+      
+</div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/12/15/Spring%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E4%B9%8B%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%EF%BC%88%E4%BA%8C%EF%BC%89/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2479,276 +2699,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2019/07/13/2019-07-13-SpringBoot%E7%9A%84WEB%E5%BC%80%E5%8F%91/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="NanYin">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NanYin的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/07/13/2019-07-13-SpringBoot%E7%9A%84WEB%E5%BC%80%E5%8F%91/" itemprop="url">SpringBoot的WEB开发之Hello-World</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-07-13T12:00:00Z">
-                2019-07-13
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/SpringBoot/" itemprop="url" rel="index">
-                    <span itemprop="name">SpringBoot</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Words count in article&#58;</span>
-                
-                <span title="Words count in article">
-                  1.6k
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Reading time &asymp;</span>
-                
-                <span title="Reading time">
-                  6
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="创建基本的web应用"><a href="#创建基本的web应用" class="headerlink" title="创建基本的web应用"></a>创建基本的web应用</h1><p>SpringBoot可以快速的创建一个restful的web应用。下面开始从零开始创建一套基本的web应用。</p>
-<h2 id="使用idea创建Spring-initializr"><a href="#使用idea创建Spring-initializr" class="headerlink" title="使用idea创建Spring initializr"></a>使用idea创建<code>Spring initializr</code></h2><p>我这里直接使用idea中的<code>Spring initializr</code> 来创建SpringBoot应用。同理可以使用<a href="https://start.spring.io" target="_blank" rel="noopener">start.spring.io</a>中。创建完成后直接在IDE中导入即可。</p>
-<ol>
-<li>需要在idea中新建项目</li>
-</ol>
-<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190713104139.png" alt="新建项目"></p>
-<ol start="2">
-<li>填写项目的基本信息 </li>
-</ol>
-<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190713104731.png" alt="基本信息"></p>
-<ol start="3">
-<li>勾选需要的依赖</li>
-</ol>
-<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190713104941.png" alt="勾选依赖"></p>
-<ol start="4">
-<li>最后点击finish完成创建。</li>
-</ol>
-<h2 id="文档结构说明"><a href="#文档结构说明" class="headerlink" title="文档结构说明"></a>文档结构说明</h2><div ><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190713105737.png" style="zoom:50%"/></div>
-
-<p>新建SpringBoot应用后自动创建的目录结构如如上图，其中SpringBoot启动类<code>StartSpringBootApplication</code>放在<code>java/com/example/start</code>文件夹中，用于启动整个项目。</p>
-<p>对于资源文件，SpringBoot给出来一套目录标准。</p>
-<p>resource文件夹中的application.properteis为整体的SpringBoot配置文件。其中有static和templates目录。</p>
-<ul>
-<li>static 文件夹用于存放静态资源，如js，css</li>
-<li>templates 文件夹用于存放模版文件，如jsp,html</li>
-</ul>
-<p>那么SpringBoot是如何建立这些目录文件标准的呢？</p>
-<h3 id="web目录相关的自动配置"><a href="#web目录相关的自动配置" class="headerlink" title="web目录相关的自动配置"></a>web目录相关的自动配置</h3><p>web目录相关的自动配置是在<code>WebMvcAutoConfiguration</code>自动配置类中进行配置。而对资源的加载使用的是<code>addResourceHandler</code> 方法</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addResourceHandlers</span><span class="params">(ResourceHandlerRegistry registry)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 是否启用默认资源处理</span></span><br><span class="line">    <span class="keyword">if</span> (!<span class="keyword">this</span>.resourceProperties.isAddMappings()) &#123;</span><br><span class="line">        logger.debug(<span class="string">"Default resource handling disabled"</span>);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 获取资源处理程序所服务资源的缓存周期</span></span><br><span class="line">    Duration cachePeriod = <span class="keyword">this</span>.resourceProperties.getCache().getPeriod();</span><br><span class="line">    CacheControl cacheControl = <span class="keyword">this</span>.resourceProperties.getCache().getCachecontrol().toHttpCacheControl();</span><br><span class="line">    <span class="comment">// 如果映射器还未映射到/webjars/** 则进行如下操作</span></span><br><span class="line">    <span class="keyword">if</span> (!registry.hasMappingForPattern(<span class="string">"/webjars/**"</span>)) &#123;</span><br><span class="line">    <span class="comment">//  添加对/webjars/** 的资源映射</span></span><br><span class="line">        customizeResourceHandlerRegistration(registry.addResourceHandler(<span class="string">"/webjars/**"</span>)</span><br><span class="line">                .addResourceLocations(<span class="string">"classpath:/META-INF/resources/webjars/"</span>)</span><br><span class="line">                <span class="comment">// 加载包下的 /META-INF/resources/webjars/ 下的内容</span></span><br><span class="line">                .setCachePeriod(getSeconds(cachePeriod)).setCacheControl(cacheControl));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 静态路径pattern 为 "/**"</span></span><br><span class="line">    String staticPathPattern = <span class="keyword">this</span>.mvcProperties.getStaticPathPattern();</span><br><span class="line">    <span class="keyword">if</span> (!registry.hasMappingForPattern(staticPathPattern)) &#123;</span><br><span class="line">        <span class="comment">//如果映射器还没有映射 /** 路径的资源时</span></span><br><span class="line">        customizeResourceHandlerRegistration(registry.addResourceHandler(staticPathPattern)</span><br><span class="line">        <span class="comment">// 加载所有的默认定义的位置里的资源。</span></span><br><span class="line">                .addResourceLocations(getResourceLocations(<span class="keyword">this</span>.resourceProperties.getStaticLocations()))</span><br><span class="line">                .setCachePeriod(getSeconds(cache</span><br><span class="line">                Period)).setCacheControl(cacheControl));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
-
-<h4 id="webjars"><a href="#webjars" class="headerlink" title="webjars"></a>webjars</h4><p>WebJars是打包到JAR（Java Archive）文件中的客户端Web库（例如jQuery和Bootstrap）。</p>
-<p>from <a href="https://www.webjars.org" target="_blank" rel="noopener">webjars官网</a></p>
-<p>根据以上内容举个例子来讲解如何使用webjars进行静态资源的加载：</p>
-<ol>
-<li>去官网找相关资源的依赖</li>
-</ol>
-<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190713113630.png" alt="依赖"></p>
-<ol start="2">
-<li>添加到pom.xml文件中</li>
-</ol>
-<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190713114028.png" alt="webjar"></p>
-<p>以粉色的竖线为分割线，左侧为下载完的webjars的jar包，右侧为在pom.xml文件中的依赖信息。</p>
-<h5 id="加载webjars"><a href="#加载webjars" class="headerlink" title="加载webjars"></a>加载webjars</h5><p>如果SpringBoot发现有webjar的应用jar包，则<strong>加载路径<code>classpath:/META-INF/resources/webjars/</code>下的文件</strong>。在图中例子中就是<code>jquery</code>文件夹下的所有内容。这样SpringBoot就能够识别jquery包下的所有静态文件了。</p>
-<h5 id="映射webjars"><a href="#映射webjars" class="headerlink" title="映射webjars"></a>映射webjars</h5><p>SpringBoot会将所有已将加载jars映射到 <code>/webjars/**</code> 这个路径上。</p>
-<p>比如上面我们添加了jquery.min.js。我们启动程序，可以在<code>http://localhost:8080/webjars/jquery/3.4.1/jquery.min.js</code>这个地址上访问，发现系统已经通过webjars将资源加载到了。在实际的使用中，使用script标签引用webjars也是引用这个地址的静态文件。</p>
-<h4 id="项目内静态资源"><a href="#项目内静态资源" class="headerlink" title="项目内静态资源"></a>项目内静态资源</h4><p>使用webjars用来加载静态资源非常方便，但是如果自己写的js和css等静态资源也需要加载时，就需要放到SpringBoot默认加载的目录下。</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@ConfigurationProperties</span>(prefix = <span class="string">"spring.resources"</span>, ignoreUnknownFields = <span class="keyword">false</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ResourceProperties</span> </span>&#123;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String[] CLASSPATH_RESOURCE_LOCATIONS = &#123; <span class="string">"classpath:/META-INF/resources/"</span>,</span><br><span class="line">    <span class="string">"classpath:/resources/"</span>, <span class="string">"classpath:/static/"</span>, <span class="string">"classpath:/public/"</span> &#125;;</span><br><span class="line">	<span class="keyword">private</span> String[] staticLocations = CLASSPATH_RESOURCE_LOCATIONS;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">boolean</span> addMappings = <span class="keyword">true</span>;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">final</span> Chain chain = <span class="keyword">new</span> Chain();</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">final</span> Cache cache = <span class="keyword">new</span> Cache();</span><br><span class="line">    <span class="comment">// 获取静态资源目录</span></span><br><span class="line">	<span class="keyword">public</span> String[] getStaticLocations() &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">this</span>.staticLocations;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure></div>
-
-<p>通过getStaticLocations获取静态资源的目录，默认的SpringBoot定义了classpath下的以下的文件，都可以放置静态文件，都可以通过url的方式访问到这个静态文件。</p>
-<ul>
-<li><code>classpath:/META-INF/resources</code></li>
-<li><code>classpath:/resources/</code></li>
-<li><code>classpath:/static/</code></li>
-<li><code>classpath:/public/</code></li>
-</ul>
-<blockquote>
-<p>需要注意的是这个classpath就是一开始创建SpringBoot应用帮我们创建好的resource路径</p>
-</blockquote>
-<p>这个类也是一个<code>xxxxProperties</code>类，所以可以通过改变相应的配置文件中的属性来改变这个路径。这里的路径使用的变量是<code>staticLocations</code>,所以相应的在application.properties文件中可以使用<code>spring.resources.staticLocations=路径名称</code>就行了。</p>
-<h5 id="主页的设置"><a href="#主页的设置" class="headerlink" title="主页的设置"></a>主页的设置</h5><p>SpringBoot默认的使用静态资源文件夹下的<code>index.html</code>作为首页。</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> Optional&lt;Resource&gt; <span class="title">getWelcomePage</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    String[] locations = getResourceLocations(<span class="keyword">this</span>.resourceProperties.getStaticLocations());</span><br><span class="line">    <span class="comment">//遍历每个locations寻找index.html页面作为首页</span></span><br><span class="line">    <span class="keyword">return</span> Arrays.stream(locations).map(<span class="keyword">this</span>::getIndexHtml).filter(<span class="keyword">this</span>::isReadable).findFirst();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> Resource <span class="title">getIndexHtml</span><span class="params">(String location)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.resourceLoader.getResource(location + <span class="string">"index.html"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
-
-<p>如果找到主页的index.html后，就开始做主页的映射操作</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> WelcomePageHandlerMapping <span class="title">welcomePageHandlerMapping</span><span class="params">(ApplicationContext applicationContext)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> WelcomePageHandlerMapping(<span class="keyword">new</span> TemplateAvailabilityProviders(applicationContext),</span><br><span class="line">            applicationContext, getWelcomePage(), <span class="keyword">this</span>.mvcProperties.getStaticPathPattern());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">WelcomePageHandlerMapping(TemplateAvailabilityProviders templateAvailabilityProviders,</span><br><span class="line">			ApplicationContext applicationContext, Optional&lt;Resource&gt; welcomePage, String staticPathPattern) &#123;</span><br><span class="line">    <span class="comment">// 如果存在，设置首页为index.html 映射路径为： /**</span></span><br><span class="line">    <span class="keyword">if</span> (welcomePage.isPresent() &amp;&amp; <span class="string">"/**"</span>.equals(staticPathPattern)) &#123;</span><br><span class="line">        logger.info(<span class="string">"Adding welcome page: "</span> + welcomePage.get());</span><br><span class="line">        setRootViewName(<span class="string">"forward:index.html"</span>);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></div>
-
-<p>上面是依据SpringBoot加载静态资源的方式做的简单总结。</p>
-<h2 id="添加controller"><a href="#添加controller" class="headerlink" title="添加controller"></a>添加controller</h2><p>在上一步创建完项目后，可以紧跟着写一个SpringMVC测试的controller，看看能否启动项目。</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 起到了@Controller和@Responsebody两种作用，实际上就是</span></span><br><span class="line"><span class="comment">// 两种注解的整合</span></span><br><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloController</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@RequestMapping</span>(<span class="string">"/hello"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">hello</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"hello world"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
-
-<p>如果你也像我勾选来数据库相关的starters,在启动时，控制台会提示需要配置数据库的基本配置。</p>
-<blockquote>
-<p>那么怎么找这些配置呢？</p>
-<ol>
-<li>去官网找配置</li>
-<li>直接看代码</li>
-</ol>
-</blockquote>
-<p><strong>如果你没有碰到上面这个问题，那么请忽略以下部分。</strong></p>
-<p>因为前几篇文章中已经分析来SpringBoot是如何完成自动配置的，所以这里我想通过找代码的方式直接看它能够配置哪些属性。</p>
-<ol>
-<li>首先在<code>autoconfiguration</code>包下面的spring.factory中搜索jdbc</li>
-</ol>
-<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190713174948.png" alt="jdbc"></p>
-<ol start="2">
-<li>点击关于DataSource的自动配置类</li>
-</ol>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@EnableConfigurationProperties</span>(DataSourceProperties.class)</span><br><span class="line"><span class="meta">@Import</span>(&#123; DataSourcePoolMetadataProvidersConfiguration.class, DataSourceInitializationConfiguration.class &#125;)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DataSourceAutoConfiguration</span> </span>&#123;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 使用DataSourceProperties类作为属性类,以下为基本属性</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@ConfigurationProperties</span>(prefix = <span class="string">"spring.datasource"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DataSourceProperties</span> <span class="keyword">implements</span> <span class="title">BeanClassLoaderAware</span>, <span class="title">InitializingBean</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> ClassLoader classLoader;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> String name;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">boolean</span> generateUniqueName;</span><br><span class="line">	<span class="keyword">private</span> Class&lt;? extends DataSource&gt; type;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> String driverClassName;</span><br><span class="line">	<span class="keyword">private</span> String url;</span><br><span class="line">	<span class="keyword">private</span> String username;</span><br><span class="line">	<span class="keyword">private</span> String password;</span><br></pre></td></tr></table></figure></div>
-
-<p>根据DataSourceProperties类，可以知道如果我们像配置DataSource，那么有这几个属性可以进行配置。</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PROPERTIES"><figure class="iseeu highlight /properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># spring.datasource 为前缀，后面为属性名，和Properties类中的属性相对应。</span></span><br><span class="line"><span class="meta">spring.datasource.url</span>=<span class="string">jdbc:mysql://localhost:3306/springboot</span></span><br><span class="line"><span class="meta">spring.datasource.driverClassName</span>=<span class="string">com.mysql.jdbc.Driver</span></span><br><span class="line"><span class="meta">spring.datasource.username</span>=<span class="string">root</span></span><br><span class="line"><span class="meta">spring.datasource.password</span>=<span class="string">123456</span></span><br></pre></td></tr></table></figure></div>
-
-<h2 id="测试结果"><a href="#测试结果" class="headerlink" title="测试结果"></a>测试结果</h2><p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190713180029.png" alt="结果"></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-<div>
-      
-</div>
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2803,7 +2753,7 @@
               
                 <a href="/archives/%7C%7C%20archive">
               
-                  <span class="site-state-item-count">109</span>
+                  <span class="site-state-item-count">110</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -2825,7 +2775,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-count">21</span>
                   <span class="site-state-item-name">tags</span>
                 </a>
               </div>
@@ -2877,6 +2827,10 @@
              
              
                <li>
+                 <a href="/2020/10/01/ThreadLocal/" title="ThreadLocal" target="_blank">ThreadLocal</a>
+               </li>
+             
+               <li>
                  <a href="/2020/09/03/markdown%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95/" title="Markdown语法入门" target="_blank">Markdown语法入门</a>
                </li>
              
@@ -2890,10 +2844,6 @@
              
                <li>
                  <a href="/2020/06/10/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%B8%8E%E9%AB%98%E5%B9%B6%E5%8F%91/" title="多线程实践" target="_blank">多线程实践</a>
-               </li>
-             
-               <li>
-                 <a href="/2020/05/22/%EF%BC%88%E5%9B%9B%EF%BC%89AOP%E5%88%87%E9%9D%A2%E4%BD%BF%E7%94%A8%E4%B8%8E%E5%8E%9F%E7%90%86/" title="（四）AOP切面使用与原理" target="_blank">（四）AOP切面使用与原理</a>
                </li>
              
            </ul>
@@ -2949,7 +2899,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共139.2k字</span>
+  <span class="post-count">博客全站共139.8k字</span>
 </div>
 
 

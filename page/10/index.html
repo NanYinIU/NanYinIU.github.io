@@ -305,6 +305,234 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/07/08/2018-07-06-bash_15_%E7%BB%88%E7%AB%A0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="NanYin">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NanYin的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/07/08/2018-07-06-bash_15_%E7%BB%88%E7%AB%A0/" itemprop="url">bash学习记录（十六） bash学习终章</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-07-07T17:00:00Z">
+                2018-07-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Bash/" itemprop="url" rel="index">
+                    <span itemprop="name">Bash</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Words count in article&#58;</span>
+                
+                <span title="Words count in article">
+                  936
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Reading time &asymp;</span>
+                
+                <span title="Reading time">
+                  3
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="bash学习终章"><a href="#bash学习终章" class="headerlink" title="bash学习终章"></a>bash学习终章</h1><p>学习bash有很长时间了，很多时间花费在学习基础语法上，没有真正的上手实践编写一些使用的bash脚本，接下来我把剩余的比较常见的bash语法学习完，找一些github上的的大牛写过的bash脚本去先<br>分析，然后自己边理解边实践吧，我的目标就是能够基本熟练的使用bash脚本。</p>
+<h2 id="bash的list结构"><a href="#bash的list结构" class="headerlink" title="bash的list结构"></a>bash的list结构</h2><p>这里所说到的list结构不是Java语言中的list结构，而是在做条件的时候的一种链式机构，可以使用 <code>&amp;&amp;</code> 或者 <code>||</code> 来处理多个命令的方法。</p>
+<p>其中分为两种简单的结构</p>
+<ul>
+<li>和结构 （and list）</li>
+</ul>
+<p>这种结构会同时比较多个命令，如果前一个命令返回true，则下一个命令一次去执行。但是如果前一个命令返回false，那么后面都不去执行（命令链终止）。</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># command-1 &amp;&amp; command-2 &amp;&amp; command-3 &amp;&amp; ... command-n</span><br><span class="line">if [ ! -z &quot;$1&quot; ] &amp;&amp; echo &quot;Argument #1 &#x3D; $1&quot; &amp;&amp; [ ! -z &quot;$2&quot; ] &amp;&amp;</span><br></pre></td></tr></table></figure></div>
+
+<ul>
+<li>与结构 （or list）</li>
+</ul>
+<p>这个结构和 and list正好相反，如果前一个命令返回false，则下一个命令依次去执行。如果前一个命令时ture，那么终止命令链。</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># command-1 || command-2 || command-3 || ... command-n</span><br><span class="line">[ ! -f &quot;$file&quot; ] || (rm -f $file; echo &quot;File \&quot;$file\&quot; deleted.&quot;)</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="bash中的数组"><a href="#bash中的数组" class="headerlink" title="bash中的数组"></a>bash中的数组</h2><p>数组也是非常常见的一种数据结构，那么在bash中如何初始化和使用数组呢</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># 第一种方式为数组赋值</span><br><span class="line">area[11]&#x3D;23</span><br><span class="line">area[13]&#x3D;37</span><br><span class="line">area[51]&#x3D;UFOs</span><br><span class="line"># 第二种方式</span><br><span class="line">area2&#x3D;( zero one two three four )</span><br><span class="line"># 第三种方式</span><br><span class="line">area3&#x3D;([17]&#x3D;seventeen [24]&#x3D;twenty-four)</span><br></pre></td></tr></table></figure></div>
+
+<p>可以看到可以方便的使用小括号进行数组的初始化，以后会接触到更多关于bash数组的实例，比如写一个使用bash的冒泡排序。</p>
+<h2 id="Linux中的-dev和-proc"><a href="#Linux中的-dev和-proc" class="headerlink" title="Linux中的 /dev和 /proc"></a>Linux中的 <code>/dev</code>和 <code>/proc</code></h2><ul>
+<li><code>/dev</code> 是设备文件的目录，可以看出来dev时device设备的缩写。如果想查看某些特定设备的文件，可以直接去对应的 <code>/dev/*</code>的目录下面去找对应的目录就行了。</li>
+</ul>
+<p>作为参考</p>
+<pre><code>/dev/hd[a-t]：IDE设备
+/dev/sd[a-z]：SCSI设备
+/dev/fd[0-7]：标准软驱
+/dev/md[0-31]：软raid设备
+/dev/loop[0-7]：本地回环设备
+/dev/ram[0-15]：内存
+/dev/null：无限数据接收设备 ,相当于回收站
+/dev/zero：无限零资源
+/dev/tty[0-63]：虚拟终端
+/dev/ttyS[0-3]：串口
+/dev/lp[0-3]：并口
+/dev/console：控制台
+/dev/fb[0-31]：framebuffer
+/dev/cdrom =&gt; /dev/hdc
+/dev/modem =&gt; /dev/ttyS[0-9]
+/dev/pilot =&gt; /dev/ttyS[0-9]</code></pre><ul>
+<li><code>/proc</code> 可以看作是一个文件系统，但是是伪文件系统，因为他之存储一些当前内核状态的一系列特殊文件。以下就不详细举例了，可以看看这个文件夹下的内容。使用 cat命令或者less之类的查看。</li>
+</ul>
+<h2 id="bash中的null和0"><a href="#bash中的null和0" class="headerlink" title="bash中的null和0"></a>bash中的null和0</h2><p>bash中的null和zero是通过设备资源文件 <code>/dev/null</code> , <code>/dev/zero</code> 来实现的</p>
+<ul>
+<li>null 使用 <code>dev/null</code> 这个设备文件是一个”黑洞”，可以看作是一个只能够写文件。写进去的东西都会被清空，当然也可以使用从 <code>/dev/null</code> 写入到文件来实现清空文件内容的目的。</li>
+</ul>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cat newfile1 &gt; &#x2F;dev&#x2F;null #会什么也不输出</span><br><span class="line">cat &#x2F;dev&#x2F;null &gt; &#x2F;var&#x2F;log&#x2F;wtmp # 清空该文件内容</span><br></pre></td></tr></table></figure></div>
+
+<ul>
+<li>zero 为指定目的的文件来清零（指定大小的文件）</li>
+</ul>
+<h3 id="以上就是我在bash学习中的所有内容，当然会在以后写一些实际的bash脚本。这个bash学习系列就写到这。"><a href="#以上就是我在bash学习中的所有内容，当然会在以后写一些实际的bash脚本。这个bash学习系列就写到这。" class="headerlink" title="以上就是我在bash学习中的所有内容，当然会在以后写一些实际的bash脚本。这个bash学习系列就写到这。"></a>以上就是我在bash学习中的所有内容，当然会在以后写一些实际的bash脚本。这个bash学习系列就写到这。</h3>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+    </div>
+<div>
+      
+</div>
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/07/03/2018-07-03-bash_14_bash%E4%B8%AD%E7%9A%84%E5%87%BD%E6%95%B0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2187,194 +2415,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://nanyiniu.github.io/2018/06/12/2018-06-16-bash_09_%E5%91%BD%E4%BB%A4%E7%BD%AE%E6%8D%A2/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="NanYin">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="NanYin的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/12/2018-06-16-bash_09_%E5%91%BD%E4%BB%A4%E7%BD%AE%E6%8D%A2/" itemprop="url">bash学习记录（九）命令置换和算数扩展</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-06-11T17:00:00Z">
-                2018-06-11
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Bash/" itemprop="url" rel="index">
-                    <span itemprop="name">Bash</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Words count in article&#58;</span>
-                
-                <span title="Words count in article">
-                  213
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Reading time &asymp;</span>
-                
-                <span title="Reading time">
-                  1
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="命令置换"><a href="#命令置换" class="headerlink" title="命令置换"></a>命令置换</h1><p>命令置换可以输出一条或者多条命令的输出。可以让命令在不同语境下起作用，最常见的是使用  <code>\</code>`` 符号进行对命令的包裹，这样就能够输出使用命令得出的结果。可以成为另外一个命令的参数，也可以成为循环的参数。</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">echo &#96;hostname&#96;</span><br><span class="line">echo $(&quot;hostname&quot;)</span><br><span class="line"># 两种使用都可以，都能够达到命令置换的目的</span><br></pre></td></tr></table></figure></div>
-
-<h1 id="算数运算"><a href="#算数运算" class="headerlink" title="算数运算"></a>算数运算</h1><p>使用反引号，双括号，和let进行相对来说简单</p>
-<h2 id="使用反引号"><a href="#使用反引号" class="headerlink" title="使用反引号"></a>使用反引号</h2><p>使用反引号内用expr命令进行整型数的运算。</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">z&#x3D;&#96;expr $z+1&#96;</span><br></pre></td></tr></table></figure></div>
-
-<h2 id="使用双括号和let进行运算"><a href="#使用双括号和let进行运算" class="headerlink" title="使用双括号和let进行运算"></a>使用双括号和let进行运算</h2><div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">z&#x3D;$((z+3))</span><br><span class="line"></span><br><span class="line">let z&#x3D;z+3</span><br><span class="line">let &quot;z +&#x3D; 3&quot;  #  Quotes permit the use of spaces in variable assignment.</span><br></pre></td></tr></table></figure></div>
-
-<p>今天的内容有点少。。。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    <div>
-      
-    </div>
-<div>
-      
-</div>
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2429,7 +2469,7 @@
               
                 <a href="/archives/%7C%7C%20archive">
               
-                  <span class="site-state-item-count">109</span>
+                  <span class="site-state-item-count">110</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -2451,7 +2491,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-count">21</span>
                   <span class="site-state-item-name">tags</span>
                 </a>
               </div>
@@ -2503,6 +2543,10 @@
              
              
                <li>
+                 <a href="/2020/10/01/ThreadLocal/" title="ThreadLocal" target="_blank">ThreadLocal</a>
+               </li>
+             
+               <li>
                  <a href="/2020/09/03/markdown%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95/" title="Markdown语法入门" target="_blank">Markdown语法入门</a>
                </li>
              
@@ -2516,10 +2560,6 @@
              
                <li>
                  <a href="/2020/06/10/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%B8%8E%E9%AB%98%E5%B9%B6%E5%8F%91/" title="多线程实践" target="_blank">多线程实践</a>
-               </li>
-             
-               <li>
-                 <a href="/2020/05/22/%EF%BC%88%E5%9B%9B%EF%BC%89AOP%E5%88%87%E9%9D%A2%E4%BD%BF%E7%94%A8%E4%B8%8E%E5%8E%9F%E7%90%86/" title="（四）AOP切面使用与原理" target="_blank">（四）AOP切面使用与原理</a>
                </li>
              
            </ul>
@@ -2575,7 +2615,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共139.2k字</span>
+  <span class="post-count">博客全站共139.8k字</span>
 </div>
 
 
