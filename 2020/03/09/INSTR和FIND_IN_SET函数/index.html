@@ -27,7 +27,7 @@
     KEEP.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 月前","year":"%s 年前"};
   </script>
 <meta name="generator" content="Hexo 5.4.0"><link rel="stylesheet" type="text/css" href="/css/injector/main.css" /><link rel="preload" as="style" href="/css/injector/light.css" /><link rel="preload" as="style" href="/css/injector/dark.css" /><link rel="alternate" href="/atom.xml" title="NanYin的博客" type="application/atom+xml">
-</head>
+<link rel="stylesheet" href="/css/prism.css" type="text/css"></head>
 
 
 <body>
@@ -213,7 +213,7 @@
     
     
         <span class="article-wordcount article-meta-item">
-            <i class="fas fa-file-word"></i>&nbsp;<span>389 字</span>
+            <i class="fas fa-file-word"></i>&nbsp;<span>390 字</span>
         </span>
     
     
@@ -230,21 +230,22 @@
         
 
         <div class="article-content markdown-body">
-            <h1 id="INSTR函数"><a href="#INSTR函数" class="headerlink" title="INSTR函数"></a>INSTR函数</h1><p>The INSTR() function returns the position of the first occurrence of a string in another string.</p>
+            <h1>INSTR函数</h1>
+<p>The INSTR() function returns the position of the first occurrence of a string in another string.</p>
 <p>This function performs a case-insensitive search.</p>
 <p>能够找到第一个匹配到位置,类似java中的firstIndexOf,并且是大小写不敏感的搜索</p>
-<h2 id="用法"><a href="#用法" class="headerlink" title="用法"></a>用法</h2><p>首先:了解到 INSTR 函数的基本功能时能够 <strong>返回字符串在某一个字段的内容中的位置, 没有找到字符串返回0，否则返回位置（从1开始）</strong> .比如:</p>
+<h2 id="用法">用法</h2>
+<p>首先:了解到 INSTR 函数的基本功能时能够 <strong>返回字符串在某一个字段的内容中的位置, 没有找到字符串返回0，否则返回位置（从1开始）</strong> .比如:</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 结果为10</span></span><br><span class="line"><span class="keyword">select</span> INSTR(&quot;this is mysql&quot;,&quot;y&quot;)  </span><br><span class="line"><span class="comment">-- 结果为0</span></span><br><span class="line"><span class="keyword">select</span> INSTR(&quot;this is mysql&quot;,&quot;a&quot;)</span><br></pre></td></tr></table></figure>
 <p>2如果instr当作查询条件,就能起到<strong>类似in的作用</strong></p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 返回用户id为12的数据,同样的,也会返回id为 1,2的数据</span></span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> <span class="keyword">user</span> u <span class="keyword">where</span> INSTR(<span class="string">&#x27;12&#x27;</span>,u.id);</span><br></pre></td></tr></table></figure>
 <p>更复杂的能够查询数据为字符串,并且用特定符号分隔的特定的数据</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> (</span><br><span class="line">	<span class="keyword">select</span> GROUP_CONCAT(u.username) <span class="keyword">as</span> name </span><br><span class="line">		<span class="keyword">from</span> `<span class="keyword">user</span>` u </span><br><span class="line">		<span class="keyword">where</span> INSTR(concat(<span class="string">&#x27;,&#x27;</span>,(p.leaderIds),<span class="string">&#x27;,&#x27;</span>),concat(<span class="string">&#x27;,&#x27;</span>,(u.id),<span class="string">&#x27;,&#x27;</span>))</span><br><span class="line">)</span><br><span class="line">	<span class="keyword">from</span> product p </span><br><span class="line">	<span class="keyword">WHERE</span> p.product_uid <span class="operator">=</span><span class="string">&#x27;02124ff31eac4c14934b045358b10cca&#x27;</span></span><br></pre></td></tr></table></figure>
-
-<h1 id="FIND-IN-SET-函数"><a href="#FIND-IN-SET-函数" class="headerlink" title="FIND_IN_SET 函数"></a>FIND_IN_SET 函数</h1><p>The FIND_IN_SET() function returns the position of a string within a list of strings.</p>
+<h1>FIND_IN_SET 函数</h1>
+<p>The FIND_IN_SET() function returns the position of a string within a list of strings.</p>
 <p>能够返回list中的字符串位置(使用逗号分隔)</p>
 <p>基础的就不多说,直接举例</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 会只返回id为12,13的数据</span></span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> <span class="keyword">user</span> u <span class="keyword">where</span> FIND_IN_SET(u.id,<span class="string">&#x27;12,13&#x27;</span>)</span><br></pre></td></tr></table></figure>
-
 <p>find_in_set 和 instr 函数做例子上的对比时,发现instr是模糊匹配,只要符合都会查出来,而find_in_set是针对使用逗号分隔的对instr的进一步处理,只有出现在逗号之间的进行精确匹配.</p>
 
         </div>
@@ -333,6 +334,7 @@
     </div>
 </footer>
 
+
         </div>
     </div>
 
@@ -412,7 +414,7 @@
         <aside class="page-aside">
             <div class="post-toc-wrap">
     <div class="post-toc">
-        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#INSTR%E5%87%BD%E6%95%B0"><span class="nav-text">INSTR函数</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%A8%E6%B3%95"><span class="nav-text">用法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#FIND-IN-SET-%E5%87%BD%E6%95%B0"><span class="nav-text">FIND_IN_SET 函数</span></a></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-text">INSTR函数</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%A8%E6%B3%95"><span class="nav-text">用法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-text">FIND_IN_SET 函数</span></a></li></ol>
     </div>
 </div>
         </aside>

@@ -27,7 +27,7 @@
     KEEP.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 月前","year":"%s 年前"};
   </script>
 <meta name="generator" content="Hexo 5.4.0"><link rel="stylesheet" type="text/css" href="/css/injector/main.css" /><link rel="preload" as="style" href="/css/injector/light.css" /><link rel="preload" as="style" href="/css/injector/dark.css" /><link rel="alternate" href="/atom.xml" title="NanYin的博客" type="application/atom+xml">
-</head>
+<link rel="stylesheet" href="/css/prism.css" type="text/css"></head>
 
 
 <body>
@@ -234,9 +234,11 @@
         
 
         <div class="article-content markdown-body">
-            <h1 id="Lambda表达式"><a href="#Lambda表达式" class="headerlink" title="Lambda表达式"></a>Lambda表达式</h1><p>Lamdba 表达式是Java 8 的新特性，也是Java 8 中最重要的的新功能。Lamdaba表达式促进了Java使用函数方式进行编程。</p>
+            <h1>Lambda表达式</h1>
+<p>Lamdba 表达式是Java 8 的新特性，也是Java 8 中最重要的的新功能。Lamdaba表达式促进了Java使用函数方式进行编程。</p>
 <p>在进行语法的讲解之前,需要了解和Lambda息息相关的<code>Function Interface</code>,可以说只有函数式接口的存在,才有lambda表达式的存在,换句话可以说lambda表达式是函数式接口的实现.</p>
-<h2 id="函数式接口"><a href="#函数式接口" class="headerlink" title="函数式接口"></a>函数式接口</h2><p>Function 接口具有单个功能，也就是有单个抽象方法.如 <code>Comparable</code> 接口只有一个方法 <code>compareTo</code> 用来进行比较。</p>
+<h2 id="函数式接口">函数式接口</h2>
+<p>Function 接口具有单个功能，也就是有单个抽象方法.如 <code>Comparable</code> 接口只有一个方法 <code>compareTo</code> 用来进行比较。</p>
 <p>Java8定义了函数接口被用来拓展Lamdba表达式。在 <code>java.util.Function</code> 包下有非常多的函数接口。</p>
 <p>常用的接口包括；</p>
 <table>
@@ -247,7 +249,8 @@
 <th>用法</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td>Function&lt;T,R&gt;</td>
 <td>R apply(T t);</td>
 <td>接受T类型参数,返回R类型结果</td>
@@ -267,16 +270,18 @@
 <td>T get();</td>
 <td>无参数,返回T类型结果</td>
 </tr>
-</tbody></table>
-<h3 id="定义函数接口"><a href="#定义函数接口" class="headerlink" title="定义函数接口"></a>定义函数接口</h3><ol>
+</tbody>
+</table>
+<h3 id="定义函数接口">定义函数接口</h3>
+<ol>
 <li>使用 <code>@FunctionalInterface</code> 注解,该注解不是必须的,但是如果标注,则编译器会检查这个接口下是否只有单个抽象方法,如果不是会报错.</li>
 <li>新增default方法,是为了在现有的类库中中新增功能而不影响他们的实现类</li>
 <li>新增接口内static方法,可定义一个或者多个静态方法,和普通的静态方法没有区别,都是<code>接口名.方法名</code>进行调用</li>
 <li>在函数式接口的定义中是只允许有且只有一个抽象方法(必须)，但是可以有多个static方法和default方法。</li>
 </ol>
-<h2 id="Lambda语法"><a href="#Lambda语法" class="headerlink" title="Lambda语法"></a>Lambda语法</h2><p>一个Lambda表达式有如下：</p>
+<h2 id="Lambda语法">Lambda语法</h2>
+<p>一个Lambda表达式有如下：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">paramter -&gt; expression body</span><br></pre></td></tr></table></figure>
-
 <p>以下是lambda表达式的几个特性</p>
 <ul>
 <li><strong>可选的类型描述</strong> - 不需要声明参数的类型，编译器可根据参数的值进行推断</li>
@@ -286,13 +291,13 @@
 </ul>
 <p>下面根据实例来看上面的四个特性：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Java8Tester</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String args[])</span> </span>&#123;</span><br><span class="line">      GreetingService greetService1 = message -&gt; System.out.println(<span class="string">&quot;Say:&quot;</span>+message);</span><br><span class="line">      greetService1.sayMessage(<span class="string">&quot;Hello!!&quot;</span>);</span><br><span class="line">      MathOperation add = (<span class="keyword">int</span> a,<span class="keyword">int</span> b) -&gt; a+b;</span><br><span class="line">      MathOperation sub= (a,b) -&gt; a-b;</span><br><span class="line">      MathOperation muti = (a,b) -&gt; &#123;<span class="keyword">return</span> a*b;&#125;;</span><br><span class="line">      System.out.println(<span class="string">&quot;add 函数结果：&quot;</span>+add.operation(<span class="number">2</span>,<span class="number">2</span>));</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="class"><span class="keyword">interface</span> <span class="title">GreetingService</span> </span>&#123;</span><br><span class="line">      <span class="function"><span class="keyword">void</span> <span class="title">sayMessage</span><span class="params">(String message)</span></span>;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="class"><span class="keyword">interface</span> <span class="title">MathOperation</span></span>&#123;</span><br><span class="line">       <span class="function"><span class="keyword">int</span> <span class="title">operation</span><span class="params">(<span class="keyword">int</span> a,<span class="keyword">int</span> b)</span></span>;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 结果：</span></span><br><span class="line">Say:Hello!!</span><br><span class="line">add 函数结果：<span class="number">4</span></span><br></pre></td></tr></table></figure>
-
 <p>通过上面的例子，可以得出以下重要的两点：</p>
 <ul>
 <li>Lambda 表达式主要用来定义功能接口的内联实现，如：一个接口里只有一个接口方法。在上面的例子里面我们使用了对MathOperation接口进行了多种实现。</li>
 <li>Lambda 表达式消除了对匿名类的需求，如<code> new Thread(new Runnable&#123;..&#125;)</code> ,为Java提供了非常简单而强大的函数编程能力。</li>
 </ul>
-<h2 id="使用方法引用"><a href="#使用方法引用" class="headerlink" title="使用方法引用"></a>使用方法引用</h2><p>方法引用（Method Refrences）帮助通过方法名称指向方法。方法引用使用符号“::”表示。方法引用可以用爱指向如下类型的方法：</p>
+<h2 id="使用方法引用">使用方法引用</h2>
+<p>方法引用（Method Refrences）帮助通过方法名称指向方法。方法引用使用符号“::”表示。方法引用可以用爱指向如下类型的方法：</p>
 <ul>
 <li>静态方法</li>
 <li>实例方法</li>
@@ -300,15 +305,16 @@
 </ul>
 <p>[方法引用]的格式是 类名::方法名</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Arrays.stream(objectArray).forEach(System.out::println);</span><br></pre></td></tr></table></figure>
-
-<h2 id="使用Lambda"><a href="#使用Lambda" class="headerlink" title="使用Lambda"></a>使用Lambda</h2><blockquote>
+<h2 id="使用Lambda">使用Lambda</h2>
+<blockquote>
 <p>熟能生巧,常常练习肯定能记住</p>
 </blockquote>
-<h3 id="1-创建Thread"><a href="#1-创建Thread" class="headerlink" title="1. 创建Thread"></a>1. 创建Thread</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 不使用Lambda创建Thread</span></span><br><span class="line"><span class="comment">// 可以看出内部直接创建了Runnable的匿名类</span></span><br><span class="line"><span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;新建线程。。&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;).start();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 使用lambda创建Thread</span></span><br><span class="line"><span class="keyword">new</span> Thread(() -&gt; System.out.println(<span class="string">&quot;使用Lambda新建线程。。&quot;</span>)).start();</span><br></pre></td></tr></table></figure>
-
-<h3 id="2-列表迭代"><a href="#2-列表迭代" class="headerlink" title="2. 列表迭代"></a>2. 列表迭代</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">List&lt;Integer&gt; list = Arrays.asList(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>);</span><br><span class="line"><span class="comment">// 不使用Lambda</span></span><br><span class="line"><span class="keyword">for</span> (Integer integer : list) &#123;</span><br><span class="line">    System.out.println(integer);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//使用Lambda</span></span><br><span class="line">list.forEach((s) -&gt; System.out.println(s));</span><br><span class="line"><span class="comment">//方法引用</span></span><br><span class="line">list.forEach(System.out::println); </span><br></pre></td></tr></table></figure>
-
-<h3 id="3-Map-amp-Reduce"><a href="#3-Map-amp-Reduce" class="headerlink" title="3. Map&amp;Reduce"></a>3. Map&amp;Reduce</h3><ul>
+<h3 id="1-创建Thread">1. 创建Thread</h3>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 不使用Lambda创建Thread</span></span><br><span class="line"><span class="comment">// 可以看出内部直接创建了Runnable的匿名类</span></span><br><span class="line"><span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;新建线程。。&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;).start();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 使用lambda创建Thread</span></span><br><span class="line"><span class="keyword">new</span> Thread(() -&gt; System.out.println(<span class="string">&quot;使用Lambda新建线程。。&quot;</span>)).start();</span><br></pre></td></tr></table></figure>
+<h3 id="2-列表迭代">2. 列表迭代</h3>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">List&lt;Integer&gt; list = Arrays.asList(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>);</span><br><span class="line"><span class="comment">// 不使用Lambda</span></span><br><span class="line"><span class="keyword">for</span> (Integer integer : list) &#123;</span><br><span class="line">    System.out.println(integer);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//使用Lambda</span></span><br><span class="line">list.forEach((s) -&gt; System.out.println(s));</span><br><span class="line"><span class="comment">//方法引用</span></span><br><span class="line">list.forEach(System.out::println); </span><br></pre></td></tr></table></figure>
+<h3 id="3-Map-Reduce">3. Map&amp;Reduce</h3>
+<ul>
 <li>使用Map处理列表内所有元素全部加2</li>
 </ul>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 不使用Lambda</span></span><br><span class="line"><span class="keyword">for</span> (Integer integer : list) &#123;</span><br><span class="line">    <span class="keyword">int</span> order = integer + <span class="number">2</span>;</span><br><span class="line">    System.out.println(order);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 使用Lambda</span></span><br><span class="line">list.stream().map((a) -&gt; a + <span class="number">2</span>).forEach(System.out::println);</span><br></pre></td></tr></table></figure>
@@ -316,20 +322,19 @@
 <li>使用 Map + collect 完成对每个元素计算后返回新的结果列表</li>
 </ul>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">List&lt;Integer&gt; newList = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 不使用Lambda</span></span><br><span class="line"><span class="keyword">for</span> (Integer integer : list) &#123;</span><br><span class="line">    <span class="keyword">int</span> order = integer + <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">int</span> result = order / integer;</span><br><span class="line">    newList.add(result);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">for</span> (Integer integer : newList) &#123;</span><br><span class="line">    System.out.println(integer);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 使用Lambda</span></span><br><span class="line">newList = list.stream().map((a) -&gt; (a + <span class="number">2</span>)/a).collect(Collectors.toList());</span><br><span class="line">newList.forEach(System.out::println);</span><br></pre></td></tr></table></figure>
-
-<h3 id="4-使用filter实现元素的过滤"><a href="#4-使用filter实现元素的过滤" class="headerlink" title="4. 使用filter实现元素的过滤"></a>4. 使用filter实现元素的过滤</h3><p>使用lambda,可直接使用filter进行元素的过滤</p>
+<h3 id="4-使用filter实现元素的过滤">4. 使用filter实现元素的过滤</h3>
+<p>使用lambda,可直接使用filter进行元素的过滤</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 不使用lambda时</span></span><br><span class="line">List&lt;Integer&gt; list_1 = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line"><span class="keyword">for</span> (Integer integer : list) &#123;</span><br><span class="line">    <span class="keyword">if</span>(integer != <span class="number">3</span>)&#123;</span><br><span class="line">        list_1.add(integer);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// 使用 filter 进行过滤</span></span><br><span class="line">List&lt;Integer&gt; list_2 = list.stream().filter((a) -&gt; a!=<span class="number">3</span>).collect(Collectors.toList());</span><br><span class="line">list_2.forEach(System.out::println);</span><br></pre></td></tr></table></figure>
-
-<h3 id="5-执行函数"><a href="#5-执行函数" class="headerlink" title="5. 执行函数"></a>5. 执行函数</h3><p>稍复杂的字符串处理,用lambda合适不过了,下面的例子,只将特定字符的字符串进行 toUpperCase</p>
+<h3 id="5-执行函数">5. 执行函数</h3>
+<p>稍复杂的字符串处理,用lambda合适不过了,下面的例子,只将特定字符的字符串进行 toUpperCase</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">List&lt;String&gt; s = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">s.add(<span class="string">&quot;hello &quot;</span>);</span><br><span class="line">s.add(<span class="string">&quot;world &quot;</span>);</span><br><span class="line">s.add(<span class="string">&quot;!! &quot;</span>);</span><br><span class="line"></span><br><span class="line">List&lt;String&gt; s_1 = s.stream()</span><br><span class="line">        .filter(a -&gt; a.startsWith(<span class="string">&quot;h&quot;</span>) || a.startsWith(<span class="string">&quot;w&quot;</span>))</span><br><span class="line">        .map(String::toUpperCase)</span><br><span class="line">        .collect(Collectors.toList());</span><br><span class="line">s_1.forEach(System.out::println);</span><br></pre></td></tr></table></figure>
-
-<h3 id="6-算数运算"><a href="#6-算数运算" class="headerlink" title="6. 算数运算"></a>6. 算数运算</h3><p>支持使用min、max等直接实现Comparator进行运算,如:</p>
+<h3 id="6-算数运算">6. 算数运算</h3>
+<p>支持使用min、max等直接实现Comparator进行运算,如:</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Optional&lt;Integer&gt; min = list.stream().min(Integer::compareTo);</span><br></pre></td></tr></table></figure>
-
 <p>也支持使用 IntSummaryStatistics 状态,如:</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">IntSummaryStatistics intSummaryStatistics = list.stream().mapToInt(x -&gt; x).summaryStatistics();</span><br><span class="line">System.out.println(<span class="string">&quot;最大值：&quot;</span>+intSummaryStatistics.getMax());</span><br><span class="line">System.out.println(<span class="string">&quot;最小值：&quot;</span>+intSummaryStatistics.getMin());</span><br><span class="line">System.out.println(<span class="string">&quot;平均值：&quot;</span>+intSummaryStatistics.getAverage());</span><br><span class="line">System.out.println(<span class="string">&quot;数量：&quot;</span>+intSummaryStatistics.getCount());</span><br></pre></td></tr></table></figure>
-
-<h3 id="7-自定义方法使用Function-Inteface实现复杂功能"><a href="#7-自定义方法使用Function-Inteface实现复杂功能" class="headerlink" title="7. 自定义方法使用Function Inteface实现复杂功能"></a>7. 自定义方法使用Function Inteface实现复杂功能</h3><p>Java 8 提供了三个常用的函数接口包括；</p>
+<h3 id="7-自定义方法使用Function-Inteface实现复杂功能">7. 自定义方法使用Function Inteface实现复杂功能</h3>
+<p>Java 8 提供了三个常用的函数接口包括；</p>
 <ul>
 <li>Function&lt;T,R&gt;</li>
 <li>Predicate<T> 判断</li>
@@ -337,7 +342,6 @@
 </ul>
 <p>通过定义方法使用这三类接口,能完成更复杂的调用逻辑,在这里仅仅举一个小例子🌰</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">List&lt;Integer&gt; <span class="title">functionMethods2</span><span class="params">(List&lt;Integer&gt; a, Function&lt;List&lt;Integer&gt;, List&lt;Integer&gt;&gt; function)</span> </span>&#123;</span><br><span class="line">    a = a.stream()</span><br><span class="line">            .filter(demoFilter(<span class="number">2</span>))</span><br><span class="line">            .collect(Collectors.toList());</span><br><span class="line">    <span class="keyword">return</span> function.apply(a);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Predicate&lt;Integer&gt; <span class="title">demoFilter</span><span class="params">(Integer number)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (a) -&gt; !a.equals(number);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 客户端调用</span></span><br><span class="line">JavaTester javaTester = <span class="keyword">new</span> JavaTester();</span><br><span class="line">List&lt;Integer&gt; resList = javaTester.functionMethods2(list, a -&gt; &#123;</span><br><span class="line">        a.add(<span class="number">2</span>);</span><br><span class="line">        <span class="keyword">return</span> a;</span><br><span class="line">    &#125;);</span><br></pre></td></tr></table></figure>
-
 
         </div>
 
@@ -425,6 +429,7 @@
     </div>
 </footer>
 
+
         </div>
     </div>
 
@@ -504,7 +509,7 @@
         <aside class="page-aside">
             <div class="post-toc-wrap">
     <div class="post-toc">
-        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="nav-text">Lambda表达式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E5%BC%8F%E6%8E%A5%E5%8F%A3"><span class="nav-text">函数式接口</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89%E5%87%BD%E6%95%B0%E6%8E%A5%E5%8F%A3"><span class="nav-text">定义函数接口</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Lambda%E8%AF%AD%E6%B3%95"><span class="nav-text">Lambda语法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95%E5%BC%95%E7%94%A8"><span class="nav-text">使用方法引用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8Lambda"><span class="nav-text">使用Lambda</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%88%9B%E5%BB%BAThread"><span class="nav-text">1. 创建Thread</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%88%97%E8%A1%A8%E8%BF%AD%E4%BB%A3"><span class="nav-text">2. 列表迭代</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Map-amp-Reduce"><span class="nav-text">3. Map&amp;Reduce</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E4%BD%BF%E7%94%A8filter%E5%AE%9E%E7%8E%B0%E5%85%83%E7%B4%A0%E7%9A%84%E8%BF%87%E6%BB%A4"><span class="nav-text">4. 使用filter实现元素的过滤</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E6%89%A7%E8%A1%8C%E5%87%BD%E6%95%B0"><span class="nav-text">5. 执行函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-%E7%AE%97%E6%95%B0%E8%BF%90%E7%AE%97"><span class="nav-text">6. 算数运算</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-%E8%87%AA%E5%AE%9A%E4%B9%89%E6%96%B9%E6%B3%95%E4%BD%BF%E7%94%A8Function-Inteface%E5%AE%9E%E7%8E%B0%E5%A4%8D%E6%9D%82%E5%8A%9F%E8%83%BD"><span class="nav-text">7. 自定义方法使用Function Inteface实现复杂功能</span></a></li></ol></li></ol></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-text">Lambda表达式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E5%BC%8F%E6%8E%A5%E5%8F%A3"><span class="nav-text">函数式接口</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89%E5%87%BD%E6%95%B0%E6%8E%A5%E5%8F%A3"><span class="nav-text">定义函数接口</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Lambda%E8%AF%AD%E6%B3%95"><span class="nav-text">Lambda语法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95%E5%BC%95%E7%94%A8"><span class="nav-text">使用方法引用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8Lambda"><span class="nav-text">使用Lambda</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%88%9B%E5%BB%BAThread"><span class="nav-text">1. 创建Thread</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%88%97%E8%A1%A8%E8%BF%AD%E4%BB%A3"><span class="nav-text">2. 列表迭代</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Map-Reduce"><span class="nav-text">3. Map&amp;Reduce</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E4%BD%BF%E7%94%A8filter%E5%AE%9E%E7%8E%B0%E5%85%83%E7%B4%A0%E7%9A%84%E8%BF%87%E6%BB%A4"><span class="nav-text">4. 使用filter实现元素的过滤</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E6%89%A7%E8%A1%8C%E5%87%BD%E6%95%B0"><span class="nav-text">5. 执行函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-%E7%AE%97%E6%95%B0%E8%BF%90%E7%AE%97"><span class="nav-text">6. 算数运算</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-%E8%87%AA%E5%AE%9A%E4%B9%89%E6%96%B9%E6%B3%95%E4%BD%BF%E7%94%A8Function-Inteface%E5%AE%9E%E7%8E%B0%E5%A4%8D%E6%9D%82%E5%8A%9F%E8%83%BD"><span class="nav-text">7. 自定义方法使用Function Inteface实现复杂功能</span></a></li></ol></li></ol></li></ol>
     </div>
 </div>
         </aside>

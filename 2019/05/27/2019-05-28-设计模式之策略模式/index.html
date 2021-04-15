@@ -27,7 +27,7 @@
     KEEP.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 月前","year":"%s 年前"};
   </script>
 <meta name="generator" content="Hexo 5.4.0"><link rel="stylesheet" type="text/css" href="/css/injector/main.css" /><link rel="preload" as="style" href="/css/injector/light.css" /><link rel="preload" as="style" href="/css/injector/dark.css" /><link rel="alternate" href="/atom.xml" title="NanYin的博客" type="application/atom+xml">
-</head>
+<link rel="stylesheet" href="/css/prism.css" type="text/css"></head>
 
 
 <body>
@@ -234,24 +234,26 @@
         
 
         <div class="article-content markdown-body">
-            <h1 id="java设计模式之策略模式"><a href="#java设计模式之策略模式" class="headerlink" title="java设计模式之策略模式"></a>java设计模式之策略模式</h1><p>如果存在一种行为在多种情况下的实现，一般情况下可能会使用<code>if...else if...else..</code>来实现。但是每增加一种情况就要增加一种if判断，这样不符合java设计的规范，这时，就可以使用策略模式来替换这种繁琐的if..else</p>
+            <h1>java设计模式之策略模式</h1>
+<p>如果存在一种行为在多种情况下的实现，一般情况下可能会使用<code>if...else if...else..</code>来实现。但是每增加一种情况就要增加一种if判断，这样不符合java设计的规范，这时，就可以使用策略模式来替换这种繁琐的if…else</p>
 <p>策略设计模式是行为设计模式的一种.当使用多种算法(条件)解决一个特殊的任务的时候,由客户端决定使用哪种具体算法进行特定的实现时,可以使用策略模式.</p>
-<h2 id="哪种情况会使用策略模式"><a href="#哪种情况会使用策略模式" class="headerlink" title="哪种情况会使用策略模式"></a>哪种情况会使用策略模式</h2><p>以下情况可以使用策略模式:</p>
+<h2 id="哪种情况会使用策略模式">哪种情况会使用策略模式</h2>
+<p>以下情况可以使用策略模式:</p>
 <ol>
 <li>许多相关类只有行为上有所不同,策略模式可以通过相同的行为方法(接口方法)来配置这些类.</li>
 <li>当需要使用到算法的变种的时候,当定义不同的行为参数,如果使用类的层次结构实现的时候,可以使用策略模式(当使用方法层次结构的时候就是多态)</li>
 <li>客户端不用清楚算法的细节实现,只需关注接口.避免暴露具体的类的实现、特殊算法的数据结构.</li>
 <li>一个类定义了多种不同的行为,并且使用杂乱的条件进行判断具体使用哪一个条件,这时候就可以使用策略模式来代替,对不同的策略形成不同的类.可以清晰的表达出类的作用与实现的行为方式.</li>
 </ol>
-<h2 id="策略模式结构"><a href="#策略模式结构" class="headerlink" title="策略模式结构"></a>策略模式结构</h2><p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20200402140624.png" alt="策略模式类图"></p>
+<h2 id="策略模式结构">策略模式结构</h2>
+<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20200402140624.png" alt="策略模式类图"></p>
 <p>如上图定义一个总的<code>Traffic</code>接口,里面有一个<code>go()</code>方法.使用<code>car</code>和<code>walk</code>两种策略(算法)分别来实现接口.</p>
 <p><code>Context</code>类是环境类,持有一个<code>TrafficStrategy</code>的引用,隐藏具体的策略接口的实现,让客户端专注于方法的调用.</p>
-<h2 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h2><p>策略模式接口和策略的实现类:</p>
+<h2 id="代码实现">代码实现</h2>
+<p>策略模式接口和策略的实现类:</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">TrafficStrategy</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">go</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WalkStrategy</span> <span class="keyword">implements</span> <span class="title">TrafficStrategy</span></span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">go</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;i am walking&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CarStrategy</span> <span class="keyword">implements</span> <span class="title">TrafficStrategy</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">go</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;i am driving&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
 <p>context类:</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Context</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> TrafficStrategy trafficStrategy;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Context</span><span class="params">(TrafficStrategy trafficStrategy)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.trafficStrategy = trafficStrategy;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> TrafficStrategy <span class="title">getTrafficStrategy</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> trafficStrategy;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setTrafficStrategy</span><span class="params">(TrafficStrategy trafficStrategy)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.trafficStrategy = trafficStrategy;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doStrategy</span><span class="params">()</span></span>&#123;</span><br><span class="line">        trafficStrategy.go();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <p>App客户端类:</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">App</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Context context = <span class="keyword">new</span> Context(<span class="keyword">new</span> CarStrategy());</span><br><span class="line">        context.doStrategy();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
         </div>
@@ -340,6 +342,7 @@
     </div>
 </footer>
 
+
         </div>
     </div>
 
@@ -419,7 +422,7 @@
         <aside class="page-aside">
             <div class="post-toc-wrap">
     <div class="post-toc">
-        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#java%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F"><span class="nav-text">java设计模式之策略模式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%93%AA%E7%A7%8D%E6%83%85%E5%86%B5%E4%BC%9A%E4%BD%BF%E7%94%A8%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F"><span class="nav-text">哪种情况会使用策略模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F%E7%BB%93%E6%9E%84"><span class="nav-text">策略模式结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0"><span class="nav-text">代码实现</span></a></li></ol></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-text">java设计模式之策略模式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%93%AA%E7%A7%8D%E6%83%85%E5%86%B5%E4%BC%9A%E4%BD%BF%E7%94%A8%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F"><span class="nav-text">哪种情况会使用策略模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F%E7%BB%93%E6%9E%84"><span class="nav-text">策略模式结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0"><span class="nav-text">代码实现</span></a></li></ol></li></ol>
     </div>
 </div>
         </aside>

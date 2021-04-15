@@ -27,7 +27,7 @@
     KEEP.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 月前","year":"%s 年前"};
   </script>
 <meta name="generator" content="Hexo 5.4.0"><link rel="stylesheet" type="text/css" href="/css/injector/main.css" /><link rel="preload" as="style" href="/css/injector/light.css" /><link rel="preload" as="style" href="/css/injector/dark.css" /><link rel="alternate" href="/atom.xml" title="NanYin的博客" type="application/atom+xml">
-</head>
+<link rel="stylesheet" href="/css/prism.css" type="text/css"></head>
 
 
 <body>
@@ -230,25 +230,32 @@
         
 
         <div class="article-content markdown-body">
-            <h1 id="使用外键约束"><a href="#使用外键约束" class="headerlink" title="使用外键约束"></a>使用外键约束</h1><p>Mysql默认使用的是innoDB引擎，该引擎是支持外键的，下面来说说如何创建外键及各种外键使用的效果。</p>
-<h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><p>需要注意的是外键不支持虚拟构造出的列上。</p>
+            <h1>使用外键约束</h1>
+<p>Mysql默认使用的是innoDB引擎，该引擎是支持外键的，下面来说说如何创建外键及各种外键使用的效果。</p>
+<h2 id="基本概念">基本概念</h2>
+<p>需要注意的是外键不支持虚拟构造出的列上。</p>
 <p>MySql支持外键，允许跨表交叉引用相关数据，有助于帮助保持数据的一致性。在create和alter表中的语句如下：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">-- 中括号内是非必写的</span><br><span class="line">[CONSTRAINT [symbol]] FOREIGN KEY</span><br><span class="line">    [index_name] (col_name, ...)</span><br><span class="line">    REFERENCES tbl_name (col_name,...)</span><br><span class="line">    [ON DELETE reference_option]</span><br><span class="line">    [ON UPDATE reference_option]</span><br><span class="line"></span><br><span class="line">reference_option:</span><br><span class="line">    RESTRICT | CASCADE | SET NULL | NO ACTION | SET DEFAULT</span><br><span class="line"></span><br><span class="line">CREATE TABLE child (</span><br><span class="line">    id INT,</span><br><span class="line">    parent_id INT,</span><br><span class="line">    -- 定义索引</span><br><span class="line">    INDEX par_ind (parent_id),</span><br><span class="line">    -- parent_id关联parent表中的id字段</span><br><span class="line">    -- 如果父表删除了，则子表也需要删除字段内容</span><br><span class="line">    FOREIGN KEY (parent_id)</span><br><span class="line">        REFERENCES parent(id)</span><br><span class="line">        ON DELETE CASCADE</span><br><span class="line">) ENGINE&#x3D;INNODB;</span><br><span class="line"></span><br><span class="line">-- 添加外键</span><br><span class="line">ALTER TABLE tb1 ADD FOREIGN KEY  (parent_id)</span><br><span class="line">        REFERENCES parent(id)</span><br><span class="line">        ON DELETE CASCADE</span><br><span class="line"></span><br><span class="line">-- 删除外键</span><br><span class="line">ALTER TABLE tbl_name DROP FOREIGN KEY fk_symbol;</span><br></pre></td></tr></table></figure>
-
 <p><code>index_name</code> 指的是外键的标识，如果子表已经显式的定义了可以支持外键的索引（上面例子中的<code>par_ind</code>），则忽略。否则，mysql会依照以下规则隐式的创建一个外键索引。</p>
 <ul>
 <li>如果定义<code>CONSTRAINT symbol</code> 值，则使用这个值，否则使用外键名 <code>index_name</code>.</li>
 <li>如果上面两个都没有定义，外键名使用引用外键列的名称。</li>
 </ul>
-<h2 id="更新-删除行为"><a href="#更新-删除行为" class="headerlink" title="更新/删除行为"></a>更新/删除行为</h2><p>Mysql如何使用外键来保证参照的完整性。</p>
+<h2 id="更新-删除行为">更新/删除行为</h2>
+<p>Mysql如何使用外键来保证参照的完整性。</p>
 <p>对于支持外键的innoDB存储引擎来说，MYSQL拒绝在子表中插入或删除在父表中没有匹配到的外键候选值。</p>
 <p>当父表中的外键候选值发生变化的时候，根据不同的行为策略，来影响子表中对应的外键的键值。具体的策略如下：</p>
-<h3 id="CASCADE-【级联】"><a href="#CASCADE-【级联】" class="headerlink" title="CASCADE 【级联】"></a><code>CASCADE</code> 【级联】</h3><p>如果在父表中删除和更新数据，会自动的删除和更新子表中的匹配到的所有数据。支持删除级联<code>ON DELETE CASCADE</code>和更新级联<code>ON UPDATE CASCADE</code>,两个表之间，不要定义几个这样的子句，这些子句作用域父表或子表中的同一列。</p>
-<h3 id="SET-NULL-【置空】"><a href="#SET-NULL-【置空】" class="headerlink" title="SET NULL 【置空】"></a><code>SET NULL</code> 【置空】</h3><p>如果在父表中删除和更新数据，则自动的置空<code>NULL</code>子表中的外键对应的字段。如果在更新或删除操作中指定了<code>ON DELETE SET NULL</code>或者<code>ON UPDATE SET NULL</code> 时，必须保障**子表外键的那个字段没有设置为 <code>NOT NULL</code> **</p>
-<h3 id="RESTRICT-【限制】"><a href="#RESTRICT-【限制】" class="headerlink" title="RESTRICT 【限制】"></a><code>RESTRICT</code> 【限制】</h3><p>如果在伏笔啊哦中删除和更新数据，子表拒绝删除或更新对应字段内容。</p>
-<h3 id="NO-ACTION【无动作】"><a href="#NO-ACTION【无动作】" class="headerlink" title="NO ACTION【无动作】"></a><code>NO ACTION</code>【无动作】</h3><p><code>NO ACTION </code> 是标准SQL中的关键字，在mysql中<code>NO ACTION </code>和<code>RESTRICT</code>的作用相同，都是在在修改或者删除之前去检查从表中是否有对应的数据，如果有，拒绝操作。</p>
+<h3 id="CASCADE-【级联】"><code>CASCADE</code> 【级联】</h3>
+<p>如果在父表中删除和更新数据，会自动的删除和更新子表中的匹配到的所有数据。支持删除级联<code>ON DELETE CASCADE</code>和更新级联<code>ON UPDATE CASCADE</code>,两个表之间，不要定义几个这样的子句，这些子句作用域父表或子表中的同一列。</p>
+<h3 id="SET-NULL-【置空】"><code>SET NULL</code> 【置空】</h3>
+<p>如果在父表中删除和更新数据，则自动的置空<code>NULL</code>子表中的外键对应的字段。如果在更新或删除操作中指定了<code>ON DELETE SET NULL</code>或者<code>ON UPDATE SET NULL</code> 时，必须保障**子表外键的那个字段没有设置为 <code>NOT NULL</code> **</p>
+<h3 id="RESTRICT-【限制】"><code>RESTRICT</code> 【限制】</h3>
+<p>如果在伏笔啊哦中删除和更新数据，子表拒绝删除或更新对应字段内容。</p>
+<h3 id="NO-ACTION【无动作】"><code>NO ACTION</code>【无动作】</h3>
+<p><code>NO ACTION </code> 是标准SQL中的关键字，在mysql中<code>NO ACTION </code>和<code>RESTRICT</code>的作用相同，都是在在修改或者删除之前去检查从表中是否有对应的数据，如果有，拒绝操作。</p>
 <p>但是有些数据库系统会有延迟检查功能，会导致NO Action 会延迟检查是否有对应数据，但是<strong>MYSQL外键的检查是立即执行的，所以RESTRICT和NO ACTION是完全相同的</strong></p>
-<h3 id="SET-DEFAULT"><a href="#SET-DEFAULT" class="headerlink" title="SET DEFAULT"></a><code>SET DEFAULT</code></h3><p>需要注意的是，set default只是MySQL 解析器认可，但是InnoDB和NDB 拒绝在定义表时，出现ON DELETE SET DEFAULT or ON UPDATE SET DEFAULT 语句。</p>
+<h3 id="SET-DEFAULT"><code>SET DEFAULT</code></h3>
+<p>需要注意的是，set default只是MySQL 解析器认可，但是InnoDB和NDB 拒绝在定义表时，出现ON DELETE SET DEFAULT or ON UPDATE SET DEFAULT 语句。</p>
 
         </div>
 
@@ -336,6 +343,7 @@
     </div>
 </footer>
 
+
         </div>
     </div>
 
@@ -415,7 +423,7 @@
         <aside class="page-aside">
             <div class="post-toc-wrap">
     <div class="post-toc">
-        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%A4%96%E9%94%AE%E7%BA%A6%E6%9D%9F"><span class="nav-text">使用外键约束</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-text">基本概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9B%B4%E6%96%B0-%E5%88%A0%E9%99%A4%E8%A1%8C%E4%B8%BA"><span class="nav-text">更新&#x2F;删除行为</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#CASCADE-%E3%80%90%E7%BA%A7%E8%81%94%E3%80%91"><span class="nav-text">CASCADE 【级联】</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SET-NULL-%E3%80%90%E7%BD%AE%E7%A9%BA%E3%80%91"><span class="nav-text">SET NULL 【置空】</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RESTRICT-%E3%80%90%E9%99%90%E5%88%B6%E3%80%91"><span class="nav-text">RESTRICT 【限制】</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NO-ACTION%E3%80%90%E6%97%A0%E5%8A%A8%E4%BD%9C%E3%80%91"><span class="nav-text">NO ACTION【无动作】</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SET-DEFAULT"><span class="nav-text">SET DEFAULT</span></a></li></ol></li></ol></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-text">使用外键约束</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-text">基本概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9B%B4%E6%96%B0-%E5%88%A0%E9%99%A4%E8%A1%8C%E4%B8%BA"><span class="nav-text">更新&#x2F;删除行为</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#CASCADE-%E3%80%90%E7%BA%A7%E8%81%94%E3%80%91"><span class="nav-text">CASCADE 【级联】</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SET-NULL-%E3%80%90%E7%BD%AE%E7%A9%BA%E3%80%91"><span class="nav-text">SET NULL 【置空】</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RESTRICT-%E3%80%90%E9%99%90%E5%88%B6%E3%80%91"><span class="nav-text">RESTRICT 【限制】</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NO-ACTION%E3%80%90%E6%97%A0%E5%8A%A8%E4%BD%9C%E3%80%91"><span class="nav-text">NO ACTION【无动作】</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SET-DEFAULT"><span class="nav-text">SET DEFAULT</span></a></li></ol></li></ol></li></ol>
     </div>
 </div>
         </aside>

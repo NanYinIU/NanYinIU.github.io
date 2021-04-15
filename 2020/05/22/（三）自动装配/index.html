@@ -25,7 +25,7 @@
     KEEP.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 月前","year":"%s 年前"};
   </script>
 <meta name="generator" content="Hexo 5.4.0"><link rel="stylesheet" type="text/css" href="/css/injector/main.css" /><link rel="preload" as="style" href="/css/injector/light.css" /><link rel="preload" as="style" href="/css/injector/dark.css" /><link rel="alternate" href="/atom.xml" title="NanYin的博客" type="application/atom+xml">
-</head>
+<link rel="stylesheet" href="/css/prism.css" type="text/css"></head>
 
 
 <body>
@@ -207,42 +207,46 @@
 
         <div class="article-content markdown-body">
             <ul>
-<li><a href="#spring%E4%B8%AD%E7%9A%84%E8%87%AA%E5%8A%A8%E8%A3%85%E9%85%8D">Spring中的自动装配</a><ul>
+<li><a href="#spring%E4%B8%AD%E7%9A%84%E8%87%AA%E5%8A%A8%E8%A3%85%E9%85%8D">Spring中的自动装配</a>
+<ul>
 <li><a href="#autowire-qualifierprimary">@Autowire、 @Qualifier、@Primary</a></li>
 <li><a href="#injectnamed">@Inject、@Named</a></li>
 </ul>
 </li>
 </ul>
-<h1 id="Spring中的自动装配"><a href="#Spring中的自动装配" class="headerlink" title="Spring中的自动装配"></a>Spring中的自动装配</h1><h2 id="Autowire、-Qualifier、-Primary"><a href="#Autowire、-Qualifier、-Primary" class="headerlink" title="@Autowire、 @Qualifier、@Primary"></a>@Autowire、 @Qualifier、@Primary</h2><p><code>@Autowire</code> 注解标注在constructor, field, setter method 上，方便在Spring中进行依赖的注入（<code>dependency injection</code>）。和JSR-330标准javax.inject.Inject达到一样的效果，不过autowired时Spring持有的。</p>
+<h1>Spring中的自动装配</h1>
+<h2 id="Autowire、-Qualifier、-Primary">@Autowire、 @Qualifier、@Primary</h2>
+<p><code>@Autowire</code> 注解标注在constructor, field, setter method 上，方便在Spring中进行依赖的注入（<code>dependency injection</code>）。和JSR-330标准javax.inject.Inject达到一样的效果，不过autowired时Spring持有的。</p>
 <ul>
 <li>默认使用Autowire是按照类型进行注入的，但是如果在容器中存在多个类型相同的bean时，@Autowired也会按照名称进行匹配。</li>
 <li>使用<code>@Qualifier</code>注解，在获取Bean时，指定要获取的bean的名称。</li>
 <li>使用<code>@Primary</code>注解，在声明Bean时，指定如果注入，则首选的bean。</li>
 </ul>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">	<span class="keyword">private</span> String firstName;</span><br><span class="line">	<span class="keyword">private</span> String lastName;</span><br><span class="line"></span><br><span class="line"> 	<span class="function"><span class="keyword">public</span> <span class="title">Person</span><span class="params">(String firstName, String lastName)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.firstName = <span class="string">&quot;w&quot;</span>;</span><br><span class="line">		<span class="keyword">this</span>.lastName = <span class="string">&quot;y&quot;</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Autowired</span></span><br><span class="line">	<span class="meta">@Qualifier(&quot;abc&quot;)</span></span><br><span class="line">	<span class="keyword">private</span> Pet pet;</span><br><span class="line"><span class="comment">// 省略getter setter</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// 或者在声明Bean时，使用Primary进行指定。</span></span><br><span class="line"><span class="meta">@Bean(&quot;dotdot&quot;)</span></span><br><span class="line"><span class="meta">@Primary</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Pet <span class="title">pet2</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">new</span> Pet(<span class="string">&quot;dotdot&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <blockquote>
 <p>需要注意的是：在同时指定Qualifier和Primary时，会以<strong>Qualifier</strong>为主。</p>
 </blockquote>
-<h2 id="Inject、-Named"><a href="#Inject、-Named" class="headerlink" title="@Inject、@Named"></a>@Inject、@Named</h2><p>@Inject、@Named 都是Javax规范的注解，并不是Spring的注解。</p>
+<h2 id="Inject、-Named">@Inject、@Named</h2>
+<p>@Inject、@Named 都是Javax规范的注解，并不是Spring的注解。</p>
 <p>使用 Inject 注解同样能够标注在constructor, field, setter method 上。基本能够代替 Autowired 注解，并且能够使用 Named 注解，指定名称进行实例的注入，可以代替 Qualifier 注解。</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">	<span class="keyword">private</span> String firstName;</span><br><span class="line">	<span class="keyword">private</span> String lastName;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">Person</span><span class="params">(String firstName, String lastName)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.firstName = <span class="string">&quot;w&quot;</span>;</span><br><span class="line">		<span class="keyword">this</span>.lastName = <span class="string">&quot;y&quot;</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Inject</span></span><br><span class="line">	<span class="meta">@Named(&quot;abc&quot;)</span></span><br><span class="line">	<span class="keyword">private</span> Pet pet;</span><br><span class="line">	<span class="comment">// 省略getter setter</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <blockquote>
 <p>区别点在于 Autowired 注解支持 required() 属性。而 Inject 注解并不支持。可以使用java.util.Optional或者Spring Framework 5.0 后提供的 @Nullable 注解，标志在构造方法上。</p>
 </blockquote>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SimpleMovieLister</span> </span>&#123;</span><br><span class="line"><span class="meta">@Autowired</span> <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setMovieFinder</span><span class="params">(<span class="meta">@Nullable</span> MovieFinder movieFinder)</span> </span>&#123;</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="Resource"><a href="#Resource" class="headerlink" title="@Resource"></a>@Resource</h2><p>使用 <code>@Resource</code> 同样能够达到自动装配的目的，与 <code>@Autowire</code> 的区别在于以下几点：</p>
+<h2 id="Resource">@Resource</h2>
+<p>使用 <code>@Resource</code> 同样能够达到自动装配的目的，与 <code>@Autowire</code> 的区别在于以下几点：</p>
 <ul>
 <li>处理这2个注解的BeanPostProcessor不一样</li>
-<li>匹配Bean的方式不同。<ul>
-<li><code>@Resource</code><ul>
-<li> 默认按照名称进行匹配注入。</li>
+<li>匹配Bean的方式不同。
+<ul>
+<li><code>@Resource</code>
+<ul>
+<li>默认按照名称进行匹配注入。</li>
 <li>如果指定了 <code>type</code>,则按照类型进行匹配。当无法找到正确的类型或者找到多个时都会报错。如果都没有指定时，并且无法按照名称匹配到Bean时，会回退到按照类型寻找Bean。</li>
 </ul>
 </li>
-<li> <code>@Autowire</code> 默认就是按照类型进行匹配的，如果需要指定特定Bean，则需要使用 <code>@Qualifier</code> 注解进行指定。</li>
+<li><code>@Autowire</code> 默认就是按照类型进行匹配的，如果需要指定特定Bean，则需要使用 <code>@Qualifier</code> 注解进行指定。</li>
 </ul>
 </li>
 </ul>
@@ -333,6 +337,7 @@
     </div>
 </footer>
 
+
         </div>
     </div>
 
@@ -412,7 +417,7 @@
         <aside class="page-aside">
             <div class="post-toc-wrap">
     <div class="post-toc">
-        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Spring%E4%B8%AD%E7%9A%84%E8%87%AA%E5%8A%A8%E8%A3%85%E9%85%8D"><span class="nav-text">Spring中的自动装配</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Autowire%E3%80%81-Qualifier%E3%80%81-Primary"><span class="nav-text">@Autowire、 @Qualifier、@Primary</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Inject%E3%80%81-Named"><span class="nav-text">@Inject、@Named</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Resource"><span class="nav-text">@Resource</span></a></li></ol></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-text">Spring中的自动装配</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Autowire%E3%80%81-Qualifier%E3%80%81-Primary"><span class="nav-text">@Autowire、 @Qualifier、@Primary</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Inject%E3%80%81-Named"><span class="nav-text">@Inject、@Named</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Resource"><span class="nav-text">@Resource</span></a></li></ol></li></ol>
     </div>
 </div>
         </aside>

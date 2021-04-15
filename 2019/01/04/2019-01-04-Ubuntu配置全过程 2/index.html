@@ -27,7 +27,7 @@
     KEEP.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 月前","year":"%s 年前"};
   </script>
 <meta name="generator" content="Hexo 5.4.0"><link rel="stylesheet" type="text/css" href="/css/injector/main.css" /><link rel="preload" as="style" href="/css/injector/light.css" /><link rel="preload" as="style" href="/css/injector/dark.css" /><link rel="alternate" href="/atom.xml" title="NanYin的博客" type="application/atom+xml">
-</head>
+<link rel="stylesheet" href="/css/prism.css" type="text/css"></head>
 
 
 <body>
@@ -219,159 +219,161 @@
         
 
         <div class="article-content markdown-body">
-            <h1 id="Ubuntu18-04-配置全过程"><a href="#Ubuntu18-04-配置全过程" class="headerlink" title="Ubuntu18.04 配置全过程"></a>Ubuntu18.04 配置全过程</h1><p>因为最近在弄win10双系统，又因为PopOs在装机的时候设置grub比较麻烦，所以换成最新的Ubuntu稳定版来做成win/ubunut双系统。</p>
-<h2 id="安装问题"><a href="#安装问题" class="headerlink" title="安装问题"></a>安装问题</h2><p>在装机的需要使用grub做启动引导。所以设置保留BIOS启动区域而不是挂载/boot。亲身经历，UEFI启动模式下，Ubuntu的引导挂载应该是biosgrub，否则出错。导致无法家在grub。</p>
-<h2 id="界面配置"><a href="#界面配置" class="headerlink" title="界面配置"></a>界面配置</h2><h3 id="安装gnome-tweak-tool"><a href="#安装gnome-tweak-tool" class="headerlink" title="安装gnome-tweak-tool"></a>安装gnome-tweak-tool</h3><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install gnome-tweak-tool</span><br></pre></td></tr></table></figure>
-
+            <h1>Ubuntu18.04 配置全过程</h1>
+<p>因为最近在弄win10双系统，又因为PopOs在装机的时候设置grub比较麻烦，所以换成最新的Ubuntu稳定版来做成win/ubunut双系统。</p>
+<h2 id="安装问题">安装问题</h2>
+<p>在装机的需要使用grub做启动引导。所以设置保留BIOS启动区域而不是挂载/boot。亲身经历，UEFI启动模式下，Ubuntu的引导挂载应该是biosgrub，否则出错。导致无法家在grub。</p>
+<h2 id="界面配置">界面配置</h2>
+<h3 id="安装gnome-tweak-tool">安装gnome-tweak-tool</h3>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install gnome-tweak-tool</span><br></pre></td></tr></table></figure>
 <p>如果需要更改shell则需要安装：</p>
 <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install gnome-shell-extensions</span><br></pre></td></tr></table></figure>
-
 <p>这样就能轻松愉快的使用gnome-tewak-tool了。</p>
-<h3 id="主题方案"><a href="#主题方案" class="headerlink" title="主题方案"></a>主题方案</h3><h4 id="主界面"><a href="#主界面" class="headerlink" title="主界面"></a>主界面</h4><p>因为前一阵使用Pop!_OS发现它默认的主题非常好看，所以下载Popos默认的主题，然后在gnome-tweak-tool中设置好就ok了，<a class="link"   target="_blank" rel="noopener" href="https://github.com/pop-os/gtk-theme" >这里是PopOs的gtk主题地址<i class="fas fa-external-link-alt"></i></a>。但是发现PopOs默认的输入法输入框是默认米黄色的，打字的时候不太显眼，所以在基础上添加了如下代码。添加方法：</p>
+<h3 id="主题方案">主题方案</h3>
+<h4 id="主界面">主界面</h4>
+<p>因为前一阵使用Pop!_OS发现它默认的主题非常好看，所以下载Popos默认的主题，然后在gnome-tweak-tool中设置好就ok了，<a class="link"   target="_blank" rel="noopener" href="https://github.com/pop-os/gtk-theme" >这里是PopOs的gtk主题地址<i class="fas fa-external-link-alt"></i></a>。但是发现PopOs默认的输入法输入框是默认米黄色的，打字的时候不太显眼，所以在基础上添加了如下代码。添加方法：</p>
 <ol>
 <li>根据说明下载Pop-theme</li>
 </ol>
 <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo add-apt-repository ppa:system76/pop</span><br><span class="line">sudo apt update</span><br><span class="line">sudo apt install pop-theme</span><br></pre></td></tr></table></figure>
-
 <ol start="2">
 <li>定位到 <code>/usr/share/themes/Pop/gnome-shell/</code> 的gnome-shell.css和Pop.css 将IBus的界面代码替换成如下代码</li>
 </ol>
 <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line">.candidate-popup-content &#123;</span><br><span class="line">  padding: 8px;</span><br><span class="line">  spacing: 0;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.candidate-index &#123;</span><br><span class="line">  padding: 0 4px 0 0;</span><br><span class="line">  color: rgba(255, 255, 255, 0.5);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.candidate-box:selected .candidate-index &#123;</span><br><span class="line">  color: rgba(255, 255, 255, 0.5);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.candidate-box &#123;</span><br><span class="line">  transition-duration: 0ms;</span><br><span class="line">  min-height: 28px;</span><br><span class="line">  padding: 0 8px;</span><br><span class="line">  border-radius: 8px;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.candidate-box:hover &#123;</span><br><span class="line">  background-color: rgba(255, 255, 255, 0.06);</span><br><span class="line">  color: rgba(255, 255, 255, 0.9);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.candidate-box:active &#123;</span><br><span class="line">background-color: rgba(255, 255, 255, 0.1);</span><br><span class="line">  color: rgba(255, 255, 255, 0.9);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.candidate-box:selected &#123;</span><br><span class="line">  background-color: #0046DB;</span><br><span class="line">  color: rgba(255, 255, 255, 0.85);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.candidate-page-button-box &#123;</span><br><span class="line">  height: 28px;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.vertical .candidate-page-button-box &#123;</span><br><span class="line">  padding-top: 0;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.horizontal .candidate-page-button-box &#123;</span><br><span class="line">  padding-left: 0;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.candidate-page-button &#123;</span><br><span class="line">  min-width: 28px;</span><br><span class="line">  min-height: 28px;</span><br><span class="line">  padding: 0;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.candidate-page-button-previous &#123;</span><br><span class="line">  border-radius: 8px;</span><br><span class="line">  border-right-width: 0;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.candidate-page-button-next &#123;</span><br><span class="line">  border-radius: 8px;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.candidate-page-button-icon &#123;</span><br><span class="line">  icon-size: 1.23077em;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
 <p>最后成品：</p>
 <p><img src="https://wx4.sinaimg.cn/large/006tNc79gy1g2dt15yse2j318u0miagk.jpg" alt="输入法"></p>
 <ol start="3">
 <li>应用程序窗口用的是 macOS High Sierra  主题，仿照MAC的窗口。比较漂亮。<a class="link"   target="_blank" rel="noopener" href="https://www.gnome-look.org/p/1013714/" >macOS High Sierra 主题<i class="fas fa-external-link-alt"></i></a>，下载下来后解压后放到 <code>/usr/share/themes</code> 下，之后就能在gnome-tweak-tool中看到了，设置完成后可以看到如下效果。</li>
 </ol>
 <p><img src="https://wx4.sinaimg.cn/large/006tNc79gy1g2dt17ye4jj31900u01dj.jpg" alt="主题"></p>
-<h4 id="gdm主题"><a href="#gdm主题" class="headerlink" title="gdm主题"></a>gdm主题</h4><p>gdm主题选用类似MAC登陆的主题，界面美观，而且还有毛玻璃效果。<a class="link"   target="_blank" rel="noopener" href="https://www.gnome-look.org/p/1207015/" >High Ubunterra<i class="fas fa-external-link-alt"></i></a>下载后解压之后，直接命令行执行./install.sh。之后直接右键设置后，直接将锁屏界面直接设置好。其实主要目的的就是将 <code>/usr/share/gnome-shell/theme</code> 中的ubuntu.css替换掉。</p>
-<h4 id="grub主题"><a href="#grub主题" class="headerlink" title="grub主题"></a>grub主题</h4><p>grub的主题比较少，推荐的就是<a class="link"   target="_blank" rel="noopener" href="https://www.gnome-look.org/p/1000140/" >Breeze GRUB2 theme<i class="fas fa-external-link-alt"></i></a> 是一款比较漂亮美观的主题。具体成果界面可以点击链接地址查看。</p>
+<h4 id="gdm主题">gdm主题</h4>
+<p>gdm主题选用类似MAC登陆的主题，界面美观，而且还有毛玻璃效果。<a class="link"   target="_blank" rel="noopener" href="https://www.gnome-look.org/p/1207015/" >High Ubunterra<i class="fas fa-external-link-alt"></i></a>下载后解压之后，直接命令行执行./install.sh。之后直接右键设置后，直接将锁屏界面直接设置好。其实主要目的的就是将 <code>/usr/share/gnome-shell/theme</code> 中的ubuntu.css替换掉。</p>
+<h4 id="grub主题">grub主题</h4>
+<p>grub的主题比较少，推荐的就是<a class="link"   target="_blank" rel="noopener" href="https://www.gnome-look.org/p/1000140/" >Breeze GRUB2 theme<i class="fas fa-external-link-alt"></i></a> 是一款比较漂亮美观的主题。具体成果界面可以点击链接地址查看。</p>
 <p>普通主题需要作如下顺序的操作，但是 Breeze Grub2 theme 有脚本，直接执行解压后的脚本程序，就ok了。</p>
 <ol>
 <li>创建grub的主题文件夹</li>
 </ol>
 <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo mkdir /boot/grub/themes</span><br></pre></td></tr></table></figure>
-
 <ol start="2">
 <li>将主题包移动到这个目录下</li>
 </ol>
 <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo cp 主题包名 /boot/grub/themes/</span><br></pre></td></tr></table></figure>
-
 <ol start="3">
 <li>修改主题的配置文件</li>
 </ol>
 <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo vim /etc/grub.d/00_header</span><br></pre></td></tr></table></figure>
-
 <ol start="4">
 <li>在配置文件中添加</li>
 </ol>
 <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">GRUB_THEME=&quot;/boot/grub/themes/主题包名/theme.txt&quot;</span><br><span class="line">GRUB_GFXMODE=&quot;1920x1080x32&quot;</span><br></pre></td></tr></table></figure>
-
 <ol start="5">
 <li>最后执行 update-grub 命令</li>
 </ol>
-<h3 id="gnome拓展推荐"><a href="#gnome拓展推荐" class="headerlink" title="gnome拓展推荐"></a>gnome拓展推荐</h3><p>我没有什么特殊的拓展安装，在Ubuntu系统下，一般安装如下拓展。</p>
+<h3 id="gnome拓展推荐">gnome拓展推荐</h3>
+<p>我没有什么特殊的拓展安装，在Ubuntu系统下，一般安装如下拓展。</p>
 <ol>
-<li><p>User themes 可以使用用户目录下的主题</p>
+<li>
+<p>User themes 可以使用用户目录下的主题</p>
 </li>
-<li><p>removeable Drive Menu 当插入移除设备的时候在上方有状态图标提醒。</p>
+<li>
+<p>removeable Drive Menu 当插入移除设备的时候在上方有状态图标提醒。</p>
 </li>
-<li><p>Caffeine 可以关闭屏保和自动挂起，很好用。</p>
+<li>
+<p>Caffeine 可以关闭屏保和自动挂起，很好用。</p>
 </li>
-<li><p>Dash To Dock 如果你不喜欢ubuntu的侧边dock可以尝试这个dock，比较美观的dock，可以设置在侧边或者在底下。</p>
+<li>
+<p>Dash To Dock 如果你不喜欢ubuntu的侧边dock可以尝试这个dock，比较美观的dock，可以设置在侧边或者在底下。</p>
 </li>
-<li><p>openWeather 可以在顶部栏中查看天气，点击可以查看最近天气，需要手动添加地址。</p>
+<li>
+<p>openWeather 可以在顶部栏中查看天气，点击可以查看最近天气，需要手动添加地址。</p>
 </li>
-<li><p>ClipBord Indicator 是可以记录粘贴板的内容，有时可以避免重复复制的操作。</p>
+<li>
+<p>ClipBord Indicator 是可以记录粘贴板的内容，有时可以避免重复复制的操作。</p>
 </li>
 </ol>
 <p>推荐的有这几个，但是gnome-shell拓展可谓非常的多，并且大多数都非常好用，可以去 <a class="link"   target="_blank" rel="noopener" href="https://extensions.gnome.org/" >gnome extensions 官网<i class="fas fa-external-link-alt"></i></a> 看一看，看有没有更适合自己的。</p>
-<h3 id="配置Vim和终端"><a href="#配置Vim和终端" class="headerlink" title="配置Vim和终端"></a>配置Vim和终端</h3><h4 id="配置vim"><a href="#配置vim" class="headerlink" title="配置vim"></a>配置vim</h4><p>我vim使用的是vundle插件管理器，首先要安装vundle.</p>
+<h3 id="配置Vim和终端">配置Vim和终端</h3>
+<h4 id="配置vim">配置vim</h4>
+<p>我vim使用的是vundle插件管理器，首先要安装vundle.</p>
 <p>首先要下载git</p>
 <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install git</span><br></pre></td></tr></table></figure>
-
 <p>然后安装vundle</p>
 <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vi</span><br></pre></td></tr></table></figure>
-
 <p>将如下配置替换到.vimrc 中，首先要进行备份哦！！！</p>
 <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line">set nocompatible &quot; be iMproved, required</span><br><span class="line">filetype off &quot; required</span><br><span class="line">set number</span><br><span class="line">let mapleader=&quot;,&quot;</span><br><span class="line">set rtp+=~/.vim/bundle/Vundle.vim</span><br><span class="line">call vundle#begin()</span><br><span class="line"></span><br><span class="line">Plugin &#x27;VundleVim/Vundle.vim&#x27;</span><br><span class="line">Plugin &#x27;scrooloose/nerdtree&#x27;</span><br><span class="line">Plugin &#x27;kien/ctrlp.vim&#x27;</span><br><span class="line">Plugin &#x27;junegunn/fzf&#x27;</span><br><span class="line">Plugin &#x27;Shougo/neocomplete.vim&#x27;</span><br><span class="line">Plugin &#x27;vim-airline/vim-airline&#x27;</span><br><span class="line">Plugin &#x27;vim-airline/vim-airline-themes&#x27;</span><br><span class="line">Plugin &#x27;terryma/vim-smooth-scroll&#x27;</span><br><span class="line">Plugin &#x27;terryma/vim-expand-region&#x27;</span><br><span class="line">Plugin &#x27;tpope/vim-commentary&#x27;</span><br><span class="line">Plugin &#x27;tpope/vim-surround&#x27;</span><br><span class="line">Plugin &#x27;godlygeek/tabular&#x27;</span><br><span class="line">Plugin &#x27;plasticboy/vim-markdown&#x27;</span><br><span class="line">Plugin &#x27;tpope/vim-fugitive&#x27;</span><br><span class="line">Plugin &#x27;airblade/vim-gitgutter&#x27;</span><br><span class="line">Plugin &#x27;justinmk/vim-sneak&#x27;</span><br><span class="line">Plugin &#x27;powerline/fonts&#x27;</span><br><span class="line">Plugin &#x27;scrooloose/nerdcommenter&#x27; </span><br><span class="line">Plugin &#x27;suan/vim-instant-markdown&#x27;</span><br><span class="line">Plugin &#x27;mzlogin/vim-markdown-toc&#x27;</span><br><span class="line">call vundle#end()            &quot; required</span><br><span class="line">filetype plugin indent on</span><br><span class="line">&quot; let g:airline_powerline_fonts = 1</span><br><span class="line">map &lt;C-n&gt; :NERDTreeToggle&lt;CR&gt;</span><br><span class="line">&quot; smooth-scroll</span><br><span class="line">function SmoothScroll(up)</span><br><span class="line">    if a:up</span><br><span class="line">        let scrollaction=&quot;^Y&quot;</span><br><span class="line">    else</span><br><span class="line">        let scrollaction=&quot;^E&quot;</span><br><span class="line">    endif</span><br><span class="line">    exec &quot;normal &quot; . scrollaction</span><br><span class="line">    redraw</span><br><span class="line">    let counter=1</span><br><span class="line">    while counter&lt;&amp;scroll</span><br><span class="line">        let counter+=1</span><br><span class="line">        sleep 10m</span><br><span class="line">        redraw</span><br><span class="line">        exec &quot;normal &quot; . scrollaction</span><br><span class="line">    endwhile</span><br><span class="line">endfunction</span><br><span class="line">noremap &lt;silent&gt; &lt;c-u&gt; :call smooth_scroll#up(&amp;scroll, 15, 2)&lt;CR&gt;</span><br><span class="line">noremap &lt;silent&gt; &lt;c-d&gt; :call smooth_scroll#down(&amp;scroll, 15, 2)&lt;CR&gt;</span><br><span class="line">noremap &lt;silent&gt; &lt;c-b&gt; :call smooth_scroll#up(&amp;scroll*2, 10, 4)&lt;CR&gt;</span><br><span class="line">noremap &lt;silent&gt; &lt;c-f&gt; :call smooth_scroll#down(&amp;scroll*2, 10, 4)&lt;CR&gt;</span><br><span class="line">set mouse= </span><br><span class="line">map &lt;ScrollWheelUp&gt; &lt;C-Y&gt;</span><br><span class="line">map &lt;ScrollWheelDown&gt; &lt;C-E&gt;</span><br><span class="line">&quot;高亮错误</span><br><span class="line">&quot; let g:syntastic_enable_highlighting=1</span><br><span class="line">&quot; 快速选中</span><br><span class="line">&quot; let g:expand_region_use_select_mode = 1</span><br><span class="line">&quot; map w &lt;Plug&gt;(expand_region_expand)</span><br><span class="line">&quot; map W &lt;Plug&gt;(expand_region_shrink)</span><br><span class="line">&quot; markdown setting</span><br><span class="line">let g:vim_markdown_toc_autofit = 1</span><br><span class="line">let g:vim_markdown_autowrite = 1</span><br><span class="line">let g:vim_markdown_folding_disabled = 1</span><br><span class="line">set updatetime=100</span><br><span class="line">let g:gitgutter_grep=&#x27;&#x27;</span><br><span class="line">let g:gitgutter_terminal_reports_focus=0</span><br></pre></td></tr></table></figure>
-
 <p>最后在vim中使用<code>:PluginInstall</code> 安装插件。具体的插件的作用以后会专门写一篇来介绍。也可自行百度。</p>
-<h4 id="配置终端"><a href="#配置终端" class="headerlink" title="配置终端"></a>配置终端</h4><p>我使用的是zsh，首先安装zsh</p>
+<h4 id="配置终端">配置终端</h4>
+<p>我使用的是zsh，首先安装zsh</p>
 <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install zsh</span><br></pre></td></tr></table></figure>
-
 <p>然后配置将zsh为默认</p>
 <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo chsh -s /bin/zsh</span><br></pre></td></tr></table></figure>
-
 <p>最后使用著名的oh-my-zsh 来装点B吧。</p>
 <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sh -c &quot;$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)&quot;</span><br></pre></td></tr></table></figure>
-
-<h3 id="配置git环境和github连接"><a href="#配置git环境和github连接" class="headerlink" title="配置git环境和github连接"></a>配置git环境和github连接</h3><p>安装好git后，配置git</p>
+<h3 id="配置git环境和github连接">配置git环境和github连接</h3>
+<p>安装好git后，配置git</p>
 <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git config --global user.name &quot;你的github用户名&quot;</span><br><span class="line">git config --global user.email &quot;你的github邮箱地址&quot;</span><br></pre></td></tr></table></figure>
-
 <p>生成密钥，一路enter就可以</p>
 <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen -t rsa -C &quot;你自己的github对应的邮箱地址&quot;</span><br></pre></td></tr></table></figure>
-
 <p>将文件中生成的密钥复制到github上的配置中去</p>
 <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim ~/.ssh/id_rsa.pub</span><br></pre></td></tr></table></figure>
-
 <p>检查是否配置成功</p>
 <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh -T git@github.com</span><br></pre></td></tr></table></figure>
-
-<h3 id="配置Java开发环境"><a href="#配置Java开发环境" class="headerlink" title="配置Java开发环境"></a>配置Java开发环境</h3><h4 id="JDK"><a href="#JDK" class="headerlink" title="JDK"></a>JDK</h4><ol>
+<h3 id="配置Java开发环境">配置Java开发环境</h3>
+<h4 id="JDK">JDK</h4>
+<ol>
 <li>在<a class="link"   target="_blank" rel="noopener" href="https://www.oracle.com/technetwork/java/javase/downloads/index.html" >官网<i class="fas fa-external-link-alt"></i></a>下载jdk源码,并在解压前创建 <code>/usr/local/java</code> 文件夹</li>
 </ol>
 <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkdir /usr/local/java</span><br></pre></td></tr></table></figure>
-
 <ol start="2">
 <li>将文件解压到刚创建的文件夹中，也可以解压到当前文件夹下，然后移动到刚才创建的文件夹下。</li>
 </ol>
 <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">tar -xzvf jdk1.8.0_191.tar.gz </span><br><span class="line"></span><br><span class="line">mv jdk1.8.0_191 /usr/local/java/ </span><br></pre></td></tr></table></figure>
-
 <ol start="3">
 <li>使用vim编辑<code>/etc/profile</code> 文件,在结尾处添加如下内容</li>
 </ol>
 <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">export JAVA_HOME=/usr/local/java/jdk1.8.0_191 </span><br><span class="line">export PATH=$JAVA_HOME/bin:$PATH </span><br><span class="line">export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar </span><br></pre></td></tr></table></figure>
-
 <ol start="4">
 <li>执行 <code>source /etc/profile</code> 刷新配置文件，然后使用 <code>java -version</code>来查看是否成功。</li>
 </ol>
 <p><img src="https://wx3.sinaimg.cn/large/006tNc79gy1g2dt166451j318s03waav.jpg" alt="java"></p>
-<h4 id="Maven"><a href="#Maven" class="headerlink" title="Maven"></a>Maven</h4><ol>
-<li><p>在<a class="link"   target="_blank" rel="noopener" href="http://maven.apache.org/download.cgi" >官网<i class="fas fa-external-link-alt"></i></a> 下载源码包，同样解压前创建 <code>/usr/local/maven</code>文件夹</p>
+<h4 id="Maven">Maven</h4>
+<ol>
+<li>
+<p>在<a class="link"   target="_blank" rel="noopener" href="http://maven.apache.org/download.cgi" >官网<i class="fas fa-external-link-alt"></i></a> 下载源码包，同样解压前创建 <code>/usr/local/maven</code>文件夹</p>
 </li>
-<li><p>将文件解压到<code>/usr/local/maven</code>中。</p>
+<li>
+<p>将文件解压到<code>/usr/local/maven</code>中。</p>
 </li>
-<li><p>使用vim编辑 <code>/etc/profile</code>文件，在末尾添加如下内容</p>
+<li>
+<p>使用vim编辑 <code>/etc/profile</code>文件，在末尾添加如下内容</p>
 </li>
 </ol>
 <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">export MAVEN_HOME=/usr/local/maven/apache-maven-3.6.0</span><br><span class="line">export PATH=$MAVEN_HOME/bin:$PATH</span><br></pre></td></tr></table></figure>
-
 <ol start="4">
-<li><p>同样使用<code>source /etc/profile</code> 命令刷新配置文件，使用<code>mvn -v</code> 命令查看是否安装成功。 </p>
+<li>
+<p>同样使用<code>source /etc/profile</code> 命令刷新配置文件，使用<code>mvn -v</code> 命令查看是否安装成功。</p>
 </li>
-<li><p>配置阿里maven镜像</p>
+<li>
+<p>配置阿里maven镜像</p>
 </li>
 </ol>
 <p>编辑 <code>/usr/local/maven/apache-maven-3.6.0/conf/setting.xml</code>，在<code>&lt;mirrors&gt;&lt;/mirrors&gt;</code>标签内添加如下内容</p>
 <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;mirror&gt;</span><br><span class="line">      &lt;id&gt;alimaven&lt;/id&gt;</span><br><span class="line">      &lt;name&gt;aliyun maven&lt;/name&gt;</span><br><span class="line">  　　&lt;url&gt;http://maven.aliyun.com/nexus/content/groups/public/&lt;/url&gt;</span><br><span class="line">      &lt;mirrorOf&gt;central&lt;/mirrorOf&gt;        </span><br><span class="line">    &lt;/mirror&gt;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
 <p><img src="https://wx1.sinaimg.cn/large/006tNc79gy1g2dt176wswj319k068di3.jpg" alt="maven"></p>
-<h3 id="Mysql安装和数据库管理软件推荐"><a href="#Mysql安装和数据库管理软件推荐" class="headerlink" title="Mysql安装和数据库管理软件推荐"></a>Mysql安装和数据库管理软件推荐</h3><ol>
+<h3 id="Mysql安装和数据库管理软件推荐">Mysql安装和数据库管理软件推荐</h3>
+<ol>
 <li>进入<a class="link"   target="_blank" rel="noopener" href="https://dev.mysql.com/downloads/repo/apt/" >官网<i class="fas fa-external-link-alt"></i></a>下载ubuntu的deb包，直接使用命令安装</li>
 </ol>
 <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo dpkg -i mysql-apt-config_0.8.11-1_all.deb</span><br></pre></td></tr></table></figure>
-
 <ol start="2">
 <li>刷新源列表</li>
 </ol>
 <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get update</span><br></pre></td></tr></table></figure>
-
 <ol start="3">
 <li>安装mysql</li>
 </ol>
 <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install mysql-server mysql-client</span><br></pre></td></tr></table></figure>
-
 <p>其中会让你输入密码，输入就行了。</p>
 
         </div>
@@ -460,6 +462,7 @@
     </div>
 </footer>
 
+
         </div>
     </div>
 
@@ -539,7 +542,7 @@
         <aside class="page-aside">
             <div class="post-toc-wrap">
     <div class="post-toc">
-        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Ubuntu18-04-%E9%85%8D%E7%BD%AE%E5%85%A8%E8%BF%87%E7%A8%8B"><span class="nav-text">Ubuntu18.04 配置全过程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E9%97%AE%E9%A2%98"><span class="nav-text">安装问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%95%8C%E9%9D%A2%E9%85%8D%E7%BD%AE"><span class="nav-text">界面配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85gnome-tweak-tool"><span class="nav-text">安装gnome-tweak-tool</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BB%E9%A2%98%E6%96%B9%E6%A1%88"><span class="nav-text">主题方案</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%BB%E7%95%8C%E9%9D%A2"><span class="nav-text">主界面</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#gdm%E4%B8%BB%E9%A2%98"><span class="nav-text">gdm主题</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#grub%E4%B8%BB%E9%A2%98"><span class="nav-text">grub主题</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gnome%E6%8B%93%E5%B1%95%E6%8E%A8%E8%8D%90"><span class="nav-text">gnome拓展推荐</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEVim%E5%92%8C%E7%BB%88%E7%AB%AF"><span class="nav-text">配置Vim和终端</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEvim"><span class="nav-text">配置vim</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E7%BB%88%E7%AB%AF"><span class="nav-text">配置终端</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEgit%E7%8E%AF%E5%A2%83%E5%92%8Cgithub%E8%BF%9E%E6%8E%A5"><span class="nav-text">配置git环境和github连接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEJava%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83"><span class="nav-text">配置Java开发环境</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#JDK"><span class="nav-text">JDK</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Maven"><span class="nav-text">Maven</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Mysql%E5%AE%89%E8%A3%85%E5%92%8C%E6%95%B0%E6%8D%AE%E5%BA%93%E7%AE%A1%E7%90%86%E8%BD%AF%E4%BB%B6%E6%8E%A8%E8%8D%90"><span class="nav-text">Mysql安装和数据库管理软件推荐</span></a></li></ol></li></ol></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-text">Ubuntu18.04 配置全过程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E9%97%AE%E9%A2%98"><span class="nav-text">安装问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%95%8C%E9%9D%A2%E9%85%8D%E7%BD%AE"><span class="nav-text">界面配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85gnome-tweak-tool"><span class="nav-text">安装gnome-tweak-tool</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BB%E9%A2%98%E6%96%B9%E6%A1%88"><span class="nav-text">主题方案</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%BB%E7%95%8C%E9%9D%A2"><span class="nav-text">主界面</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#gdm%E4%B8%BB%E9%A2%98"><span class="nav-text">gdm主题</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#grub%E4%B8%BB%E9%A2%98"><span class="nav-text">grub主题</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gnome%E6%8B%93%E5%B1%95%E6%8E%A8%E8%8D%90"><span class="nav-text">gnome拓展推荐</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEVim%E5%92%8C%E7%BB%88%E7%AB%AF"><span class="nav-text">配置Vim和终端</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEvim"><span class="nav-text">配置vim</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E7%BB%88%E7%AB%AF"><span class="nav-text">配置终端</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEgit%E7%8E%AF%E5%A2%83%E5%92%8Cgithub%E8%BF%9E%E6%8E%A5"><span class="nav-text">配置git环境和github连接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEJava%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83"><span class="nav-text">配置Java开发环境</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#JDK"><span class="nav-text">JDK</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Maven"><span class="nav-text">Maven</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Mysql%E5%AE%89%E8%A3%85%E5%92%8C%E6%95%B0%E6%8D%AE%E5%BA%93%E7%AE%A1%E7%90%86%E8%BD%AF%E4%BB%B6%E6%8E%A8%E8%8D%90"><span class="nav-text">Mysql安装和数据库管理软件推荐</span></a></li></ol></li></ol></li></ol>
     </div>
 </div>
         </aside>

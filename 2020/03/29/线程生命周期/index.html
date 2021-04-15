@@ -27,7 +27,7 @@
     KEEP.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 月前","year":"%s 年前"};
   </script>
 <meta name="generator" content="Hexo 5.4.0"><link rel="stylesheet" type="text/css" href="/css/injector/main.css" /><link rel="preload" as="style" href="/css/injector/light.css" /><link rel="preload" as="style" href="/css/injector/dark.css" /><link rel="alternate" href="/atom.xml" title="NanYin的博客" type="application/atom+xml">
-</head>
+<link rel="stylesheet" href="/css/prism.css" type="text/css"></head>
 
 
 <body>
@@ -230,14 +230,17 @@
         
 
         <div class="article-content markdown-body">
-            <h1 id="线程生命周期"><a href="#线程生命周期" class="headerlink" title="线程生命周期"></a>线程生命周期</h1><p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20200328192955.png" alt="线程生命周期"></p>
+            <h1>线程生命周期</h1>
+<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20200328192955.png" alt="线程生命周期"></p>
 <p>上图展示了线程从创建到结束的整个生命周期,下面从状态和控制两个方面分解图中的内容</p>
-<h2 id="线程状态"><a href="#线程状态" class="headerlink" title="线程状态"></a>线程状态</h2><p>线程具有5中基本的状态:</p>
+<h2 id="线程状态">线程状态</h2>
+<p>线程具有5中基本的状态:</p>
 <ol>
 <li>NEW(新建状态): 创建线程,还未启动</li>
 <li>RUNNABLE(就绪状态): 可运行状态,但还未获得时间片,等待执行</li>
 <li>RUNNING(执行状态): 运行状态,在就绪状态获得了时间片,进入运行状态</li>
-<li>BLOCKED(阻塞状态):当某些情况下,线程被阻止运行,进入阻塞状态,阻塞的状态可分为三种:<ul>
+<li>BLOCKED(阻塞状态):当某些情况下,线程被阻止运行,进入阻塞状态,阻塞的状态可分为三种:
+<ul>
 <li>第一种为执行了<code>wait()</code>后会进入放入线程等待队列中,这种情况叫等待阻塞.</li>
 <li>第二种为等待获取<code>synchronized()</code>同步锁时,会讲线程放入同步锁队列中,等待前一个线程执行完<code>synchronized</code>中的内容,这种情况叫同步阻塞.</li>
 <li>第三种为执行了<code>sleep()</code>或<code>join()</code>时,和<code>wait()</code>不同,它<strong>不会释放</strong>对象锁.</li>
@@ -245,13 +248,20 @@
 </li>
 <li>TERMINATED(终止状态):当线程正常结束或异常退出时,会到达终止状态</li>
 </ol>
-<h2 id="线程方法"><a href="#线程方法" class="headerlink" title="线程方法"></a>线程方法</h2><ul>
-<li>run/start<br>  需要并行处理的代码放在<code>run()</code>方法中，<code>start()</code>方法启动线程将自动调用 <code>run()</code> 方法，这是由Java的内存机制规定的。并且<code>run()</code>方法必须是public访问权限，返回值类型为void。</li>
-<li>wait<br>  当前线程暂停执行并释放对象锁标志，让其他线程可以进入<code>synchronized</code>数据块，当前线程被放入对象等待池中</li>
-<li>nodify/nodifyAll<br>  唤醒等待(wait)的线程</li>
-<li>sleep<br>  休眠一段时间后，会自动唤醒。但它并不释放对象锁。也就是如果有 <code>synchronized</code>同步块，其他线程仍然不能访问共享数据。注意该方法要捕获异常</li>
-<li>join<br>  当前线程停下来等待，直至另一个调用join方法的线程终止，线程在被激活后不一定马上就运行，而是进入到可运行线程的队列中</li>
-<li>yield<br>  停止当前线程，让同等优先权的线程运行。如果没有同等优先权的线程，那么yield()方法将不会起作用</li>
+<h2 id="线程方法">线程方法</h2>
+<ul>
+<li>run/start<br>
+需要并行处理的代码放在<code>run()</code>方法中，<code>start()</code>方法启动线程将自动调用 <code>run()</code> 方法，这是由Java的内存机制规定的。并且<code>run()</code>方法必须是public访问权限，返回值类型为void。</li>
+<li>wait<br>
+当前线程暂停执行并释放对象锁标志，让其他线程可以进入<code>synchronized</code>数据块，当前线程被放入对象等待池中</li>
+<li>nodify/nodifyAll<br>
+唤醒等待(wait)的线程</li>
+<li>sleep<br>
+休眠一段时间后，会自动唤醒。但它并不释放对象锁。也就是如果有 <code>synchronized</code>同步块，其他线程仍然不能访问共享数据。注意该方法要捕获异常</li>
+<li>join<br>
+当前线程停下来等待，直至另一个调用join方法的线程终止，线程在被激活后不一定马上就运行，而是进入到可运行线程的队列中</li>
+<li>yield<br>
+停止当前线程，让同等优先权的线程运行。如果没有同等优先权的线程，那么yield()方法将不会起作用</li>
 </ul>
 
         </div>
@@ -340,6 +350,7 @@
     </div>
 </footer>
 
+
         </div>
     </div>
 
@@ -419,7 +430,7 @@
         <aside class="page-aside">
             <div class="post-toc-wrap">
     <div class="post-toc">
-        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F"><span class="nav-text">线程生命周期</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E7%8A%B6%E6%80%81"><span class="nav-text">线程状态</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E6%96%B9%E6%B3%95"><span class="nav-text">线程方法</span></a></li></ol></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-text">线程生命周期</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E7%8A%B6%E6%80%81"><span class="nav-text">线程状态</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E6%96%B9%E6%B3%95"><span class="nav-text">线程方法</span></a></li></ol></li></ol>
     </div>
 </div>
         </aside>
