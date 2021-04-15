@@ -16,14 +16,14 @@
     
 <link rel="stylesheet" href="/css/style.css">
 
-    <link rel="shortcut icon" href="/images/logo.svg">
+    <link rel="shortcut icon" href="/images/logo-1.JPG">
     
 <link rel="stylesheet" href="/css/font-awesome.min.css">
 
     <script id="hexo-configurations">
     let KEEP = window.KEEP || {};
     KEEP.hexo_config = {"hostname":"nanyiniu.github.io","root":"/","language":"zh-CN","path":"search.xml"};
-    KEEP.theme_config = {"toc":{"enable":true,"number":false,"expand_all":true,"init_open":false},"style":{"primary_color":"#0066CC","avatar":"https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png","favicon":"/images/logo.svg","article_img_align":"left","left_side_width":"260px","content_max_width":"920px","hover":{"shadow":false,"scale":false},"first_screen":{"enable":false,"background_img":"/images/bg.svg","description":"Keep writing and Keep loving."},"scroll":{"progress_bar":{"enable":false},"percent":{"enable":false}}},"local_search":{"enable":true,"preload":true},"code_copy":{"enable":true,"style":"default"},"pjax":{"enable":false},"lazyload":{"enable":false},"version":"3.4.2"};
+    KEEP.theme_config = {"toc":{"enable":true,"number":false,"expand_all":true,"init_open":false},"style":{"primary_color":"#0066CC","avatar":"https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618233250.png","favicon":"/images/logo-1.JPG","article_img_align":"left","left_side_width":"260px","content_max_width":"920px","hover":{"shadow":false,"scale":false},"first_screen":{"enable":true,"background_img":"/images/Scattered-Forcefields.svg","description":"Stay hungry , Stay foolish ."},"scroll":{"progress_bar":{"enable":true},"percent":{"enable":true}}},"local_search":{"enable":true,"preload":true},"code_copy":{"enable":true,"style":"default"},"pjax":{"enable":false},"lazyload":{"enable":false},"version":"3.4.2"};
     KEEP.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 月前","year":"%s 年前"};
   </script>
 <meta name="generator" content="Hexo 5.4.0"><link rel="stylesheet" type="text/css" href="/css/injector/main.css" /><link rel="preload" as="style" href="/css/injector/light.css" /><link rel="preload" as="style" href="/css/injector/dark.css" /><link rel="alternate" href="/atom.xml" title="NanYin的博客" type="application/atom+xml">
@@ -32,6 +32,8 @@
 
 <body>
 <div class="progress-bar-container">
+    
+        <span class="scroll-progress-bar"></span>
     
 
     
@@ -175,7 +177,7 @@
                     <div class="author">
                         <span class="name">nanyin</span>
                         
-                            <span class="author-label">Lv5</span>
+                            <span class="author-label">打工人</span>
                         
                     </div>
                     <div class="meta-info">
@@ -241,7 +243,7 @@
 <h2 id="排查产生原因"><a href="#排查产生原因" class="headerlink" title="排查产生原因"></a>排查产生原因</h2><p>首先，使用 arthas 工具或者使用 jstack 查看 java 运行中的线程状态，查看哪些线程占用cpu过高，在使用时，发现为gc线程。</p>
 <p>然后，使用 jstat 或者 arthas 中的 dashboard 命令 进行确认，发现堆中新生代老年代空间已满，每过十几秒就在进行一次full gc。所以，可以分析出CPU飙高的原因为内存溢出。</p>
 <h2 id="内存溢出原因分析"><a href="#内存溢出原因分析" class="headerlink" title="内存溢出原因分析"></a>内存溢出原因分析</h2><p>因为要进行内存溢出情况，需要拿出堆转储信息，所以，在无人使用系统时，使用 jmap 命令获取堆转储信息：</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="BASH"><figure class="iseeu highlight /bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jmap -dump:format=b,file=heapdump.hprof pid</span><br></pre></td></tr></table></figure></div>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jmap -dump:format=b,file=heapdump.hprof pid</span><br></pre></td></tr></table></figure>
 
 <p>需要注意的是，使用 jmap 时，会使 JVM 处于 STW（stop the world） 状态，所以尽量不要在生产上有人使用时使用该命令，否则会导致非常长的时间停顿。</p>
 <p>在拿到堆转储信息后，使用MAT(Memory Analyzer Tool)工具进行分析，装载文件后，得到如下图中的内容：</p>
@@ -252,7 +254,7 @@
 <li>首先确认哪里引用到了该类</li>
 </ul>
 <p>一切还要从SVN上传文件说起，SVN上传文件有几个步骤：</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//1. 判断路径是否存在;</span></span><br><span class="line">SVNClientManipulator rp = <span class="keyword">new</span> SVNClientManipulator(user);</span><br><span class="line"><span class="comment">//2. 得到版本库;</span></span><br><span class="line">SVNRepository rps = rp.getRepository(svnDao.getSvnUrlByRepository(repository) + </span><br><span class="line">repository + <span class="string">"/"</span> + newPath);</span><br><span class="line"><span class="comment">//3. 判断是否存在;</span></span><br><span class="line">SVNNodeKind nodeKind = rps.checkPath(<span class="string">""</span>, -<span class="number">1</span>);</span><br><span class="line"><span class="keyword">if</span> (nodeKind == SVNNodeKind.NONE) &#123;<span class="comment">//如果存在则更新路径;</span></span><br><span class="line">    svnConfigDevelopService.addDir(svnDao.getSvnUrlByRepository(repository) +</span><br><span class="line"> repository + <span class="string">"/"</span> + newPath, desc, rp, <span class="keyword">true</span>);</span><br><span class="line">&#125;</span><br><span class="line">importFolder = newPath;</span><br><span class="line"><span class="comment">// 4. 上传文件</span></span><br><span class="line">String msg = svnCommonService.addFileToSVN(svnFilePath, gdFileName, </span><br><span class="line">repository, <span class="string">"/"</span> + importFolder + <span class="string">"/"</span>, user, desc);</span><br></pre></td></tr></table></figure></div>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//1. 判断路径是否存在;</span></span><br><span class="line">SVNClientManipulator rp = <span class="keyword">new</span> SVNClientManipulator(user);</span><br><span class="line"><span class="comment">//2. 得到版本库;</span></span><br><span class="line">SVNRepository rps = rp.getRepository(svnDao.getSvnUrlByRepository(repository) + </span><br><span class="line">repository + <span class="string">&quot;/&quot;</span> + newPath);</span><br><span class="line"><span class="comment">//3. 判断是否存在;</span></span><br><span class="line">SVNNodeKind nodeKind = rps.checkPath(<span class="string">&quot;&quot;</span>, -<span class="number">1</span>);</span><br><span class="line"><span class="keyword">if</span> (nodeKind == SVNNodeKind.NONE) &#123;<span class="comment">//如果存在则更新路径;</span></span><br><span class="line">    svnConfigDevelopService.addDir(svnDao.getSvnUrlByRepository(repository) +</span><br><span class="line"> repository + <span class="string">&quot;/&quot;</span> + newPath, desc, rp, <span class="keyword">true</span>);</span><br><span class="line">&#125;</span><br><span class="line">importFolder = newPath;</span><br><span class="line"><span class="comment">// 4. 上传文件</span></span><br><span class="line">String msg = svnCommonService.addFileToSVN(svnFilePath, gdFileName, </span><br><span class="line">repository, <span class="string">&quot;/&quot;</span> + importFolder + <span class="string">&quot;/&quot;</span>, user, desc);</span><br></pre></td></tr></table></figure>
 
 <p>其中对获取SVNClientManipulator时，其实是获取一个client客户端，整个过程可以用一个简单的sequence图来说明：</p>
 <p><img src="https://gitee.com/NanYinIU/Pic/raw/master/img/20200627205241.png" alt="a2"></p>
@@ -297,7 +299,7 @@
 <p><img src="https://gitee.com/NanYinIU/Pic/raw/master/img/20200627205339.png" alt="a6"></p>
 <hr>
 <h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><h3 id="一、JVM调优参数"><a href="#一、JVM调优参数" class="headerlink" title="一、JVM调优参数"></a>一、JVM调优参数</h3><p>线上分为三台机器，而应用占其中一台，总内存为16g，针对此环境修改JAVA_OPTS</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="BASH"><figure class="iseeu highlight /bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">JAVA_OPTS=<span class="string">"-server -Xms8192m -Xmx8192m </span></span><br><span class="line"><span class="string">-XX:PermSize=1024M -XX:MaxPermSize=1024M -Duser.language=zh -Djava.util.Arrays.useLegacyMergeSort=true </span></span><br><span class="line"><span class="string">-Djava.awt.headless=true </span></span><br><span class="line"><span class="string">-Xloggc:/app/okit/java/gc-%t.log </span></span><br><span class="line"><span class="string">-XX:+UseGCLogFileRotation </span></span><br><span class="line"><span class="string">-XX:NumberOfGCLogFiles=5 </span></span><br><span class="line"><span class="string">-XX:GCLogFileSize=50M -XX:+PrintGCTimeStamps </span></span><br><span class="line"><span class="string">-XX:+PrintGCDetails </span></span><br><span class="line"><span class="string">-XX:HeapDumpPath=./java_dump.hprof </span></span><br><span class="line"><span class="string">-XX:+HeapDumpOnOutOfMemoryError"</span></span><br></pre></td></tr></table></figure></div>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">JAVA_OPTS=<span class="string">&quot;-server -Xms8192m -Xmx8192m </span></span><br><span class="line"><span class="string">-XX:PermSize=1024M -XX:MaxPermSize=1024M -Duser.language=zh -Djava.util.Arrays.useLegacyMergeSort=true </span></span><br><span class="line"><span class="string">-Djava.awt.headless=true </span></span><br><span class="line"><span class="string">-Xloggc:/app/okit/java/gc-%t.log </span></span><br><span class="line"><span class="string">-XX:+UseGCLogFileRotation </span></span><br><span class="line"><span class="string">-XX:NumberOfGCLogFiles=5 </span></span><br><span class="line"><span class="string">-XX:GCLogFileSize=50M -XX:+PrintGCTimeStamps </span></span><br><span class="line"><span class="string">-XX:+PrintGCDetails </span></span><br><span class="line"><span class="string">-XX:HeapDumpPath=./java_dump.hprof </span></span><br><span class="line"><span class="string">-XX:+HeapDumpOnOutOfMemoryError&quot;</span></span><br></pre></td></tr></table></figure>
 
 <p>针对其中参数含义解释：</p>
 <ul>
@@ -306,7 +308,7 @@
 <li><strong>-XX:GCLogFileSize=20M  GCLog文件大小</strong></li>
 <li><strong>-XX:+PrintGCTimeStamps 打印GC耗时</strong></li>
 <li><strong>-XX:+PrintGCDetails 打印GC回收的细节</strong></li>
-<li><strong>-XX:HeapDumpPath=./java_pid<pid>.hprof ：堆内存快照的存储文件路径。文件名一般为java_<pid>_<date>_<time>_heapDump.hprof。</strong></li>
+<li><strong>-XX:HeapDumpPath=./java_pid<pid>.hprof ：堆内存快照的存储文件路径。文件名一般为java_<pid><em><date></em><time>_heapDump.hprof。</strong></li>
 <li><strong>-XX:+HeapDumpOnOutOfMemoryError 在OOM时，自动输出一个dump文件</strong></li>
 </ul>
 <h3 id="二、JDK自带工具使用"><a href="#二、JDK自带工具使用" class="headerlink" title="二、JDK自带工具使用"></a>二、JDK自带工具使用</h3><ul>
@@ -326,8 +328,8 @@
 <p>jstack(Java stack trace)是Java的堆栈分析工具。</p>
 <p>两个功能：</p>
 <ol>
-<li>针对活着的进程做本地的或远程的线程dump；</li>
-<li>针对core文件做线程dump。</li>
+<li> 针对活着的进程做本地的或远程的线程dump；</li>
+<li> 针对core文件做线程dump。</li>
 </ol>
 <p>使用方式：<code>jstack [ option ] pid</code></p>
 <p>可将堆栈输出到指定文件中：jstack -l PID &gt;&gt; jstack.out</p>
@@ -489,10 +491,6 @@
         
 
         
-            <li class="tools-item tool-scroll-to-top flex-center">
-                <i class="fas fa-arrow-up"></i>
-            </li>
-        
 
         <li class="tools-item tool-scroll-to-bottom flex-center">
             <i class="fas fa-arrow-down"></i>
@@ -503,6 +501,11 @@
         <li class="tools-item tool-toggle-show flex-center">
             <i class="fas fa-cog fa-spin"></i>
         </li>
+        
+            <li class="tools-item tool-scroll-to-top flex-center">
+                <i class="arrow-up fas fa-arrow-up"></i>
+                <span class="percent"></span>
+            </li>
         
     </ul>
 </div>
