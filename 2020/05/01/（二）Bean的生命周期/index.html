@@ -9,6 +9,8 @@
     
     <title>
         
+            Bean的生命周期 |
+        
         Nanyin&#39;s Blog
     </title>
     
@@ -165,7 +167,7 @@
     <div class="article-content-container">
 
         <div class="article-title">
-            <span class="title-hover-animation"></span>
+            <span class="title-hover-animation">Bean的生命周期</span>
         </div>
 
         
@@ -183,15 +185,41 @@
                     <div class="meta-info">
                         <div class="article-meta-info">
     <span class="article-date article-meta-item">
-        <i class="fas fa-edit"></i>&nbsp;2020-05-22 07:26:46
+        <i class="fas fa-edit"></i>&nbsp;2020-05-01 12:00:00
     </span>
     
+        <span class="article-categories article-meta-item">
+            <i class="fas fa-folder"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/categories/Spring/">Spring</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fas fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/Java/">Java</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/Spring/">Spring</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
     
 
     
     
         <span class="article-wordcount article-meta-item">
-            <i class="fas fa-file-word"></i>&nbsp;<span>583 字</span>
+            <i class="fas fa-file-word"></i>&nbsp;<span>588 字</span>
         </span>
     
     
@@ -208,92 +236,110 @@
         
 
         <div class="article-content markdown-body">
-            <ul>
-<li><a href="#spring%E4%B8%AD%E7%9A%84%E8%87%AA%E5%8A%A8%E8%A3%85%E9%85%8D">Spring中的自动装配</a>
-<ul>
-<li><a href="#autowire-qualifierprimary">@Autowire、 @Qualifier、@Primary</a></li>
-<li><a href="#injectnamed">@Inject、@Named</a></li>
-</ul>
-</li>
-</ul>
-<h1 id="Spring中的自动装配"><a class="header-anchor" href="#Spring中的自动装配">¶</a> Spring中的自动装配</h1>
-<h2 id="@Autowire、 @Qualifier、@Primary"><a class="header-anchor" href="#@Autowire、 @Qualifier、@Primary">¶</a> @Autowire、 @Qualifier、@Primary</h2>
-<p><code>@Autowire</code> 注解标注在constructor, field, setter method 上，方便在Spring中进行依赖的注入（<code>dependency injection</code>）。和JSR-330标准javax.inject.Inject达到一样的效果，不过autowired时Spring持有的。</p>
-<ul>
-<li>默认使用Autowire是按照类型进行注入的，但是如果在容器中存在多个类型相同的bean时，@Autowired也会按照名称进行匹配。</li>
-<li>使用<code>@Qualifier</code>注解，在获取Bean时，指定要获取的bean的名称。</li>
-<li>使用<code>@Primary</code>注解，在声明Bean时，指定如果注入，则首选的bean。</li>
-</ul>
-<pre><code class="language-java">@Component
-public class Person &#123;
-	private String firstName;
-	private String lastName;
+            <h1 id="Bean的生命周期"><a class="header-anchor" href="#Bean的生命周期">¶</a> Bean的生命周期</h1>
+<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20191020160536.png" alt=""></p>
+<h2 id="Bean的初始化和销毁"><a class="header-anchor" href="#Bean的初始化和销毁">¶</a> Bean的初始化和销毁</h2>
+<h3 id="一、使用@Bean注解的初始化和销毁属性"><a class="header-anchor" href="#一、使用@Bean注解的初始化和销毁属性">¶</a> 一、使用@Bean注解的初始化和销毁属性</h3>
+<pre><code class="language-java">// 在dog实例中指定init和destroy方法
+public class Dog &#123;
 
- 	public Person(String firstName, String lastName) &#123;
-		this.firstName = &quot;w&quot;;
-		this.lastName = &quot;y&quot;;
+    public void init()&#123;
+        System.out.println(&quot;instance dog execute init method.....&quot;);
+    &#125;
+
+    public void destroy()&#123;
+        System.out.println(&quot;instance dog execute destroy method.....&quot;);
+    &#125;
+&#125;
+
+// 声明bean的时候指定 initMethod = &quot;init&quot;,destroyMethod = &quot;destroy&quot;
+@Configurable
+public class LifeCycleConfig &#123;
+    @Bean(initMethod = &quot;init&quot;,destroyMethod = &quot;destroy&quot;)
+    public Dog dog()&#123;
+        System.out.println(&quot;begin create dog&quot;);
+        return new Dog();
+    &#125;
+&#125;
+// 执行测试
+@Test
+public void LifeCycleTest()&#123;
+    ApplicationContext applicationContext = new AnnotationConfigApplicationContext(LifeCycleConfig.class);
+    System.out.println(&quot;instance has created !!!&quot;);
+//        Dog dog = (Dog) applicationContext.getBean(&quot;dog&quot;);
+    ((AnnotationConfigApplicationContext) applicationContext).close();
+    System.out.println(&quot;context has closed !!!&quot;);
+&#125;
+
+// 测试结果:
+// begin create dog
+// instance dog execute init method.....
+// instance has created !!!
+// instance dog execute destroy method.....
+// context has closed !!!
+</code></pre>
+<p>从测试结果来看当创建对象时,通过 <code>initMethod</code>,<code>destroyMethod</code>指定初始化和销毁方法时可行的。</p>
+<p><code>init</code>方法在<strong>对象创建后</strong>执行。<code>destroy</code>在<strong>容器销毁前</strong>执行.</p>
+<h3 id="二、继承 InitializingBean 和 DisposableBean 接口"><a class="header-anchor" href="#二、继承 InitializingBean 和 DisposableBean 接口">¶</a> 二、继承 InitializingBean 和 DisposableBean 接口</h3>
+<p>方法同上，不过需要对象类实现这两个接口</p>
+<pre><code class="language-java">public class Cat implements InitializingBean, DisposableBean &#123;
+
+//  接口中的destroy 方法,执行销毁bean
+    public void destroy() throws Exception &#123;
+        System.out.println(&quot;instance cat execute destroy method.....&quot;);
+    &#125;
+// 接口中的afterPropertiesSet方法,用来创建bean后的初始化
+    public void afterPropertiesSet() throws Exception &#123;
+        System.out.println(&quot;instance cat execute init method.....&quot;);
+    &#125;
+&#125;
+
+// 不需要在bean注解中指定相关方法
+@Bean
+public Cat cat()&#123;
+    System.out.println(&quot;begin create cat&quot;);
+    return new Cat();
+&#125;
+
+//用同样的测试程序测试得到的结果如下:
+// begin create cat
+// instance dog execute init method.....
+// instance has created !!!
+// instance dog execute destroy method.....
+// context has closed !!!
+</code></pre>
+<h3 id="三、使用JSR标准注解 @PostConstruce 和 @PreDestroy"><a class="header-anchor" href="#三、使用JSR标准注解 @PostConstruce 和 @PreDestroy">¶</a> 三、使用JSR标准注解 @PostConstruce 和 @PreDestroy</h3>
+<pre><code class="language-java">public class Bug &#123;
+
+    @PostConstruct
+    public void init()&#123;
+        System.out.println(&quot;instance Bug execute init method.....&quot;);
+    &#125;
+
+    @PreDestroy
+    public void destroy()&#123;
+        System.out.println(&quot;instance Bug execute destroy method.....&quot;);
+    &#125;
+&#125;
+</code></pre>
+<h3 id="四、BeanPostProcessor自定义初始化前后方法"><a class="header-anchor" href="#四、BeanPostProcessor自定义初始化前后方法">¶</a> 四、BeanPostProcessor自定义初始化前后方法</h3>
+<p>先自定义一个 <code>MyBeanPostProcessor</code> ，并将它放到<strong>容器中</strong>，在启动后，每次生成bean时，都会执行下面的 <code>postProcessBeforeInitialization</code> 和 <code>postProcessAfterInitializationde</code> 前置方法和后置方法。</p>
+<pre><code class="language-java">public class MyBeanPostProcessor implements BeanPostProcessor &#123;
+	@Override
+	public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException &#123;
+		// 根据BeanName和bean可以获取bean的类信息接下来就可以进行筛选，在初始化前进行相关操作
+		System.out.println(beanName);
+		return null;
 	&#125;
-
-	@Autowired
-	@Qualifier(&quot;abc&quot;)
-	private Pet pet;
-// 省略getter setter
-&#125;
-
-
-// 或者在声明Bean时，使用Primary进行指定。
-@Bean(&quot;dotdot&quot;)
-@Primary
-public Pet pet2()&#123;
-	return new Pet(&quot;dotdot&quot;);
-&#125;
-</code></pre>
-<blockquote>
-<p>需要注意的是：在同时指定Qualifier和Primary时，会以<strong>Qualifier</strong>为主。</p>
-</blockquote>
-<h2 id="@Inject、@Named"><a class="header-anchor" href="#@Inject、@Named">¶</a> @Inject、@Named</h2>
-<p>@Inject、@Named 都是Javax规范的注解，并不是Spring的注解。</p>
-<p>使用 Inject 注解同样能够标注在constructor, field, setter method 上。基本能够代替 Autowired 注解，并且能够使用 Named 注解，指定名称进行实例的注入，可以代替 Qualifier 注解。</p>
-<pre><code class="language-java">@Component
-public class Person &#123;
-	private String firstName;
-	private String lastName;
-
-	public Person(String firstName, String lastName) &#123;
-		this.firstName = &quot;w&quot;;
-		this.lastName = &quot;y&quot;;
+	@Override
+	public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException &#123;
+		System.out.println(beanName);
+		// 同理初始化后
+		return null;
 	&#125;
-
-	@Inject
-	@Named(&quot;abc&quot;)
-	private Pet pet;
-	// 省略getter setter
 &#125;
 </code></pre>
-<blockquote>
-<p>区别点在于 Autowired 注解支持 required() 属性。而 Inject 注解并不支持。可以使用java.util.Optional或者Spring Framework 5.0 后提供的 @Nullable 注解，标志在构造方法上。</p>
-</blockquote>
-<pre><code class="language-java">public class SimpleMovieLister &#123;
-@Autowired public void setMovieFinder(@Nullable MovieFinder movieFinder) &#123;
-  ...
-&#125;
-</code></pre>
-<h2 id="@Resource"><a class="header-anchor" href="#@Resource">¶</a> @Resource</h2>
-<p>使用 <code>@Resource</code> 同样能够达到自动装配的目的，与 <code>@Autowire</code> 的区别在于以下几点：</p>
-<ul>
-<li>处理这2个注解的BeanPostProcessor不一样</li>
-<li>匹配Bean的方式不同。
-<ul>
-<li><code>@Resource</code>
-<ul>
-<li>默认按照名称进行匹配注入。</li>
-<li>如果指定了 <code>type</code>,则按照类型进行匹配。当无法找到正确的类型或者找到多个时都会报错。如果都没有指定时，并且无法按照名称匹配到Bean时，会回退到按照类型寻找Bean。</li>
-</ul>
-</li>
-<li><code>@Autowire</code> 默认就是按照类型进行匹配的，如果需要指定特定Bean，则需要使用 <code>@Qualifier</code> 注解进行指定。</li>
-</ul>
-</li>
-</ul>
+<p>￼￼￼￼￼</p>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css">
         </div>
 
@@ -301,11 +347,11 @@ public class Person &#123;
             <div class="post-copyright-info">
                 <div class="article-copyright-info-container">
     <ul>
-        <li>本文标题：</li>
+        <li>本文标题：Bean的生命周期</li>
         <li>本文作者：nanyin</li>
-        <li>创建时间：2020-05-22 07:26:46</li>
+        <li>创建时间：2020-05-01 12:00:00</li>
         <li>
-            本文链接：https://nanyiniu.github.io/2020/05/22/（三）自动装配/
+            本文链接：https://nanyiniu.github.io/2020/05/01/（二）Bean的生命周期/
         </li>
         <li>
             版权声明：本博客所有文章除特别声明外，均采用 <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -322,13 +368,13 @@ public class Person &#123;
                     <div class="article-prev">
                         <a class="prev"
                            rel="prev"
-                           href="/2020/05/22/%EF%BC%88%E5%9B%9B%EF%BC%89AOP%E5%88%87%E9%9D%A2%E4%BD%BF%E7%94%A8%E4%B8%8E%E5%8E%9F%E7%90%86/"
+                           href="/2020/05/02/%E7%BA%BF%E4%B8%8A%E5%86%85%E5%AD%98%E6%BA%A2%E5%87%BA%E5%88%86%E6%9E%90/"
                         >
                             <span class="left arrow-icon flex-center">
                               <i class="fas fa-chevron-left"></i>
                             </span>
                             <span class="title flex-center">
-                                <span class="post-nav-title-item"></span>
+                                <span class="post-nav-title-item">线上内存溢出分析</span>
                                 <span class="post-nav-item">上一篇</span>
                             </span>
                         </a>
@@ -338,10 +384,10 @@ public class Person &#123;
                     <div class="article-next">
                         <a class="next"
                            rel="next"
-                           href="/2020/05/22/%EF%BC%88%E4%BA%8C%EF%BC%89Bean%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/"
+                           href="/2020/04/16/Java%E7%9A%84%E6%B7%B1%E6%8B%B7%E8%B4%9D%E5%92%8C%E6%B5%85%E6%8B%B7%E8%B4%9D/"
                         >
                             <span class="title flex-center">
-                                <span class="post-nav-title-item"></span>
+                                <span class="post-nav-title-item">Java的深拷贝和浅拷贝</span>
                                 <span class="post-nav-item">下一篇</span>
                             </span>
                             <span class="right arrow-icon flex-center">
@@ -546,7 +592,7 @@ public class Person &#123;
         <aside class="page-aside">
             <div class="post-toc-wrap">
     <div class="post-toc">
-        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Spring%E4%B8%AD%E7%9A%84%E8%87%AA%E5%8A%A8%E8%A3%85%E9%85%8D"><span class="nav-text"> Spring中的自动装配</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#@Autowire%E3%80%81%20@Qualifier%E3%80%81@Primary"><span class="nav-text"> @Autowire、 @Qualifier、@Primary</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#@Inject%E3%80%81@Named"><span class="nav-text"> @Inject、@Named</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#@Resource"><span class="nav-text"> @Resource</span></a></li></ol></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Bean%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F"><span class="nav-text"> Bean的生命周期</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Bean%E7%9A%84%E5%88%9D%E5%A7%8B%E5%8C%96%E5%92%8C%E9%94%80%E6%AF%81"><span class="nav-text"> Bean的初始化和销毁</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E4%BD%BF%E7%94%A8@Bean%E6%B3%A8%E8%A7%A3%E7%9A%84%E5%88%9D%E5%A7%8B%E5%8C%96%E5%92%8C%E9%94%80%E6%AF%81%E5%B1%9E%E6%80%A7"><span class="nav-text"> 一、使用@Bean注解的初始化和销毁属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E7%BB%A7%E6%89%BF%20InitializingBean%20%E5%92%8C%20DisposableBean%20%E6%8E%A5%E5%8F%A3"><span class="nav-text"> 二、继承 InitializingBean 和 DisposableBean 接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E4%BD%BF%E7%94%A8JSR%E6%A0%87%E5%87%86%E6%B3%A8%E8%A7%A3%20@PostConstruce%20%E5%92%8C%20@PreDestroy"><span class="nav-text"> 三、使用JSR标准注解 @PostConstruce 和 @PreDestroy</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%9B%E3%80%81BeanPostProcessor%E8%87%AA%E5%AE%9A%E4%B9%89%E5%88%9D%E5%A7%8B%E5%8C%96%E5%89%8D%E5%90%8E%E6%96%B9%E6%B3%95"><span class="nav-text"> 四、BeanPostProcessor自定义初始化前后方法</span></a></li></ol></li></ol></li></ol>
     </div>
 </div>
         </aside>
