@@ -27,7 +27,7 @@
     KEEP.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 月前","year":"%s 年前"};
   </script>
 <meta name="generator" content="Hexo 5.4.0"><link rel="stylesheet" type="text/css" href="/css/injector/main.css" /><link rel="preload" as="style" href="/css/injector/light.css" /><link rel="preload" as="style" href="/css/injector/dark.css" /><link rel="alternate" href="/atom.xml" title="NanYin的博客" type="application/atom+xml">
-<link rel="stylesheet" href="/css/prism.css" type="text/css"></head>
+</head>
 
 
 <body>
@@ -47,7 +47,8 @@
     <div class="page-main-content">
 
         <div class="page-main-content-top">
-            <header class="header-wrapper">
+            <link rel="stylesheet" href="/css/prism.css">
+<header class="header-wrapper">
 
     <div class="header-content">
         <div class="left">
@@ -234,23 +235,91 @@
         
 
         <div class="article-content markdown-body">
-            <h1>设计模式之适配器模式</h1>
+            <h1 id="设计模式之适配器模式"><a class="header-anchor" href="#设计模式之适配器模式">¶</a> 设计模式之适配器模式</h1>
 <p>我们实际中会用到两个不同接口的类的通信,在不修改两个类的前提下,使用新的中间类来完成衔接的过程,这个中间件就是适配器.可以让两个完全不同的接口相互转化.</p>
 <p>适配器模式允许在适配器中包装其他不兼容的对象，以使其与另一个类兼容。</p>
 <p>就如同生活中买了港版的手机,但是附赠的是三脚插头，而大陆上用的是两脚的，需要一个适配器来将三角插头转换为两脚的。其中这个中间件就是适配器。</p>
-<h2 id="应用场景">应用场景</h2>
+<h2 id="应用场景"><a class="header-anchor" href="#应用场景">¶</a> 应用场景</h2>
 <ul>
 <li>当你想要这个类，但是类中的接口与想用的接口并不匹配</li>
 <li>当想要去创建一个可重用的类，让它与不相关或不可预见的类合作，这个类不必要有兼容的接口</li>
 <li>当你需要一系列的子类的时候，如果想要调整这些子类的接口方法的时候，对每一个接口子类化的这种方法是不可行的。这时就可使用适配器适配这些子类的夫类。</li>
 </ul>
-<h2 id="结构图">结构图</h2>
+<h2 id="结构图"><a class="header-anchor" href="#结构图">¶</a> 结构图</h2>
 <p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190602120227.png" alt="适配器模式图"></p>
 <p>使用client调用适配器，适配器继承与三脚插头，依赖于二脚插头。这样就可以使用三脚插头的接口调用二脚插头的方法。</p>
-<h2 id="代码">代码</h2>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 三角插头</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Author</span> nanyin</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Date</span> 11:13 2019-06-02</span></span><br><span class="line"><span class="comment"> **/</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ThreeLeggedPlug</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">charge</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;use three legged plug&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 二脚插头</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Author</span> nanyin</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Date</span> 11:13 2019-06-02</span></span><br><span class="line"><span class="comment"> **/</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TwoLeggedPlug</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">fastCharge</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;use two legged plug for fast charge !&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//适配器 继承三角插头</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TwoLeggedPlugAdapter</span> <span class="keyword">extends</span> <span class="title">ThreeLeggedPlug</span> </span>&#123;</span><br><span class="line">    TwoLeggedPlug twoLeggedPlug;</span><br><span class="line">    <span class="comment">// 依赖于二脚插头</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">TwoLeggedPlugAdapter</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        twoLeggedPlug = <span class="keyword">new</span> TwoLeggedPlug();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//使用三角插头的charge方法，调用二脚插头的fastCharge方法</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">charge</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        twoLeggedPlug.fastCharge();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//某S9港版手机</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">S9Plus</span> <span class="keyword">extends</span> <span class="title">ThreeLeggedPlug</span> </span>&#123;</span><br><span class="line">    ThreeLeggedPlug threeLeggedPlug;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">S9Plus</span><span class="params">(ThreeLeggedPlug threeLeggedPlug)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.threeLeggedPlug = threeLeggedPlug;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">charge</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        threeLeggedPlug.charge();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//客户端方法</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">App</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testCharge</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 不使用适配器 使用类三角插头</span></span><br><span class="line">        ThreeLeggedPlug s9Plus = <span class="keyword">new</span> S9Plus(<span class="keyword">new</span> ThreeLeggedPlug());</span><br><span class="line">        s9Plus.charge();</span><br><span class="line">        <span class="comment">// 使用二脚插头的适配器</span></span><br><span class="line">        ThreeLeggedPlug s9PlusUseTwoLeggedPlug = <span class="keyword">new</span> S9Plus(<span class="keyword">new</span> TwoLeggedPlugAdapter());</span><br><span class="line">        s9PlusUseTwoLeggedPlug.charge();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">结果：</span><br><span class="line"></span><br><span class="line">use three legged plug</span><br><span class="line">use two legged plug for fast charge !</span><br><span class="line"></span><br><span class="line">Process finished with exit code 0</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="代码"><a class="header-anchor" href="#代码">¶</a> 代码</h2>
+<pre><code class="language-java">/**
+ * 三角插头
+ * @Author nanyin
+ * @Date 11:13 2019-06-02
+ **/
+public class ThreeLeggedPlug &#123;
+    public void charge()&#123;
+        System.out.println(&quot;use three legged plug&quot;);
+    &#125;
+&#125;
 
+/**
+ * 二脚插头
+ * @Author nanyin
+ * @Date 11:13 2019-06-02
+ **/
+public class TwoLeggedPlug &#123;
+    public void fastCharge()&#123;
+        System.out.println(&quot;use two legged plug for fast charge !&quot;);
+    &#125;
+&#125;
+//适配器 继承三角插头
+public class TwoLeggedPlugAdapter extends ThreeLeggedPlug &#123;
+    TwoLeggedPlug twoLeggedPlug;
+    // 依赖于二脚插头
+    public TwoLeggedPlugAdapter() &#123;
+        twoLeggedPlug = new TwoLeggedPlug();
+    &#125;
+    //使用三角插头的charge方法，调用二脚插头的fastCharge方法
+    @Override
+    public void charge() &#123;
+        twoLeggedPlug.fastCharge();
+    &#125;
+&#125;
+
+//某S9港版手机
+public class S9Plus extends ThreeLeggedPlug &#123;
+    ThreeLeggedPlug threeLeggedPlug;
+
+    public S9Plus(ThreeLeggedPlug threeLeggedPlug) &#123;
+        this.threeLeggedPlug = threeLeggedPlug;
+    &#125;
+
+    @Override
+    public void charge() &#123;
+        threeLeggedPlug.charge();
+    &#125;
+&#125;
+
+//客户端方法
+public class App &#123;
+    @Test
+    public void testCharge() &#123;
+        // 不使用适配器 使用类三角插头
+        ThreeLeggedPlug s9Plus = new S9Plus(new ThreeLeggedPlug());
+        s9Plus.charge();
+        // 使用二脚插头的适配器
+        ThreeLeggedPlug s9PlusUseTwoLeggedPlug = new S9Plus(new TwoLeggedPlugAdapter());
+        s9PlusUseTwoLeggedPlug.charge();
+    &#125;
+&#125;
+</code></pre>
+<pre><code class="language-text">结果：
+
+use three legged plug
+use two legged plug for fast charge !
+
+Process finished with exit code 0
+
+</code></pre>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css">
         </div>
 
         
@@ -337,6 +406,19 @@
     </div>
 </footer>
 
+<script src="/js/prism.js" async></script>
+
+# 文档底部引入js
+<script src="https://cdn.bootcss.com/jquery/3.4.0/jquery.min.js"></script>
+
+<script src="/js/prettify.js"></script>
+
+
+# 高亮设置
+<script type="text/javascript">
+$(window).on('load', function(){ 
+$('code').addClass('language-json');});</script>
+
 
         </div>
     </div>
@@ -417,7 +499,7 @@
         <aside class="page-aside">
             <div class="post-toc-wrap">
     <div class="post-toc">
-        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-text">设计模式之适配器模式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-text">应用场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%93%E6%9E%84%E5%9B%BE"><span class="nav-text">结构图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81"><span class="nav-text">代码</span></a></li></ol></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E9%80%82%E9%85%8D%E5%99%A8%E6%A8%A1%E5%BC%8F"><span class="nav-text"> 设计模式之适配器模式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-text"> 应用场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%93%E6%9E%84%E5%9B%BE"><span class="nav-text"> 结构图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81"><span class="nav-text"> 代码</span></a></li></ol></li></ol>
     </div>
 </div>
         </aside>

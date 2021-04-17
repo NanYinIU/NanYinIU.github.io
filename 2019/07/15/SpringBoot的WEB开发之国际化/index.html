@@ -27,7 +27,7 @@
     KEEP.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 月前","year":"%s 年前"};
   </script>
 <meta name="generator" content="Hexo 5.4.0"><link rel="stylesheet" type="text/css" href="/css/injector/main.css" /><link rel="preload" as="style" href="/css/injector/light.css" /><link rel="preload" as="style" href="/css/injector/dark.css" /><link rel="alternate" href="/atom.xml" title="NanYin的博客" type="application/atom+xml">
-<link rel="stylesheet" href="/css/prism.css" type="text/css"></head>
+</head>
 
 
 <body>
@@ -47,7 +47,8 @@
     <div class="page-main-content">
 
         <div class="page-main-content-top">
-            <header class="header-wrapper">
+            <link rel="stylesheet" href="/css/prism.css">
+<header class="header-wrapper">
 
     <div class="header-content">
         <div class="left">
@@ -234,98 +235,355 @@
         
 
         <div class="article-content markdown-body">
-            <h1>准备工作</h1>
+            <h1 id="准备工作"><a class="header-anchor" href="#准备工作">¶</a> 准备工作</h1>
 <p>SpringBoot默认是支持<code>Thymeleaf</code>模版引擎的。相应的如果使用<code>Thymeleaf</code>就可以使用thymeleaf的语法在页面显示返回给页面的数据。</p>
-<h2 id="使用thymeleaf">使用thymeleaf</h2>
-<h3 id="导入starter">导入starter</h3>
+<h2 id="使用thymeleaf"><a class="header-anchor" href="#使用thymeleaf">¶</a> 使用thymeleaf</h2>
+<h3 id="导入starter"><a class="header-anchor" href="#导入starter">¶</a> 导入starter</h3>
 <p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190715214204.png" alt="autoConfig"></p>
 <p>如图，SpringBoot自动配置是导入有Thymeleaf相关自动配置文件的，但是，红色部分是缺少的部分，也就是说少包。自然SpringBoot会提供这些相关的包的starters.</p>
 <p>那么在官网上的starters中可以找到<code>spring-boot-starter-thymeleaf</code>，说明SpringBoot提供Thymeleaf的starter需要导入，才能使用<code>Thymeleaf</code>。</p>
-<h3 id="在SpringBoot中Thymeleaf的自动配置">在SpringBoot中Thymeleaf的自动配置</h3>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@ConfigurationProperties(prefix = &quot;spring.thymeleaf&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ThymeleafProperties</span> </span>&#123;</span><br><span class="line"></span><br><span class="line"><span class="comment">//  charset</span></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Charset DEFAULT_ENCODING = StandardCharsets.UTF_8;</span><br><span class="line"><span class="comment">// 默认加载模版的路径</span></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String DEFAULT_PREFIX = <span class="string">&quot;classpath:/templates/&quot;</span>;</span><br><span class="line"><span class="comment">// 默认加载的文件类型 是html</span></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String DEFAULT_SUFFIX = <span class="string">&quot;.html&quot;</span>;</span><br><span class="line"><span class="comment">// 可自己修改配置文件中的 前缀和后缀，如果 spring.thymeleaf.suffix=.htmlx</span></span><br><span class="line">	<span class="keyword">private</span> String prefix = DEFAULT_PREFIX;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> String suffix = DEFAULT_SUFFIX;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h3 id="使用Thymeleaf进行页面渲染">使用Thymeleaf进行页面渲染</h3>
+<h3 id="在SpringBoot中Thymeleaf的自动配置"><a class="header-anchor" href="#在SpringBoot中Thymeleaf的自动配置">¶</a> 在SpringBoot中Thymeleaf的自动配置</h3>
+<pre><code class="language-java">@ConfigurationProperties(prefix = &quot;spring.thymeleaf&quot;)
+public class ThymeleafProperties &#123;
+
+//  charset
+	private static final Charset DEFAULT_ENCODING = StandardCharsets.UTF_8;
+// 默认加载模版的路径
+	public static final String DEFAULT_PREFIX = &quot;classpath:/templates/&quot;;
+// 默认加载的文件类型 是html
+	public static final String DEFAULT_SUFFIX = &quot;.html&quot;;
+// 可自己修改配置文件中的 前缀和后缀，如果 spring.thymeleaf.suffix=.htmlx
+	private String prefix = DEFAULT_PREFIX;
+
+	private String suffix = DEFAULT_SUFFIX;
+
+</code></pre>
+<h3 id="使用Thymeleaf进行页面渲染"><a class="header-anchor" href="#使用Thymeleaf进行页面渲染">¶</a> 使用Thymeleaf进行页面渲染</h3>
 <p>所以在SpringBoot中在Controller中使用如下：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Controller</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloController</span> </span>&#123;</span><br><span class="line">    <span class="meta">@RequestMapping(&quot;/home&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">home</span><span class="params">(Map&lt;String,String&gt; map)</span></span>&#123;</span><br><span class="line">        map.put(<span class="string">&quot;hello&quot;</span>,<span class="string">&quot;Hello World~~~&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;home&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="language-java">@Controller
+public class HelloController &#123;
+    @RequestMapping(&quot;/home&quot;)
+    public String home(Map&lt;String,String&gt; map)&#123;
+        map.put(&quot;hello&quot;,&quot;Hello World~~~&quot;);
+        return &quot;home&quot;;
+    &#125;
+&#125;
+</code></pre>
 <p>这样映射器就会自动映射到<code>classpath:/templates/home.html</code>文件上。</p>
 <p>在templates下建立home.html文件</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"> <span class="comment">&lt;!--引入 xmlns:th 用于thymeleaf语法提示--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span> <span class="attr">xmlns:th</span>=<span class="string">&quot;http://www.thymeleaf.org&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Title<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">h1</span> <span class="attr">th:text</span>=<span class="string">&quot;$&#123;hello&#125;&quot;</span>&gt;</span>hello world<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+ &lt;!--引入 xmlns:th 用于thymeleaf语法提示--&gt;
+&lt;html lang=&quot;en&quot; xmlns:th=&quot;http://www.thymeleaf.org&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;title&gt;Title&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1 th:text=&quot;$&#123;hello&#125;&quot;&gt;hello world&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
 <p>重启后查看<code>http://localhost:8080/home</code>发现已经可以让 <code>/home</code> 映射到 <code>home.html</code> 文件上了。并且根据我们传过来的值 <code>Hello World~~~</code> 显示在页面上了。</p>
 <p>Thymeleaf语法可直接参考官方的<a class="link"   target="_blank" rel="noopener" href="https://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html" >文档<i class="fas fa-external-link-alt"></i></a>;</p>
-<h2 id="使用SpringMVC">使用SpringMVC</h2>
+<h2 id="使用SpringMVC"><a class="header-anchor" href="#使用SpringMVC">¶</a> 使用SpringMVC</h2>
 <p>SpringMvc框架是一种丰富<code>model view controller</code> 的web框架。SpringMVC通过使用 <code>@Controller</code> 和 <code>@RestController</code> 完成对 <code>HTTP</code> 请求的处理。通过使用 <code>@RequestMapping</code> 完成对请求对controller的映射。</p>
-<h3 id="自动配置">自动配置</h3>
+<h3 id="自动配置"><a class="header-anchor" href="#自动配置">¶</a> 自动配置</h3>
 <p><code>SpringBoot</code> 对 <code>SpringMVC</code> 在自动配置的时候，进行了很多默认的设置。包括前一篇文章中的关于静态资源加载的两种方式（ <code>Webjars</code> 和本地加载位置），也是通过 <code>SpringBoot</code> 进行自动配置的。更多的 <code>SpringBoot</code> 对 <code>SpringMVC</code> 在哪些地方进行了自动配置，可以参考文档中的<a href="RELEASE/reference/html/boot-features-developing-web-applications.html#boot-features-spring-mvc">SpringMVC 特性</a>。</p>
-<h3 id="自动配置代码参考">自动配置代码参考</h3>
+<h3 id="自动配置代码参考"><a class="header-anchor" href="#自动配置代码参考">¶</a> 自动配置代码参考</h3>
 <p>拿 <code>ContentNegotiatingViewResolver</code>这个bean来说，SpringMVC的自动配置类是如何对拓展的支持。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="meta">@ConditionalOnBean(ViewResolver.class)</span></span><br><span class="line"><span class="comment">// 如果类路径中不存在ContentNegotiatingViewResolver这个类的时候</span></span><br><span class="line"><span class="meta">@ConditionalOnMissingBean(name = &quot;viewResolver&quot;, value = ContentNegotiatingViewResolver.class)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> ContentNegotiatingViewResolver <span class="title">viewResolver</span><span class="params">(BeanFactory beanFactory)</span> </span>&#123;</span><br><span class="line"><span class="comment">//  返回这个Resolver</span></span><br><span class="line">    ContentNegotiatingViewResolver resolver = <span class="keyword">new</span> ContentNegotiatingViewResolver();</span><br><span class="line">    resolver.setContentNegotiationManager(beanFactory.getBean(ContentNegotiationManager.class));</span><br><span class="line">    <span class="comment">// ContentNegotiatingViewResolver uses all the other view resolvers to locate</span></span><br><span class="line">    <span class="comment">// a view so it should have a high precedence</span></span><br><span class="line">    resolver.setOrder(Ordered.HIGHEST_PRECEDENCE);</span><br><span class="line">    <span class="keyword">return</span> resolver;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// ContentNegotiatingViewResolver 类中的初始化servlet容器方法</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">initServletContext</span><span class="params">(ServletContext servletContext)</span> </span>&#123;</span><br><span class="line"><span class="comment">// 找出所有的容器中的ViewResolver</span></span><br><span class="line">    Collection&lt;ViewResolver&gt; matchingBeans =</span><br><span class="line">            BeanFactoryUtils.beansOfTypeIncludingAncestors(obtainApplicationContext(), ViewResolver.class).values();</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span>.viewResolvers == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">this</span>.viewResolvers = <span class="keyword">new</span> ArrayList&lt;&gt;(matchingBeans.size());</span><br><span class="line">        <span class="comment">// 循环添加到viewResolver中</span></span><br><span class="line">        <span class="keyword">for</span> (ViewResolver viewResolver : matchingBeans) &#123;</span><br><span class="line">            <span class="keyword">if</span> (<span class="keyword">this</span> != viewResolver) &#123;</span><br><span class="line">                <span class="keyword">this</span>.viewResolvers.add(viewResolver);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="meta">@Nullable</span></span><br><span class="line"><span class="comment">//实现ViewResolver的实现方法</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> View <span class="title">resolveViewName</span><span class="params">(String viewName, Locale locale)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    RequestAttributes attrs = RequestContextHolder.getRequestAttributes();</span><br><span class="line">    Assert.state(attrs <span class="keyword">instanceof</span> ServletRequestAttributes, <span class="string">&quot;No current ServletRequestAttributes&quot;</span>);</span><br><span class="line">    List&lt;MediaType&gt; requestedMediaTypes = getMediaTypes(((ServletRequestAttributes) attrs).getRequest());</span><br><span class="line">    <span class="keyword">if</span> (requestedMediaTypes != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="comment">//  获取候选的view</span></span><br><span class="line">        <span class="comment">// 在getCandidateViews这个方法里就是把全局的viewResolver循环一遍</span></span><br><span class="line">        List&lt;View&gt; candidateViews = getCandidateViews(viewName, locale, requestedMediaTypes);</span><br><span class="line">        <span class="comment">// 寻找最好的/最合适的view</span></span><br><span class="line">        View bestView = getBestView(candidateViews, requestedMediaTypes, attrs);</span><br><span class="line">        <span class="keyword">if</span> (bestView != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> bestView;</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="language-java">@Bean
+@ConditionalOnBean(ViewResolver.class)
+// 如果类路径中不存在ContentNegotiatingViewResolver这个类的时候
+@ConditionalOnMissingBean(name = &quot;viewResolver&quot;, value = ContentNegotiatingViewResolver.class)
+public ContentNegotiatingViewResolver viewResolver(BeanFactory beanFactory) &#123;
+//  返回这个Resolver
+    ContentNegotiatingViewResolver resolver = new ContentNegotiatingViewResolver();
+    resolver.setContentNegotiationManager(beanFactory.getBean(ContentNegotiationManager.class));
+    // ContentNegotiatingViewResolver uses all the other view resolvers to locate
+    // a view so it should have a high precedence
+    resolver.setOrder(Ordered.HIGHEST_PRECEDENCE);
+    return resolver;
+&#125;
+
+// ContentNegotiatingViewResolver 类中的初始化servlet容器方法
+protected void initServletContext(ServletContext servletContext) &#123;
+// 找出所有的容器中的ViewResolver
+    Collection&lt;ViewResolver&gt; matchingBeans =
+            BeanFactoryUtils.beansOfTypeIncludingAncestors(obtainApplicationContext(), ViewResolver.class).values();
+    if (this.viewResolvers == null) &#123;
+        this.viewResolvers = new ArrayList&lt;&gt;(matchingBeans.size());
+        // 循环添加到viewResolver中
+        for (ViewResolver viewResolver : matchingBeans) &#123;
+            if (this != viewResolver) &#123;
+                this.viewResolvers.add(viewResolver);
+            &#125;
+        &#125;
+    &#125;
+
+@Override
+@Nullable
+//实现ViewResolver的实现方法
+public View resolveViewName(String viewName, Locale locale) throws Exception &#123;
+    RequestAttributes attrs = RequestContextHolder.getRequestAttributes();
+    Assert.state(attrs instanceof ServletRequestAttributes, &quot;No current ServletRequestAttributes&quot;);
+    List&lt;MediaType&gt; requestedMediaTypes = getMediaTypes(((ServletRequestAttributes) attrs).getRequest());
+    if (requestedMediaTypes != null) &#123;
+        //  获取候选的view
+        // 在getCandidateViews这个方法里就是把全局的viewResolver循环一遍
+        List&lt;View&gt; candidateViews = getCandidateViews(viewName, locale, requestedMediaTypes);
+        // 寻找最好的/最合适的view
+        View bestView = getBestView(candidateViews, requestedMediaTypes, attrs);
+        if (bestView != null) &#123;
+            return bestView;
+        &#125;
+</code></pre>
 <p>通过上述代码的描述，可以发现如果自己实现ViewResolver，只需要实现ViewResolver后加入到容器中即可。SpringBoot会自动获取容器中的ViewResover。</p>
-<h3 id="定制开发">定制开发</h3>
+<h3 id="定制开发"><a class="header-anchor" href="#定制开发">¶</a> 定制开发</h3>
 <p>如果想保留 <code>SpringBoot</code> 的MVC特性，并且想去添加MVC配置如拦截器，视图控制器等，你可以添加自己的配置类，并且继承<code>WebMvcConfigurer</code>,但是需要注意的是不能使用 <code>@EnableWebMvc</code> 注解。如果使用 <code>@EnableWebMvc</code> 注解，则表示要你全面接管SpringMvc配置功能，不使用SpringBoot自动配置的功能。</p>
 <ol>
 <li>使用bean的方式，让 <code>InnerViewResolver</code> 自动发现容器中的ViewResolver</li>
 </ol>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="comment">//@EnableWebMvc // 使用这个注解表示完全不实用SpringBoot对SpringMVC的自动配置功能。</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MvcConfig</span> <span class="keyword">implements</span> <span class="title">WebMvcConfigurer</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> MyViewResolver <span class="title">myViewResolver</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> MyViewResolver();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">InnerViewResolver</span> <span class="keyword">implements</span> <span class="title">ViewResolver</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> View <span class="title">resolveViewName</span><span class="params">(String viewName, Locale locale)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;    </span><br></pre></td></tr></table></figure>
+<pre><code class="language-java">@Configuration
+//@EnableWebMvc // 使用这个注解表示完全不实用SpringBoot对SpringMVC的自动配置功能。
+public class MvcConfig implements WebMvcConfigurer &#123;
+
+    @Bean
+    public MyViewResolver myViewResolver()&#123;
+        return new MyViewResolver();
+    &#125;
+
+    class InnerViewResolver implements ViewResolver &#123;
+
+        @Override
+        public View resolveViewName(String viewName, Locale locale) throws Exception &#123;
+            return null;
+        &#125;
+    &#125;    
+</code></pre>
 <p>这样将一个ViewResolver放到容器中，那么前面说到的 <code>InnerViewResolver</code> 会自动的发现这个bean来使用。</p>
 <ol start="2">
 <li>使用 <code>WebMvcConfigurer</code> 实现</li>
 </ol>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="comment">//@EnableWebMvc</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MvcConfig</span> <span class="keyword">implements</span> <span class="title">WebMvcConfigurer</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">configureViewResolvers</span><span class="params">(ViewResolverRegistry registry)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        registry.viewResolver(<span class="keyword">new</span> InnerViewResolver());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addViewControllers</span><span class="params">(ViewControllerRegistry registry)</span> </span>&#123;</span><br><span class="line">        registry.addRedirectViewController(<span class="string">&quot;/index&quot;</span>,<span class="string">&quot;/home&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// ViewResolverRegistry 类中的viewResolver方法，直接添加到全局变量 viewResolvers中，代替前面的遍历</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">viewResolver</span><span class="params">(ViewResolver viewResolver)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (viewResolver <span class="keyword">instanceof</span> ContentNegotiatingViewResolver) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> BeanInitializationException(</span><br><span class="line">                <span class="string">&quot;addViewResolver cannot be used to configure a ContentNegotiatingViewResolver. &quot;</span> +</span><br><span class="line">                <span class="string">&quot;Please use the method enableContentNegotiation instead.&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">this</span>.viewResolvers.add(viewResolver);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="language-java">@Configuration
+//@EnableWebMvc
+public class MvcConfig implements WebMvcConfigurer &#123;
+
+    @Override
+    public void configureViewResolvers(ViewResolverRegistry registry)
+    &#123;
+        registry.viewResolver(new InnerViewResolver());
+    &#125;
+
+    @Override
+    public void addViewControllers(ViewControllerRegistry registry) &#123;
+        registry.addRedirectViewController(&quot;/index&quot;,&quot;/home&quot;);
+    &#125;
+
+// ViewResolverRegistry 类中的viewResolver方法，直接添加到全局变量 viewResolvers中，代替前面的遍历
+public void viewResolver(ViewResolver viewResolver) &#123;
+    if (viewResolver instanceof ContentNegotiatingViewResolver) &#123;
+        throw new BeanInitializationException(
+                &quot;addViewResolver cannot be used to configure a ContentNegotiatingViewResolver. &quot; +
+                &quot;Please use the method enableContentNegotiation instead.&quot;);
+    &#125;
+    this.viewResolvers.add(viewResolver);
+&#125;
+</code></pre>
 <p>继承WebMvcConfigurer使用继承方法，将类放到容器中。</p>
-<h1>国际化开发</h1>
+<h1 id="国际化开发"><a class="header-anchor" href="#国际化开发">¶</a> 国际化开发</h1>
 <p>下面从自动配置入手，来看SpringBoot是怎么配置国际化的。</p>
-<h2 id="让SpringBoot配置指定国际化文件">让SpringBoot配置指定国际化文件</h2>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MessageSourceAutoConfiguration</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Resource[] NO_RESOURCES = &#123;&#125;;</span><br><span class="line"><span class="comment">// 在配置文件中可以进行配置的内容 以spring.message开头</span></span><br><span class="line">	<span class="meta">@Bean</span></span><br><span class="line">	<span class="meta">@ConfigurationProperties(prefix = &quot;spring.messages&quot;)</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> MessageSourceProperties <span class="title">messageSourceProperties</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">new</span> MessageSourceProperties();</span><br><span class="line">	&#125;</span><br><span class="line"><span class="comment">/***********************MessageSourceProperties**********************/</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MessageSourceProperties</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 以逗号分隔的基本名称列表 每一个都是在完整的路径下加载，比如 i18n.home,i18n.hello这样</span></span><br><span class="line"><span class="comment">   * 如果在类路径上，就去掉i18n.</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="keyword">private</span> String basename = <span class="string">&quot;messages&quot;</span>;</span><br><span class="line">  </span><br></pre></td></tr></table></figure>
+<h2 id="让SpringBoot配置指定国际化文件"><a class="header-anchor" href="#让SpringBoot配置指定国际化文件">¶</a> 让SpringBoot配置指定国际化文件</h2>
+<pre><code class="language-java">public class MessageSourceAutoConfiguration &#123;
+
+	private static final Resource[] NO_RESOURCES = &#123;&#125;;
+// 在配置文件中可以进行配置的内容 以spring.message开头
+	@Bean
+	@ConfigurationProperties(prefix = &quot;spring.messages&quot;)
+	public MessageSourceProperties messageSourceProperties() &#123;
+		return new MessageSourceProperties();
+	&#125;
+/***********************MessageSourceProperties**********************/
+public class MessageSourceProperties &#123;
+
+	/**
+	 * 以逗号分隔的基本名称列表 每一个都是在完整的路径下加载，比如 i18n.home,i18n.hello这样
+   * 如果在类路径上，就去掉i18n.
+	 */
+	private String basename = &quot;messages&quot;;
+  
+</code></pre>
 <p>如果对<code>basename</code>的值的设置仍有疑惑，那来直接看解析<code>basename</code>的代码。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> ConditionOutcome <span class="title">getMatchOutcome</span><span class="params">(ConditionContext context, AnnotatedTypeMetadata metadata)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 获得propertiesf中的spring.messages.basename属性，如果没有默认是messages</span></span><br><span class="line">	String basename = context.getEnvironment().getProperty(<span class="string">&quot;spring.messages.basename&quot;</span>, <span class="string">&quot;messages&quot;</span>);</span><br><span class="line">	ConditionOutcome outcome = cache.get(basename);</span><br><span class="line">	<span class="keyword">if</span> (outcome == <span class="keyword">null</span>) &#123;</span><br><span class="line">      <span class="comment">// 调用方法解析basename</span></span><br><span class="line">		outcome = getMatchOutcomeForBasename(context, basename);</span><br><span class="line">		cache.put(basename, outcome);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> outcome;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> ConditionOutcome <span class="title">getMatchOutcomeForBasename</span><span class="params">(ConditionContext context, String basename)</span> </span>&#123;</span><br><span class="line">	ConditionMessage.Builder message = ConditionMessage.forCondition(<span class="string">&quot;ResourceBundle&quot;</span>);</span><br><span class="line">	<span class="keyword">for</span> (String name : StringUtils.commaDelimitedListToStringArray(StringUtils.trimAllWhitespace(basename))) &#123;</span><br><span class="line">      <span class="comment">// 将basename以逗号分隔，循环这个数组</span></span><br><span class="line">		<span class="keyword">for</span> (Resource resource : getResources(context.getClassLoader(), name)) &#123;</span><br><span class="line">        <span class="comment">// 这里的getResource方法 是加载classpath + name + .properties中的内容</span></span><br><span class="line">        <span class="comment">// 所以国际化文件只支持 properties文件，其他文件不支持</span></span><br><span class="line">        <span class="comment">// return new PathMatchingResourcePatternResolver(classLoader)</span></span><br><span class="line">			<span class="comment">// 	.getResources(&quot;classpath*:&quot; + target + &quot;.properties&quot;);</span></span><br><span class="line">			<span class="keyword">if</span> (resource.exists()) &#123;</span><br><span class="line">          <span class="comment">// 对每一个获取Resource 新建一个match实例对象</span></span><br><span class="line">				<span class="keyword">return</span> ConditionOutcome.match(message.found(<span class="string">&quot;bundle&quot;</span>).items(resource));</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> ConditionOutcome.noMatch(message.didNotFind(<span class="string">&quot;bundle with basename &quot;</span> + basename).atAll());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="国际化步骤">国际化步骤</h2>
+<pre><code class="language-java">		public ConditionOutcome getMatchOutcome(ConditionContext context, AnnotatedTypeMetadata metadata) &#123;
+      // 获得propertiesf中的spring.messages.basename属性，如果没有默认是messages
+			String basename = context.getEnvironment().getProperty(&quot;spring.messages.basename&quot;, &quot;messages&quot;);
+			ConditionOutcome outcome = cache.get(basename);
+			if (outcome == null) &#123;
+        // 调用方法解析basename
+				outcome = getMatchOutcomeForBasename(context, basename);
+				cache.put(basename, outcome);
+			&#125;
+			return outcome;
+		&#125;
+
+		private ConditionOutcome getMatchOutcomeForBasename(ConditionContext context, String basename) &#123;
+			ConditionMessage.Builder message = ConditionMessage.forCondition(&quot;ResourceBundle&quot;);
+			for (String name : StringUtils.commaDelimitedListToStringArray(StringUtils.trimAllWhitespace(basename))) &#123;
+        // 将basename以逗号分隔，循环这个数组
+				for (Resource resource : getResources(context.getClassLoader(), name)) &#123;
+          // 这里的getResource方法 是加载classpath + name + .properties中的内容
+          // 所以国际化文件只支持 properties文件，其他文件不支持
+          // return new PathMatchingResourcePatternResolver(classLoader)
+					// 	.getResources(&quot;classpath*:&quot; + target + &quot;.properties&quot;);
+					if (resource.exists()) &#123;
+            // 对每一个获取Resource 新建一个match实例对象
+						return ConditionOutcome.match(message.found(&quot;bundle&quot;).items(resource));
+					&#125;
+				&#125;
+			&#125;
+			return ConditionOutcome.noMatch(message.didNotFind(&quot;bundle with basename &quot; + basename).atAll());
+		&#125;
+</code></pre>
+<h2 id="国际化步骤"><a class="header-anchor" href="#国际化步骤">¶</a> 国际化步骤</h2>
 <p>上面通过对SpringBoot对国际化的配置的分析，知道了在properties文件中怎么更改国际化文件的配置信息。下面来具体操作，进行国际化。</p>
-<h3 id="默认的国际化">默认的国际化</h3>
-<h4 id="创建国际化的properties">创建国际化的properties</h4>
+<h3 id="默认的国际化"><a class="header-anchor" href="#默认的国际化">¶</a> 默认的国际化</h3>
+<h4 id="创建国际化的properties"><a class="header-anchor" href="#创建国际化的properties">¶</a> 创建国际化的properties</h4>
 <p>在resources文件夹下创建文件夹<code>i18n</code> ,在文件夹下右键创建<code>Resource Bundle</code> 文件。</p>
 <p><img src="https://i.loli.net/2019/07/16/5d2dc701793f461130.png" alt="resource"></p>
 <p>左边<code>project locale</code>中有三个选项，default和自己添加的<code>zh_CN</code>和<code>en_US</code>分别表示中文和英文。点击<code>add All</code>后确认，创建文件。如下图：</p>
 <p><img src="https://i.loli.net/2019/07/16/5d2dc7ca2479570179.png" alt=""></p>
 <p>双击其中的一个配置文件比如<code>index.properties</code>，使用idea可以发现编辑区的左下角有一个<code>Resource Bundle</code> tab页，点击之后，来到如下图的界面，新建一个选项，输入各配置文件中的值。</p>
 <p><img src="https://i.loli.net/2019/07/16/5d2dc82af114521374.png" alt=""></p>
-<h4 id="创建controller和html页面">创建controller和html页面</h4>
+<h4 id="创建controller和html页面"><a class="header-anchor" href="#创建controller和html页面">¶</a> 创建controller和html页面</h4>
 <ol>
 <li>
 <p>创建<code>controller</code></p>
- <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(&quot;/index&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">index</span><span class="params">()</span></span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="string">&quot;index&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="language-java">@RequestMapping(&quot;/index&quot;)
+public String index()&#123;
+  return &quot;index&quot;;
+&#125;
+</code></pre>
 </li>
 <li>
 <p>创建<code>html</code>页面</p>
- <figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span> <span class="attr">xmlns:th</span>=<span class="string">&quot;http://www.thymeleaf.org&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Title<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">&lt;-- 使用th:text会替换标签内的文本内容 使用#&#123;&#125;来表示国际化内容--&gt;</span><br><span class="line"><span class="tag">&lt;<span class="name">h1</span> <span class="attr">th:text</span>=<span class="string">&quot;#&#123;index&#125;&quot;</span>&gt;</span>这里是主页<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<pre><code class="language-html">&lt;html lang=&quot;en&quot; xmlns:th=&quot;http://www.thymeleaf.org&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;title&gt;Title&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;-- 使用th:text会替换标签内的文本内容 使用#&#123;&#125;来表示国际化内容--&gt;
+&lt;h1 th:text=&quot;#&#123;index&#125;&quot;&gt;这里是主页&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
 </li>
 </ol>
 <p>重启程序，发现index页面上显示的是<code>主页</code>，这个内容，正好是在index_zh_CN.properties中定义的<code>index</code>的值。SpringBoot会根据请求头中的语言来判断使用哪个配置文件中的内容。</p>
-<h4 id="如何切换页面的中英文？">如何切换页面的中英文？</h4>
+<h4 id="如何切换页面的中英文？"><a class="header-anchor" href="#如何切换页面的中英文？">¶</a> 如何切换页面的中英文？</h4>
 <p>在<code>dispatcherServlet</code>中在渲染视图的时候，会通过<code>locale</code>的属性来改变渲染后的语言。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">render</span><span class="params">(ModelAndView mv, HttpServletRequest request, HttpServletResponse response)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">	<span class="comment">// 可以通过请求的locale来定义返回的locale</span></span><br><span class="line">	Locale locale =</span><br><span class="line">			(<span class="keyword">this</span>.localeResolver != <span class="keyword">null</span> ? <span class="keyword">this</span>.localeResolver.resolveLocale(request) : request.getLocale());</span><br><span class="line">	response.setLocale(locale);</span><br></pre></td></tr></table></figure>
+<pre><code class="language-java">	protected void render(ModelAndView mv, HttpServletRequest request, HttpServletResponse response) throws Exception &#123;
+		// 可以通过请求的locale来定义返回的locale
+		Locale locale =
+				(this.localeResolver != null ? this.localeResolver.resolveLocale(request) : request.getLocale());
+		response.setLocale(locale);
+</code></pre>
 <p>通过debug发现<code>this.localeResolver</code>中是有值的，说明<code>Spring</code>容器中有localeResolver,进而可以得出结论：<strong><code>SpringBoot</code>中自动配置来默认的<code>localeResover</code>。</strong></p>
 <p><img src="https://i.loli.net/2019/07/16/5d2dd26ac0a7a43943.png" alt="计算"></p>
 <p>在<code>WebMvcAutoConfiguration</code>中的确配置了关于locale的信息。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="meta">@ConditionalOnMissingBean</span></span><br><span class="line"><span class="meta">@ConditionalOnProperty(prefix = &quot;spring.mvc&quot;, name = &quot;locale&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> LocaleResolver <span class="title">localeResolver</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">this</span>.mvcProperties.getLocaleResolver() == WebMvcProperties.LocaleResolver.FIXED) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> FixedLocaleResolver(<span class="keyword">this</span>.mvcProperties.getLocale());</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 设置了 容器中的localeResolver 为 AcceptHeaderLocaleResolver</span></span><br><span class="line">  AcceptHeaderLocaleResolver localeResolver = <span class="keyword">new</span> AcceptHeaderLocaleResolver();</span><br><span class="line">  localeResolver.setDefaultLocale(<span class="keyword">this</span>.mvcProperties.getLocale());</span><br><span class="line">  <span class="keyword">return</span> localeResolver;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="language-java">@Bean
+@ConditionalOnMissingBean
+@ConditionalOnProperty(prefix = &quot;spring.mvc&quot;, name = &quot;locale&quot;)
+public LocaleResolver localeResolver() &#123;
+  if (this.mvcProperties.getLocaleResolver() == WebMvcProperties.LocaleResolver.FIXED) &#123;
+    return new FixedLocaleResolver(this.mvcProperties.getLocale());
+  &#125;
+  // 设置了 容器中的localeResolver 为 AcceptHeaderLocaleResolver
+  AcceptHeaderLocaleResolver localeResolver = new AcceptHeaderLocaleResolver();
+  localeResolver.setDefaultLocale(this.mvcProperties.getLocale());
+  return localeResolver;
+&#125;
+</code></pre>
 <p>因为配置了默认的<code>localeResolver</code> ,所以在使用<code>this.localeResolver.resolveLocale(request)</code>处理这个请求的时候，就会使用<code>AcceptHeaderLocaleResolver</code>类中的方法，而这个方法正是拿的<code>request</code>中的<code>Accept-Language</code></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> Locale <span class="title">resolveLocale</span><span class="params">(HttpServletRequest request)</span> </span>&#123;</span><br><span class="line">		Locale defaultLocale = getDefaultLocale();</span><br><span class="line">		<span class="keyword">if</span> (defaultLocale != <span class="keyword">null</span> &amp;&amp; request.getHeader(<span class="string">&quot;Accept-Language&quot;</span>) == <span class="keyword">null</span>) &#123;</span><br><span class="line">			<span class="keyword">return</span> defaultLocale;</span><br><span class="line">		&#125;</span><br><span class="line">    <span class="comment">// 从request中拿Accept-Language这个值。</span></span><br><span class="line">		Locale requestLocale = request.getLocale();</span><br><span class="line">		List&lt;Locale&gt; supportedLocales = getSupportedLocales();</span><br><span class="line">		<span class="keyword">if</span> (supportedLocales.isEmpty() || supportedLocales.contains(requestLocale)) &#123;</span><br><span class="line">			<span class="keyword">return</span> requestLocale;</span><br><span class="line">		&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="language-java">@Override
+	public Locale resolveLocale(HttpServletRequest request) &#123;
+		Locale defaultLocale = getDefaultLocale();
+		if (defaultLocale != null &amp;&amp; request.getHeader(&quot;Accept-Language&quot;) == null) &#123;
+			return defaultLocale;
+		&#125;
+    // 从request中拿Accept-Language这个值。
+		Locale requestLocale = request.getLocale();
+		List&lt;Locale&gt; supportedLocales = getSupportedLocales();
+		if (supportedLocales.isEmpty() || supportedLocales.contains(requestLocale)) &#123;
+			return requestLocale;
+		&#125;
+</code></pre>
 <p>这样的话疑惑就解开了，<strong>默认的SpringBoot构件web应用会使用当前浏览器的地区语言来进行国际化。</strong></p>
-<h3 id="改变国际化语言标准的判断方式">改变国际化语言标准的判断方式</h3>
+<h3 id="改变国际化语言标准的判断方式"><a class="header-anchor" href="#改变国际化语言标准的判断方式">¶</a> 改变国际化语言标准的判断方式</h3>
 <p>上面说了默认的<code>SpringBoot</code>会从<code>request</code>中获取地区语言信息，来判断加载哪个配置。</p>
 <p>在自动配置的方法上标注着这样一段<code>@ConditionalOnMissingBean</code>,说明如果有<code>localeResolver</code>这个类那么这个方法是不会生效的。所以改变的方法就是自己实现<code>localeResolver</code>.</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyLocalResolver</span> <span class="keyword">implements</span> <span class="title">LocaleResolver</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Locale defaultLocale;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Locale <span class="title">resolveLocale</span><span class="params">(HttpServletRequest request)</span> </span>&#123;</span><br><span class="line">        Locale defaultLocale = getDefaultLocale();</span><br><span class="line">        String language = request.getParameter(<span class="string">&quot;language&quot;</span>);</span><br><span class="line">      <span class="comment">// 获取请求中的 ?language=「xxx」 </span></span><br><span class="line">        String[] s = <span class="keyword">new</span> String[<span class="number">2</span>];</span><br><span class="line">        <span class="keyword">if</span>(language != <span class="keyword">null</span> &amp;&amp; !<span class="string">&quot;&quot;</span>.equals(language))&#123;</span><br><span class="line">            s = getS(language);</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            <span class="comment">//如果是空则找浏览器中的属性</span></span><br><span class="line">            String header = getFirstLangInRequest(request);</span><br><span class="line">            <span class="keyword">if</span>(header!=<span class="keyword">null</span> &amp;&amp; !<span class="string">&quot;&quot;</span>.equals(header))&#123;</span><br><span class="line">                s = getS(header);</span><br><span class="line">            &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                <span class="comment">//否则给个默认的local</span></span><br><span class="line">                s = getS(<span class="string">&quot;zh-CN&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        defaultLocale = <span class="keyword">new</span> Locale(s[<span class="number">0</span>],s[<span class="number">1</span>]);</span><br><span class="line">        <span class="keyword">return</span> defaultLocale;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> String <span class="title">getFirstLangInRequest</span><span class="params">(HttpServletRequest request)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> request.getHeader(<span class="string">&quot;Accept-Language&quot;</span>).split(<span class="string">&quot;,&quot;</span>)[<span class="number">0</span>];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String[] getS(String language) &#123;</span><br><span class="line">        <span class="keyword">return</span> language.split(<span class="string">&quot;-&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Locale <span class="title">getDefaultLocale</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.defaultLocale;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//添加到bean中 方法名称必须是localeResolver 或者指定bean的名称为localeResolver</span></span><br><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> LocaleResolver <span class="title">localeResolver</span><span class="params">()</span></span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> MyLocalResolver();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="language-java">public class MyLocalResolver implements LocaleResolver &#123;
+
+    private Locale defaultLocale;
+
+    @Override
+    public Locale resolveLocale(HttpServletRequest request) &#123;
+        Locale defaultLocale = getDefaultLocale();
+        String language = request.getParameter(&quot;language&quot;);
+      // 获取请求中的 ?language=「xxx」 
+        String[] s = new String[2];
+        if(language != null &amp;&amp; !&quot;&quot;.equals(language))&#123;
+            s = getS(language);
+        &#125;else&#123;
+            //如果是空则找浏览器中的属性
+            String header = getFirstLangInRequest(request);
+            if(header!=null &amp;&amp; !&quot;&quot;.equals(header))&#123;
+                s = getS(header);
+            &#125;else&#123;
+                //否则给个默认的local
+                s = getS(&quot;zh-CN&quot;);
+            &#125;
+        &#125;
+        defaultLocale = new Locale(s[0],s[1]);
+        return defaultLocale;
+    &#125;
+
+    private String getFirstLangInRequest(HttpServletRequest request) &#123;
+        return request.getHeader(&quot;Accept-Language&quot;).split(&quot;,&quot;)[0];
+    &#125;
+
+    private String[] getS(String language) &#123;
+        return language.split(&quot;-&quot;);
+    &#125;
+
+    public Locale getDefaultLocale() &#123;
+        return this.defaultLocale;
+    &#125;
+&#125;
+//添加到bean中 方法名称必须是localeResolver 或者指定bean的名称为localeResolver
+@Bean
+public LocaleResolver localeResolver()&#123;
+  return new MyLocalResolver();
+&#125;
+</code></pre>
 <p>稍微修改一下<code>index.html</code>中的内容</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">h1</span> <span class="attr">th:text</span>=<span class="string">&quot;#&#123;index&#125;&quot;</span>&gt;</span>这里是主页<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line">  &lt;-- 点击按钮时变换中英文 --&gt;</span><br><span class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">th:href</span>=<span class="string">&quot;@&#123;/index(language=&#x27;zh-CN&#x27;)&#125;&quot;</span>&gt;</span><span class="tag">&lt;<span class="name">button</span> <span class="attr">th:text</span>=<span class="string">&quot;#&#123;but1&#125;&quot;</span> &gt;</span>这是切换中文的按钮<span class="tag">&lt;/<span class="name">button</span>&gt;</span><span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">th:href</span>=<span class="string">&quot;@&#123;/index(language=&#x27;en-US&#x27;)&#125;&quot;</span>&gt;</span><span class="tag">&lt;<span class="name">button</span> <span class="attr">th:text</span>=<span class="string">&quot;#&#123;but2&#125;&quot;</span> &gt;</span>这是切换英文的按钮<span class="tag">&lt;/<span class="name">button</span>&gt;</span> <span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<pre><code class="language-html">&lt;body&gt;
+&lt;h1 th:text=&quot;#&#123;index&#125;&quot;&gt;这里是主页&lt;/h1&gt;
+  &lt;-- 点击按钮时变换中英文 --&gt;
+&lt;a th:href=&quot;@&#123;/index(language='zh-CN')&#125;&quot;&gt;&lt;button th:text=&quot;#&#123;but1&#125;&quot; &gt;这是切换中文的按钮&lt;/button&gt;&lt;/a&gt;
+&lt;a th:href=&quot;@&#123;/index(language='en-US')&#125;&quot;&gt;&lt;button th:text=&quot;#&#123;but2&#125;&quot; &gt;这是切换英文的按钮&lt;/button&gt; &lt;/a&gt;
+&lt;/body&gt;
+</code></pre>
 <p>重启程序，进行测试：</p>
 <p><img src="https://i.loli.net/2019/07/16/5d2ded6219ee739593.gif" alt="测试成果"></p>
-<h3 id="总结">总结</h3>
-<h4 id="如何在SpringBoot中使用国际化">如何在SpringBoot中使用国际化</h4>
+<h3 id="总结"><a class="header-anchor" href="#总结">¶</a> 总结</h3>
+<h4 id="如何在SpringBoot中使用国际化"><a class="header-anchor" href="#如何在SpringBoot中使用国际化">¶</a> 如何在SpringBoot中使用国际化</h4>
 <ol>
 <li>编写国际化相关的 <code>ResourceBundle</code>文件，也就是对应的语言配置文件如：<code>index_en_US.properties</code>,<code>index_zh_CN.properties</code>，注意这个<strong>文件格式是固定的<code>xxx_语言代码_大写的国家代码</code>，并且必须是properties文件</strong>。</li>
 <li>编写<code>html</code>接收国际化变量，使用<code>Thymeleaf</code>引擎可以使用语法<code>#&#123;&#125;</code>来使用国际化变量。</li>
 </ol>
-<h4 id="如何改造">如何改造</h4>
+<h4 id="如何改造"><a class="header-anchor" href="#如何改造">¶</a> 如何改造</h4>
 <p>因为SpringBoot默认实现了<code>LocaleResolver</code>,并且标注了<code>ConditionalOnMissingBean</code>注解，所以，只需要自己实现<code>LocaleResolver</code>类，重写相关方法，就可以达到改造的目的。需要注意的是，<strong>在注册<code>bean</code>的时候，方法名必须<code>localeResolver</code>,或者指定<code>bean</code>的名称为<code>localeResolver</code>。</strong></p>
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css">
         </div>
 
         
@@ -412,6 +670,19 @@
     </div>
 </footer>
 
+<script src="/js/prism.js" async></script>
+
+# 文档底部引入js
+<script src="https://cdn.bootcss.com/jquery/3.4.0/jquery.min.js"></script>
+
+<script src="/js/prettify.js"></script>
+
+
+# 高亮设置
+<script type="text/javascript">
+$(window).on('load', function(){ 
+$('code').addClass('language-json');});</script>
+
 
         </div>
     </div>
@@ -492,7 +763,7 @@
         <aside class="page-aside">
             <div class="post-toc-wrap">
     <div class="post-toc">
-        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-text">准备工作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8thymeleaf"><span class="nav-text">使用thymeleaf</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%BC%E5%85%A5starter"><span class="nav-text">导入starter</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%A8SpringBoot%E4%B8%ADThymeleaf%E7%9A%84%E8%87%AA%E5%8A%A8%E9%85%8D%E7%BD%AE"><span class="nav-text">在SpringBoot中Thymeleaf的自动配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8Thymeleaf%E8%BF%9B%E8%A1%8C%E9%A1%B5%E9%9D%A2%E6%B8%B2%E6%9F%93"><span class="nav-text">使用Thymeleaf进行页面渲染</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8SpringMVC"><span class="nav-text">使用SpringMVC</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%87%AA%E5%8A%A8%E9%85%8D%E7%BD%AE"><span class="nav-text">自动配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%87%AA%E5%8A%A8%E9%85%8D%E7%BD%AE%E4%BB%A3%E7%A0%81%E5%8F%82%E8%80%83"><span class="nav-text">自动配置代码参考</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9A%E5%88%B6%E5%BC%80%E5%8F%91"><span class="nav-text">定制开发</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-text">国际化开发</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%A9SpringBoot%E9%85%8D%E7%BD%AE%E6%8C%87%E5%AE%9A%E5%9B%BD%E9%99%85%E5%8C%96%E6%96%87%E4%BB%B6"><span class="nav-text">让SpringBoot配置指定国际化文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%BD%E9%99%85%E5%8C%96%E6%AD%A5%E9%AA%A4"><span class="nav-text">国际化步骤</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%BB%98%E8%AE%A4%E7%9A%84%E5%9B%BD%E9%99%85%E5%8C%96"><span class="nav-text">默认的国际化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E5%9B%BD%E9%99%85%E5%8C%96%E7%9A%84properties"><span class="nav-text">创建国际化的properties</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%9B%E5%BB%BAcontroller%E5%92%8Chtml%E9%A1%B5%E9%9D%A2"><span class="nav-text">创建controller和html页面</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E5%88%87%E6%8D%A2%E9%A1%B5%E9%9D%A2%E7%9A%84%E4%B8%AD%E8%8B%B1%E6%96%87%EF%BC%9F"><span class="nav-text">如何切换页面的中英文？</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%94%B9%E5%8F%98%E5%9B%BD%E9%99%85%E5%8C%96%E8%AF%AD%E8%A8%80%E6%A0%87%E5%87%86%E7%9A%84%E5%88%A4%E6%96%AD%E6%96%B9%E5%BC%8F"><span class="nav-text">改变国际化语言标准的判断方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-text">总结</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E5%9C%A8SpringBoot%E4%B8%AD%E4%BD%BF%E7%94%A8%E5%9B%BD%E9%99%85%E5%8C%96"><span class="nav-text">如何在SpringBoot中使用国际化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E6%94%B9%E9%80%A0"><span class="nav-text">如何改造</span></a></li></ol></li></ol></li></ol></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C"><span class="nav-text"> 准备工作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8thymeleaf"><span class="nav-text"> 使用thymeleaf</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%BC%E5%85%A5starter"><span class="nav-text"> 导入starter</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%A8SpringBoot%E4%B8%ADThymeleaf%E7%9A%84%E8%87%AA%E5%8A%A8%E9%85%8D%E7%BD%AE"><span class="nav-text"> 在SpringBoot中Thymeleaf的自动配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8Thymeleaf%E8%BF%9B%E8%A1%8C%E9%A1%B5%E9%9D%A2%E6%B8%B2%E6%9F%93"><span class="nav-text"> 使用Thymeleaf进行页面渲染</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8SpringMVC"><span class="nav-text"> 使用SpringMVC</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%87%AA%E5%8A%A8%E9%85%8D%E7%BD%AE"><span class="nav-text"> 自动配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%87%AA%E5%8A%A8%E9%85%8D%E7%BD%AE%E4%BB%A3%E7%A0%81%E5%8F%82%E8%80%83"><span class="nav-text"> 自动配置代码参考</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9A%E5%88%B6%E5%BC%80%E5%8F%91"><span class="nav-text"> 定制开发</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9B%BD%E9%99%85%E5%8C%96%E5%BC%80%E5%8F%91"><span class="nav-text"> 国际化开发</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%A9SpringBoot%E9%85%8D%E7%BD%AE%E6%8C%87%E5%AE%9A%E5%9B%BD%E9%99%85%E5%8C%96%E6%96%87%E4%BB%B6"><span class="nav-text"> 让SpringBoot配置指定国际化文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%BD%E9%99%85%E5%8C%96%E6%AD%A5%E9%AA%A4"><span class="nav-text"> 国际化步骤</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%BB%98%E8%AE%A4%E7%9A%84%E5%9B%BD%E9%99%85%E5%8C%96"><span class="nav-text"> 默认的国际化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E5%9B%BD%E9%99%85%E5%8C%96%E7%9A%84properties"><span class="nav-text"> 创建国际化的properties</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%9B%E5%BB%BAcontroller%E5%92%8Chtml%E9%A1%B5%E9%9D%A2"><span class="nav-text"> 创建controller和html页面</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E5%88%87%E6%8D%A2%E9%A1%B5%E9%9D%A2%E7%9A%84%E4%B8%AD%E8%8B%B1%E6%96%87%EF%BC%9F"><span class="nav-text"> 如何切换页面的中英文？</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%94%B9%E5%8F%98%E5%9B%BD%E9%99%85%E5%8C%96%E8%AF%AD%E8%A8%80%E6%A0%87%E5%87%86%E7%9A%84%E5%88%A4%E6%96%AD%E6%96%B9%E5%BC%8F"><span class="nav-text"> 改变国际化语言标准的判断方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-text"> 总结</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E5%9C%A8SpringBoot%E4%B8%AD%E4%BD%BF%E7%94%A8%E5%9B%BD%E9%99%85%E5%8C%96"><span class="nav-text"> 如何在SpringBoot中使用国际化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E6%94%B9%E9%80%A0"><span class="nav-text"> 如何改造</span></a></li></ol></li></ol></li></ol></li></ol>
     </div>
 </div>
         </aside>

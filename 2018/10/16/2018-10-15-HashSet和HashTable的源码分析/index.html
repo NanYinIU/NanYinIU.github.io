@@ -27,7 +27,7 @@
     KEEP.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 月前","year":"%s 年前"};
   </script>
 <meta name="generator" content="Hexo 5.4.0"><link rel="stylesheet" type="text/css" href="/css/injector/main.css" /><link rel="preload" as="style" href="/css/injector/light.css" /><link rel="preload" as="style" href="/css/injector/dark.css" /><link rel="alternate" href="/atom.xml" title="NanYin的博客" type="application/atom+xml">
-<link rel="stylesheet" href="/css/prism.css" type="text/css"></head>
+</head>
 
 
 <body>
@@ -47,7 +47,8 @@
     <div class="page-main-content">
 
         <div class="page-main-content-top">
-            <header class="header-wrapper">
+            <link rel="stylesheet" href="/css/prism.css">
+<header class="header-wrapper">
 
     <div class="header-content">
         <div class="left">
@@ -217,7 +218,7 @@
     
     
         <span class="article-wordcount article-meta-item">
-            <i class="fas fa-file-word"></i>&nbsp;<span>796 字</span>
+            <i class="fas fa-file-word"></i>&nbsp;<span>794 字</span>
         </span>
     
     
@@ -250,25 +251,105 @@
 </li>
 </ul>
 <!-- /TOC -->
-<h1>HashSet和HashTable的的源码分析</h1>
-<h2 id="HashSet">HashSet</h2>
+<h1 id="HashSet和HashTable的的源码分析"><a class="header-anchor" href="#HashSet和HashTable的的源码分析">¶</a> HashSet和HashTable的的源码分析</h1>
+<h2 id="HashSet"><a class="header-anchor" href="#HashSet">¶</a> HashSet</h2>
 <p>HashSet其实就是使用HashMap来实现的，方法都是依靠Hash Map的方法。如hashSet构造，hashSet的添加等操作。这样能够实现hashset去重。因为hashMap的key不能重复。这样就能看上篇，当hashMap遇到key值重复的处理。</p>
-<h3 id="HashSet结构源码">HashSet结构源码</h3>
+<h3 id="HashSet结构源码"><a class="header-anchor" href="#HashSet结构源码">¶</a> HashSet结构源码</h3>
 <p>HashSet的结构就相当于HashMap只将key值put进去，但是Value值却为空的new Object。可以看作为只有key的HashMap.</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 可以看到hashSet的这几个构造方法和HashMap息息相关 */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">transient</span> HashMap&lt;E,Object&gt; map;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">HashSet</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    map = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">HashSet</span><span class="params">(Collection&lt;? extends E&gt; c)</span> </span>&#123;</span><br><span class="line">    map = <span class="keyword">new</span> HashMap&lt;&gt;(Math.max((<span class="keyword">int</span>) (c.size()/<span class="number">.75f</span>) + <span class="number">1</span>, <span class="number">16</span>));</span><br><span class="line">    addAll(c);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">HashSet</span><span class="params">(<span class="keyword">int</span> initialCapacity, <span class="keyword">float</span> loadFactor)</span> </span>&#123;</span><br><span class="line">    map = <span class="keyword">new</span> HashMap&lt;&gt;(initialCapacity, loadFactor);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">HashSet</span><span class="params">(<span class="keyword">int</span> initialCapacity)</span> </span>&#123;</span><br><span class="line">    map = <span class="keyword">new</span> HashMap&lt;&gt;(initialCapacity);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">HashSet(<span class="keyword">int</span> initialCapacity, <span class="keyword">float</span> loadFactor, <span class="keyword">boolean</span> dummy) &#123;</span><br><span class="line">    map = <span class="keyword">new</span> LinkedHashMap&lt;&gt;(initialCapacity, loadFactor);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="HashSet的基本方法">HashSet的基本方法</h3>
+<pre><code class="language-java">/* 可以看到hashSet的这几个构造方法和HashMap息息相关 */
+private transient HashMap&lt;E,Object&gt; map;
+public HashSet() &#123;
+    map = new HashMap&lt;&gt;();
+&#125;
+
+public HashSet(Collection&lt;? extends E&gt; c) &#123;
+    map = new HashMap&lt;&gt;(Math.max((int) (c.size()/.75f) + 1, 16));
+    addAll(c);
+&#125;
+
+public HashSet(int initialCapacity, float loadFactor) &#123;
+    map = new HashMap&lt;&gt;(initialCapacity, loadFactor);
+&#125;
+
+public HashSet(int initialCapacity) &#123;
+    map = new HashMap&lt;&gt;(initialCapacity);
+&#125;
+
+HashSet(int initialCapacity, float loadFactor, boolean dummy) &#123;
+    map = new LinkedHashMap&lt;&gt;(initialCapacity, loadFactor);
+&#125;
+</code></pre>
+<h3 id="HashSet的基本方法"><a class="header-anchor" href="#HashSet的基本方法">¶</a> HashSet的基本方法</h3>
 <p>add和remove和size等基本方法都是调用HashMap的</p>
 <p>如add方法:</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">add</span><span class="params">(E e)</span> </span>&#123;</span><br><span class="line">  <span class="comment">/* 这里的PRESENT等于new Object() */</span></span><br><span class="line">       <span class="keyword">return</span> map.put(e, PRESENT)==<span class="keyword">null</span>;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
-<h3 id="HashSet的Iterator和contains方法">HashSet的Iterator和contains方法</h3>
+<pre><code class="language-java">public boolean add(E e) &#123;
+  /* 这里的PRESENT等于new Object() */
+       return map.put(e, PRESENT)==null;
+   &#125;
+</code></pre>
+<h3 id="HashSet的Iterator和contains方法"><a class="header-anchor" href="#HashSet的Iterator和contains方法">¶</a> HashSet的Iterator和contains方法</h3>
 <p>同样的也是调用的HashMap的基本方法，但是需要先得到Map的keySet集合</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Iterator&lt;E&gt; <span class="title">iterator</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> map.keySet().iterator();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">contains</span><span class="params">(Object o)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> map.containsKey(o);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="HashTable">HashTable</h2>
+<pre><code class="language-java">public Iterator&lt;E&gt; iterator() &#123;
+    return map.keySet().iterator();
+&#125;
+
+public boolean contains(Object o) &#123;
+    return map.containsKey(o);
+&#125;
+</code></pre>
+<h2 id="HashTable"><a class="header-anchor" href="#HashTable">¶</a> HashTable</h2>
 <p>首先HashTable和HashMap的结构类似。但是有最重要的区别就是HashTable是synchronized的，也就是线程安全的。在他的基本方法前都有synchronized锁所限制。</p>
 <p>结构就不看了，只看一个Put方法</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/* 其实大致和HashMap是类似的也是使用Entry作为基本结构 */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> V <span class="title">put</span><span class="params">(K key, V value)</span> </span>&#123;</span><br><span class="line">     <span class="comment">// Make sure the value is not null</span></span><br><span class="line">     <span class="keyword">if</span> (value == <span class="keyword">null</span>) &#123;</span><br><span class="line">         <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException();</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="comment">// Makes sure the key is not already in the hashtable.</span></span><br><span class="line">     Entry&lt;?,?&gt; tab[] = table;</span><br><span class="line">     <span class="keyword">int</span> hash = key.hashCode();</span><br><span class="line">     <span class="comment">/* 这里的0x7FFFFFFF 是32-bit的int的最大值 */</span></span><br><span class="line">     <span class="keyword">int</span> index = (hash &amp; <span class="number">0x7FFFFFFF</span>) % tab.length;</span><br><span class="line">     <span class="meta">@SuppressWarnings(&quot;unchecked&quot;)</span></span><br><span class="line">     Entry&lt;K,V&gt; entry = (Entry&lt;K,V&gt;)tab[index];</span><br><span class="line">     <span class="comment">/* 如果这个entry存在，也就是键值重复 */</span></span><br><span class="line">     <span class="keyword">for</span>(; entry != <span class="keyword">null</span> ; entry = entry.next) &#123;</span><br><span class="line">         <span class="keyword">if</span> ((entry.hash == hash) &amp;&amp; entry.key.equals(key)) &#123;</span><br><span class="line">             V old = entry.value;</span><br><span class="line">             entry.value = value;</span><br><span class="line">             <span class="keyword">return</span> old;</span><br><span class="line">         &#125;</span><br><span class="line">     &#125;</span><br><span class="line">    <span class="comment">/* 否则添加Entry节点 */</span></span><br><span class="line">     addEntry(hash, key, value, index);</span><br><span class="line">     <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line"> <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">addEntry</span><span class="params">(<span class="keyword">int</span> hash, K key, V value, <span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">    modCount++;</span><br><span class="line"></span><br><span class="line">    Entry&lt;?,?&gt; tab[] = table;</span><br><span class="line">    <span class="keyword">if</span> (count &gt;= threshold) &#123;</span><br><span class="line">      <span class="comment">/* 如果当前count大于阈值的大小 重新生成table size和hash值 */</span></span><br><span class="line">        <span class="comment">// Rehash the table if the threshold is exceeded</span></span><br><span class="line">        rehash();</span><br><span class="line"></span><br><span class="line">        tab = table;</span><br><span class="line">        hash = key.hashCode();</span><br><span class="line">        index = (hash &amp; <span class="number">0x7FFFFFFF</span>) % tab.length;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Creates the new entry.</span></span><br><span class="line">    <span class="meta">@SuppressWarnings(&quot;unchecked&quot;)</span></span><br><span class="line">    Entry&lt;K,V&gt; e = (Entry&lt;K,V&gt;) tab[index];</span><br><span class="line">    tab[index] = <span class="keyword">new</span> Entry&lt;&gt;(hash, key, value, e);</span><br><span class="line">    count++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>通过上面的代码可以看出HashTable和HashMap的结构还是有差异的，HashMap是纵向的列表当出现相同的hash值的时候，扩展出横向列表，当横向的列表到达一定的长度的时候，这个横向的链表就会自动整理成红黑树的形式，而hashTable不存在横向的这种结构的，当count&gt;=阈值的时候就会把Hash重置，使之不会出现hash值重复的情况。可以说hashTable比较hashMap的结构更简单，但是效率会比HashMap的低。</p>
+<pre><code class="language-java">
+/* 其实大致和HashMap是类似的也是使用Entry作为基本结构 */
+public synchronized V put(K key, V value) &#123;
+     // Make sure the value is not null
+     if (value == null) &#123;
+         throw new NullPointerException();
+     &#125;
+     // Makes sure the key is not already in the hashtable.
+     Entry&lt;?,?&gt; tab[] = table;
+     int hash = key.hashCode();
+     /* 这里的0x7FFFFFFF 是32-bit的int的最大值 */
+     int index = (hash &amp; 0x7FFFFFFF) % tab.length;
+     @SuppressWarnings(&quot;unchecked&quot;)
+     Entry&lt;K,V&gt; entry = (Entry&lt;K,V&gt;)tab[index];
+     /* 如果这个entry存在，也就是键值重复 */
+     for(; entry != null ; entry = entry.next) &#123;
+         if ((entry.hash == hash) &amp;&amp; entry.key.equals(key)) &#123;
+             V old = entry.value;
+             entry.value = value;
+             return old;
+         &#125;
+     &#125;
+    /* 否则添加Entry节点 */
+     addEntry(hash, key, value, index);
+     return null;
+ &#125;
 
+ private void addEntry(int hash, K key, V value, int index) &#123;
+    modCount++;
+
+    Entry&lt;?,?&gt; tab[] = table;
+    if (count &gt;= threshold) &#123;
+      /* 如果当前count大于阈值的大小 重新生成table size和hash值 */
+        // Rehash the table if the threshold is exceeded
+        rehash();
+
+        tab = table;
+        hash = key.hashCode();
+        index = (hash &amp; 0x7FFFFFFF) % tab.length;
+    &#125;
+
+    // Creates the new entry.
+    @SuppressWarnings(&quot;unchecked&quot;)
+    Entry&lt;K,V&gt; e = (Entry&lt;K,V&gt;) tab[index];
+    tab[index] = new Entry&lt;&gt;(hash, key, value, e);
+    count++;
+&#125;
+</code></pre>
+<p>通过上面的代码可以看出HashTable和HashMap的结构还是有差异的，HashMap是纵向的列表当出现相同的hash值的时候，扩展出横向列表，当横向的列表到达一定的长度的时候，这个横向的链表就会自动整理成红黑树的形式，而hashTable不存在横向的这种结构的，当count&gt;=阈值的时候就会把Hash重置，使之不会出现hash值重复的情况。可以说hashTable比较hashMap的结构更简单，但是效率会比HashMap的低。</p>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css">
         </div>
 
         
@@ -355,6 +436,19 @@
     </div>
 </footer>
 
+<script src="/js/prism.js" async></script>
+
+# 文档底部引入js
+<script src="https://cdn.bootcss.com/jquery/3.4.0/jquery.min.js"></script>
+
+<script src="/js/prettify.js"></script>
+
+
+# 高亮设置
+<script type="text/javascript">
+$(window).on('load', function(){ 
+$('code').addClass('language-json');});</script>
+
 
         </div>
     </div>
@@ -435,7 +529,7 @@
         <aside class="page-aside">
             <div class="post-toc-wrap">
     <div class="post-toc">
-        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-text">HashSet和HashTable的的源码分析</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#HashSet"><span class="nav-text">HashSet</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#HashSet%E7%BB%93%E6%9E%84%E6%BA%90%E7%A0%81"><span class="nav-text">HashSet结构源码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HashSet%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%96%B9%E6%B3%95"><span class="nav-text">HashSet的基本方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HashSet%E7%9A%84Iterator%E5%92%8Ccontains%E6%96%B9%E6%B3%95"><span class="nav-text">HashSet的Iterator和contains方法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HashTable"><span class="nav-text">HashTable</span></a></li></ol></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#HashSet%E5%92%8CHashTable%E7%9A%84%E7%9A%84%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90"><span class="nav-text"> HashSet和HashTable的的源码分析</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#HashSet"><span class="nav-text"> HashSet</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#HashSet%E7%BB%93%E6%9E%84%E6%BA%90%E7%A0%81"><span class="nav-text"> HashSet结构源码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HashSet%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%96%B9%E6%B3%95"><span class="nav-text"> HashSet的基本方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HashSet%E7%9A%84Iterator%E5%92%8Ccontains%E6%96%B9%E6%B3%95"><span class="nav-text"> HashSet的Iterator和contains方法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HashTable"><span class="nav-text"> HashTable</span></a></li></ol></li></ol>
     </div>
 </div>
         </aside>

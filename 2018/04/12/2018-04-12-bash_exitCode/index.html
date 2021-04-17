@@ -27,7 +27,7 @@
     KEEP.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 月前","year":"%s 年前"};
   </script>
 <meta name="generator" content="Hexo 5.4.0"><link rel="stylesheet" type="text/css" href="/css/injector/main.css" /><link rel="preload" as="style" href="/css/injector/light.css" /><link rel="preload" as="style" href="/css/injector/dark.css" /><link rel="alternate" href="/atom.xml" title="NanYin的博客" type="application/atom+xml">
-<link rel="stylesheet" href="/css/prism.css" type="text/css"></head>
+</head>
 
 
 <body>
@@ -47,7 +47,8 @@
     <div class="page-main-content">
 
         <div class="page-main-content-top">
-            <header class="header-wrapper">
+            <link rel="stylesheet" href="/css/prism.css">
+<header class="header-wrapper">
 
     <div class="header-content">
         <div class="left">
@@ -234,8 +235,8 @@
         
 
         <div class="article-content markdown-body">
-            <h1>bash学习记录（三） bash退出码和测试</h1>
-<h2 id="1-Bash退出码">1. Bash退出码</h2>
+            <h1 id="bash学习记录（三） bash退出码和测试"><a class="header-anchor" href="#bash学习记录（三） bash退出码和测试">¶</a> bash学习记录（三） bash退出码和测试</h1>
+<h2 id="1. Bash退出码"><a class="header-anchor" href="#1. Bash退出码">¶</a> 1. Bash退出码</h2>
 <ul>
 <li>
 <p>脚本的退出命令，类似C语言中的 <code>return value</code> ，可以供脚本的父进程调用。</p>
@@ -251,9 +252,9 @@
 <ul>
 <li>可以使用 <code>！</code>来反转状态。</li>
 </ul>
-<h2 id="2-Bash中的test">2. Bash中的test</h2>
+<h2 id="2. Bash中的test"><a class="header-anchor" href="#2. Bash中的test">¶</a> 2. Bash中的test</h2>
 <p>每个编程语言都会有对一个情况下测试的功能，Bash也不例外，bash提供test命令，多种的括号操作，最终要的If/else结构语句来实现test功能。</p>
-<h3 id="测试结构体-Test-Constructs">测试结构体(Test Constructs)</h3>
+<h3 id="测试结构体(Test Constructs)"><a class="header-anchor" href="#测试结构体(Test Constructs)">¶</a> 测试结构体(Test Constructs)</h3>
 <ul>
 <li>
 <p>一个if/else结构体会测试一系列命令的返回值是否是0也就是命令是否执行成功。如果成功执行另外一系列操作。</p>
@@ -265,7 +266,36 @@
 <p>当使用<code>let</code> 和 <code>(())</code> 的时候，对计算表达式进行运算的时候也会返回exit code，用于对算式的测试</p>
 </li>
 </ul>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">(( 0 &amp;&amp; 1 ))                 # Logical AND</span><br><span class="line">echo $?     # 1     ***</span><br><span class="line"># And so ...</span><br><span class="line">let &quot;num = (( 0 &amp;&amp; 1 ))&quot;</span><br><span class="line">echo $num   # 0</span><br><span class="line"># But ...</span><br><span class="line">let &quot;num = (( 0 &amp;&amp; 1 ))&quot;</span><br><span class="line">echo $?     # 1     ***</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">(( 200 || 11 ))              # Logical OR</span><br><span class="line">echo $?     # 0     ***</span><br><span class="line"># ...</span><br><span class="line">let &quot;num = (( 200 || 11 ))&quot;</span><br><span class="line">echo $num   # 1</span><br><span class="line">let &quot;num = (( 200 || 11 ))&quot;</span><br><span class="line">echo $?     # 0     ***</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">(( 200 | 11 ))               # Bitwise OR</span><br><span class="line">echo $?                      # 0     ***</span><br><span class="line"># ...</span><br><span class="line">let &quot;num = (( 200 | 11 ))&quot;</span><br><span class="line">echo $num                    # 203</span><br><span class="line">let &quot;num = (( 200 | 11 ))&quot;</span><br><span class="line">echo $?                      # 0     ***</span><br><span class="line"></span><br><span class="line"># The &quot;let&quot; construct returns the same exit status</span><br><span class="line">#+ as the double-parentheses arithmetic expansion.</span><br></pre></td></tr></table></figure>
+<pre><code class="language-text">(( 0 &amp;&amp; 1 ))                 # Logical AND
+echo $?     # 1     ***
+# And so ...
+let &quot;num = (( 0 &amp;&amp; 1 ))&quot;
+echo $num   # 0
+# But ...
+let &quot;num = (( 0 &amp;&amp; 1 ))&quot;
+echo $?     # 1     ***
+
+
+(( 200 || 11 ))              # Logical OR
+echo $?     # 0     ***
+# ...
+let &quot;num = (( 200 || 11 ))&quot;
+echo $num   # 1
+let &quot;num = (( 200 || 11 ))&quot;
+echo $?     # 0     ***
+
+
+(( 200 | 11 ))               # Bitwise OR
+echo $?                      # 0     ***
+# ...
+let &quot;num = (( 200 | 11 ))&quot;
+echo $num                    # 203
+let &quot;num = (( 200 | 11 ))&quot;
+echo $?                      # 0     ***
+
+# The &quot;let&quot; construct returns the same exit status
+#+ as the double-parentheses arithmetic expansion.
+</code></pre>
 <ul>
 <li>
 <p>if可以测试任何条件 不仅仅是包在括号里面的条件。</p>
@@ -275,7 +305,20 @@
 <blockquote>
 <p>elif相当与 else if，要请求分支需要用到elif</p>
 </blockquote>
-  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> [ condition1 ]</span><br><span class="line"><span class="keyword">then</span></span><br><span class="line">command1</span><br><span class="line">command2</span><br><span class="line">command3</span><br><span class="line"><span class="keyword">elif</span> [ condition2 ]</span><br><span class="line"><span class="comment"># Same as else if</span></span><br><span class="line"><span class="keyword">then</span></span><br><span class="line">command4</span><br><span class="line">command5</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">default-command</span><br><span class="line"><span class="keyword">fi</span></span><br></pre></td></tr></table></figure>
+<pre><code class="language-bash">if [ condition1 ]
+then
+command1
+command2
+command3
+elif [ condition2 ]
+# Same as else if
+then
+command4
+command5
+else
+default-command
+fi
+</code></pre>
 </li>
 <li>
 <p>Equivalence of test, <code>/usr/bin/test</code>,<code>[ ]</code>, and <code>/usr/bin/[</code> 使用这几个做判断都是一样的。更复杂的表达式要使用<code>[[]]</code>来代替<code>[]</code>。</p>
@@ -284,7 +327,7 @@
 </blockquote>
 </li>
 </ul>
-<h3 id="文件测试操作（File）">文件测试操作（File）</h3>
+<h3 id="文件测试操作（File）"><a class="header-anchor" href="#文件测试操作（File）">¶</a> 文件测试操作（File）</h3>
 <ul>
 <li>
 <p>-e 文件是否存在</p>
@@ -336,12 +379,20 @@
 </li>
 <li>
 <p>例子</p>
-  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> directory <span class="keyword">in</span> <span class="variable">$directorys</span>; <span class="keyword">do</span></span><br><span class="line">    <span class="keyword">if</span> [ -d <span class="variable">$directory</span> ]</span><br><span class="line">    <span class="keyword">then</span> linkchk <span class="variable">$directory</span></span><br><span class="line">    <span class="keyword">else</span> </span><br><span class="line">        <span class="built_in">echo</span> <span class="string">&quot;<span class="variable">$directory</span> is not a directory&quot;</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="string">&quot;Usage: <span class="variable">$0</span> dir1 dir2 ...&quot;</span></span><br><span class="line">    <span class="keyword">fi</span></span><br><span class="line"><span class="keyword">done</span></span><br></pre></td></tr></table></figure>
+<pre><code class="language-bash">for directory in $directorys; do
+    if [ -d $directory ]
+    then linkchk $directory
+    else 
+        echo &quot;$directory is not a directory&quot;
+        echo &quot;Usage: $0 dir1 dir2 ...&quot;
+    fi
+done
+</code></pre>
 </li>
 </ul>
-<h3 id="其他比较操作（Integer，String）">其他比较操作（Integer，String）</h3>
+<h3 id="其他比较操作（Integer，String）"><a class="header-anchor" href="#其他比较操作（Integer，String）">¶</a> 其他比较操作（Integer，String）</h3>
 <p>整型和字符串类型使用两组不同的操作</p>
-<h4 id="整形">整形</h4>
+<h4 id="整形"><a class="header-anchor" href="#整形">¶</a> 整形</h4>
 <ul>
 <li>
 <p>-eq 相等比较 <code>if [ &quot;$a&quot; -eq &quot;$b&quot; ]</code></p>
@@ -356,13 +407,13 @@
 <p>-lt 小于(is less than) <code>if [ &quot;$a&quot; -lt &quot;$b&quot; ]</code></p>
 </li>
 <li>
-<p>-le 小于等于(is less than or equal to) `if [ “$a” -le “$b” ]</p>
+<p>-le 小于等于(is less than or equal to) `if [ “<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>a</mi><mi mathvariant="normal">&quot;</mi><mo>−</mo><mi>l</mi><mi>e</mi><mi mathvariant="normal">&quot;</mi></mrow><annotation encoding="application/x-tex">a&quot; -le &quot;</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.69444em;"></span><span class="strut bottom" style="height:0.77777em;vertical-align:-0.08333em;"></span><span class="base textstyle uncramped"><span class="mord mathit">a</span><span class="mord mathrm">&quot;</span><span class="mbin">−</span><span class="mord mathit" style="margin-right:0.01968em;">l</span><span class="mord mathit">e</span><span class="mord mathrm">&quot;</span></span></span></span>b” ]</p>
 </li>
 <li>
 <p><code>&lt;</code> <code>&gt;</code> <code>&lt;=</code> <code>&gt;=</code> 对应大于，小于，小于等于，大于等于这些相应的操作</p>
 </li>
 </ul>
-<h4 id="String类型">String类型</h4>
+<h4 id="String类型"><a class="header-anchor" href="#String类型">¶</a> String类型</h4>
 <ul>
 <li>
 <p>= 判断字符串是否相等</p>
@@ -371,7 +422,12 @@
 <p>== 和 = 相同，同样是判断字符串是否相同 但 == 在 [] 和 [[]] 中定义不同，下面举例：</p>
 </li>
 </ul>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[[ $a == z* ]]   # True if $a starts with an &quot;z&quot; (pattern matching).</span><br><span class="line">[[ $a == &quot;z*&quot; ]] # True if $a is equal to z* (literal matching).</span><br><span class="line"></span><br><span class="line">[ $a == z* ]     # File globbing and word splitting take place.</span><br><span class="line">[ &quot;$a&quot; == &quot;z*&quot; ] # True if $a is equal to z* (literal matching).</span><br></pre></td></tr></table></figure>
+<pre><code class="language-text">[[ $a == z* ]]   # True if $a starts with an &quot;z&quot; (pattern matching).
+[[ $a == &quot;z*&quot; ]] # True if $a is equal to z* (literal matching).
+
+[ $a == z* ]     # File globbing and word splitting take place.
+[ &quot;$a&quot; == &quot;z*&quot; ] # True if $a is equal to z* (literal matching).
+</code></pre>
 <ul>
 <li>
 <p>!= 不等于</p>
@@ -386,7 +442,7 @@
 <p>-n 字符串不为空</p>
 </li>
 </ul>
-<h4 id="逻辑比较">逻辑比较</h4>
+<h4 id="逻辑比较"><a class="header-anchor" href="#逻辑比较">¶</a> 逻辑比较</h4>
 <ul>
 <li>
 <p>-a 表示逻辑与</p>
@@ -397,10 +453,26 @@
 <p>&amp;&amp; and || 但是要在双中括号中使用<code>[[ condition1 &amp;&amp; condition2 ]]</code></p>
 </li>
 </ul>
-<h3 id="嵌套-if-else">嵌套 <code>if else</code></h3>
+<h3 id="嵌套 if else"><a class="header-anchor" href="#嵌套 if else">¶</a> 嵌套 <code>if else</code></h3>
 <p>如其他编程语言类似,if else结构能够嵌套，但是嵌套结构和使用 <code>&amp;&amp;</code> 比较符结果相同</p>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">a=3</span><br><span class="line"></span><br><span class="line">if [ &quot;$a&quot; -gt 0 ]</span><br><span class="line">then</span><br><span class="line">  if [ &quot;$a&quot; -lt 5 ]</span><br><span class="line">  then</span><br><span class="line">    echo &quot;The value of \&quot;a\&quot; lies somewhere between 0 and 5.&quot;</span><br><span class="line">  fi</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line"># Same result as:</span><br><span class="line"></span><br><span class="line">if [ &quot;$a&quot; -gt 0 ] &amp;&amp; [ &quot;$a&quot; -lt 5 ]</span><br><span class="line">then</span><br><span class="line">  echo &quot;The value of \&quot;a\&quot; lies somewhere between 0 and 5.&quot;</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
+<pre><code class="language-text">a=3
 
+if [ &quot;$a&quot; -gt 0 ]
+then
+  if [ &quot;$a&quot; -lt 5 ]
+  then
+    echo &quot;The value of \&quot;a\&quot; lies somewhere between 0 and 5.&quot;
+  fi
+fi
+
+# Same result as:
+
+if [ &quot;$a&quot; -gt 0 ] &amp;&amp; [ &quot;$a&quot; -lt 5 ]
+then
+  echo &quot;The value of \&quot;a\&quot; lies somewhere between 0 and 5.&quot;
+fi
+</code></pre>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css">
         </div>
 
         
@@ -487,6 +559,19 @@
     </div>
 </footer>
 
+<script src="/js/prism.js" async></script>
+
+# 文档底部引入js
+<script src="https://cdn.bootcss.com/jquery/3.4.0/jquery.min.js"></script>
+
+<script src="/js/prettify.js"></script>
+
+
+# 高亮设置
+<script type="text/javascript">
+$(window).on('load', function(){ 
+$('code').addClass('language-json');});</script>
+
 
         </div>
     </div>
@@ -567,7 +652,7 @@
         <aside class="page-aside">
             <div class="post-toc-wrap">
     <div class="post-toc">
-        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-text">bash学习记录（三） bash退出码和测试</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-Bash%E9%80%80%E5%87%BA%E7%A0%81"><span class="nav-text">1. Bash退出码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-Bash%E4%B8%AD%E7%9A%84test"><span class="nav-text">2. Bash中的test</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E7%BB%93%E6%9E%84%E4%BD%93-Test-Constructs"><span class="nav-text">测试结构体(Test Constructs)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E6%B5%8B%E8%AF%95%E6%93%8D%E4%BD%9C%EF%BC%88File%EF%BC%89"><span class="nav-text">文件测试操作（File）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E6%AF%94%E8%BE%83%E6%93%8D%E4%BD%9C%EF%BC%88Integer%EF%BC%8CString%EF%BC%89"><span class="nav-text">其他比较操作（Integer，String）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%B4%E5%BD%A2"><span class="nav-text">整形</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#String%E7%B1%BB%E5%9E%8B"><span class="nav-text">String类型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%80%BB%E8%BE%91%E6%AF%94%E8%BE%83"><span class="nav-text">逻辑比较</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B5%8C%E5%A5%97-if-else"><span class="nav-text">嵌套 if else</span></a></li></ol></li></ol></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#bash%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95%EF%BC%88%E4%B8%89%EF%BC%89%20bash%E9%80%80%E5%87%BA%E7%A0%81%E5%92%8C%E6%B5%8B%E8%AF%95"><span class="nav-text"> bash学习记录（三） bash退出码和测试</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1.%20Bash%E9%80%80%E5%87%BA%E7%A0%81"><span class="nav-text"> 1. Bash退出码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2.%20Bash%E4%B8%AD%E7%9A%84test"><span class="nav-text"> 2. Bash中的test</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E7%BB%93%E6%9E%84%E4%BD%93(Test%20Constructs)"><span class="nav-text"> 测试结构体(Test Constructs)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E6%B5%8B%E8%AF%95%E6%93%8D%E4%BD%9C%EF%BC%88File%EF%BC%89"><span class="nav-text"> 文件测试操作（File）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E6%AF%94%E8%BE%83%E6%93%8D%E4%BD%9C%EF%BC%88Integer%EF%BC%8CString%EF%BC%89"><span class="nav-text"> 其他比较操作（Integer，String）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%B4%E5%BD%A2"><span class="nav-text"> 整形</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#String%E7%B1%BB%E5%9E%8B"><span class="nav-text"> String类型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%80%BB%E8%BE%91%E6%AF%94%E8%BE%83"><span class="nav-text"> 逻辑比较</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B5%8C%E5%A5%97%20if%20else"><span class="nav-text"> 嵌套 if else</span></a></li></ol></li></ol></li></ol>
     </div>
 </div>
         </aside>

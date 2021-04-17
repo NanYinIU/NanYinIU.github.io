@@ -27,7 +27,7 @@
     KEEP.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 月前","year":"%s 年前"};
   </script>
 <meta name="generator" content="Hexo 5.4.0"><link rel="stylesheet" type="text/css" href="/css/injector/main.css" /><link rel="preload" as="style" href="/css/injector/light.css" /><link rel="preload" as="style" href="/css/injector/dark.css" /><link rel="alternate" href="/atom.xml" title="NanYin的博客" type="application/atom+xml">
-<link rel="stylesheet" href="/css/prism.css" type="text/css"></head>
+</head>
 
 
 <body>
@@ -47,7 +47,8 @@
     <div class="page-main-content">
 
         <div class="page-main-content-top">
-            <header class="header-wrapper">
+            <link rel="stylesheet" href="/css/prism.css">
+<header class="header-wrapper">
 
     <div class="header-content">
         <div class="left">
@@ -230,60 +231,106 @@
         
 
         <div class="article-content markdown-body">
-            <h1>SpringBoot过程问题</h1>
-<h2 id="spring注解相关">spring注解相关</h2>
-<h3 id="RestController"><code>@RestController</code></h3>
+            <h1 id="SpringBoot过程问题"><a class="header-anchor" href="#SpringBoot过程问题">¶</a> SpringBoot过程问题</h1>
+<h2 id="spring注解相关"><a class="header-anchor" href="#spring注解相关">¶</a> spring注解相关</h2>
+<h3 id="@RestController"><a class="header-anchor" href="#@RestController">¶</a> <code>@RestController</code></h3>
 <p>​	<code>@RestController</code> 是<code>spring 4.0</code>来引入的简化的<code>RESTful WEB</code>应用的创建，是一个结合<code>@Constroller</code>和<code>@ResponseBody</code>的注解，不用每个类都使用<code>ResponseBody</code>注解来达到处理请求的目的。</p>
 <p>​	控制器使用<code>@RestController</code>注释进行注释，因此不需要<code>@ResponseBody</code>。</p>
-<h3 id="RequestMapping"><code>@RequestMapping</code></h3>
+<h3 id="@RequestMapping"><a class="header-anchor" href="#@RequestMapping">¶</a> <code>@RequestMapping</code></h3>
 <p><code>@RequestMapping</code>的注解中的参数：</p>
 <p>name ： 在4.0后引入的，开始我错把name当value用，结果出现 <code>[java.lang.IllegalStateException: Ambiguous mapping found. Cannot map 'appController' bean method]</code> 类似这种错误。其实name就是一个名字而已,没有什么特殊含义，但是官方文档中指出 <code>在类型级别和方法级别支持！在两个级别上使用时，组合名称通过串联以“＃”作为分隔符派生</code> 。使用上，官方说明是主要可以通过使用Spring jsp tag包里面的mvcUrl，来生成jsp到controller的链接。</p>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">@RequestMapping(&quot;/people&quot;)</span><br><span class="line"> class PersonController &#123;</span><br><span class="line"></span><br><span class="line">   @RequestMapping(&quot;/&#123;id&#125;&quot;)</span><br><span class="line">   public HttpEntity getPerson(@PathVariable String id) &#123; ... &#125;</span><br><span class="line"></span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;%@ taglib uri=&quot;http://www.springframework.org/tags&quot; prefix=&quot;s&quot; %&gt;</span><br><span class="line"></span><br><span class="line"> &lt;a href=&quot;$&#123;s:mvcUrl(&#x27;PC#getPerson&#x27;).arg(0,&quot;123&quot;).build()&#125;&quot;&gt;Get Person&lt;/a&gt;</span><br></pre></td></tr></table></figure>
+<pre><code class="language-text">@RequestMapping(&quot;/people&quot;)
+ class PersonController &#123;
+
+   @RequestMapping(&quot;/&#123;id&#125;&quot;)
+   public HttpEntity getPerson(@PathVariable String id) &#123; ... &#125;
+
+ &#125;
+</code></pre>
+<pre><code class="language-text">&lt;%@ taglib uri=&quot;http://www.springframework.org/tags&quot; prefix=&quot;s&quot; %&gt;
+
+ &lt;a href=&quot;$&#123;s:mvcUrl('PC#getPerson').arg(0,&quot;123&quot;).build()&#125;&quot;&gt;Get Person&lt;/a&gt;
+</code></pre>
 <p>value:用来表示主要映射,是常用的</p>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">@RequestMapping(value = &quot;/user&quot;,method = RequestMethod.GET,produces = &quot;application/json&quot;)</span><br><span class="line">    public @ResponseBody</span><br><span class="line">    List&lt;User&gt; findUsers() &#123;</span><br><span class="line">        return userService.findUsers();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="language-text">@RequestMapping(value = &quot;/user&quot;,method = RequestMethod.GET,produces = &quot;application/json&quot;)
+    public @ResponseBody
+    List&lt;User&gt; findUsers() &#123;
+        return userService.findUsers();
+    &#125;
+</code></pre>
 <p>path: 指定访问的uri地址</p>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">@RequestMapping(path = &quot;/user&quot;,method = RequestMethod.POST,name = &quot;this is user`s post methods&quot;)</span><br><span class="line">    public String insertUser()&#123;</span><br><span class="line">        userService.saveUser();</span><br><span class="line">        return null;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="language-text">@RequestMapping(path = &quot;/user&quot;,method = RequestMethod.POST,name = &quot;this is user`s post methods&quot;)
+    public String insertUser()&#123;
+        userService.saveUser();
+        return null;
+    &#125;
+</code></pre>
 <p>method:映射的HTTP的访问方法，有GET, POST, HEAD, OPTIONS, PUT, PATCH, DELETE, TRACE</p>
 <p>consumes： 指定<strong>处理请求的提交内容类型（Content-Type）</strong>，例如application/json, text/html;</p>
 <p>produces: 指定<strong>返回的内容类型</strong>，仅当request请求头中的(Accept)类型中包含该指定类型才返回；</p>
 <p>params： 指定request中必须包含某些参数值时，才让该方法处理。</p>
 <p>headers： 指定request中必须包含某些指定的header值，才能让该方法处理请求。</p>
-<h3 id="Jpa常用注解"><code>Jpa</code>常用注解</h3>
-<h4 id="Entity">@Entity</h4>
+<h3 id="Jpa常用注解"><a class="header-anchor" href="#Jpa常用注解">¶</a> <code>Jpa</code>常用注解</h3>
+<h4 id="@Entity"><a class="header-anchor" href="#@Entity">¶</a> @Entity</h4>
 <p>标注在类外侧，标注着这个类是一个实体类。</p>
-<h4 id="Table"><code>@Table</code></h4>
+<h4 id="@Table"><a class="header-anchor" href="#@Table">¶</a> <code>@Table</code></h4>
 <p>​	标注在类外侧，标注实体的主表，其中有 <code>catalog</code>,<code>indexes</code>, <code>name</code>, <code>schema</code>，分别注明为：指定database的目录，索引，名称，和表的结构描述</p>
 <p>​	注意：schema定义了表、每个表的字段，还有表和字段之间的关系。</p>
-<h4 id="Id">@Id</h4>
+<h4 id="@Id"><a class="header-anchor" href="#@Id">¶</a> @Id</h4>
 <p>表示是实体类的主键</p>
-<h4 id="GeneratedValue">@GeneratedValue</h4>
+<h4 id="@GeneratedValue"><a class="header-anchor" href="#@GeneratedValue">¶</a> @GeneratedValue</h4>
 <p>​	提供主键的值得生成策略规范。GeneratedValue注释可以与Id注释一起应用于实体或映射超类的主键属性或字段，派生主键不支持该注解。提供两个可选值：1. <a class="link"   target="_blank" rel="noopener" href="https://docs.oracle.com/javaee/7/api/javax/persistence/GeneratedValue.html#generator--" >generator<i class="fas fa-external-link-alt"></i></a> ：要在SequenceGenerator或TableGenerator注解中指定的主键生成器的名称。2. <a class="link"   target="_blank" rel="noopener" href="https://docs.oracle.com/javaee/7/api/javax/persistence/GeneratedValue.html#strategy--" >strategy<i class="fas fa-external-link-alt"></i></a> 生成策略，有四个可选值AUTO,INDENTITY,SEQUENCE 和 TABLE ，默认为AUTO</p>
-<h4 id="Column">@Column</h4>
+<h4 id="@Column"><a class="header-anchor" href="#@Column">¶</a> @Column</h4>
 <p>指定持久属性或字段的映射列。如果未指定Column注释，则应用默认值。</p>
 <p><a class="link"   target="_blank" rel="noopener" href="https://docs.oracle.com/javaee/7/api/javax/persistence/Column.html#updatable--" >updatable<i class="fas fa-external-link-alt"></i></a>：是否包含在框架自动生成的update语句中。</p>
 <p>其他可以通过例子一看便知：</p>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">@Column(name=&quot;description&quot;, nullable=false, length=512)</span><br><span class="line">public String getDescription() &#123; return description; &#125;</span><br></pre></td></tr></table></figure>
-<h4 id="Transient">@Transient</h4>
+<pre><code class="language-text">@Column(name=&quot;description&quot;, nullable=false, length=512)
+public String getDescription() &#123; return description; &#125;
+</code></pre>
+<h4 id="@Transient"><a class="header-anchor" href="#@Transient">¶</a> @Transient</h4>
 <p><code>@Transient</code>表示该属性并非一个到数据库表的字段的映射,<code>ORM</code>框架将忽略该属性.<br>
 如果一个属性并非数据库表的字段映射,就<strong>务必</strong>将其标示为<code>@Transient</code>,否则,<code>ORM</code>框架默认其注解为<code>@Basic</code>.</p>
-<h4 id="ManyToOne">@ManyToOne</h4>
+<h4 id="@ManyToOne"><a class="header-anchor" href="#@ManyToOne">¶</a> @ManyToOne</h4>
 <p>表示一个多对一的映射,该注解标注的属性通常是数据库表的外键</p>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">//订单Order和用户User是一个ManyToOne的关系</span><br><span class="line">//在Order类中定义</span><br><span class="line">@ManyToOne()</span><br><span class="line">@JoinColumn(name=”USER”)</span><br><span class="line">public User getUser() &#123;</span><br><span class="line">    return user;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h4 id="JoinColumn">@JoinColumn</h4>
+<pre><code class="language-text">//订单Order和用户User是一个ManyToOne的关系
+//在Order类中定义
+@ManyToOne()
+@JoinColumn(name=”USER”)
+public User getUser() &#123;
+    return user;
+&#125;
+</code></pre>
+<h4 id="@JoinColumn"><a class="header-anchor" href="#@JoinColumn">¶</a> @JoinColumn</h4>
 <p>​	指定用于连接实体关联或元素集合的列。如果JoinColumn注解本身是默认的，则假定使用单个连接列并应用默认值。其默认的名称为实体User的名称+下划线+实体User的主键名称。也就是USER_ID.</p>
-<h4 id="OneToMany">@OneToMany</h4>
+<h4 id="@OneToMany"><a class="header-anchor" href="#@OneToMany">¶</a> @OneToMany</h4>
 <p>@OneToMany描述一个一对多的关联,该属性应该为集体类型,在数据库中并没有实际字段.例如:实体User和Order是OneToMany的关系,则实体User被删除时,其关联的实体Order也应该被全部删除</p>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@OneTyMany(cascade=ALL)</span><br><span class="line">public List getOrders() &#123;</span><br><span class="line">    return orders;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h4 id="OneToOne">@OneToOne</h4>
+<pre><code class="language-text">@OneTyMany(cascade=ALL)
+public List getOrders() &#123;
+    return orders;
+&#125;
+</code></pre>
+<h4 id="@OneToOne"><a class="header-anchor" href="#@OneToOne">¶</a> @OneToOne</h4>
 <p>描述一对一的关系</p>
 <p>如User表和person表，一个是基本信息一个是详细信息</p>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@OneToOne(fetch=FetchType.LAZY) // Fetch是抓取策略，如果不写，自动的策略是LAZY</span><br><span class="line">public Person getPerson() &#123;</span><br><span class="line">    return person;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h4 id="ManyToMany">@ManyToMany</h4>
+<pre><code class="language-text">@OneToOne(fetch=FetchType.LAZY) // Fetch是抓取策略，如果不写，自动的策略是LAZY
+public Person getPerson() &#123;
+    return person;
+&#125;
+</code></pre>
+<h4 id="@ManyToMany"><a class="header-anchor" href="#@ManyToMany">¶</a> @ManyToMany</h4>
 <p>@ManyToMany 描述一个多对多的关联.多对多关联上是两个一对多关联,但是在ManyToMany描述中,中间表是由ORM框架自动处理</p>
-<h4 id="Embedded">@Embedded</h4>
+<h4 id="@Embedded"><a class="header-anchor" href="#@Embedded">¶</a> @Embedded</h4>
 <p>@Embedded将几个字段组合成一个类,并作为整个Entity的一个属性.</p>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">@Embeddable</span><br><span class="line">public class Address &#123;city,street,zip&#125;</span><br><span class="line">    @Entity</span><br><span class="line">public class User &#123;</span><br><span class="line">    @Embedded</span><br><span class="line">    public Address getAddress() &#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="language-text">@Embeddable
+public class Address &#123;city,street,zip&#125;
+    @Entity
+public class User &#123;
+    @Embedded
+    public Address getAddress() &#123;
+
+    &#125;
+&#125;
+</code></pre>
 <table>
 <thead>
 <tr>
@@ -346,14 +393,27 @@
 </tr>
 </tbody>
 </table>
-<h2 id="spring-boot-配置问题">spring boot 配置问题</h2>
-<h3 id="spring2-0后静态资源访问不到的问题">spring2.0后静态资源访问不到的问题</h3>
+<h2 id="spring boot 配置问题"><a class="header-anchor" href="#spring boot 配置问题">¶</a> spring boot 配置问题</h2>
+<h3 id="spring2.0后静态资源访问不到的问题"><a class="header-anchor" href="#spring2.0后静态资源访问不到的问题">¶</a> spring2.0后静态资源访问不到的问题</h3>
 <p>需要手动写配置类进行静态资源配置</p>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">@Configuration</span><br><span class="line">public class WebMvcConfig implements WebMvcConfigurer &#123;</span><br><span class="line">    /**</span><br><span class="line">     * 添加静态资源文件，外部可以直接访问地址</span><br><span class="line">     * @param registry</span><br><span class="line">     */</span><br><span class="line">    @Override</span><br><span class="line">    public void addResourceHandlers(ResourceHandlerRegistry registry) &#123;</span><br><span class="line">        registry.addResourceHandler(&quot;/static/**&quot;).addResourceLocations(&quot;classpath:/static/&quot;);</span><br><span class="line">        registry.addResourceHandler(&quot;/templates/**&quot;).addResourceLocations(&quot;classpath:/templates/&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="配置SpringBoot-Jpa默认mysql生成表引擎为InnoDB">配置<code>SpringBoot Jpa</code>默认<code>mysql</code>生成表引擎为<code>InnoDB</code></h3>
+<pre><code class="language-text">@Configuration
+public class WebMvcConfig implements WebMvcConfigurer &#123;
+    /**
+     * 添加静态资源文件，外部可以直接访问地址
+     * @param registry
+     */
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) &#123;
+        registry.addResourceHandler(&quot;/static/**&quot;).addResourceLocations(&quot;classpath:/static/&quot;);
+        registry.addResourceHandler(&quot;/templates/**&quot;).addResourceLocations(&quot;classpath:/templates/&quot;);
+    &#125;
+&#125;
+</code></pre>
+<h3 id="配置SpringBoot Jpa默认mysql生成表引擎为InnoDB"><a class="header-anchor" href="#配置SpringBoot Jpa默认mysql生成表引擎为InnoDB">¶</a> 配置<code>SpringBoot Jpa</code>默认<code>mysql</code>生成表引擎为<code>InnoDB</code></h3>
 <p>在配置文件<code>appliction.properties</code>中加入</p>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">spring.jpa.database-platform=org.hibernate.dialect.MySQL5InnoDBDialect</span><br></pre></td></tr></table></figure>
-
+<pre><code class="language-text">spring.jpa.database-platform=org.hibernate.dialect.MySQL5InnoDBDialect
+</code></pre>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css">
         </div>
 
         
@@ -440,6 +500,19 @@
     </div>
 </footer>
 
+<script src="/js/prism.js" async></script>
+
+# 文档底部引入js
+<script src="https://cdn.bootcss.com/jquery/3.4.0/jquery.min.js"></script>
+
+<script src="/js/prettify.js"></script>
+
+
+# 高亮设置
+<script type="text/javascript">
+$(window).on('load', function(){ 
+$('code').addClass('language-json');});</script>
+
 
         </div>
     </div>
@@ -520,7 +593,7 @@
         <aside class="page-aside">
             <div class="post-toc-wrap">
     <div class="post-toc">
-        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-text">SpringBoot过程问题</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#spring%E6%B3%A8%E8%A7%A3%E7%9B%B8%E5%85%B3"><span class="nav-text">spring注解相关</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#RestController"><span class="nav-text">@RestController</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RequestMapping"><span class="nav-text">@RequestMapping</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Jpa%E5%B8%B8%E7%94%A8%E6%B3%A8%E8%A7%A3"><span class="nav-text">Jpa常用注解</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Entity"><span class="nav-text">@Entity</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Table"><span class="nav-text">@Table</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Id"><span class="nav-text">@Id</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#GeneratedValue"><span class="nav-text">@GeneratedValue</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Column"><span class="nav-text">@Column</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Transient"><span class="nav-text">@Transient</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ManyToOne"><span class="nav-text">@ManyToOne</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#JoinColumn"><span class="nav-text">@JoinColumn</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#OneToMany"><span class="nav-text">@OneToMany</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#OneToOne"><span class="nav-text">@OneToOne</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ManyToMany"><span class="nav-text">@ManyToMany</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Embedded"><span class="nav-text">@Embedded</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#spring-boot-%E9%85%8D%E7%BD%AE%E9%97%AE%E9%A2%98"><span class="nav-text">spring boot 配置问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#spring2-0%E5%90%8E%E9%9D%99%E6%80%81%E8%B5%84%E6%BA%90%E8%AE%BF%E9%97%AE%E4%B8%8D%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-text">spring2.0后静态资源访问不到的问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AESpringBoot-Jpa%E9%BB%98%E8%AE%A4mysql%E7%94%9F%E6%88%90%E8%A1%A8%E5%BC%95%E6%93%8E%E4%B8%BAInnoDB"><span class="nav-text">配置SpringBoot Jpa默认mysql生成表引擎为InnoDB</span></a></li></ol></li></ol></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#SpringBoot%E8%BF%87%E7%A8%8B%E9%97%AE%E9%A2%98"><span class="nav-text"> SpringBoot过程问题</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#spring%E6%B3%A8%E8%A7%A3%E7%9B%B8%E5%85%B3"><span class="nav-text"> spring注解相关</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#@RestController"><span class="nav-text"> @RestController</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#@RequestMapping"><span class="nav-text"> @RequestMapping</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Jpa%E5%B8%B8%E7%94%A8%E6%B3%A8%E8%A7%A3"><span class="nav-text"> Jpa常用注解</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#@Entity"><span class="nav-text"> @Entity</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#@Table"><span class="nav-text"> @Table</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#@Id"><span class="nav-text"> @Id</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#@GeneratedValue"><span class="nav-text"> @GeneratedValue</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#@Column"><span class="nav-text"> @Column</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#@Transient"><span class="nav-text"> @Transient</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#@ManyToOne"><span class="nav-text"> @ManyToOne</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#@JoinColumn"><span class="nav-text"> @JoinColumn</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#@OneToMany"><span class="nav-text"> @OneToMany</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#@OneToOne"><span class="nav-text"> @OneToOne</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#@ManyToMany"><span class="nav-text"> @ManyToMany</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#@Embedded"><span class="nav-text"> @Embedded</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#spring%20boot%20%E9%85%8D%E7%BD%AE%E9%97%AE%E9%A2%98"><span class="nav-text"> spring boot 配置问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#spring2.0%E5%90%8E%E9%9D%99%E6%80%81%E8%B5%84%E6%BA%90%E8%AE%BF%E9%97%AE%E4%B8%8D%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-text"> spring2.0后静态资源访问不到的问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AESpringBoot%20Jpa%E9%BB%98%E8%AE%A4mysql%E7%94%9F%E6%88%90%E8%A1%A8%E5%BC%95%E6%93%8E%E4%B8%BAInnoDB"><span class="nav-text"> 配置SpringBoot Jpa默认mysql生成表引擎为InnoDB</span></a></li></ol></li></ol></li></ol>
     </div>
 </div>
         </aside>

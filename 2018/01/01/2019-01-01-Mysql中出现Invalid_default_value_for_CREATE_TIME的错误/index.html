@@ -27,7 +27,7 @@
     KEEP.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 月前","year":"%s 年前"};
   </script>
 <meta name="generator" content="Hexo 5.4.0"><link rel="stylesheet" type="text/css" href="/css/injector/main.css" /><link rel="preload" as="style" href="/css/injector/light.css" /><link rel="preload" as="style" href="/css/injector/dark.css" /><link rel="alternate" href="/atom.xml" title="NanYin的博客" type="application/atom+xml">
-<link rel="stylesheet" href="/css/prism.css" type="text/css"></head>
+</head>
 
 
 <body>
@@ -47,7 +47,8 @@
     <div class="page-main-content">
 
         <div class="page-main-content-top">
-            <header class="header-wrapper">
+            <link rel="stylesheet" href="/css/prism.css">
+<header class="header-wrapper">
 
     <div class="header-content">
         <div class="left">
@@ -213,7 +214,7 @@
     
     
         <span class="article-wordcount article-meta-item">
-            <i class="fas fa-file-word"></i>&nbsp;<span>161 字</span>
+            <i class="fas fa-file-word"></i>&nbsp;<span>158 字</span>
         </span>
     
     
@@ -230,20 +231,27 @@
         
 
         <div class="article-content markdown-body">
-            <h1>Mysql中出现Invalid default value for 'CREATE_TIME’错误</h1>
+            <h1 id="Mysql中出现Invalid default value for 'CREATE_TIME’错误"><a class="header-anchor" href="#Mysql中出现Invalid default value for 'CREATE_TIME’错误">¶</a> Mysql中出现Invalid default value for 'CREATE_TIME’错误</h1>
 <p>最近做了新的系统，并把mysql升级到了5.7版本，在倒入sql时候，出现如题的错误‘Mysql中出现Invalid default value for ‘CREATE_TIME’错误’,找到了解决方法。</p>
 <p>是因为在5.7版本中的sql_mode有NO_ZERO_IN_DATE,NO_ZERO_DATE这两个东西，去掉就好了。如何去掉？</p>
 <ol>
 <li>临时方法</li>
 </ol>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; set session</span><br><span class="line"> -&gt; sql_mode=&#x27;ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION&#x27;;</span><br><span class="line">Query OK, 0 rows affected, 1 warning (0.00 sec)</span><br></pre></td></tr></table></figure>
+<pre><code class="language-text">mysql&gt; set session
+ -&gt; sql_mode='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';
+Query OK, 0 rows affected, 1 warning (0.00 sec)
+</code></pre>
 <ol start="2">
 <li>永久性修改</li>
 </ol>
 <p>直接修改配置文件</p>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">cd /etc/mysql/mysql.conf.d</span><br><span class="line">vim mysqld.cnf</span><br><span class="line"># 找到【mysqld】在下面插入</span><br><span class="line">sql_mode=&#x27;ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION&#x27;</span><br></pre></td></tr></table></figure>
+<pre><code class="language-text">cd /etc/mysql/mysql.conf.d
+vim mysqld.cnf
+# 找到【mysqld】在下面插入
+sql_mode='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION'
+</code></pre>
 <p>我使用第二种方法解决了问题。</p>
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css">
         </div>
 
         
@@ -314,6 +322,19 @@
         
     </div>
 </footer>
+
+<script src="/js/prism.js" async></script>
+
+# 文档底部引入js
+<script src="https://cdn.bootcss.com/jquery/3.4.0/jquery.min.js"></script>
+
+<script src="/js/prettify.js"></script>
+
+
+# 高亮设置
+<script type="text/javascript">
+$(window).on('load', function(){ 
+$('code').addClass('language-json');});</script>
 
 
         </div>
@@ -395,7 +416,7 @@
         <aside class="page-aside">
             <div class="post-toc-wrap">
     <div class="post-toc">
-        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-text">Mysql中出现Invalid default value for &#39;CREATE_TIME’错误</span></a></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Mysql%E4%B8%AD%E5%87%BA%E7%8E%B0Invalid%20default%20value%20for%20'CREATE_TIME%E2%80%99%E9%94%99%E8%AF%AF"><span class="nav-text"> Mysql中出现Invalid default value for &#39;CREATE_TIME’错误</span></a></li></ol>
     </div>
 </div>
         </aside>

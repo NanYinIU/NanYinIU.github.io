@@ -27,7 +27,7 @@
     KEEP.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 月前","year":"%s 年前"};
   </script>
 <meta name="generator" content="Hexo 5.4.0"><link rel="stylesheet" type="text/css" href="/css/injector/main.css" /><link rel="preload" as="style" href="/css/injector/light.css" /><link rel="preload" as="style" href="/css/injector/dark.css" /><link rel="alternate" href="/atom.xml" title="NanYin的博客" type="application/atom+xml">
-<link rel="stylesheet" href="/css/prism.css" type="text/css"></head>
+</head>
 
 
 <body>
@@ -47,7 +47,8 @@
     <div class="page-main-content">
 
         <div class="page-main-content-top">
-            <header class="header-wrapper">
+            <link rel="stylesheet" href="/css/prism.css">
+<header class="header-wrapper">
 
     <div class="header-content">
         <div class="left">
@@ -234,29 +235,81 @@
         
 
         <div class="article-content markdown-body">
-            <h1>SpringBoot整合JPA使用</h1>
-<h2 id="整合JPA">整合JPA</h2>
+            <h1 id="SpringBoot整合JPA使用"><a class="header-anchor" href="#SpringBoot整合JPA使用">¶</a> SpringBoot整合JPA使用</h1>
+<h2 id="整合JPA"><a class="header-anchor" href="#整合JPA">¶</a> 整合JPA</h2>
 <p>SpringBoot整合JPA十分方便,在Pom中添加如下:</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-data-jpa<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 数据库配置,使用druid --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.alibaba<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>druid-spring-boot-starter<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.1.16<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>mysql<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>mysql-connector-java<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">version</span>&gt;</span>5.1.47<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<h3 id="JPA基本配置">JPA基本配置</h3>
+<pre><code class="language-xml">&lt;dependency&gt;
+  &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+  &lt;artifactId&gt;spring-boot-starter-data-jpa&lt;/artifactId&gt;
+&lt;/dependency&gt;
+&lt;!-- 数据库配置,使用druid --&gt;
+&lt;dependency&gt;
+  &lt;groupId&gt;com.alibaba&lt;/groupId&gt;
+  &lt;artifactId&gt;druid-spring-boot-starter&lt;/artifactId&gt;
+  &lt;version&gt;1.1.16&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+  &lt;groupId&gt;mysql&lt;/groupId&gt;
+  &lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt;
+  &lt;version&gt;5.1.47&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre>
+<h3 id="JPA基本配置"><a class="header-anchor" href="#JPA基本配置">¶</a> JPA基本配置</h3>
 <p>在application.properties 或者 application.yaml 文件中配置数据库链接和JPA的基本配置(本例使用yaml文件):</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">    <span class="attr">datasource:</span></span><br><span class="line">        <span class="attr">driver-class-name:</span> <span class="string">com.mysql.jdbc.Driver</span></span><br><span class="line">        <span class="attr">druid:</span></span><br><span class="line">            <span class="attr">initial-size:</span> <span class="number">5</span></span><br><span class="line">            <span class="attr">max-active:</span> <span class="number">20</span></span><br><span class="line">            <span class="attr">max-wait:</span> <span class="number">60000</span></span><br><span class="line">            <span class="attr">stat-view-servlet:</span></span><br><span class="line">                <span class="attr">login-password:</span> <span class="string">admin</span></span><br><span class="line">                <span class="attr">login-username:</span> <span class="string">admin</span></span><br><span class="line">        <span class="attr">password:</span> <span class="number">123456</span></span><br><span class="line">        <span class="attr">url:</span> <span class="string">jdbc:mysql://127.0.0.1:3306/web?useUnicode=true&amp;characterEncoding=UTF-8&amp;useSSL=false</span></span><br><span class="line">        <span class="attr">username:</span> <span class="string">root</span></span><br><span class="line">    <span class="attr">jpa:</span></span><br><span class="line">    <span class="comment">#   配置创建表使用的SQLDialect</span></span><br><span class="line">        <span class="attr">database-platform:</span> <span class="string">org.hibernate.dialect.MySQL5InnoDBDialect</span></span><br><span class="line">        <span class="attr">show-sql:</span> <span class="literal">true</span></span><br><span class="line">    <span class="comment">#   自动更新数据库表</span></span><br><span class="line">        <span class="attr">hibernate:</span></span><br><span class="line">            <span class="attr">ddl-auto:</span> <span class="string">update</span></span><br><span class="line">        <span class="attr">properties:</span></span><br><span class="line">            <span class="attr">hibernate:</span></span><br><span class="line">            <span class="comment">#   使用@Query时SQL的dialect方言</span></span><br><span class="line">                <span class="attr">dialect:</span> <span class="string">org.hibernate.dialect.MySQL5InnoDBDialect</span></span><br></pre></td></tr></table></figure>
-<h2 id="使用JPA">使用JPA</h2>
+<pre><code class="language-yaml">spring:
+    datasource:
+        driver-class-name: com.mysql.jdbc.Driver
+        druid:
+            initial-size: 5
+            max-active: 20
+            max-wait: 60000
+            stat-view-servlet:
+                login-password: admin
+                login-username: admin
+        password: 123456
+        url: jdbc:mysql://127.0.0.1:3306/web?useUnicode=true&amp;characterEncoding=UTF-8&amp;useSSL=false
+        username: root
+    jpa:
+    #   配置创建表使用的SQLDialect
+        database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+        show-sql: true
+    #   自动更新数据库表
+        hibernate:
+            ddl-auto: update
+        properties:
+            hibernate:
+            #   使用@Query时SQL的dialect方言
+                dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+</code></pre>
+<h2 id="使用JPA"><a class="header-anchor" href="#使用JPA">¶</a> 使用JPA</h2>
 <p>在SpringBoot中使用JPA十分简单,只要引用JPA的starter即可</p>
-<h3 id="实体类中属性">实体类中属性</h3>
+<h3 id="实体类中属性"><a class="header-anchor" href="#实体类中属性">¶</a> 实体类中属性</h3>
 <p>使用Spring Data JPA,与Mybatis不同,更多的是面向对象查询.所以构造对象实体类就非常重要,如果配置了自动更新表结构,就需要注意如何在实体中使用特定的注解完成对实体的配置.</p>
-<h4 id="1-Entity">1. @Entity</h4>
+<h4 id="1. @Entity"><a class="header-anchor" href="#1. @Entity">¶</a> 1. @Entity</h4>
 <p>使用 <code>@Entity</code> 注解在类上,用来表示该类为一个实体类</p>
-<h4 id="2-Table">2. @Table</h4>
+<h4 id="2. @Table"><a class="header-anchor" href="#2. @Table">¶</a> 2. @Table</h4>
 <p>使用 @Table 注解标注在类上, 可以指定使用 @Entity 注解标注的类所生成的数据库表信息,如表名称等.</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Entity</span> <span class="comment">// 指定这个类为实体类</span></span><br><span class="line"><span class="meta">@Table(name=&quot;user&quot;)</span> <span class="comment">// 指定@Entity标注的主表</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">User</span> <span class="keyword">implements</span> <span class="title">Serializable</span> </span>&#123;</span><br><span class="line"><span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h4 id="3-Id-Column">3. @Id,@Column</h4>
+<pre><code class="language-java">@Entity // 指定这个类为实体类
+@Table(name=&quot;user&quot;) // 指定@Entity标注的主表
+public class User implements Serializable &#123;
+// ...
+&#125;
+</code></pre>
+<h4 id="3. @Id,@Column"><a class="header-anchor" href="#3. @Id,@Column">¶</a> 3. @Id,@Column</h4>
 <p>使用 @Id 注解标注在变量或者set方法上,用来标注该变量为主键ID.</p>
 <p>使用 @Column 注解同样标注在变量上,能够设置生成表的各种详细信息,如字段名称,字段长度等等…</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Id</span></span><br><span class="line"><span class="meta">@Column(columnDefinition = &quot;INT(11)&quot;)</span></span><br><span class="line"><span class="meta">@GeneratedValue(strategy=GenerationType.IDENTITY)</span></span><br><span class="line"><span class="keyword">private</span> Integer id;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Column(name = &quot;is_deleted&quot;,columnDefinition = &quot;TINYINT(1)&quot;,nullable =</span></span><br><span class="line"><span class="meta">false)</span></span><br><span class="line"><span class="keyword">private</span> Short isDeleted=<span class="number">0</span>;</span><br></pre></td></tr></table></figure>
-<h4 id="4-GeneratedValue">4. @GeneratedValue</h4>
+<pre><code class="language-java">@Id
+@Column(columnDefinition = &quot;INT(11)&quot;)
+@GeneratedValue(strategy=GenerationType.IDENTITY)
+private Integer id;
+
+@Column(name = &quot;is_deleted&quot;,columnDefinition = &quot;TINYINT(1)&quot;,nullable =
+false)
+private Short isDeleted=0;
+</code></pre>
+<h4 id="4. @GeneratedValue"><a class="header-anchor" href="#4. @GeneratedValue">¶</a> 4. @GeneratedValue</h4>
 <p>使用 @GeneratedValue 注解标注在 和 @Id 相同的位置,用来表示主键ID的生成策略.该注解有两个属性,第一个是常用到的 strategy 即生成策略,第二个是不常用到的generator指定生成器.</p>
-<h5 id="strategy">strategy</h5>
+<h5 id="strategy"><a class="header-anchor" href="#strategy">¶</a> strategy</h5>
 <p>GenerationType 包含四种策略:</p>
 <ul>
 <li>TABLE,使用特定的表来存储生成的主键,也就是说会自动生成一种记录主键的表,一般会包含两个字段,第一个字段是字段生成策略的名称,第二个是ID的最大序列值.通常会和 @TableGenerator 一起来使用,能够指定特定表来生成主键,如果不指定,会默认生成一个名称为 sequence 的表来记录.</li>
@@ -264,49 +317,110 @@
 <li>IDENTITY ,遇到向MYSQL能够让主键自增的数据库,就可以指定生成策略为IDENTITY,生成表后, Mysql会默认将该字段设置为 ‘auto_increment’,</li>
 <li>AUTO ,使用 @GeneratedValue 默认的生成策略,把具体生成主键的规则交给持久化引擎来实现,也是我使用最多的一种方式.</li>
 </ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 使用 GenerationType.TABLE 指定生成的记录表,其中name必须,其他可选</span></span><br><span class="line"><span class="meta">@Id</span></span><br><span class="line"><span class="meta">@GeneratedValue(strategy = GenerationType.TABLE, generator = &quot;roleSeq&quot;)</span></span><br><span class="line"><span class="meta">@TableGenerator(name = &quot;roleSeq&quot;, allocationSize = 1, table = &quot;seq_table&quot;, pkColumnName = &quot;seq_id&quot;, valueColumnName = &quot;seq_count&quot;)</span></span><br><span class="line"><span class="keyword">private</span> Integer id;</span><br><span class="line"><span class="comment">// 使用 SEQUENCE </span></span><br><span class="line"><span class="meta">@Id</span></span><br><span class="line"><span class="meta">@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = &quot;menuSeq&quot;)</span></span><br><span class="line"><span class="meta">@SequenceGenerator(name = &quot;menuSeq&quot;, initialValue = 1, allocationSize = 1, sequenceName = &quot;MENU_SEQUENCE&quot;)</span></span><br><span class="line"><span class="keyword">private</span> Integer id;</span><br><span class="line"><span class="comment">// 使用 IDENTITY 进行自增</span></span><br><span class="line"><span class="meta">@Id</span></span><br><span class="line"><span class="meta">@GeneratedValue(strategy = GenerationType.IDENTITY)</span></span><br><span class="line"><span class="keyword">private</span> Integer id;</span><br><span class="line"><span class="comment">// 使用AUTO,或者不指定策略</span></span><br><span class="line"><span class="meta">@Id</span></span><br><span class="line"><span class="meta">@GeneratedValue(strategy = GenerationType.AUTO)</span></span><br><span class="line"><span class="keyword">private</span> Integer id</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h5 id="generator">generator</h5>
+<pre><code class="language-java">    // 使用 GenerationType.TABLE 指定生成的记录表,其中name必须,其他可选
+    @Id
+    @GeneratedValue(strategy = GenerationType.TABLE, generator = &quot;roleSeq&quot;)
+    @TableGenerator(name = &quot;roleSeq&quot;, allocationSize = 1, table = &quot;seq_table&quot;, pkColumnName = &quot;seq_id&quot;, valueColumnName = &quot;seq_count&quot;)
+    private Integer id;
+    // 使用 SEQUENCE 
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = &quot;menuSeq&quot;)
+    @SequenceGenerator(name = &quot;menuSeq&quot;, initialValue = 1, allocationSize = 1, sequenceName = &quot;MENU_SEQUENCE&quot;)
+    private Integer id;
+    // 使用 IDENTITY 进行自增
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+    // 使用AUTO,或者不指定策略
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Integer id
+
+</code></pre>
+<h5 id="generator"><a class="header-anchor" href="#generator">¶</a> generator</h5>
 <p>通过上面对策略的描述,也就明白generator的作用,就是指定特定name的Generator</p>
-<h4 id="5-Transient">5. @Transient</h4>
+<h4 id="5. @Transient"><a class="header-anchor" href="#5. @Transient">¶</a> 5. @Transient</h4>
 <p>使用 @Transient 注解,标注在字段上,在JPA生成表字段时能够忽略该字段,让字段不出现在数据库中.</p>
-<h4 id="6-Embedded和-Embeddable">6. @Embedded和@Embeddable</h4>
+<h4 id="6. @Embedded和@Embeddable"><a class="header-anchor" href="#6. @Embedded和@Embeddable">¶</a> 6. @Embedded和@Embeddable</h4>
 <p>当实体A出现在实体B中,但实体A不需要单独生成一张表的使用,使用@@Embedded和@Embeddable标注在类上,能够防止实体A生成数据库表.</p>
-<h4 id="7-Temporal">7. @Temporal</h4>
+<h4 id="7. @Temporal"><a class="header-anchor" href="#7. @Temporal">¶</a> 7. @Temporal</h4>
 <p>使用 @Temporal 注解特殊标记在需要持久化的字段上,并且字段类型为 <code>java.util.Date</code> 或 <code>java.util.Calendar</code>的时候,可指定 TemporalType 来生成对应数据库中的时间格式(java.sql.xxxx).</p>
-<h4 id="8-一对一-一对多-多对多关系">8. 一对一,一对多,多对多关系</h4>
+<h4 id="8. 一对一,一对多,多对多关系"><a class="header-anchor" href="#8. 一对一,一对多,多对多关系">¶</a> 8. 一对一,一对多,多对多关系</h4>
 <p>在使用关系型数据库中,免不了上述关系的生成,下面就来说一下,如何针对一对一关系、一对多关系、多对多关系的通用设置,在分别实验前,先了解一下 @JoinColumn 的作用</p>
 <p>我认为的JoinColumn是特殊的@Column,当需要使用到“关系”时,需要使用到JoinColumn来替代普通的Column注解</p>
-<h5 id="OneToOne">OneToOne</h5>
+<h5 id="OneToOne"><a class="header-anchor" href="#OneToOne">¶</a> OneToOne</h5>
 <p>使用OneToOne注解,指定两方关系是一对一的.比如User和Status,Status是User的一个属性,在User表中只需记录Stauts表中的主键,所以需要在User表(主)中声明一个Status(从)即可:</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@OneToOne()</span></span><br><span class="line"><span class="meta">@JoinColumn(columnDefinition = &quot;INT(11)&quot;,name = &quot;status_id&quot;)</span></span><br><span class="line"><span class="keyword">private</span> Status status;</span><br></pre></td></tr></table></figure>
-<h5 id="OneToMany、ManyToOne">OneToMany、ManyToOne</h5>
+<pre><code class="language-java">@OneToOne()
+@JoinColumn(columnDefinition = &quot;INT(11)&quot;,name = &quot;status_id&quot;)
+private Status status;
+</code></pre>
+<h5 id="OneToMany、ManyToOne"><a class="header-anchor" href="#OneToMany、ManyToOne">¶</a> OneToMany、ManyToOne</h5>
 <p>使用 @OneToMany 或 @ManyToOne 注解来表示一对多、多对一的关系.典型的如Project之于Task,一个Project包含多个Task,所以Project为One,Task为Many.</p>
 <p>如果在Project(主)中声明Task(从)时,可以使用 OneToMany 表示一对多关系</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@OneToMany(cascade = CascadeType.ALL)</span></span><br><span class="line"><span class="meta">@JoinColumn(name=&quot;project_id&quot;)</span> <span class="comment">// task表指向project表的外键</span></span><br><span class="line">Set&lt;Task&gt; tasks;</span><br></pre></td></tr></table></figure>
+<pre><code class="language-java">@OneToMany(cascade = CascadeType.ALL)
+@JoinColumn(name=&quot;project_id&quot;) // task表指向project表的外键
+Set&lt;Task&gt; tasks;
+</code></pre>
 <p>也可以在多的一方使用 ManyToOne 注解,表示多对一的关系</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@ManyToOne</span></span><br><span class="line"><span class="comment">// 在 one 的一方生成 name为 project_id 的字段,指向task</span></span><br><span class="line"><span class="meta">@JoinColumn(name=&quot;project_id&quot;)</span> </span><br><span class="line">Project project;</span><br></pre></td></tr></table></figure>
+<pre><code class="language-java">@ManyToOne
+// 在 one 的一方生成 name为 project_id 的字段,指向task
+@JoinColumn(name=&quot;project_id&quot;) 
+Project project;
+</code></pre>
 <p>以上是单独使用 @OneToMany 或 @ManyToOne 构造单向的关系,但是这样有缺点,注定有一方找不到另外一方(只建立了单向关系).所以稳妥的方式是构建双向关系,在One和Many双方,使用两个注解相互指定</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Project中,其中mappedBy是双向关系中必须要使用的属性</span></span><br><span class="line"><span class="meta">@OneToMany(cascade = CascadeType.ALL,mappedBy =&quot;project_id&quot;)</span></span><br><span class="line">Set&lt;Task&gt; tasks;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Task中</span></span><br><span class="line"><span class="meta">@ManyToOne</span></span><br><span class="line"><span class="meta">@JoinColumn(name=&quot;project_id&quot;)</span></span><br><span class="line">Project project</span><br></pre></td></tr></table></figure>
-<h5 id="ManyToMany">ManyToMany</h5>
+<pre><code class="language-java">// Project中,其中mappedBy是双向关系中必须要使用的属性
+@OneToMany(cascade = CascadeType.ALL,mappedBy =&quot;project_id&quot;)
+Set&lt;Task&gt; tasks;
+
+// Task中
+@ManyToOne
+@JoinColumn(name=&quot;project_id&quot;)
+Project project
+</code></pre>
+<h5 id="ManyToMany"><a class="header-anchor" href="#ManyToMany">¶</a> ManyToMany</h5>
 <p>使用 @ManyToMany 注解来标注多对多关系,比如用户和角色之间就可以理解为多对多的关系,双方需要互相拥有多个.多地多关系需要使用中间表来维护两方关系.建立关系表使用@JoinTable注解来指定实现.</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// User表中</span></span><br><span class="line"><span class="meta">@JSONField(name = &quot;roles&quot;)</span></span><br><span class="line"><span class="meta">@ManyToMany(mappedBy = &quot;users&quot;,fetch = FetchType.EAGER,cascade = CascadeType.ALL)</span></span><br><span class="line"><span class="keyword">private</span> Set&lt;Role&gt; roles;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Role 表中</span></span><br><span class="line"><span class="meta">@JSONField(serialize = false)</span></span><br><span class="line"><span class="meta">@ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)</span></span><br><span class="line"><span class="meta">@JoinTable(name = &quot;r_user_role&quot;,</span></span><br><span class="line"><span class="meta">        joinColumns = &#123;@JoinColumn(name = &quot;role_id&quot;)&#125;,</span></span><br><span class="line"><span class="meta">        inverseJoinColumns = &#123;@JoinColumn(name = &quot;user_id&quot;)&#125;)</span></span><br><span class="line"><span class="keyword">private</span> List&lt;User&gt; users;</span><br></pre></td></tr></table></figure>
-<h5 id="关系使用时的坑">关系使用时的坑</h5>
+<pre><code class="language-java">// User表中
+@JSONField(name = &quot;roles&quot;)
+@ManyToMany(mappedBy = &quot;users&quot;,fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+private Set&lt;Role&gt; roles;
+
+// Role 表中
+@JSONField(serialize = false)
+@ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+@JoinTable(name = &quot;r_user_role&quot;,
+        joinColumns = &#123;@JoinColumn(name = &quot;role_id&quot;)&#125;,
+        inverseJoinColumns = &#123;@JoinColumn(name = &quot;user_id&quot;)&#125;)
+private List&lt;User&gt; users;
+</code></pre>
+<h5 id="关系使用时的坑"><a class="header-anchor" href="#关系使用时的坑">¶</a> 关系使用时的坑</h5>
 <ol>
-<li>双向关系需要双方都进行维护,否则保存不上 :)</li>
+<li>双向关系需要双方都进行维护,否则保存不上 😃</li>
 </ol>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">User user = one.get();</span><br><span class="line"><span class="comment">// 多对多关系需要双向关联保存才起作用</span></span><br><span class="line">user.getRoles().add(role);</span><br><span class="line">role.getUsers().add(user);</span><br></pre></td></tr></table></figure>
+<pre><code class="language-java">User user = one.get();
+// 多对多关系需要双向关联保存才起作用
+user.getRoles().add(role);
+role.getUsers().add(user);
+</code></pre>
 <ol start="2">
 <li>使用JSON时,如果出现循环引用导出溢出时,在一方加入设置防止序列化</li>
 </ol>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 我使用的是FastJosn,Jackson有不同的实现方式</span></span><br><span class="line"><span class="meta">@JSONField(serialize = false)</span></span><br><span class="line"><span class="meta">@ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)</span></span><br><span class="line"><span class="meta">@JoinTable(name = &quot;r_user_routemeta&quot;,</span></span><br><span class="line"><span class="meta">        joinColumns = &#123;@JoinColumn(name = &quot;role_id&quot;)&#125;,</span></span><br><span class="line"><span class="meta">        inverseJoinColumns = &#123;@JoinColumn(name = &quot;meta_id&quot;)&#125;)</span></span><br><span class="line"><span class="keyword">private</span> Set&lt;RouteMeta&gt; routeMeta;</span><br></pre></td></tr></table></figure>
-<h3 id="使用-Repository-查询">使用 Repository 查询</h3>
+<pre><code class="language-java">// 我使用的是FastJosn,Jackson有不同的实现方式
+@JSONField(serialize = false)
+@ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+@JoinTable(name = &quot;r_user_routemeta&quot;,
+        joinColumns = &#123;@JoinColumn(name = &quot;role_id&quot;)&#125;,
+        inverseJoinColumns = &#123;@JoinColumn(name = &quot;meta_id&quot;)&#125;)
+private Set&lt;RouteMeta&gt; routeMeta;
+</code></pre>
+<h3 id="使用 Repository 查询"><a class="header-anchor" href="#使用 Repository 查询">¶</a> 使用 Repository 查询</h3>
 <p>Repository 是 Spring Data JPA 中最重要的接口,使用实体类和实体类中的主键ID作为类型参数.其中CURDRepository为实体类提供了复杂增删改查的函数.</p>
-<h4 id="1-CrudRepository接口">1. CrudRepository接口</h4>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">CrudRepository</span>&lt;<span class="title">T</span>, <span class="title">ID</span>&gt; <span class="keyword">extends</span> <span class="title">Repository</span>&lt;<span class="title">T</span>, <span class="title">ID</span>&gt; </span>&#123;&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="1. CrudRepository接口"><a class="header-anchor" href="#1. CrudRepository接口">¶</a> 1. CrudRepository接口</h4>
+<pre><code class="language-java">public interface CrudRepository&lt;T, ID&gt; extends Repository&lt;T, ID&gt; &#123;&#125;
+</code></pre>
 <p>同样提供了特定的Repository,比如JPARepository、MongoRepository,这几个都是继承的 CrudRepository 接口,根据不同的技术特性暴露不同的接口方法.一般使用上直接继承CurdRepository就可以完成基本的工作.</p>
-<h4 id="2-PagingAndSortingRepository接口">2. PagingAndSortingRepository接口</h4>
+<h4 id="2. PagingAndSortingRepository接口"><a class="header-anchor" href="#2. PagingAndSortingRepository接口">¶</a> 2. PagingAndSortingRepository接口</h4>
 <p>如果使用分页或者排序需要继承 PagingAndSortingRepository 接口,这个接口中包含 <code>Iterable&lt;T&gt; findAll(Sort sort);</code> 和 <code> Page&lt;T&gt; findAll(Pageable pageable);</code>,这样能够具有查询时分页的特性</p>
-<h4 id="3-接口中的名称推导查询">3. 接口中的名称推导查询</h4>
+<h4 id="3. 接口中的名称推导查询"><a class="header-anchor" href="#3. 接口中的名称推导查询">¶</a> 3. 接口中的名称推导查询</h4>
 <ul>
 <li>通过命名查询,具体可查看相关文档,写的非常全 <a class="link"   target="_blank" rel="noopener" href="https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#repositories.query-methods.query-creation" >create-query<i class="fas fa-external-link-alt"></i></a></li>
 </ul>
@@ -441,56 +555,181 @@
 </tr>
 </tbody>
 </table>
-<h4 id="4-使用-Repository-查询实例">4. 使用 Repository 查询实例</h4>
+<h4 id="4. 使用 Repository 查询实例"><a class="header-anchor" href="#4. 使用 Repository 查询实例">¶</a> 4. 使用 Repository 查询实例</h4>
 <ol>
 <li>声明一个接口继承特定的Repository</li>
 </ol>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * JpaRepository 继承自 PagingAndSortingRepository,其中类型参数</span></span><br><span class="line"><span class="comment"> * 第一个是操作实体类的类型</span></span><br><span class="line"><span class="comment"> * 第二个是操作实体类的标识ID</span></span><br><span class="line"><span class="comment">**/</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">UserRepository</span> <span class="keyword">extends</span> <span class="title">JpaRepository</span>&lt;<span class="title">User</span>,<span class="title">Integer</span>&gt; </span>&#123;&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="language-java">/**
+ * JpaRepository 继承自 PagingAndSortingRepository,其中类型参数
+ * 第一个是操作实体类的类型
+ * 第二个是操作实体类的标识ID
+**/
+public interface UserRepository extends JpaRepository&lt;User,Integer&gt; &#123;&#125;
+</code></pre>
 <ol start="2">
 <li>(可选)在接口中定义方法</li>
 </ol>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 具体名称推导查询可以查看上面的表格</span></span><br><span class="line"><span class="function">List&lt;User&gt; <span class="title">findByLastname</span><span class="params">(String lastname)</span></span>;</span><br></pre></td></tr></table></figure>
+<pre><code class="language-java">// 具体名称推导查询可以查看上面的表格
+List&lt;User&gt; findByLastname(String lastname);
+</code></pre>
 <ol start="3">
 <li>使用@AutoWire注解inject到特定的service中调用</li>
 </ol>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Autowired</span></span><br><span class="line">UserRepository userRepository;</span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> User <span class="title">getUserFromUserName</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> userRepository.findUserByName(name);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="language-java">@Autowired
+UserRepository userRepository;
+@Override
+public User getUserFromUserName(String name) &#123;
+    return userRepository.findUserByName(name);
+&#125;
+</code></pre>
 <p>到这里,增删改查基本都能够实现,复杂的在于分页、多条件复杂查询.</p>
-<h4 id="5-使用-PagingAndSortingRepository-进行分页查询">5. 使用 PagingAndSortingRepository 进行分页查询</h4>
+<h4 id="5. 使用 PagingAndSortingRepository 进行分页查询"><a class="header-anchor" href="#5. 使用 PagingAndSortingRepository 进行分页查询">¶</a> 5. 使用 PagingAndSortingRepository 进行分页查询</h4>
 <p>前面说到 PagingAndSortingRepository 提供了两个方法,一个是返回Iterable的 findAll(Sort) 方法,另一个是返回Page的findAll方法</p>
 <ol>
 <li>在没有其他查询条件的情况下,直接定义一个Pageable变量,然后使用特定方法即可:</li>
 </ol>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Page&lt;Book&gt; <span class="title">findBookNoCriteria</span><span class="params">(Integer page,Integer size)</span> </span>&#123;</span><br><span class="line">    Pageable pageable = <span class="keyword">new</span> PageRequest(page, size, Sort.Direction.ASC, <span class="string">&quot;id&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> bookRepository.findAll(pageable);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="language-java">@Override
+public Page&lt;Book&gt; findBookNoCriteria(Integer page,Integer size) &#123;
+    Pageable pageable = new PageRequest(page, size, Sort.Direction.ASC, &quot;id&quot;);
+    return bookRepository.findAll(pageable);
+&#125;
+</code></pre>
 <ol start="2">
 <li>在存在多样的查询条件的情况下,还需要接口继承 <code>JpaSpecificationExecutor</code></li>
 </ol>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Page&lt;Book&gt; <span class="title">findBookCriteria</span><span class="params">(Integer page, Integer size, <span class="keyword">final</span> BookQuery bookQuery)</span> </span>&#123;</span><br><span class="line">    Pageable pageable = <span class="keyword">new</span> PageRequest(page, size, Sort.Direction.ASC, <span class="string">&quot;id&quot;</span>);</span><br><span class="line">    Page&lt;Book&gt; bookPage = bookRepository.findAll(<span class="keyword">new</span> Specification&lt;Book&gt;()&#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> Predicate <span class="title">toPredicate</span><span class="params">(Root&lt;Book&gt; root, CriteriaQuery&lt;?&gt; query, CriteriaBuilder criteriaBuilder)</span> </span>&#123;</span><br><span class="line">            Predicate p1 = criteriaBuilder.equal(root.get(<span class="string">&quot;name&quot;</span>).as(String.class), bookQuery.getName());</span><br><span class="line">            Predicate p2 = criteriaBuilder.equal(root.get(<span class="string">&quot;isbn&quot;</span>).as(String.class), bookQuery.getIsbn());</span><br><span class="line">            Predicate p3 = criteriaBuilder.equal(root.get(<span class="string">&quot;author&quot;</span>).as(String.class), bookQuery.getAuthor());</span><br><span class="line">            query.where(criteriaBuilder.and(p1,p2,p3));</span><br><span class="line">            <span class="keyword">return</span> query.getRestriction();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,pageable);</span><br><span class="line">    <span class="keyword">return</span> bookPage;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="使用-Query语句查询">使用@Query语句查询</h3>
+<pre><code class="language-java">public Page&lt;Book&gt; findBookCriteria(Integer page, Integer size, final BookQuery bookQuery) &#123;
+    Pageable pageable = new PageRequest(page, size, Sort.Direction.ASC, &quot;id&quot;);
+    Page&lt;Book&gt; bookPage = bookRepository.findAll(new Specification&lt;Book&gt;()&#123;
+        @Override
+        public Predicate toPredicate(Root&lt;Book&gt; root, CriteriaQuery&lt;?&gt; query, CriteriaBuilder criteriaBuilder) &#123;
+            Predicate p1 = criteriaBuilder.equal(root.get(&quot;name&quot;).as(String.class), bookQuery.getName());
+            Predicate p2 = criteriaBuilder.equal(root.get(&quot;isbn&quot;).as(String.class), bookQuery.getIsbn());
+            Predicate p3 = criteriaBuilder.equal(root.get(&quot;author&quot;).as(String.class), bookQuery.getAuthor());
+            query.where(criteriaBuilder.and(p1,p2,p3));
+            return query.getRestriction();
+        &#125;
+    &#125;,pageable);
+    return bookPage;
+&#125;
+</code></pre>
+<h3 id="使用@Query语句查询"><a class="header-anchor" href="#使用@Query语句查询">¶</a> 使用@Query语句查询</h3>
 <p>尽管通过上面的方法能够非常方便快捷的使用查询,但是有时候包含特殊字段的查询或者使用名称组合出来的方法名又长有丑…而且担心效率低,这时候JPA提供了一种类似Hibernate的方法,就是使用@Query进行查询</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Query(&quot;select u from User u where u.emailAddress = ?1&quot;)</span></span><br><span class="line"><span class="function">User <span class="title">findByEmailAddress</span><span class="params">(String emailAddress)</span></span>;</span><br></pre></td></tr></table></figure>
+<pre><code class="language-java">@Query(&quot;select u from User u where u.emailAddress = ?1&quot;)
+User findByEmailAddress(String emailAddress);
+</code></pre>
 <p>或者使用原生SQL查询,将Query的参数nativeQuery设置为true</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Query(nativeQuery = true,value = &quot;select u.name from user u where u.id:id limit 1&quot;)</span></span><br><span class="line"><span class="function">String <span class="title">getUserNameById</span><span class="params">(Integer id)</span></span>;</span><br></pre></td></tr></table></figure>
-<h3 id="使用QueryDSL进行复杂查询">使用QueryDSL进行复杂查询</h3>
+<pre><code class="language-java">@Query(nativeQuery = true,value = &quot;select u.name from user u where u.id:id limit 1&quot;)
+String getUserNameById(Integer id);
+</code></pre>
+<h3 id="使用QueryDSL进行复杂查询"><a class="header-anchor" href="#使用QueryDSL进行复杂查询">¶</a> 使用QueryDSL进行复杂查询</h3>
 <p>如果上面的查询方式仍然满足不了需求,那么可以尝试使用QueryDSL进行查询 <a class="link"   target="_blank" rel="noopener" href="http://www.querydsl.com/static/querydsl/latest/reference/html/ch02.html#jpa_integration" >QueryDSL<i class="fas fa-external-link-alt"></i></a></p>
-<h4 id="1-过程">1. 过程</h4>
+<h4 id="1. 过程"><a class="header-anchor" href="#1. 过程">¶</a> 1. 过程</h4>
 <ol>
 <li>添加MAVEN依赖</li>
 </ol>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">   <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.querydsl<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>querydsl-apt<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;querydsl.version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">scope</span>&gt;</span>provided<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.querydsl<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>querydsl-jpa<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;querydsl.version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- 添加APT PLUGIN --&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.mysema.maven<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>apt-maven-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.1.3<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">executions</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">execution</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">goals</span>&gt;</span></span><br><span class="line">              <span class="tag">&lt;<span class="name">goal</span>&gt;</span>process<span class="tag">&lt;/<span class="name">goal</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;/<span class="name">goals</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">              <span class="tag">&lt;<span class="name">outputDirectory</span>&gt;</span>target/generated-sources/java<span class="tag">&lt;/<span class="name">outputDirectory</span>&gt;</span></span><br><span class="line">              <span class="tag">&lt;<span class="name">processor</span>&gt;</span>com.querydsl.apt.jpa.JPAAnnotationProcessor<span class="tag">&lt;/<span class="name">processor</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">execution</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">executions</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<pre><code class="language-xml">   &lt;dependency&gt;
+      &lt;groupId&gt;com.querydsl&lt;/groupId&gt;
+      &lt;artifactId&gt;querydsl-apt&lt;/artifactId&gt;
+      &lt;version&gt;$&#123;querydsl.version&#125;&lt;/version&gt;
+      &lt;scope&gt;provided&lt;/scope&gt;
+  &lt;/dependency&gt;
+
+  &lt;dependency&gt;
+      &lt;groupId&gt;com.querydsl&lt;/groupId&gt;
+      &lt;artifactId&gt;querydsl-jpa&lt;/artifactId&gt;
+      &lt;version&gt;$&#123;querydsl.version&#125;&lt;/version&gt;
+  &lt;/dependency&gt;
+
+&lt;!-- 添加APT PLUGIN --&gt;
+
+&lt;plugin&gt;
+  &lt;groupId&gt;com.mysema.maven&lt;/groupId&gt;
+  &lt;artifactId&gt;apt-maven-plugin&lt;/artifactId&gt;
+  &lt;version&gt;1.1.3&lt;/version&gt;
+  &lt;executions&gt;
+      &lt;execution&gt;
+          &lt;goals&gt;
+              &lt;goal&gt;process&lt;/goal&gt;
+          &lt;/goals&gt;
+          &lt;configuration&gt;
+              &lt;outputDirectory&gt;target/generated-sources/java&lt;/outputDirectory&gt;
+              &lt;processor&gt;com.querydsl.apt.jpa.JPAAnnotationProcessor&lt;/processor&gt;
+          &lt;/configuration&gt;
+      &lt;/execution&gt;
+  &lt;/executions&gt;
+&lt;/plugin&gt;
+</code></pre>
 <p>JPAAnnotationProcessor 会查找所有的 Entity 注解标注的实体类在目标路径下生成 Qxxx 的类.第一次需要使用 maven install 生成一下.</p>
 <ol start="2">
 <li>使用查询</li>
 </ol>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 注入 jpaQueryFactory</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> entityManager</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> JPAQueryFactory <span class="title">jpaQueryFactory</span><span class="params">(EntityManager entityManager)</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> JPAQueryFactory(entityManager);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="language-java">/**
+ * 注入 jpaQueryFactory
+ * @param entityManager
+ * @return
+ */
+@Bean
+public JPAQueryFactory jpaQueryFactory(EntityManager entityManager)&#123;
+    return new JPAQueryFactory(entityManager);
+&#125;
+</code></pre>
 <p>在配置文件中使用@Bean把JPAQueryFactory注入到容器中,然后使用JpaQueryFactory查询.</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> List&lt;User&gt; <span class="title">doGetrolePerson</span><span class="params">(Integer role,<span class="keyword">boolean</span> in,List&lt;User&gt; users)</span></span>&#123;</span><br><span class="line">    QUser user = QUser.user;</span><br><span class="line">    Predicate predicate = user.isNotNull().or(user.isNull());</span><br><span class="line">    <span class="keyword">if</span>(in)&#123;</span><br><span class="line">        predicate = role == <span class="keyword">null</span> ? predicate : ExpressionUtils.and(predicate, user.roles.any().id.in(role));</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">        predicate = role == <span class="keyword">null</span> ? predicate : ExpressionUtils.and(predicate, user.notIn(users));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> jpaQueryFactory.selectFrom(user).where(predicate).fetch();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="language-java">private List&lt;User&gt; doGetrolePerson(Integer role,boolean in,List&lt;User&gt; users)&#123;
+    QUser user = QUser.user;
+    Predicate predicate = user.isNotNull().or(user.isNull());
+    if(in)&#123;
+        predicate = role == null ? predicate : ExpressionUtils.and(predicate, user.roles.any().id.in(role));
+    &#125;else&#123;
+        predicate = role == null ? predicate : ExpressionUtils.and(predicate, user.notIn(users));
+    &#125;
+    return jpaQueryFactory.selectFrom(user).where(predicate).fetch();
+&#125;
+</code></pre>
 <p>以上是使用基本的QueryDSL进行查询的方式,更多的增删改查的方法可以参考上面引用的文档,这里不在过多描述.</p>
-<h4 id="2-结合查询">2. 结合查询</h4>
+<h4 id="2. 结合查询"><a class="header-anchor" href="#2. 结合查询">¶</a> 2. 结合查询</h4>
 <p>SpringDataJPA 对 QueryDSL 提供了一个通用的Repository – QuerydslPredicateExecutor</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">QuerydslPredicateExecutor</span>&lt;<span class="title">T</span>&gt; </span>&#123;</span><br><span class="line">    <span class="function">Optional&lt;T&gt; <span class="title">findOne</span><span class="params">(Predicate var1)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function">Iterable&lt;T&gt; <span class="title">findAll</span><span class="params">(Predicate var1)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function">Iterable&lt;T&gt; <span class="title">findAll</span><span class="params">(Predicate var1, Sort var2)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function">Iterable&lt;T&gt; <span class="title">findAll</span><span class="params">(Predicate var1, OrderSpecifier&lt;?&gt;... var2)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function">Iterable&lt;T&gt; <span class="title">findAll</span><span class="params">(OrderSpecifier&lt;?&gt;... var1)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function">Page&lt;T&gt; <span class="title">findAll</span><span class="params">(Predicate var1, Pageable var2)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">long</span> <span class="title">count</span><span class="params">(Predicate var1)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">exists</span><span class="params">(Predicate var1)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>使用需要让定义的Repository继承这个QuerydslPredicateExecutor,然后调用方法即可:</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Page&lt;User&gt; <span class="title">findUsers</span><span class="params">(Integer offset, Integer limit, String order, String search, Integer status, Integer sex, Integer role)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    Sort sort = <span class="keyword">null</span>;</span><br><span class="line">    String propertie = order.substring(<span class="number">1</span>);</span><br><span class="line">    <span class="keyword">if</span> (order.startsWith(<span class="string">&quot;-&quot;</span>)) &#123;</span><br><span class="line">        sort = Sort.by(propertie).descending();</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (order.startsWith(<span class="string">&quot;+&quot;</span>)) &#123;</span><br><span class="line">        sort = Sort.by(propertie).ascending();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(offset == <span class="keyword">null</span> || limit == <span class="keyword">null</span>)&#123;</span><br><span class="line">        offset = <span class="number">1</span>;</span><br><span class="line">        limit = Integer.MAX_VALUE;</span><br><span class="line">    &#125;</span><br><span class="line">    PageRequest pageRequest = <span class="keyword">new</span> PageRequest(offset - <span class="number">1</span>, limit, sort);</span><br><span class="line">    QUser user = QUser.user;</span><br><span class="line">    com.querydsl.core.types.Predicate predicate = user.isNotNull().or(user.isNull());</span><br><span class="line">    predicate = search == <span class="keyword">null</span> ? predicate : ExpressionUtils.and(predicate, user.name.like(<span class="string">&quot;%&quot;</span> + search + <span class="string">&quot;%&quot;</span>));</span><br><span class="line">    predicate = sex == <span class="keyword">null</span> ? predicate : ExpressionUtils.and(predicate, user.sex.id.eq(sex));</span><br><span class="line">    predicate = status == <span class="keyword">null</span> ? predicate : ExpressionUtils.and(predicate, user.status.id.eq(status));</span><br><span class="line">    predicate = role == <span class="keyword">null</span> ? predicate : ExpressionUtils.and(predicate, user.roles.any().id.eq(role));</span><br><span class="line">    <span class="keyword">return</span> userRepository.findAll(predicate, pageRequest);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="language-java">public interface QuerydslPredicateExecutor&lt;T&gt; &#123;
+    Optional&lt;T&gt; findOne(Predicate var1);
 
+    Iterable&lt;T&gt; findAll(Predicate var1);
+
+    Iterable&lt;T&gt; findAll(Predicate var1, Sort var2);
+
+    Iterable&lt;T&gt; findAll(Predicate var1, OrderSpecifier&lt;?&gt;... var2);
+
+    Iterable&lt;T&gt; findAll(OrderSpecifier&lt;?&gt;... var1);
+
+    Page&lt;T&gt; findAll(Predicate var1, Pageable var2);
+
+    long count(Predicate var1);
+
+    boolean exists(Predicate var1);
+&#125;
+</code></pre>
+<p>使用需要让定义的Repository继承这个QuerydslPredicateExecutor,然后调用方法即可:</p>
+<pre><code class="language-java">    public Page&lt;User&gt; findUsers(Integer offset, Integer limit, String order, String search, Integer status, Integer sex, Integer role) throws Exception &#123;
+        Sort sort = null;
+        String propertie = order.substring(1);
+        if (order.startsWith(&quot;-&quot;)) &#123;
+            sort = Sort.by(propertie).descending();
+        &#125; else if (order.startsWith(&quot;+&quot;)) &#123;
+            sort = Sort.by(propertie).ascending();
+        &#125;
+        if(offset == null || limit == null)&#123;
+            offset = 1;
+            limit = Integer.MAX_VALUE;
+        &#125;
+        PageRequest pageRequest = new PageRequest(offset - 1, limit, sort);
+        QUser user = QUser.user;
+        com.querydsl.core.types.Predicate predicate = user.isNotNull().or(user.isNull());
+        predicate = search == null ? predicate : ExpressionUtils.and(predicate, user.name.like(&quot;%&quot; + search + &quot;%&quot;));
+        predicate = sex == null ? predicate : ExpressionUtils.and(predicate, user.sex.id.eq(sex));
+        predicate = status == null ? predicate : ExpressionUtils.and(predicate, user.status.id.eq(status));
+        predicate = role == null ? predicate : ExpressionUtils.and(predicate, user.roles.any().id.eq(role));
+        return userRepository.findAll(predicate, pageRequest);
+    &#125;
+</code></pre>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css">
         </div>
 
         
@@ -577,6 +816,19 @@
     </div>
 </footer>
 
+<script src="/js/prism.js" async></script>
+
+# 文档底部引入js
+<script src="https://cdn.bootcss.com/jquery/3.4.0/jquery.min.js"></script>
+
+<script src="/js/prettify.js"></script>
+
+
+# 高亮设置
+<script type="text/javascript">
+$(window).on('load', function(){ 
+$('code').addClass('language-json');});</script>
+
 
         </div>
     </div>
@@ -657,7 +909,7 @@
         <aside class="page-aside">
             <div class="post-toc-wrap">
     <div class="post-toc">
-        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-text">SpringBoot整合JPA使用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B4%E5%90%88JPA"><span class="nav-text">整合JPA</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#JPA%E5%9F%BA%E6%9C%AC%E9%85%8D%E7%BD%AE"><span class="nav-text">JPA基本配置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8JPA"><span class="nav-text">使用JPA</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E4%BD%93%E7%B1%BB%E4%B8%AD%E5%B1%9E%E6%80%A7"><span class="nav-text">实体类中属性</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-Entity"><span class="nav-text">1. @Entity</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-Table"><span class="nav-text">2. @Table</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-Id-Column"><span class="nav-text">3. @Id,@Column</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-GeneratedValue"><span class="nav-text">4. @GeneratedValue</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#strategy"><span class="nav-text">strategy</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#generator"><span class="nav-text">generator</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-Transient"><span class="nav-text">5. @Transient</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-Embedded%E5%92%8C-Embeddable"><span class="nav-text">6. @Embedded和@Embeddable</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-Temporal"><span class="nav-text">7. @Temporal</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#8-%E4%B8%80%E5%AF%B9%E4%B8%80-%E4%B8%80%E5%AF%B9%E5%A4%9A-%E5%A4%9A%E5%AF%B9%E5%A4%9A%E5%85%B3%E7%B3%BB"><span class="nav-text">8. 一对一,一对多,多对多关系</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#OneToOne"><span class="nav-text">OneToOne</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#OneToMany%E3%80%81ManyToOne"><span class="nav-text">OneToMany、ManyToOne</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#ManyToMany"><span class="nav-text">ManyToMany</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%85%B3%E7%B3%BB%E4%BD%BF%E7%94%A8%E6%97%B6%E7%9A%84%E5%9D%91"><span class="nav-text">关系使用时的坑</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8-Repository-%E6%9F%A5%E8%AF%A2"><span class="nav-text">使用 Repository 查询</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-CrudRepository%E6%8E%A5%E5%8F%A3"><span class="nav-text">1. CrudRepository接口</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-PagingAndSortingRepository%E6%8E%A5%E5%8F%A3"><span class="nav-text">2. PagingAndSortingRepository接口</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-%E6%8E%A5%E5%8F%A3%E4%B8%AD%E7%9A%84%E5%90%8D%E7%A7%B0%E6%8E%A8%E5%AF%BC%E6%9F%A5%E8%AF%A2"><span class="nav-text">3. 接口中的名称推导查询</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-%E4%BD%BF%E7%94%A8-Repository-%E6%9F%A5%E8%AF%A2%E5%AE%9E%E4%BE%8B"><span class="nav-text">4. 使用 Repository 查询实例</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-%E4%BD%BF%E7%94%A8-PagingAndSortingRepository-%E8%BF%9B%E8%A1%8C%E5%88%86%E9%A1%B5%E6%9F%A5%E8%AF%A2"><span class="nav-text">5. 使用 PagingAndSortingRepository 进行分页查询</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8-Query%E8%AF%AD%E5%8F%A5%E6%9F%A5%E8%AF%A2"><span class="nav-text">使用@Query语句查询</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8QueryDSL%E8%BF%9B%E8%A1%8C%E5%A4%8D%E6%9D%82%E6%9F%A5%E8%AF%A2"><span class="nav-text">使用QueryDSL进行复杂查询</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E8%BF%87%E7%A8%8B"><span class="nav-text">1. 过程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E7%BB%93%E5%90%88%E6%9F%A5%E8%AF%A2"><span class="nav-text">2. 结合查询</span></a></li></ol></li></ol></li></ol></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#SpringBoot%E6%95%B4%E5%90%88JPA%E4%BD%BF%E7%94%A8"><span class="nav-text"> SpringBoot整合JPA使用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B4%E5%90%88JPA"><span class="nav-text"> 整合JPA</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#JPA%E5%9F%BA%E6%9C%AC%E9%85%8D%E7%BD%AE"><span class="nav-text"> JPA基本配置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8JPA"><span class="nav-text"> 使用JPA</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E4%BD%93%E7%B1%BB%E4%B8%AD%E5%B1%9E%E6%80%A7"><span class="nav-text"> 实体类中属性</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1.%20@Entity"><span class="nav-text"> 1. @Entity</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2.%20@Table"><span class="nav-text"> 2. @Table</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3.%20@Id,@Column"><span class="nav-text"> 3. @Id,@Column</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4.%20@GeneratedValue"><span class="nav-text"> 4. @GeneratedValue</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#strategy"><span class="nav-text"> strategy</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#generator"><span class="nav-text"> generator</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5.%20@Transient"><span class="nav-text"> 5. @Transient</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6.%20@Embedded%E5%92%8C@Embeddable"><span class="nav-text"> 6. @Embedded和@Embeddable</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7.%20@Temporal"><span class="nav-text"> 7. @Temporal</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#8.%20%E4%B8%80%E5%AF%B9%E4%B8%80,%E4%B8%80%E5%AF%B9%E5%A4%9A,%E5%A4%9A%E5%AF%B9%E5%A4%9A%E5%85%B3%E7%B3%BB"><span class="nav-text"> 8. 一对一,一对多,多对多关系</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#OneToOne"><span class="nav-text"> OneToOne</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#OneToMany%E3%80%81ManyToOne"><span class="nav-text"> OneToMany、ManyToOne</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#ManyToMany"><span class="nav-text"> ManyToMany</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%85%B3%E7%B3%BB%E4%BD%BF%E7%94%A8%E6%97%B6%E7%9A%84%E5%9D%91"><span class="nav-text"> 关系使用时的坑</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%20Repository%20%E6%9F%A5%E8%AF%A2"><span class="nav-text"> 使用 Repository 查询</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1.%20CrudRepository%E6%8E%A5%E5%8F%A3"><span class="nav-text"> 1. CrudRepository接口</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2.%20PagingAndSortingRepository%E6%8E%A5%E5%8F%A3"><span class="nav-text"> 2. PagingAndSortingRepository接口</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3.%20%E6%8E%A5%E5%8F%A3%E4%B8%AD%E7%9A%84%E5%90%8D%E7%A7%B0%E6%8E%A8%E5%AF%BC%E6%9F%A5%E8%AF%A2"><span class="nav-text"> 3. 接口中的名称推导查询</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4.%20%E4%BD%BF%E7%94%A8%20Repository%20%E6%9F%A5%E8%AF%A2%E5%AE%9E%E4%BE%8B"><span class="nav-text"> 4. 使用 Repository 查询实例</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5.%20%E4%BD%BF%E7%94%A8%20PagingAndSortingRepository%20%E8%BF%9B%E8%A1%8C%E5%88%86%E9%A1%B5%E6%9F%A5%E8%AF%A2"><span class="nav-text"> 5. 使用 PagingAndSortingRepository 进行分页查询</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8@Query%E8%AF%AD%E5%8F%A5%E6%9F%A5%E8%AF%A2"><span class="nav-text"> 使用@Query语句查询</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8QueryDSL%E8%BF%9B%E8%A1%8C%E5%A4%8D%E6%9D%82%E6%9F%A5%E8%AF%A2"><span class="nav-text"> 使用QueryDSL进行复杂查询</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1.%20%E8%BF%87%E7%A8%8B"><span class="nav-text"> 1. 过程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2.%20%E7%BB%93%E5%90%88%E6%9F%A5%E8%AF%A2"><span class="nav-text"> 2. 结合查询</span></a></li></ol></li></ol></li></ol></li></ol>
     </div>
 </div>
         </aside>

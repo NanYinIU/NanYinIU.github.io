@@ -27,7 +27,7 @@
     KEEP.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 月前","year":"%s 年前"};
   </script>
 <meta name="generator" content="Hexo 5.4.0"><link rel="stylesheet" type="text/css" href="/css/injector/main.css" /><link rel="preload" as="style" href="/css/injector/light.css" /><link rel="preload" as="style" href="/css/injector/dark.css" /><link rel="alternate" href="/atom.xml" title="NanYin的博客" type="application/atom+xml">
-<link rel="stylesheet" href="/css/prism.css" type="text/css"></head>
+</head>
 
 
 <body>
@@ -47,7 +47,8 @@
     <div class="page-main-content">
 
         <div class="page-main-content-top">
-            <header class="header-wrapper">
+            <link rel="stylesheet" href="/css/prism.css">
+<header class="header-wrapper">
 
     <div class="header-content">
         <div class="left">
@@ -234,11 +235,11 @@
         
 
         <div class="article-content markdown-body">
-            <h1>设计模式之责任链模式</h1>
+            <h1 id="设计模式之责任链模式"><a class="header-anchor" href="#设计模式之责任链模式">¶</a> 设计模式之责任链模式</h1>
 <p>责任链模式是一种对象的行为模式.通过为多个对象处理客户端请求的方式,实现降低发送者与接收者之间的耦合性.对象链由一个对象对下一个对象的引用组成一条链,请求在这个链上传递,直到这个链上的某一个对象处理它.</p>
 <p><img src="https://i.loli.net/2019/05/27/5ceb9a338d29c93932.png" alt="..."></p>
 <p>King只需要下达命令,具体谁来做并不关心,然而这个命令会通过commander, officer,soldier,这三类人只需要来执行各自负责的部分,如果没有自己负责的那么就给下一个职责的人就行了.这就是责任链模式.下面根据例子类图来分析责任链中的结构关系.</p>
-<h3 id="责任链的结构">责任链的结构</h3>
+<h3 id="责任链的结构"><a class="header-anchor" href="#责任链的结构">¶</a> 责任链的结构</h3>
 <p>责任链的基本机构由下面三部分组成:</p>
 <ul>
 <li>抽象处理者 RequestHandler,定义接口方法,使用handler方法规定实现类通过该方法来规范子类的实现.</li>
@@ -249,33 +250,94 @@
 <p>正常的责任链模式请求总是会被处理的,并且请求不会被多次处理.</p>
 </blockquote>
 <p>在日常工作时,经常会遇到请假审批的情况.现在构建一个场景,当一个人在项目中,那么就让项目经理审批通过即可,否则需要他对应部门的主管审批通过.如张三发起请求,请求先到项目经理处,发现不属于项目成员,则再提交至张三的部门主管处,进行审批.</p>
-<h3 id="责任链模式的使用环境">责任链模式的使用环境</h3>
+<h3 id="责任链模式的使用环境"><a class="header-anchor" href="#责任链模式的使用环境">¶</a> 责任链模式的使用环境</h3>
 <p>1、有多个对象可以处理同一个请求，具体哪个对象处理该请求由运行时刻自动确定。<br>
 2、在不明确指定接收者的情况下，向多个对象中的一个提交一个请求。<br>
 3、可动态指定一组对象处理请求</p>
-<h3 id="场景实现">场景实现</h3>
+<h3 id="场景实现"><a class="header-anchor" href="#场景实现">¶</a> 场景实现</h3>
 <p>通过类图可以看到继承和调用关系:</p>
 <p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20200331204434.png" alt="责任链类图"></p>
 <p>下面看具体实现:</p>
 <ol>
 <li>抽象处理者,定义一个LeaveHandler,作为请假处理人的抽象类</li>
 </ol>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">LeaveHandler</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 设置下一个处理人,通过next构成责任链,链上就是处理人</span></span><br><span class="line">    <span class="keyword">public</span> LeaveHandler next;</span><br><span class="line">    <span class="comment">// 构造函数</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">LeaveHandler</span><span class="params">(LeaveHandler next)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.next = next;</span><br><span class="line">    &#125;</span><br><span class="line">   <span class="comment">// 抽象方法，处理请假方法</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> LeaveHandler <span class="title">handle</span><span class="params">(LeaveRequest request)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="language-java">public abstract class LeaveHandler &#123;
+    // 设置下一个处理人,通过next构成责任链,链上就是处理人
+    public LeaveHandler next;
+    // 构造函数
+    public LeaveHandler(LeaveHandler next) &#123;
+        this.next = next;
+    &#125;
+   // 抽象方法，处理请假方法
+    public abstract LeaveHandler handle(LeaveRequest request);
+&#125;
+</code></pre>
 <ol start="2">
 <li>具体处理者,定义两个具体处理人,分别为部门主管的 <code>LeaderHandler</code> 和 项目主管的 <code>ManagerHandler</code> 都继承自抽象类</li>
 </ol>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ManagerHandler</span> <span class="keyword">extends</span> <span class="title">LeaveHandler</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Logger logger = LoggerFactory.getLogger(ManagerHandler.class);</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ManagerHandler</span><span class="params">(LeaveHandler next)</span> </span>&#123;<span class="keyword">super</span>(next);&#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> LeaveHandler <span class="title">handle</span><span class="params">(LeaveRequest request)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 如果人员不再项目中，流转到下一个人，如果在项目中，直接审批通过</span></span><br><span class="line">        <span class="keyword">if</span>(request.isInProject())&#123;</span><br><span class="line">            logger.info(<span class="string">&quot;项目经理对&#123;&#125;在&#123;&#125;请假审批通过！！&quot;</span>,request.getName(),request.getDate());</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            logger.info(<span class="string">&quot;&#123;&#125; 不在项目人员中，流转到下一审批人！！&quot;</span>,request.getName());</span><br><span class="line">            <span class="comment">// 流转到下一人</span></span><br><span class="line">            next.handle(request);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LeaderHandler</span> <span class="keyword">extends</span> <span class="title">LeaveHandler</span> </span>&#123;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Logger logger = LoggerFactory.getLogger(LeaderHandler.class);</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">LeaderHandler</span><span class="params">(LeaveHandler next)</span> </span>&#123;<span class="keyword">super</span>(next);&#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> LeaveHandler <span class="title">handle</span><span class="params">(LeaveRequest request)</span> </span>&#123;</span><br><span class="line">        logger.info(<span class="string">&quot;部门主管对&#123;&#125;在&#123;&#125;请假审批通过！！&quot;</span>,request.getName(),request.getDate());</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="language-java">public class ManagerHandler extends LeaveHandler &#123;
+    private static final Logger logger = LoggerFactory.getLogger(ManagerHandler.class);
+    public ManagerHandler(LeaveHandler next) &#123;super(next);&#125;
+    @Override
+    public LeaveHandler handle(LeaveRequest request) &#123;
+        // 如果人员不再项目中，流转到下一个人，如果在项目中，直接审批通过
+        if(request.isInProject())&#123;
+            logger.info(&quot;项目经理对&#123;&#125;在&#123;&#125;请假审批通过！！&quot;,request.getName(),request.getDate());
+        &#125;else&#123;
+            logger.info(&quot;&#123;&#125; 不在项目人员中，流转到下一审批人！！&quot;,request.getName());
+            // 流转到下一人
+            next.handle(request);
+        &#125;
+        return this;
+    &#125;
+&#125;
+
+public class LeaderHandler extends LeaveHandler &#123;
+private static final Logger logger = LoggerFactory.getLogger(LeaderHandler.class);
+    public LeaderHandler(LeaveHandler next) &#123;super(next);&#125;
+    @Override
+    public LeaveHandler handle(LeaveRequest request) &#123;
+        logger.info(&quot;部门主管对&#123;&#125;在&#123;&#125;请假审批通过！！&quot;,request.getName(),request.getDate());
+        return this;
+    &#125;
+&#125;
+</code></pre>
 <ol start="3">
 <li>请求Request,定义一个请假请求LeaveRequest,包含请假人姓名和请求时间</li>
 </ol>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LeaveRequest</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> String date;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span> inProject;</span><br><span class="line"><span class="comment">//  .... 省略get set</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">LeaveRequest</span><span class="params">(String name, String date, <span class="keyword">boolean</span> inProject)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">        <span class="keyword">this</span>.date = date;</span><br><span class="line">        <span class="keyword">this</span>.inProject = inProject;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="language-java">public class LeaveRequest &#123;
+    private String name;
+    private String date;
+    private boolean inProject;
+//  .... 省略get set
+    public LeaveRequest(String name, String date, boolean inProject) &#123;
+        this.name = name;
+        this.date = date;
+        this.inProject = inProject;
+    &#125;
+&#125;
+</code></pre>
 <ol start="4">
 <li>client 调用者执行请假的流程</li>
 </ol>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Client</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 添加请求</span></span><br><span class="line">        LeaveRequest request = <span class="keyword">new</span> LeaveRequest(<span class="string">&quot;zhangsan&quot;</span>,<span class="string">&quot;0919&quot;</span>,<span class="keyword">true</span>);</span><br><span class="line">        LeaveRequest request2 = <span class="keyword">new</span> LeaveRequest(<span class="string">&quot;lisi&quot;</span>,<span class="string">&quot;0929&quot;</span>,<span class="keyword">false</span>);</span><br><span class="line">        <span class="comment">// 设置责任链</span></span><br><span class="line">        LeaveHandler manageHandler = <span class="keyword">new</span> ManagerHandler(<span class="keyword">new</span> LeaderHandler(<span class="keyword">null</span>));</span><br><span class="line">        <span class="comment">// 责任链处理</span></span><br><span class="line">        manageHandler.handle(request).handle(request2);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="language-java">public class Client &#123;
+    public static void main(String[] args) &#123;
+        // 添加请求
+        LeaveRequest request = new LeaveRequest(&quot;zhangsan&quot;,&quot;0919&quot;,true);
+        LeaveRequest request2 = new LeaveRequest(&quot;lisi&quot;,&quot;0929&quot;,false);
+        // 设置责任链
+        LeaveHandler manageHandler = new ManagerHandler(new LeaderHandler(null));
+        // 责任链处理
+        manageHandler.handle(request).handle(request2);
+    &#125;
+&#125;
+</code></pre>
 <p>最后的执行结果:</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">项目经理对zhangsan在0919请假审批通过！！</span><br><span class="line">lisi 不在项目人员中，流转到下一审批人！！</span><br><span class="line">部门主管对lisi在0929请假审批通过！！</span><br></pre></td></tr></table></figure>
-
+<pre><code class="language-java">项目经理对zhangsan在0919请假审批通过！！
+lisi 不在项目人员中，流转到下一审批人！！
+部门主管对lisi在0929请假审批通过！！
+</code></pre>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css">
         </div>
 
         
@@ -362,6 +424,19 @@
     </div>
 </footer>
 
+<script src="/js/prism.js" async></script>
+
+# 文档底部引入js
+<script src="https://cdn.bootcss.com/jquery/3.4.0/jquery.min.js"></script>
+
+<script src="/js/prettify.js"></script>
+
+
+# 高亮设置
+<script type="text/javascript">
+$(window).on('load', function(){ 
+$('code').addClass('language-json');});</script>
+
 
         </div>
     </div>
@@ -442,7 +517,7 @@
         <aside class="page-aside">
             <div class="post-toc-wrap">
     <div class="post-toc">
-        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-text">设计模式之责任链模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B4%A3%E4%BB%BB%E9%93%BE%E7%9A%84%E7%BB%93%E6%9E%84"><span class="nav-text">责任链的结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B4%A3%E4%BB%BB%E9%93%BE%E6%A8%A1%E5%BC%8F%E7%9A%84%E4%BD%BF%E7%94%A8%E7%8E%AF%E5%A2%83"><span class="nav-text">责任链模式的使用环境</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%BA%E6%99%AF%E5%AE%9E%E7%8E%B0"><span class="nav-text">场景实现</span></a></li></ol></li></ol></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E8%B4%A3%E4%BB%BB%E9%93%BE%E6%A8%A1%E5%BC%8F"><span class="nav-text"> 设计模式之责任链模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B4%A3%E4%BB%BB%E9%93%BE%E7%9A%84%E7%BB%93%E6%9E%84"><span class="nav-text"> 责任链的结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B4%A3%E4%BB%BB%E9%93%BE%E6%A8%A1%E5%BC%8F%E7%9A%84%E4%BD%BF%E7%94%A8%E7%8E%AF%E5%A2%83"><span class="nav-text"> 责任链模式的使用环境</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%BA%E6%99%AF%E5%AE%9E%E7%8E%B0"><span class="nav-text"> 场景实现</span></a></li></ol></li></ol></li></ol>
     </div>
 </div>
         </aside>

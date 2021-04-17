@@ -27,7 +27,7 @@
     KEEP.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 月前","year":"%s 年前"};
   </script>
 <meta name="generator" content="Hexo 5.4.0"><link rel="stylesheet" type="text/css" href="/css/injector/main.css" /><link rel="preload" as="style" href="/css/injector/light.css" /><link rel="preload" as="style" href="/css/injector/dark.css" /><link rel="alternate" href="/atom.xml" title="NanYin的博客" type="application/atom+xml">
-<link rel="stylesheet" href="/css/prism.css" type="text/css"></head>
+</head>
 
 
 <body>
@@ -47,7 +47,8 @@
     <div class="page-main-content">
 
         <div class="page-main-content-top">
-            <header class="header-wrapper">
+            <link rel="stylesheet" href="/css/prism.css">
+<header class="header-wrapper">
 
     <div class="header-content">
         <div class="left">
@@ -230,9 +231,9 @@
         
 
         <div class="article-content markdown-body">
-            <h1>Java中的IO操作</h1>
+            <h1 id="Java中的IO操作"><a class="header-anchor" href="#Java中的IO操作">¶</a> Java中的IO操作</h1>
 <p>Java总的来说有三类IO,效率不高,操作简单的BIO(blocking IO),非阻塞的NIO(New IO),和异步非阻塞IO,也就是升级版的NIO(Asynchronous I/O).</p>
-<h2 id="IO分类">IO分类</h2>
+<h2 id="IO分类"><a class="header-anchor" href="#IO分类">¶</a> IO分类</h2>
 <p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20200405193926.png" alt="IO分类"></p>
 <p>在学习这三类IO前,需要了解什么是阻塞.什么是异步.两个的含义有什么区别.</p>
 <blockquote>
@@ -241,15 +242,15 @@
 <blockquote>
 <p>阻塞和非阻塞关注的是程序在等待调用结果（消息，返回值）时的状态.阻塞调用是指调用结果返回之前，当前线程会被挂起。调用线程只有在得到结果之后才会重启线程。非阻塞调用指在不能立刻得到结果之前，该调用不会阻塞当前线程。</p>
 </blockquote>
-<h3 id="BIO">BIO</h3>
+<h3 id="BIO"><a class="header-anchor" href="#BIO">¶</a> BIO</h3>
 <p>BIO过程就如同名字一样,是一个阻塞的IO,服务端通常为每一个客户端都建立一个独立的线程来通过调用accept()来监听客户端消息.如果想处理多个客户端请求则服务端需要建立等同数量的线程来处理这些消息,这就是普遍的一请求一应答的模型.处理完成后返回应答给客户端后销毁线程,因为线程是一个昂贵的资源,这样重复的新建线程,销毁线程,很浪费处理器资源,所以使用BIO同时能够尽可能的少创建线程,就可以用到线程池的方式实现,来达到服务端创建线程数远远小于客户端数的目的,但这种方法只是伪异步IO.</p>
 <p>在处理链接数量少的情况下,BIO的效率还不错,并且主要逻辑模型清晰明了,代码简单.但是在上万的链接的情况下,BIO处理起来就非常吃紧了.</p>
-<h3 id="NIO">NIO</h3>
+<h3 id="NIO"><a class="header-anchor" href="#NIO">¶</a> NIO</h3>
 <p>NIO是一种同步非阻塞的I/O模型，在Java 1.4 中引入了NIO框架，对应 java.nio 包，提供了 Channel , Selector，Buffer等抽象。</p>
 <blockquote>
 <p>NIO中的N可以理解为Non-blocking，不单纯是New。它支持面向缓冲的，基于通道的I/O操作方法。 NIO提供了与传统BIO模型中的 Socket 和 ServerSocket 相对应的 SocketChannel 和 ServerSocketChannel 两种不同的套接字通道实现,两种通道都支持阻塞和非阻塞两种模式。阻塞模式使用就像传统中的支持一样，比较简单，但是性能和可靠性都不好；非阻塞模式正好与之相反。对于低负载、低并发的应用程序，可以使用同步阻塞I/O来提升开发速率和更好的维护性；对于高负载、高并发的（网络）应用，应使用 NIO 的非阻塞模式来开发。</p>
 </blockquote>
-<h4 id="NIO特性和NIO与传统IO的区别">NIO特性和NIO与传统IO的区别</h4>
+<h4 id="NIO特性和NIO与传统IO的区别"><a class="header-anchor" href="#NIO特性和NIO与传统IO的区别">¶</a> NIO特性和NIO与传统IO的区别</h4>
 <ul>
 <li>传统IO(BIO)是一种阻塞IO模型,而NIO是非阻塞的IO模型,区别为当线程读取数据的时候,非阻塞IO可以不用等,而阻塞IO需要一直等待IO完成后才能继续.</li>
 <li>IO面向流,而NIO面向缓冲区.</li>
@@ -257,15 +258,15 @@
 <li>选择器(Selectors) NIO拥有选择器,而IO没有.选择器的作用就是用来使用单个线程来处理多个通道(NIO面向buffer,通道只与buffer交互).</li>
 </ul>
 <p><img src="https://camo.githubusercontent.com/3a68153ce17be90275df07a47409afaea91aff83/68747470733a2f2f6d792d626c6f672d746f2d7573652e6f73732d636e2d6265696a696e672e616c6979756e63732e636f6d2f323031392d322f536c6563746f722e706e67" alt="Selector图解"></p>
-<h3 id="AIO">AIO</h3>
+<h3 id="AIO"><a class="header-anchor" href="#AIO">¶</a> AIO</h3>
 <p>AIO 也就是 NIO 2。在 Java 7 中引入了 NIO 的改进版 NIO 2,它是异步非阻塞的IO模型。异步 IO 是基于事件和回调机制实现的，也就是应用操作之后会直接返回，不会堵塞在那里，当后台处理完成，操作系统会通知相应的线程进行后续的操作。</p>
 <p>AIO 是异步IO的缩写，虽然 NIO 在网络操作中，提供了非阻塞的方法，但是 NIO 的 IO 行为还是同步的。对于 NIO 来说，我们的业务线程是在 IO 操作准备好时，得到通知，接着就由这个线程自行进行 IO 操作，IO操作本身是同步的。</p>
-<h2 id="BIO的流操作">BIO的流操作</h2>
+<h2 id="BIO的流操作"><a class="header-anchor" href="#BIO的流操作">¶</a> BIO的流操作</h2>
 <p>根据上面的IO分类图可以看到IO流按照流的类型可以分为两类,一类是字节流,一类是字符流</p>
 <p>两者之间的区别在于</p>
 <p>操作单位不同,字节流以字节为单位进行数据传输,而字符流是以字符为单位进行传输<br>
 处理元素不同,字节流可处理所有类型数据,但字符流只可以处理以字符类型的数据,也就是说字符流只可处理纯文本数据</p>
-<h3 id="输入输出流">输入输出流</h3>
+<h3 id="输入输出流"><a class="header-anchor" href="#输入输出流">¶</a> 输入输出流</h3>
 <p>输入输出按照字面理解,就是流中的输入和输出</p>
 <table>
 <thead>
@@ -288,14 +289,32 @@
 </tr>
 </tbody>
 </table>
-<h3 id="字节流">字节流</h3>
-<h4 id="输入字节流-InputStream">输入字节流 InputStream</h4>
+<h3 id="字节流"><a class="header-anchor" href="#字节流">¶</a> 字节流</h3>
+<h4 id="输入字节流 InputStream"><a class="header-anchor" href="#输入字节流 InputStream">¶</a> 输入字节流 InputStream</h4>
 <p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20200405200148.png" alt="InputStream"></p>
 <p>inputStream作为抽象类,必须依靠子类实现具体的操作.在抽象类中定义了如下几个方法:</p>
 <ol>
 <li>三个重载的read方法,用来读取数据,其中必须在子类中实现抽象的read方法</li>
 </ol>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">int</span> <span class="title">read</span><span class="params">()</span> <span class="keyword">throws</span> IOException</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 定义b.length读取范围</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">read</span><span class="params">(<span class="keyword">byte</span> b[])</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> read(b, <span class="number">0</span>, b.length);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">read</span><span class="params">(<span class="keyword">byte</span> b[], <span class="keyword">int</span> off, <span class="keyword">int</span> len)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (b == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException();</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (off &lt; <span class="number">0</span> || len &lt; <span class="number">0</span> || len &gt; b.length - off) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IndexOutOfBoundsException();</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (len == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 使用子类中的read进行数据读取</span></span><br><span class="line">    <span class="keyword">int</span> c = read();</span><br><span class="line">    <span class="comment">//....</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="language-java">public abstract int read() throws IOException;
+
+// 定义b.length读取范围
+public int read(byte b[]) throws IOException &#123;
+    return read(b, 0, b.length);
+&#125;
+public int read(byte b[], int off, int len) throws IOException &#123;
+    if (b == null) &#123;
+        throw new NullPointerException();
+    &#125; else if (off &lt; 0 || len &lt; 0 || len &gt; b.length - off) &#123;
+        throw new IndexOutOfBoundsException();
+    &#125; else if (len == 0) &#123;
+        return 0;
+    &#125;
+    // 使用子类中的read进行数据读取
+    int c = read();
+    //....
+&#125;
+</code></pre>
 <ol start="2">
 <li><code>skip(long n)</code> 方法,用来掉过并丢弃n个字节的数据,并返回被丢弃的数据</li>
 <li><code>available()</code>方法,用来返回输入流中可以读取的字节数,子类需要单独实现该方法,否则会返回0;</li>
@@ -311,21 +330,34 @@
 <li><code>PipedInputStream</code> 实现了pipe的概念，主要在线程中使用</li>
 <li><code>SequenceInputStream</code>把多个InputStream合并为一个InputStream</li>
 </ol>
-<h4 id="输出字节流-outputStream">输出字节流 outputStream</h4>
+<h4 id="输出字节流 outputStream"><a class="header-anchor" href="#输出字节流 outputStream">¶</a> 输出字节流 outputStream</h4>
 <ol>
 <li>OutputStream提供了3个重载的write方法来做数据的输出</li>
 </ol>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 将参数b中的字节写到输出流 </span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">write</span><span class="params">(<span class="keyword">byte</span> b[ ])</span></span></span><br><span class="line"><span class="function"><span class="comment">// 将参数b的从偏移量off开始的len个字节写到输出流</span></span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">write</span><span class="params">(<span class="keyword">byte</span> b[ ], <span class="keyword">int</span> off, <span class="keyword">int</span> len)</span></span></span><br><span class="line"><span class="function"><span class="comment">// 先将int转换为byte类型，把低字节写入到输出流中</span></span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">write</span><span class="params">(<span class="keyword">int</span> b)</span> </span></span><br></pre></td></tr></table></figure>
+<pre><code class="language-java">// 将参数b中的字节写到输出流 
+public void write(byte b[ ])
+// 将参数b的从偏移量off开始的len个字节写到输出流
+public void write(byte b[ ], int off, int len)
+// 先将int转换为byte类型，把低字节写入到输出流中
+public abstract void write(int b) 
+</code></pre>
 <ol start="2">
 <li><code>public void flush()</code> 将数据缓冲区中数据全部输出，并清空缓冲区。</li>
 <li><code>public void close()</code> 关闭输出流并释放与流相关的系统资源。</li>
 </ol>
-<h3 id="字符流">字符流</h3>
-<h4 id="字符输入流-Reader">字符输入流 Reader</h4>
+<h3 id="字符流"><a class="header-anchor" href="#字符流">¶</a> 字符流</h3>
+<h4 id="字符输入流 Reader"><a class="header-anchor" href="#字符输入流 Reader">¶</a> 字符输入流 Reader</h4>
 <p>字符输入流和字节流相似,同样定义了read相关方法,但是不同的点在于Reader操作char而不是byte,并且在声明Reader时,将自身作为一个对象,在相关操作上使用synchronized进行同步操作.</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="title">Reader</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.lock = <span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 实现方法</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">read</span><span class="params">(<span class="keyword">char</span> cbuf[], <span class="keyword">int</span> off, <span class="keyword">int</span> len)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">            <span class="comment">// ...</span></span><br></pre></td></tr></table></figure>
+<pre><code class="language-java">protected Reader() &#123;
+    this.lock = this;
+&#125;
+// 实现方法
+public int read(char cbuf[], int off, int len) throws IOException &#123;
+        synchronized (lock) &#123;
+            // ...
+</code></pre>
 <p>同理字符输出流 Writer</p>
-<h3 id="如何使用BIO流">如何使用BIO流</h3>
+<h3 id="如何使用BIO流"><a class="header-anchor" href="#如何使用BIO流">¶</a> 如何使用BIO流</h3>
 <ol>
 <li>首先确定是输入还是输出</li>
 <li>其次确认对象是否为纯文本,如果是纯文本可以选择 字符流的 <code>Reader</code> 和 <code>Wirter</code> ,否则需要使用字节流的 <code>inputStream</code> 和 <code>outputStream</code></li>
@@ -335,22 +367,69 @@
 <ul>
 <li>inputStream 字节输入流</li>
 </ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">inputStreamTest</span><span class="params">()</span></span>&#123;</span><br><span class="line">    String filePath = <span class="string">&quot;/Users/gaoguoxing/Work/temp/attachment/20200403/65bf6a2b0dbf3049dc08e800c2ac617385bb.xml&quot;</span>;</span><br><span class="line">    <span class="keyword">try</span> (InputStream in</span><br><span class="line">                 = <span class="keyword">new</span> FileInputStream(filePath)</span><br><span class="line">    ) &#123;</span><br><span class="line">        <span class="comment">// 获取文件IO流</span></span><br><span class="line">        <span class="keyword">byte</span>[] content = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">100</span>];</span><br><span class="line">        StringBuffer bf = <span class="keyword">new</span> StringBuffer();</span><br><span class="line">        <span class="comment">// 没有返回 -1</span></span><br><span class="line">        <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (in.read(content) &lt; <span class="number">0</span>) &#123;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            bf.append(<span class="keyword">new</span> String(content));</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(bf.toString());</span><br><span class="line">    &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="language-java">public void inputStreamTest()&#123;
+    String filePath = &quot;/Users/gaoguoxing/Work/temp/attachment/20200403/65bf6a2b0dbf3049dc08e800c2ac617385bb.xml&quot;;
+    try (InputStream in
+                 = new FileInputStream(filePath)
+    ) &#123;
+        // 获取文件IO流
+        byte[] content = new byte[100];
+        StringBuffer bf = new StringBuffer();
+        // 没有返回 -1
+        while (true) &#123;
+            if (in.read(content) &lt; 0) &#123;
+                break;
+            &#125;
+            bf.append(new String(content));
+        &#125;
+        System.out.println(bf.toString());
+    &#125; catch (IOException e) &#123;
+
+    &#125;
+&#125;
+</code></pre>
 <ul>
 <li>outputStream 字节输出流</li>
 </ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">outputStreamTest</span><span class="params">()</span></span>&#123;</span><br><span class="line">    String content = <span class="string">&quot;this is my content&quot;</span>;</span><br><span class="line">    <span class="keyword">try</span> (OutputStream out = <span class="keyword">new</span> FileOutputStream(<span class="string">&quot;copy.txt&quot;</span>)) &#123;</span><br><span class="line">        out.write(content.getBytes());</span><br><span class="line">    &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">        e.printStackTrace();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="language-java">public void outputStreamTest()&#123;
+    String content = &quot;this is my content&quot;;
+    try (OutputStream out = new FileOutputStream(&quot;copy.txt&quot;)) &#123;
+        out.write(content.getBytes());
+    &#125; catch (IOException e) &#123;
+        e.printStackTrace();
+    &#125;
+&#125;
+</code></pre>
 <ul>
 <li>Reader 字符输入流</li>
 </ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">readerTest</span><span class="params">()</span></span>&#123;</span><br><span class="line">    String filePath = <span class="string">&quot;/Users/gaoguoxing/Work/temp/attachment/20200403/65bf6a2b0dbf3049dc08e800c2ac617385bb.xml&quot;</span>;</span><br><span class="line">    String s;</span><br><span class="line">    <span class="keyword">try</span>(BufferedReader in = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> FileReader(filePath))) &#123;</span><br><span class="line">        <span class="keyword">while</span> ((s = in.readLine()) != <span class="keyword">null</span>)&#123;</span><br><span class="line">            System.out.println(s);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">        e.printStackTrace();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="language-java">public void readerTest()&#123;
+    String filePath = &quot;/Users/gaoguoxing/Work/temp/attachment/20200403/65bf6a2b0dbf3049dc08e800c2ac617385bb.xml&quot;;
+    String s;
+    try(BufferedReader in = new BufferedReader(new FileReader(filePath))) &#123;
+        while ((s = in.readLine()) != null)&#123;
+            System.out.println(s);
+        &#125;
+    &#125; catch (IOException e) &#123;
+        e.printStackTrace();
+    &#125;
+&#125;
+</code></pre>
 <ul>
 <li>Writer 字符输出流</li>
 </ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">writerTest</span><span class="params">()</span></span>&#123;</span><br><span class="line">    String content = <span class="string">&quot;this is my content&quot;</span>;</span><br><span class="line">    <span class="keyword">try</span> (FileWriter out = <span class="keyword">new</span> FileWriter(<span class="string">&quot;copy.txt&quot;</span>);) &#123;</span><br><span class="line">        out.write(content + <span class="string">&quot;\n&quot;</span>);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">        e.printStackTrace();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="NIO操作">NIO操作</h2>
+<pre><code class="language-java">public void writerTest()&#123;
+    String content = &quot;this is my content&quot;;
+    try (FileWriter out = new FileWriter(&quot;copy.txt&quot;);) &#123;
+        out.write(content + &quot;\n&quot;);
+    &#125; catch (IOException e) &#123;
+        e.printStackTrace();
+    &#125;
+&#125;
+</code></pre>
+<h2 id="NIO操作"><a class="header-anchor" href="#NIO操作">¶</a> NIO操作</h2>
 <p>在NIO特性一章中提到了NIO是面向Buffer的，双向的数据处理形式。因为NIO分为buffer缓冲区和Channel管道，NIO使用管道操作缓冲区,可以说Channel不与数据打交道，它只负责运输数据。更可以抽象的简单理解为Channel管道为铁路，buffer缓冲区为火车(运载着货物)，火车可以去，同样也可以回（双向的）。</p>
-<h3 id="Buffer-缓冲区">Buffer 缓冲区</h3>
+<h3 id="Buffer 缓冲区"><a class="header-anchor" href="#Buffer 缓冲区">¶</a> Buffer 缓冲区</h3>
 <p>Buffer是具体的原始类型的容器，Buffer是一个线性的、有限的原始类型元素的集合。Buffer中有三个必要的属性：capacity、limit、position</p>
 <ul>
 <li>capacity:buffer中包含的元素数量</li>
@@ -365,8 +444,58 @@
 <li>rewind() 可重复读缓冲区的内容</li>
 </ul>
 <p>下面通过几个实例来看Buffer相关的方法：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 分配capacity大小</span></span><br><span class="line">ByteBuffer byteBuffer = ByteBuffer.allocate(<span class="number">1024</span>);</span><br><span class="line"><span class="comment">// 初始时4个核心变量的值</span></span><br><span class="line">System.out.println(<span class="string">&quot;limit:&quot;</span>+byteBuffer.limit()); <span class="comment">// 1024</span></span><br><span class="line">System.out.println(<span class="string">&quot;position:&quot;</span>+byteBuffer.position()); <span class="comment">// 0</span></span><br><span class="line">System.out.println(<span class="string">&quot;capacity:&quot;</span>+byteBuffer.capacity());  <span class="comment">// 1024</span></span><br><span class="line">System.out.println(<span class="string">&quot;mark:&quot;</span> + byteBuffer.mark());</span><br><span class="line"><span class="comment">//mark:java.nio.HeapByteBuffer[pos=0 lim=1024 cap=1024]</span></span><br><span class="line"></span><br><span class="line">byteBuffer.put(<span class="string">&quot;hello world&quot;</span>.getBytes());</span><br><span class="line"><span class="comment">// 调用mark方法会返回this也就会输出当前buffer</span></span><br><span class="line">System.out.println(<span class="string">&quot;mark:&quot;</span> + byteBuffer.mark());</span><br><span class="line"><span class="comment">// mark:java.nio.HeapByteBuffer[pos=11 lim=1024 cap=1024]</span></span><br><span class="line"><span class="comment">// 在执行put操作后,当前位置发生了变化</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 切换成读模式</span></span><br><span class="line">byteBuffer.flip();</span><br><span class="line">System.out.println(<span class="string">&quot;mark:&quot;</span> + byteBuffer.mark());</span><br><span class="line"><span class="comment">// mark:java.nio.HeapByteBuffer[pos=0 lim=11 cap=1024]</span></span><br><span class="line"><span class="comment">// 切换成读模式,limit设置为原来的当前位置,当前位置设置为0</span></span><br><span class="line"><span class="keyword">byte</span>[] bytes = <span class="keyword">new</span> <span class="keyword">byte</span>[byteBuffer.limit()];</span><br><span class="line">byteBuffer.get(bytes);</span><br><span class="line"><span class="comment">// 这样使用get读的时候,只能获取到 0~limit 之间的内容</span></span><br><span class="line">System.out.println(<span class="keyword">new</span> String(bytes));</span><br><span class="line"></span><br><span class="line"><span class="comment">// 清空，再次可以向buffer中写数据</span></span><br><span class="line">byteBuffer.clear();</span><br><span class="line">byteBuffer.put(<span class="string">&quot;HELLO WORLD&quot;</span>.getBytes());</span><br><span class="line"><span class="comment">//mark:java.nio.HeapByteBuffer[pos=11 lim=1024 cap=1024]</span></span><br><span class="line">System.out.println(<span class="string">&quot;mark:&quot;</span> + byteBuffer.mark());</span><br><span class="line"></span><br><span class="line"><span class="comment">// 切换成读模式</span></span><br><span class="line">byteBuffer.flip();</span><br><span class="line"><span class="comment">//mark:java.nio.HeapByteBuffer[pos=0 lim=11 cap=1024]</span></span><br><span class="line">System.out.println(<span class="string">&quot;mark:&quot;</span> + byteBuffer.mark());</span><br><span class="line">bytes = <span class="keyword">new</span> <span class="keyword">byte</span>[byteBuffer.limit()];</span><br><span class="line">byteBuffer.get(bytes);</span><br><span class="line">System.out.println(<span class="keyword">new</span> String(bytes));</span><br><span class="line"></span><br><span class="line"><span class="comment">// 重复读</span></span><br><span class="line">System.out.println(<span class="string">&quot;mark:&quot;</span> + byteBuffer.mark());</span><br><span class="line"><span class="comment">//mark:java.nio.HeapByteBuffer[pos=11 lim=11 cap=1024]</span></span><br><span class="line"><span class="comment">// 使用get之后,pos变为了limit,在读的话会出现异常,</span></span><br><span class="line"><span class="comment">// 如果再读,只能使用rewind方法</span></span><br><span class="line">byteBuffer.rewind();</span><br><span class="line"><span class="comment">//mark:java.nio.HeapByteBuffer[pos=0 lim=11 cap=1024]</span></span><br><span class="line">System.out.println(<span class="string">&quot;mark:&quot;</span> + byteBuffer.mark());</span><br><span class="line">bytes = <span class="keyword">new</span> <span class="keyword">byte</span>[byteBuffer.limit()];</span><br><span class="line">byteBuffer.get(bytes);</span><br><span class="line">System.out.println(<span class="keyword">new</span> String(bytes));</span><br></pre></td></tr></table></figure>
-<h3 id="Channel-管道">Channel 管道</h3>
+<pre><code class="language-java">// 分配capacity大小
+ByteBuffer byteBuffer = ByteBuffer.allocate(1024);
+// 初始时4个核心变量的值
+System.out.println(&quot;limit:&quot;+byteBuffer.limit()); // 1024
+System.out.println(&quot;position:&quot;+byteBuffer.position()); // 0
+System.out.println(&quot;capacity:&quot;+byteBuffer.capacity());  // 1024
+System.out.println(&quot;mark:&quot; + byteBuffer.mark());
+//mark:java.nio.HeapByteBuffer[pos=0 lim=1024 cap=1024]
+
+byteBuffer.put(&quot;hello world&quot;.getBytes());
+// 调用mark方法会返回this也就会输出当前buffer
+System.out.println(&quot;mark:&quot; + byteBuffer.mark());
+// mark:java.nio.HeapByteBuffer[pos=11 lim=1024 cap=1024]
+// 在执行put操作后,当前位置发生了变化
+
+// 切换成读模式
+byteBuffer.flip();
+System.out.println(&quot;mark:&quot; + byteBuffer.mark());
+// mark:java.nio.HeapByteBuffer[pos=0 lim=11 cap=1024]
+// 切换成读模式,limit设置为原来的当前位置,当前位置设置为0
+byte[] bytes = new byte[byteBuffer.limit()];
+byteBuffer.get(bytes);
+// 这样使用get读的时候,只能获取到 0~limit 之间的内容
+System.out.println(new String(bytes));
+
+// 清空，再次可以向buffer中写数据
+byteBuffer.clear();
+byteBuffer.put(&quot;HELLO WORLD&quot;.getBytes());
+//mark:java.nio.HeapByteBuffer[pos=11 lim=1024 cap=1024]
+System.out.println(&quot;mark:&quot; + byteBuffer.mark());
+
+// 切换成读模式
+byteBuffer.flip();
+//mark:java.nio.HeapByteBuffer[pos=0 lim=11 cap=1024]
+System.out.println(&quot;mark:&quot; + byteBuffer.mark());
+bytes = new byte[byteBuffer.limit()];
+byteBuffer.get(bytes);
+System.out.println(new String(bytes));
+
+// 重复读
+System.out.println(&quot;mark:&quot; + byteBuffer.mark());
+//mark:java.nio.HeapByteBuffer[pos=11 lim=11 cap=1024]
+// 使用get之后,pos变为了limit,在读的话会出现异常,
+// 如果再读,只能使用rewind方法
+byteBuffer.rewind();
+//mark:java.nio.HeapByteBuffer[pos=0 lim=11 cap=1024]
+System.out.println(&quot;mark:&quot; + byteBuffer.mark());
+bytes = new byte[byteBuffer.limit()];
+byteBuffer.get(bytes);
+System.out.println(new String(bytes));
+</code></pre>
+<h3 id="Channel 管道"><a class="header-anchor" href="#Channel 管道">¶</a> Channel 管道</h3>
 <p>Channel是IO操作的核心,Channel表示与一些硬件设备,文件,网络等实体的开放连接,能够进行多个不同的IO操作(读与写).</p>
 <p>Channel有开关的状态,只要channel创建,则channel的状态就是open的,如果chennel一旦被关闭,那么如果再有后续调用channel的io操作,都会出现异常.(类似jdbc的connection),以防万一,可以调用isopen()方法检测是否被关闭了</p>
 <p>再NIO中几个重要的Channel实现类:</p>
@@ -377,20 +506,58 @@
 <li><strong>ServerSocketChannel:</strong> 允许我们监听TCP链接请求，每个请求会创建会一个SocketChannel，一般是服务器实现</li>
 </ul>
 <p>用FileChannel来演示创建和传输的过程.</p>
-<h4 id="创建channel">创建channel</h4>
+<h4 id="创建channel"><a class="header-anchor" href="#创建channel">¶</a> 创建channel</h4>
 <p>有两种方式创建channel,一种是使用file或者fileStream创建cannel,另一种使用FileChannel的静态方法创建</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 1. 使用randomAccessFile 创建channel</span></span><br><span class="line">RandomAccessFile randomAccessFile = <span class="keyword">new</span> RandomAccessFile(<span class="string">&quot;a.txt&quot;</span>,<span class="string">&quot;rw&quot;</span>);</span><br><span class="line">FileChannel in = randomAccessFile.getChannel();</span><br><span class="line"><span class="comment">// 2. 使用静态方法创建</span></span><br><span class="line">FileChannel out = FileChannel.open(Paths.get(<span class="string">&quot;b.txt&quot;</span>), StandardOpenOption.WRITE);</span><br><span class="line"><span class="comment">// 3. 通过FileInputStream 创建channel</span></span><br><span class="line">FileInputStream inputStream = <span class="keyword">new</span> FileInputStream(<span class="string">&quot;xxx.txt&quot;</span>);</span><br><span class="line">inputStream.getChannel();</span><br></pre></td></tr></table></figure>
-<h4 id="数据读写">数据读写</h4>
+<pre><code class="language-java">// 1. 使用randomAccessFile 创建channel
+RandomAccessFile randomAccessFile = new RandomAccessFile(&quot;a.txt&quot;,&quot;rw&quot;);
+FileChannel in = randomAccessFile.getChannel();
+// 2. 使用静态方法创建
+FileChannel out = FileChannel.open(Paths.get(&quot;b.txt&quot;), StandardOpenOption.WRITE);
+// 3. 通过FileInputStream 创建channel
+FileInputStream inputStream = new FileInputStream(&quot;xxx.txt&quot;);
+inputStream.getChannel();
+</code></pre>
+<h4 id="数据读写"><a class="header-anchor" href="#数据读写">¶</a> 数据读写</h4>
 <p>使用channel进行数据读写,类似普通的BIO使用buffer.但是需要注意的是,每次都需要将buffer打开读模式,再读,读完后使用clear清空buffer</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">ByteBuffer readBuffer = ByteBuffer.allocate(<span class="number">1024</span>);</span><br><span class="line"><span class="keyword">while</span>(in.read(readBuffer) != -<span class="number">1</span>)&#123;</span><br><span class="line">    readBuffer.flip();</span><br><span class="line">    out.write(readBuffer);</span><br><span class="line">    readBuffer.clear();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="language-java">ByteBuffer readBuffer = ByteBuffer.allocate(1024);
+while(in.read(readBuffer) != -1)&#123;
+    readBuffer.flip();
+    out.write(readBuffer);
+    readBuffer.clear();
+&#125;
+</code></pre>
 <p>还可以直接使用通道的transferTo直接复制到另外一个通道中,完成复制</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 使用通道的transferTo</span></span><br><span class="line">in.transferTo(<span class="number">0</span>,in.size(),out);</span><br></pre></td></tr></table></figure>
-<h4 id="关闭资源">关闭资源</h4>
+<pre><code class="language-java">// 使用通道的transferTo
+in.transferTo(0,in.size(),out);
+</code></pre>
+<h4 id="关闭资源"><a class="header-anchor" href="#关闭资源">¶</a> 关闭资源</h4>
 <p>最后需要手动将channel关掉(必须)</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">in.close();</span><br><span class="line">out.close();</span><br></pre></td></tr></table></figure>
+<pre><code class="language-java">in.close();
+out.close();
+</code></pre>
 <p>另外这时候可以使用 try-with-resource 进行简化,整体过程可以参考如下代码:</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span> (</span><br><span class="line">        <span class="comment">// 创建资源</span></span><br><span class="line">        RandomAccessFile randomAccessFile = <span class="keyword">new</span> RandomAccessFile(<span class="string">&quot;a.txt&quot;</span>, <span class="string">&quot;rw&quot;</span>);</span><br><span class="line">        FileChannel in = randomAccessFile.getChannel();</span><br><span class="line">        FileChannel out = FileChannel.open(Paths.get(<span class="string">&quot;b.txt&quot;</span>), StandardOpenOption.WRITE);</span><br><span class="line">) &#123;</span><br><span class="line">    <span class="comment">// 设置buffer</span></span><br><span class="line">    ByteBuffer readBuffer = ByteBuffer.allocate(<span class="number">1024</span>);</span><br><span class="line">    <span class="comment">// 将通道中的数据放到缓冲区</span></span><br><span class="line">    <span class="keyword">while</span> (in.read(readBuffer) != -<span class="number">1</span>) &#123;</span><br><span class="line">        <span class="comment">// 切换成读模式</span></span><br><span class="line">        readBuffer.flip();</span><br><span class="line">        <span class="comment">// 向通道内写入buffer</span></span><br><span class="line">        out.write(readBuffer);</span><br><span class="line">        <span class="comment">// 清空本次的buffer</span></span><br><span class="line">        readBuffer.clear();</span><br><span class="line">    &#125;</span><br><span class="line">&#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">    e.printStackTrace();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="language-java">try (
+        // 创建资源
+        RandomAccessFile randomAccessFile = new RandomAccessFile(&quot;a.txt&quot;, &quot;rw&quot;);
+        FileChannel in = randomAccessFile.getChannel();
+        FileChannel out = FileChannel.open(Paths.get(&quot;b.txt&quot;), StandardOpenOption.WRITE);
+) &#123;
+    // 设置buffer
+    ByteBuffer readBuffer = ByteBuffer.allocate(1024);
+    // 将通道中的数据放到缓冲区
+    while (in.read(readBuffer) != -1) &#123;
+        // 切换成读模式
+        readBuffer.flip();
+        // 向通道内写入buffer
+        out.write(readBuffer);
+        // 清空本次的buffer
+        readBuffer.clear();
+    &#125;
+&#125; catch (IOException e) &#123;
+    e.printStackTrace();
+&#125;
+</code></pre>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css">
         </div>
 
         
@@ -477,6 +644,19 @@
     </div>
 </footer>
 
+<script src="/js/prism.js" async></script>
+
+# 文档底部引入js
+<script src="https://cdn.bootcss.com/jquery/3.4.0/jquery.min.js"></script>
+
+<script src="/js/prettify.js"></script>
+
+
+# 高亮设置
+<script type="text/javascript">
+$(window).on('load', function(){ 
+$('code').addClass('language-json');});</script>
+
 
         </div>
     </div>
@@ -557,7 +737,7 @@
         <aside class="page-aside">
             <div class="post-toc-wrap">
     <div class="post-toc">
-        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-text">Java中的IO操作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#IO%E5%88%86%E7%B1%BB"><span class="nav-text">IO分类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#BIO"><span class="nav-text">BIO</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NIO"><span class="nav-text">NIO</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#NIO%E7%89%B9%E6%80%A7%E5%92%8CNIO%E4%B8%8E%E4%BC%A0%E7%BB%9FIO%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-text">NIO特性和NIO与传统IO的区别</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AIO"><span class="nav-text">AIO</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BIO%E7%9A%84%E6%B5%81%E6%93%8D%E4%BD%9C"><span class="nav-text">BIO的流操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA%E6%B5%81"><span class="nav-text">输入输出流</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%97%E8%8A%82%E6%B5%81"><span class="nav-text">字节流</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BE%93%E5%85%A5%E5%AD%97%E8%8A%82%E6%B5%81-InputStream"><span class="nav-text">输入字节流 InputStream</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BE%93%E5%87%BA%E5%AD%97%E8%8A%82%E6%B5%81-outputStream"><span class="nav-text">输出字节流 outputStream</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E6%B5%81"><span class="nav-text">字符流</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E8%BE%93%E5%85%A5%E6%B5%81-Reader"><span class="nav-text">字符输入流 Reader</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8BIO%E6%B5%81"><span class="nav-text">如何使用BIO流</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NIO%E6%93%8D%E4%BD%9C"><span class="nav-text">NIO操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Buffer-%E7%BC%93%E5%86%B2%E5%8C%BA"><span class="nav-text">Buffer 缓冲区</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Channel-%E7%AE%A1%E9%81%93"><span class="nav-text">Channel 管道</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%9B%E5%BB%BAchannel"><span class="nav-text">创建channel</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E8%AF%BB%E5%86%99"><span class="nav-text">数据读写</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%B3%E9%97%AD%E8%B5%84%E6%BA%90"><span class="nav-text">关闭资源</span></a></li></ol></li></ol></li></ol></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Java%E4%B8%AD%E7%9A%84IO%E6%93%8D%E4%BD%9C"><span class="nav-text"> Java中的IO操作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#IO%E5%88%86%E7%B1%BB"><span class="nav-text"> IO分类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#BIO"><span class="nav-text"> BIO</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NIO"><span class="nav-text"> NIO</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#NIO%E7%89%B9%E6%80%A7%E5%92%8CNIO%E4%B8%8E%E4%BC%A0%E7%BB%9FIO%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-text"> NIO特性和NIO与传统IO的区别</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AIO"><span class="nav-text"> AIO</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BIO%E7%9A%84%E6%B5%81%E6%93%8D%E4%BD%9C"><span class="nav-text"> BIO的流操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA%E6%B5%81"><span class="nav-text"> 输入输出流</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%97%E8%8A%82%E6%B5%81"><span class="nav-text"> 字节流</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BE%93%E5%85%A5%E5%AD%97%E8%8A%82%E6%B5%81%20InputStream"><span class="nav-text"> 输入字节流 InputStream</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BE%93%E5%87%BA%E5%AD%97%E8%8A%82%E6%B5%81%20outputStream"><span class="nav-text"> 输出字节流 outputStream</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E6%B5%81"><span class="nav-text"> 字符流</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E8%BE%93%E5%85%A5%E6%B5%81%20Reader"><span class="nav-text"> 字符输入流 Reader</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8BIO%E6%B5%81"><span class="nav-text"> 如何使用BIO流</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NIO%E6%93%8D%E4%BD%9C"><span class="nav-text"> NIO操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Buffer%20%E7%BC%93%E5%86%B2%E5%8C%BA"><span class="nav-text"> Buffer 缓冲区</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Channel%20%E7%AE%A1%E9%81%93"><span class="nav-text"> Channel 管道</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%9B%E5%BB%BAchannel"><span class="nav-text"> 创建channel</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E8%AF%BB%E5%86%99"><span class="nav-text"> 数据读写</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%B3%E9%97%AD%E8%B5%84%E6%BA%90"><span class="nav-text"> 关闭资源</span></a></li></ol></li></ol></li></ol></li></ol>
     </div>
 </div>
         </aside>

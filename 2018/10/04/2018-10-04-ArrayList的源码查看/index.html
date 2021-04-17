@@ -27,7 +27,7 @@
     KEEP.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 月前","year":"%s 年前"};
   </script>
 <meta name="generator" content="Hexo 5.4.0"><link rel="stylesheet" type="text/css" href="/css/injector/main.css" /><link rel="preload" as="style" href="/css/injector/light.css" /><link rel="preload" as="style" href="/css/injector/dark.css" /><link rel="alternate" href="/atom.xml" title="NanYin的博客" type="application/atom+xml">
-<link rel="stylesheet" href="/css/prism.css" type="text/css"></head>
+</head>
 
 
 <body>
@@ -47,7 +47,8 @@
     <div class="page-main-content">
 
         <div class="page-main-content-top">
-            <header class="header-wrapper">
+            <link rel="stylesheet" href="/css/prism.css">
+<header class="header-wrapper">
 
     <div class="header-content">
         <div class="left">
@@ -234,7 +235,7 @@
         
 
         <div class="article-content markdown-body">
-            <h1>ArrayList的源码</h1>
+            <h1 id="ArrayList的源码"><a class="header-anchor" href="#ArrayList的源码">¶</a> ArrayList的源码</h1>
 <table>
 <thead>
 <tr>
@@ -274,29 +275,175 @@
 <p>其中 <strong>elementData数组是ArrayList的存储结构,也就是说ArrayList使用数组存储元素</strong>, 但同时是使用transient进行修饰的,也就是不能序列化的,但实际上ArrayList实现了Serializable接口,那么这么做的原因时什么?</p>
 <p>因为ArrayList具有自动扩容机制,元素到一定的大小就会自动扩容,这就会导致ArrayList中的元素一定不是满的,也就是说如果当前ArrayList的大小时50,实际元素可能远远小于50,此时就没有将全部elementData都序列化的必要了.</p>
 <p>所以,ArrayList提供了一个writeObject方法,专门对elementData进行序列化.里面使用对小于size的所有元素进行序列化,就避免了上面阐述的问题.</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;size; i++) &#123;</span><br><span class="line">    s.writeObject(elementData[i]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="构造函数源码">构造函数源码</h2>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 没有参数的情况下 */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">ArrayList</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 设置默认的内容为&#123;&#125;</span></span><br><span class="line">    <span class="keyword">this</span>.elementData = DEFAULTCAPACITY_EMPTY_ELEMENTDATA;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/* 默认是拥有默认容量（10）的空的 array list */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Object[] DEFAULTCAPACITY_EMPTY_ELEMENTDATA = &#123;&#125;;</span><br><span class="line"><span class="comment">/* 这个默认的容量是定义好的10  */</span></span><br><span class="line"> <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> DEFAULT_CAPACITY = <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 当参数是容量的大小的时候  */</span></span><br><span class="line"> <span class="function"><span class="keyword">public</span> <span class="title">ArrayList</span><span class="params">(<span class="keyword">int</span> initialCapacity)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (initialCapacity &gt; <span class="number">0</span>) &#123;</span><br><span class="line">      <span class="comment">/* 如果自定义初始容量大小*/</span></span><br><span class="line">        <span class="keyword">this</span>.elementData = <span class="keyword">new</span> Object[initialCapacity];</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (initialCapacity == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">this</span>.elementData = EMPTY_ELEMENTDATA;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="comment">/* 如果参数小于0 报参数异常的错误（IllegalArgumentException） */</span></span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">&quot;Illegal Capacity: &quot;</span>+</span><br><span class="line">                                           initialCapacity);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/* 当参数是一个Collection结构的时候 */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">ArrayList</span><span class="params">(Collection&lt;? extends E&gt; c)</span> </span>&#123;</span><br><span class="line">     elementData = c.toArray();</span><br><span class="line">     <span class="keyword">if</span> ((size = elementData.length) != <span class="number">0</span>) &#123;</span><br><span class="line">         <span class="comment">// c.toArray might (incorrectly) not return Object[] (see 6260652)</span></span><br><span class="line">         <span class="keyword">if</span> (elementData.getClass() != Object[].class)</span><br><span class="line">         <span class="comment">/* 如果不是object类型的话 转换成object类型 */</span></span><br><span class="line">             elementData = Arrays.copyOf(elementData, size, Object[].class);</span><br><span class="line">     &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">         <span class="comment">// replace with empty array.</span></span><br><span class="line">         <span class="keyword">this</span>.elementData = EMPTY_ELEMENTDATA;</span><br><span class="line">     &#125;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
-<h2 id="常用方法源码">常用方法源码</h2>
+<pre><code class="language-java">for (int i=0; i&lt;size; i++) &#123;
+    s.writeObject(elementData[i]);
+&#125;
+</code></pre>
+<h2 id="构造函数源码"><a class="header-anchor" href="#构造函数源码">¶</a> 构造函数源码</h2>
+<pre><code class="language-java">/* 没有参数的情况下 */
+public ArrayList() &#123;
+    // 设置默认的内容为&#123;&#125;
+    this.elementData = DEFAULTCAPACITY_EMPTY_ELEMENTDATA;
+&#125;
+/* 默认是拥有默认容量（10）的空的 array list */
+private static final Object[] DEFAULTCAPACITY_EMPTY_ELEMENTDATA = &#123;&#125;;
+/* 这个默认的容量是定义好的10  */
+ private static final int DEFAULT_CAPACITY = 10;
+
+/* 当参数是容量的大小的时候  */
+ public ArrayList(int initialCapacity) &#123;
+    if (initialCapacity &gt; 0) &#123;
+      /* 如果自定义初始容量大小*/
+        this.elementData = new Object[initialCapacity];
+    &#125; else if (initialCapacity == 0) &#123;
+        this.elementData = EMPTY_ELEMENTDATA;
+    &#125; else &#123;
+      /* 如果参数小于0 报参数异常的错误（IllegalArgumentException） */
+        throw new IllegalArgumentException(&quot;Illegal Capacity: &quot;+
+                                           initialCapacity);
+    &#125;
+&#125;
+/* 当参数是一个Collection结构的时候 */
+public ArrayList(Collection&lt;? extends E&gt; c) &#123;
+     elementData = c.toArray();
+     if ((size = elementData.length) != 0) &#123;
+         // c.toArray might (incorrectly) not return Object[] (see 6260652)
+         if (elementData.getClass() != Object[].class)
+         /* 如果不是object类型的话 转换成object类型 */
+             elementData = Arrays.copyOf(elementData, size, Object[].class);
+     &#125; else &#123;
+         // replace with empty array.
+         this.elementData = EMPTY_ELEMENTDATA;
+     &#125;
+ &#125;
+</code></pre>
+<h2 id="常用方法源码"><a class="header-anchor" href="#常用方法源码">¶</a> 常用方法源码</h2>
 <p>在看源码之前先通过下面这张图片了解以下如果新建一个ArrayList后添加一个元素的大致过程：</p>
 <p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/ArrayList%E6%B7%BB%E5%8A%A0%E8%BF%87%E7%A8%8B%E5%88%86%E6%9E%90.png" alt="过程图"></p>
 <ul>
 <li>add 添加方法</li>
 </ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 只有一个参数的添加 */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">add</span><span class="params">(E e)</span> </span>&#123;</span><br><span class="line">    <span class="comment">/* 扩充容量 */</span></span><br><span class="line">    ensureCapacityInternal(size + <span class="number">1</span>);  <span class="comment">// Increments modCount!!</span></span><br><span class="line">    <span class="comment">/* ArrayList其实就是个数组 将新add的值放到数组的最后面 */</span></span><br><span class="line">    elementData[size++] = e;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">ensureCapacityInternal</span><span class="params">(<span class="keyword">int</span> minCapacity)</span> </span>&#123;</span><br><span class="line">      ensureExplicitCapacity(calculateCapacity(elementData, minCapacity));</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">calculateCapacity</span><span class="params">(Object[] elementData, <span class="keyword">int</span> minCapacity)</span> </span>&#123;</span><br><span class="line">  <span class="comment">/* 如果是空的话返回 默认或当前 */</span></span><br><span class="line">    <span class="keyword">if</span> (elementData == DEFAULTCAPACITY_EMPTY_ELEMENTDATA) &#123;</span><br><span class="line">    <span class="comment">// 如果elementData == &#123;&#125;时，返回给出的值和默认的DEFAULT_CAPACITY其中大的那个</span></span><br><span class="line">        <span class="keyword">return</span> Math.max(DEFAULT_CAPACITY, minCapacity);</span><br><span class="line">     &#125;</span><br><span class="line">    <span class="keyword">return</span> minCapacity;</span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">ensureExplicitCapacity</span><span class="params">(<span class="keyword">int</span> minCapacity)</span> </span>&#123;</span><br><span class="line">  <span class="comment">/* The number of times this list has been &lt;i&gt;structurally modified&lt;/i&gt;. */</span></span><br><span class="line">  <span class="comment">// 这个modCount 指的是数据结构改变的次数（比如添加、移除元素）</span></span><br><span class="line">    modCount++;</span><br><span class="line">    <span class="comment">// overflow-conscious code</span></span><br><span class="line">    <span class="keyword">if</span> (minCapacity - elementData.length &gt; <span class="number">0</span>)</span><br><span class="line">    <span class="comment">/* 如果当前的容量大于给定的长度的时候 需要扩充 */</span></span><br><span class="line">        grow(minCapacity);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">grow</span><span class="params">(<span class="keyword">int</span> minCapacity)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// overflow-conscious code</span></span><br><span class="line">    <span class="keyword">int</span> oldCapacity = elementData.length; <span class="comment">// 原长度</span></span><br><span class="line">    <span class="keyword">int</span> newCapacity = oldCapacity + (oldCapacity &gt;&gt; <span class="number">1</span>); <span class="comment">//新长度 右移运算。长度为1.5倍的原长度</span></span><br><span class="line">    <span class="keyword">if</span> (newCapacity - minCapacity &lt; <span class="number">0</span>)</span><br><span class="line">        newCapacity = minCapacity;</span><br><span class="line">   <span class="keyword">if</span> (newCapacity - MAX_ARRAY_SIZE &gt; <span class="number">0</span>)</span><br><span class="line">        newCapacity = hugeCapacity(minCapacity);</span><br><span class="line">    <span class="comment">// minCapacity is usually close to size, so this is a win:</span></span><br><span class="line">    <span class="comment">// 使用Arrays.copyof方法进行最终扩容，所以ArrayList添加元素时比较耗费性能。</span></span><br><span class="line">    elementData = Arrays.copyOf(elementData, newCapacity);</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<pre><code class="language-java">/* 只有一个参数的添加 */
+public boolean add(E e) &#123;
+    /* 扩充容量 */
+    ensureCapacityInternal(size + 1);  // Increments modCount!!
+    /* ArrayList其实就是个数组 将新add的值放到数组的最后面 */
+    elementData[size++] = e;
+    return true;
+&#125;
+
+private void ensureCapacityInternal(int minCapacity) &#123;
+      ensureExplicitCapacity(calculateCapacity(elementData, minCapacity));
+  &#125;
+
+private static int calculateCapacity(Object[] elementData, int minCapacity) &#123;
+  /* 如果是空的话返回 默认或当前 */
+    if (elementData == DEFAULTCAPACITY_EMPTY_ELEMENTDATA) &#123;
+    // 如果elementData == &#123;&#125;时，返回给出的值和默认的DEFAULT_CAPACITY其中大的那个
+        return Math.max(DEFAULT_CAPACITY, minCapacity);
+     &#125;
+    return minCapacity;
+ &#125;
+
+private void ensureExplicitCapacity(int minCapacity) &#123;
+  /* The number of times this list has been &lt;i&gt;structurally modified&lt;/i&gt;. */
+  // 这个modCount 指的是数据结构改变的次数（比如添加、移除元素）
+    modCount++;
+    // overflow-conscious code
+    if (minCapacity - elementData.length &gt; 0)
+    /* 如果当前的容量大于给定的长度的时候 需要扩充 */
+        grow(minCapacity);
+    &#125;
+
+private void grow(int minCapacity) &#123;
+    // overflow-conscious code
+    int oldCapacity = elementData.length; // 原长度
+    int newCapacity = oldCapacity + (oldCapacity &gt;&gt; 1); //新长度 右移运算。长度为1.5倍的原长度
+    if (newCapacity - minCapacity &lt; 0)
+        newCapacity = minCapacity;
+   if (newCapacity - MAX_ARRAY_SIZE &gt; 0)
+        newCapacity = hugeCapacity(minCapacity);
+    // minCapacity is usually close to size, so this is a win:
+    // 使用Arrays.copyof方法进行最终扩容，所以ArrayList添加元素时比较耗费性能。
+    elementData = Arrays.copyOf(elementData, newCapacity);
+&#125;
+
+</code></pre>
 <ul>
 <li>remove 移除元素方法</li>
 </ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> E <span class="title">remove</span><span class="params">(<span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//如果超出 则抛出IndexOutOfBoundsException异常</span></span><br><span class="line">    rangeCheck(index);</span><br><span class="line"></span><br><span class="line">    modCount++;</span><br><span class="line">    E oldValue = elementData(index);</span><br><span class="line">    <span class="comment">/* 想要移除元素后面元素的个数*/</span></span><br><span class="line">    <span class="keyword">int</span> numMoved = size - index - <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">if</span> (numMoved &gt; <span class="number">0</span>)</span><br><span class="line">    <span class="comment">/* arraycopy是个native方法 相当于把index+1位置上的元素挪到index位置上 */</span></span><br><span class="line">        System.arraycopy(elementData, index+<span class="number">1</span>, elementData, index,</span><br><span class="line">                         numMoved);</span><br><span class="line">    elementData[--size] = <span class="keyword">null</span>; <span class="comment">//清空元素，利于GC </span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> oldValue;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 只会移除第一个符合条件的条目 */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">remove</span><span class="params">(Object o)</span> </span>&#123;</span><br><span class="line">      <span class="keyword">if</span> (o == <span class="keyword">null</span>) &#123;</span><br><span class="line">          <span class="keyword">for</span> (<span class="keyword">int</span> index = <span class="number">0</span>; index &lt; size; index++)</span><br><span class="line">              <span class="keyword">if</span> (elementData[index] == <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="comment">/* 这个fastRemove方法和上面的方法大相径庭  */</span></span><br><span class="line">                  fastRemove(index);</span><br><span class="line">                  <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">              &#125;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          <span class="keyword">for</span> (<span class="keyword">int</span> index = <span class="number">0</span>; index &lt; size; index++)</span><br><span class="line">              <span class="keyword">if</span> (o.equals(elementData[index])) &#123;</span><br><span class="line">                  fastRemove(index);</span><br><span class="line">                  <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">              &#125;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="language-java">public E remove(int index) &#123;
+    //如果超出 则抛出IndexOutOfBoundsException异常
+    rangeCheck(index);
+
+    modCount++;
+    E oldValue = elementData(index);
+    /* 想要移除元素后面元素的个数*/
+    int numMoved = size - index - 1;
+    if (numMoved &gt; 0)
+    /* arraycopy是个native方法 相当于把index+1位置上的元素挪到index位置上 */
+        System.arraycopy(elementData, index+1, elementData, index,
+                         numMoved);
+    elementData[--size] = null; //清空元素，利于GC 
+
+    return oldValue;
+&#125;
+
+/* 只会移除第一个符合条件的条目 */
+public boolean remove(Object o) &#123;
+      if (o == null) &#123;
+          for (int index = 0; index &lt; size; index++)
+              if (elementData[index] == null) &#123;
+                /* 这个fastRemove方法和上面的方法大相径庭  */
+                  fastRemove(index);
+                  return true;
+              &#125;
+      &#125; else &#123;
+          for (int index = 0; index &lt; size; index++)
+              if (o.equals(elementData[index])) &#123;
+                  fastRemove(index);
+                  return true;
+              &#125;
+      &#125;
+      return false;
+  &#125;
+</code></pre>
 <ul>
 <li>contain 是否包含</li>
 </ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">contains</span><span class="params">(Object o)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">return</span> indexOf(o) &gt;= <span class="number">0</span>;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">indexOf</span><span class="params">(Object o)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">if</span> (o == <span class="keyword">null</span>) &#123;</span><br><span class="line">           <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; size; i++)</span><br><span class="line">               <span class="keyword">if</span> (elementData[i]==<span class="keyword">null</span>)</span><br><span class="line">                   <span class="keyword">return</span> i;</span><br><span class="line">       &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">         <span class="comment">/* 内部就是for循环一个一个判断的 */</span></span><br><span class="line">           <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; size; i++)</span><br><span class="line">               <span class="keyword">if</span> (o.equals(elementData[i]))</span><br><span class="line">                   <span class="keyword">return</span> i;</span><br><span class="line">                         &#125;</span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="language-java">public boolean contains(Object o) &#123;
+       return indexOf(o) &gt;= 0;
+   &#125;
+
+public int indexOf(Object o) &#123;
+       if (o == null) &#123;
+           for (int i = 0; i &lt; size; i++)
+               if (elementData[i]==null)
+                   return i;
+       &#125; else &#123;
+         /* 内部就是for循环一个一个判断的 */
+           for (int i = 0; i &lt; size; i++)
+               if (o.equals(elementData[i]))
+                   return i;
+                         &#125;
+        return -1;
+    &#125;
+</code></pre>
 <ul>
 <li>get 方法</li>
 </ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> E <span class="title">get</span><span class="params">(<span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">    rangeCheck(index);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> elementData(index);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/* 本质就是返回数组位置的元素 */</span></span><br><span class="line"><span class="function">E <span class="title">elementData</span><span class="params">(<span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> (E) elementData[index];</span><br><span class="line">  &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h2 id="总结">总结</h2>
+<pre><code class="language-java">public E get(int index) &#123;
+    rangeCheck(index);
+
+    return elementData(index);
+&#125;
+/* 本质就是返回数组位置的元素 */
+E elementData(int index) &#123;
+      return (E) elementData[index];
+  &#125;
+
+</code></pre>
+<h2 id="总结"><a class="header-anchor" href="#总结">¶</a> 总结</h2>
 <ol>
 <li>有序性,可重复性 —&gt; 因为内部使用数组实现,所以元素能够保证有序性且能够添加重复的元素</li>
 <li>访问快 —&gt; ArrayList实现了 RandomAccess 接口,能够通过get实现快速的随机访问.因为ArrayList其中内部存储是使用数组实现的,元素是连续的,通过下标就能够得到对应元素,所以检索会比较快.</li>
@@ -307,7 +454,7 @@
 <p>RandomAccess 只是一个标记接口,其中并没有实现方法,他的作用只是用来标记该结构支持随机访问.也就是说实现了这个接口的集合是支持 快速随机访问 策略的.举例来讲就是 ArrayList 的访问是随机访问,而 LinkedList的访问则是顺序访问的.<br>
 随机访问在使用fori循环时要比使用迭代器访问元素时效率高.</p>
 </blockquote>
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css">
         </div>
 
         
@@ -394,6 +541,19 @@
     </div>
 </footer>
 
+<script src="/js/prism.js" async></script>
+
+# 文档底部引入js
+<script src="https://cdn.bootcss.com/jquery/3.4.0/jquery.min.js"></script>
+
+<script src="/js/prettify.js"></script>
+
+
+# 高亮设置
+<script type="text/javascript">
+$(window).on('load', function(){ 
+$('code').addClass('language-json');});</script>
+
 
         </div>
     </div>
@@ -474,7 +634,7 @@
         <aside class="page-aside">
             <div class="post-toc-wrap">
     <div class="post-toc">
-        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-text">ArrayList的源码</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%E6%BA%90%E7%A0%81"><span class="nav-text">构造函数源码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95%E6%BA%90%E7%A0%81"><span class="nav-text">常用方法源码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-text">总结</span></a></li></ol></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#ArrayList%E7%9A%84%E6%BA%90%E7%A0%81"><span class="nav-text"> ArrayList的源码</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%E6%BA%90%E7%A0%81"><span class="nav-text"> 构造函数源码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95%E6%BA%90%E7%A0%81"><span class="nav-text"> 常用方法源码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-text"> 总结</span></a></li></ol></li></ol>
     </div>
 </div>
         </aside>

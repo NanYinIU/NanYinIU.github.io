@@ -27,7 +27,7 @@
     KEEP.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 月前","year":"%s 年前"};
   </script>
 <meta name="generator" content="Hexo 5.4.0"><link rel="stylesheet" type="text/css" href="/css/injector/main.css" /><link rel="preload" as="style" href="/css/injector/light.css" /><link rel="preload" as="style" href="/css/injector/dark.css" /><link rel="alternate" href="/atom.xml" title="NanYin的博客" type="application/atom+xml">
-<link rel="stylesheet" href="/css/prism.css" type="text/css"></head>
+</head>
 
 
 <body>
@@ -47,7 +47,8 @@
     <div class="page-main-content">
 
         <div class="page-main-content-top">
-            <header class="header-wrapper">
+            <link rel="stylesheet" href="/css/prism.css">
+<header class="header-wrapper">
 
     <div class="header-content">
         <div class="left">
@@ -217,7 +218,7 @@
     
     
         <span class="article-wordcount article-meta-item">
-            <i class="fas fa-file-word"></i>&nbsp;<span>683 字</span>
+            <i class="fas fa-file-word"></i>&nbsp;<span>681 字</span>
         </span>
     
     
@@ -234,34 +235,91 @@
         
 
         <div class="article-content markdown-body">
-            <h1>String、StringBuffer、StringBuilder的区别和关系</h1>
+            <h1 id="String、StringBuffer、StringBuilder的区别和关系"><a class="header-anchor" href="#String、StringBuffer、StringBuilder的区别和关系">¶</a> String、StringBuffer、StringBuilder的区别和关系</h1>
 <p><code>String</code>声明后是一个常量，而<code>Stringbuffer</code>和<code>StringBuilder</code>是数据结构是变量，所以比String在连接字符时效率高。</p>
 <p>并且StringBuffer和StringBuilder的区别是StringBuffer是线程安全的(synchronized) ，而StringBuilder是非线程安全的，所以速度大致排行为：StringBuilder&gt;StringBuffer&gt;String</p>
 <p>以上只是基于印象或者说是死记硬背的东西，没有看源码是否真的是这样的。下面就来看看String,StringBuilder,StringBuffer的源码来真正的记住。</p>
-<h2 id="String">String</h2>
+<h2 id="String"><a class="header-anchor" href="#String">¶</a> String</h2>
 <p>String中的concat方法实现了字符串的拼接。</p>
-<h3 id="实例变量">实例变量</h3>
+<h3 id="实例变量"><a class="header-anchor" href="#实例变量">¶</a> 实例变量</h3>
 <p>String类中有两个实例变量，分别为value和hash</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** The value is used for character storage. */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">char</span> value[];</span><br><span class="line"></span><br><span class="line"><span class="comment">/** Cache the hash code for the string */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">int</span> hash; <span class="comment">// Default to 0</span></span><br></pre></td></tr></table></figure>
-<h3 id="构造方法">构造方法</h3>
-<p>String的构造方法很多，但是都比较简单，下面来说比较常用的几种。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 当新建一个String对象的时候，会默认付一个空的字符序列,请注意，由于字符串是不可变的，因此不必使用此构造函数</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">String</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.value = <span class="string">&quot;&quot;</span>.value;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="comment">// 这个构造方法,会默认新建一个值为original的字符串。同上，如果字符串不可变的，就没必要这样声明。</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">String</span><span class="params">(String original)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.value = original.value;</span><br><span class="line">        <span class="keyword">this</span>.hash = original.hash;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="comment">// 使用copyof方法用来复制一个新的字符数组，后续修改字符数组，不会影响到新建的字符串</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">String</span><span class="params">(<span class="keyword">char</span> value[])</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.value = Arrays.copyOf(value, value.length);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="concat方法">concat方法</h3>
-<p>为什么说String的效率低，就体现在concat拼接字符串的时候每次都要返回一个新的String对象。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"> <span class="function"><span class="keyword">public</span> String <span class="title">concat</span><span class="params">(String str)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> otherLen = str.length();</span><br><span class="line">        <span class="keyword">if</span> (otherLen == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> len = value.length;</span><br><span class="line">        <span class="keyword">char</span> buf[] = Arrays.copyOf(value, len + otherLen);</span><br><span class="line">        str.getChars(buf, len);</span><br><span class="line"><span class="comment">// 	返回一个新建的String对象</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> String(buf, <span class="keyword">true</span>);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-<h2 id="StringBuilder">StringBuilder</h2>
-<p>StringBuilder继承了AbstractStringBuilder，其中的实例变量和String中的基本相同，</p>
-<h3 id="构造方法-2">构造方法</h3>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">StringBuilder</span><span class="params">(<span class="keyword">int</span> capacity)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(capacity);</span><br><span class="line">    &#125;</span><br><span class="line"><span class="comment">// 调用父类的构造方法</span></span><br><span class="line">AbstractStringBuilder(<span class="keyword">int</span> capacity) &#123;</span><br><span class="line">        value = <span class="keyword">new</span> <span class="keyword">char</span>[capacity];</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-<h3 id="append方法">append方法</h3>
-<p>可以看到，并没有新建对象，只是在改变对象中的内容。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> StringBuilder <span class="title">append</span><span class="params">(String str)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.append(str);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="comment">// append调用的还是父类的append方法</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> AbstractStringBuilder <span class="title">append</span><span class="params">(String str)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (str == <span class="keyword">null</span>)</span><br><span class="line">            <span class="keyword">return</span> appendNull();</span><br><span class="line">        <span class="keyword">int</span> len = str.length();</span><br><span class="line">        ensureCapacityInternal(count + len);</span><br><span class="line">        str.getChars(<span class="number">0</span>, len, value, count);</span><br><span class="line"><span class="comment">//	把value扩容后再把str加进去</span></span><br><span class="line">        count += len;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-<h2 id="StringBuffer">StringBuffer</h2>
-<p>和StringBuilder一样，也是继承了AbstractStringBuilder类，但是看一个append这个方法的源码就能够知道有什么区别了</p>
-<h3 id="append方法-2">append方法</h3>
-<p>添加了synchronized关键字，使得变为线程安全的，但是代价就是效率不如StringBuilder高。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> StringBuffer <span class="title">append</span><span class="params">(String str)</span> </span>&#123;</span><br><span class="line">    toStringCache = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">super</span>.append(str);</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="language-java">/** The value is used for character storage. */
+private final char value[];
 
+/** Cache the hash code for the string */
+private int hash; // Default to 0
+</code></pre>
+<h3 id="构造方法"><a class="header-anchor" href="#构造方法">¶</a> 构造方法</h3>
+<p>String的构造方法很多，但是都比较简单，下面来说比较常用的几种。</p>
+<pre><code class="language-java">// 当新建一个String对象的时候，会默认付一个空的字符序列,请注意，由于字符串是不可变的，因此不必使用此构造函数
+public String() &#123;
+        this.value = &quot;&quot;.value;
+    &#125;
+// 这个构造方法,会默认新建一个值为original的字符串。同上，如果字符串不可变的，就没必要这样声明。
+public String(String original) &#123;
+        this.value = original.value;
+        this.hash = original.hash;
+    &#125;
+// 使用copyof方法用来复制一个新的字符数组，后续修改字符数组，不会影响到新建的字符串
+public String(char value[]) &#123;
+    this.value = Arrays.copyOf(value, value.length);
+&#125;
+</code></pre>
+<h3 id="concat方法"><a class="header-anchor" href="#concat方法">¶</a> concat方法</h3>
+<p>为什么说String的效率低，就体现在concat拼接字符串的时候每次都要返回一个新的String对象。</p>
+<pre><code class="language-java"> public String concat(String str) &#123;
+        int otherLen = str.length();
+        if (otherLen == 0) &#123;
+            return this;
+        &#125;
+        int len = value.length;
+        char buf[] = Arrays.copyOf(value, len + otherLen);
+        str.getChars(buf, len);
+// 	返回一个新建的String对象
+        return new String(buf, true);
+    &#125;
+</code></pre>
+<h2 id="StringBuilder"><a class="header-anchor" href="#StringBuilder">¶</a> StringBuilder</h2>
+<p>StringBuilder继承了AbstractStringBuilder，其中的实例变量和String中的基本相同，</p>
+<h3 id="构造方法-2"><a class="header-anchor" href="#构造方法-2">¶</a> 构造方法</h3>
+<pre><code class="language-java">public StringBuilder(int capacity) &#123;
+        super(capacity);
+    &#125;
+// 调用父类的构造方法
+AbstractStringBuilder(int capacity) &#123;
+        value = new char[capacity];
+    &#125;
+</code></pre>
+<h3 id="append方法"><a class="header-anchor" href="#append方法">¶</a> append方法</h3>
+<p>可以看到，并没有新建对象，只是在改变对象中的内容。</p>
+<pre><code class="language-java">public StringBuilder append(String str) &#123;
+        super.append(str);
+        return this;
+    &#125;
+// append调用的还是父类的append方法
+public AbstractStringBuilder append(String str) &#123;
+        if (str == null)
+            return appendNull();
+        int len = str.length();
+        ensureCapacityInternal(count + len);
+        str.getChars(0, len, value, count);
+//	把value扩容后再把str加进去
+        count += len;
+        return this;
+    &#125;
+</code></pre>
+<h2 id="StringBuffer"><a class="header-anchor" href="#StringBuffer">¶</a> StringBuffer</h2>
+<p>和StringBuilder一样，也是继承了AbstractStringBuilder类，但是看一个append这个方法的源码就能够知道有什么区别了</p>
+<h3 id="append方法-2"><a class="header-anchor" href="#append方法-2">¶</a> append方法</h3>
+<p>添加了synchronized关键字，使得变为线程安全的，但是代价就是效率不如StringBuilder高。</p>
+<pre><code class="language-java">@Override
+public synchronized StringBuffer append(String str) &#123;
+    toStringCache = null;
+    super.append(str);
+    return this;
+&#125;
+</code></pre>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css">
         </div>
 
         
@@ -348,6 +406,19 @@
     </div>
 </footer>
 
+<script src="/js/prism.js" async></script>
+
+# 文档底部引入js
+<script src="https://cdn.bootcss.com/jquery/3.4.0/jquery.min.js"></script>
+
+<script src="/js/prettify.js"></script>
+
+
+# 高亮设置
+<script type="text/javascript">
+$(window).on('load', function(){ 
+$('code').addClass('language-json');});</script>
+
 
         </div>
     </div>
@@ -428,7 +499,7 @@
         <aside class="page-aside">
             <div class="post-toc-wrap">
     <div class="post-toc">
-        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-text">String、StringBuffer、StringBuilder的区别和关系</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#String"><span class="nav-text">String</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E4%BE%8B%E5%8F%98%E9%87%8F"><span class="nav-text">实例变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%84%E9%80%A0%E6%96%B9%E6%B3%95"><span class="nav-text">构造方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#concat%E6%96%B9%E6%B3%95"><span class="nav-text">concat方法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#StringBuilder"><span class="nav-text">StringBuilder</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%84%E9%80%A0%E6%96%B9%E6%B3%95-2"><span class="nav-text">构造方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#append%E6%96%B9%E6%B3%95"><span class="nav-text">append方法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#StringBuffer"><span class="nav-text">StringBuffer</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#append%E6%96%B9%E6%B3%95-2"><span class="nav-text">append方法</span></a></li></ol></li></ol></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#String%E3%80%81StringBuffer%E3%80%81StringBuilder%E7%9A%84%E5%8C%BA%E5%88%AB%E5%92%8C%E5%85%B3%E7%B3%BB"><span class="nav-text"> String、StringBuffer、StringBuilder的区别和关系</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#String"><span class="nav-text"> String</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E4%BE%8B%E5%8F%98%E9%87%8F"><span class="nav-text"> 实例变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%84%E9%80%A0%E6%96%B9%E6%B3%95"><span class="nav-text"> 构造方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#concat%E6%96%B9%E6%B3%95"><span class="nav-text"> concat方法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#StringBuilder"><span class="nav-text"> StringBuilder</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%84%E9%80%A0%E6%96%B9%E6%B3%95-2"><span class="nav-text"> 构造方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#append%E6%96%B9%E6%B3%95"><span class="nav-text"> append方法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#StringBuffer"><span class="nav-text"> StringBuffer</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#append%E6%96%B9%E6%B3%95-2"><span class="nav-text"> append方法</span></a></li></ol></li></ol></li></ol>
     </div>
 </div>
         </aside>

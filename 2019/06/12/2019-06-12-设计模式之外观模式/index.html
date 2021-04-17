@@ -27,7 +27,7 @@
     KEEP.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 月前","year":"%s 年前"};
   </script>
 <meta name="generator" content="Hexo 5.4.0"><link rel="stylesheet" type="text/css" href="/css/injector/main.css" /><link rel="preload" as="style" href="/css/injector/light.css" /><link rel="preload" as="style" href="/css/injector/dark.css" /><link rel="alternate" href="/atom.xml" title="NanYin的博客" type="application/atom+xml">
-<link rel="stylesheet" href="/css/prism.css" type="text/css"></head>
+</head>
 
 
 <body>
@@ -47,7 +47,8 @@
     <div class="page-main-content">
 
         <div class="page-main-content-top">
-            <header class="header-wrapper">
+            <link rel="stylesheet" href="/css/prism.css">
+<header class="header-wrapper">
 
     <div class="header-content">
         <div class="left">
@@ -217,7 +218,7 @@
     
     
         <span class="article-wordcount article-meta-item">
-            <i class="fas fa-file-word"></i>&nbsp;<span>608 字</span>
+            <i class="fas fa-file-word"></i>&nbsp;<span>611 字</span>
         </span>
     
     
@@ -234,27 +235,108 @@
         
 
         <div class="article-content markdown-body">
-            <h1>设计模式之外观模式</h1>
+            <h1 id="设计模式之外观模式"><a class="header-anchor" href="#设计模式之外观模式">¶</a> 设计模式之外观模式</h1>
 <p>外部与一个子系统的通信必须通过一个统一的外观对象进行，为子系统中的一组接口提供一个一致的界面，使子系统更容易使用。</p>
-<h2 id="应用场景">应用场景</h2>
+<h2 id="应用场景"><a class="header-anchor" href="#应用场景">¶</a> 应用场景</h2>
 <ul>
 <li>因为子系统随着发展会变更的更复杂，客户端想更简单统一给子系统建立一个公共的调用方式。这样即使子系统的再增加可重用性而变得更加复杂，客户端也不必知道，因为客户端往往不需要针对某一个子系统进行特定的定制化。</li>
 <li>实现了子系统与客户之间的松耦合关系，这使得子系统的组件变化不会影响到调用它的客户类，只需要调整外观类即可。</li>
 </ul>
-<h2 id="模式结构">模式结构</h2>
+<h2 id="模式结构"><a class="header-anchor" href="#模式结构">¶</a> 模式结构</h2>
 <p>外观模式中客户端依靠Facade类来调用多个子系统，来达到简化客户端调用的目的。</p>
 <p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190613005252.png" alt="外观模式"></p>
 <p>例子中，每次开机的时候都要启动mysql,apache服务，两个还好，要是有更多服务岂不是很恼人，每次都要敲一大堆命令来开启服务。这时候可以使用外观模式，将所有服务加入到外观类中，每次开机只用调用外观类中的接口就行了。来达到简化客户端使用的目的。</p>
-<h2 id="代码">代码</h2>
+<h2 id="代码"><a class="header-anchor" href="#代码">¶</a> 代码</h2>
 <p>第一部分：子系统接口</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Services</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">start</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">stop</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">restart</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// mysql 服务</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MysqlService</span> <span class="keyword">implements</span> <span class="title">Services</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">start</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;mysql is started&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">stop</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;mysql is stopped&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">restart</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;mysql is restart&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// apache 服务</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ApacheService</span> <span class="keyword">implements</span> <span class="title">Services</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">start</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;apache is started&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">stop</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;apache is stopped&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">restart</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;apache is restart&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>第二部分：外观类</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Facade</span> </span>&#123;</span><br><span class="line">    List&lt;Services&gt; services;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Facade</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        services = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addService</span><span class="params">(Services services)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.services.add(services);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">start</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">for</span> (Services services : <span class="keyword">this</span>.services)&#123;</span><br><span class="line">            services.start();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">stop</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">for</span> (Services services : <span class="keyword">this</span>.services)&#123;</span><br><span class="line">            services.stop();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">restart</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">for</span> (Services services : <span class="keyword">this</span>.services)&#123;</span><br><span class="line">            services.restart();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>第三部分：客户端调用</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">App</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Facade facade = <span class="keyword">new</span> Facade();</span><br><span class="line">        facade.addService(<span class="keyword">new</span> MysqlService());</span><br><span class="line">        facade.addService(<span class="keyword">new</span> ApacheService());</span><br><span class="line">        facade.start();</span><br><span class="line">        facade.stop();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>结果：</p>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mysql is started</span><br><span class="line">apache is started</span><br><span class="line">mysql is stopped</span><br><span class="line">apache is stopped</span><br></pre></td></tr></table></figure>
+<pre><code class="language-java">public interface Services &#123;
+    void start();
+    void stop();
+    void restart();
+&#125;
+// mysql 服务
+public class MysqlService implements Services &#123;
+    @Override
+    public void start() &#123;
+        System.out.println(&quot;mysql is started&quot;);
+    &#125;
 
+    @Override
+    public void stop() &#123;
+        System.out.println(&quot;mysql is stopped&quot;);
+    &#125;
+
+    @Override
+    public void restart() &#123;
+        System.out.println(&quot;mysql is restart&quot;);
+    &#125;
+&#125;
+// apache 服务
+public class ApacheService implements Services &#123;
+    @Override
+    public void start() &#123;
+        System.out.println(&quot;apache is started&quot;);
+    &#125;
+
+    @Override
+    public void stop() &#123;
+        System.out.println(&quot;apache is stopped&quot;);
+    &#125;
+
+    @Override
+    public void restart() &#123;
+        System.out.println(&quot;apache is restart&quot;);
+    &#125;
+&#125;
+</code></pre>
+<p>第二部分：外观类</p>
+<pre><code class="language-java">public class Facade &#123;
+    List&lt;Services&gt; services;
+
+    public Facade() &#123;
+        services = new ArrayList&lt;&gt;();
+    &#125;
+
+    public void addService(Services services)&#123;
+        this.services.add(services);
+    &#125;
+
+    public void start()&#123;
+        for (Services services : this.services)&#123;
+            services.start();
+        &#125;
+    &#125;
+
+    public void stop()&#123;
+        for (Services services : this.services)&#123;
+            services.stop();
+        &#125;
+    &#125;
+
+    public void restart()&#123;
+        for (Services services : this.services)&#123;
+            services.restart();
+        &#125;
+    &#125;
+&#125;
+</code></pre>
+<p>第三部分：客户端调用</p>
+<pre><code class="language-java">public class App &#123;
+    public static void main(String[] args) &#123;
+        Facade facade = new Facade();
+        facade.addService(new MysqlService());
+        facade.addService(new ApacheService());
+        facade.start();
+        facade.stop();
+    &#125;
+&#125;
+</code></pre>
+<p>结果：</p>
+<pre><code class="language-text">mysql is started
+apache is started
+mysql is stopped
+apache is stopped
+</code></pre>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css">
         </div>
 
         
@@ -341,6 +423,19 @@
     </div>
 </footer>
 
+<script src="/js/prism.js" async></script>
+
+# 文档底部引入js
+<script src="https://cdn.bootcss.com/jquery/3.4.0/jquery.min.js"></script>
+
+<script src="/js/prettify.js"></script>
+
+
+# 高亮设置
+<script type="text/javascript">
+$(window).on('load', function(){ 
+$('code').addClass('language-json');});</script>
+
 
         </div>
     </div>
@@ -421,7 +516,7 @@
         <aside class="page-aside">
             <div class="post-toc-wrap">
     <div class="post-toc">
-        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-text">设计模式之外观模式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-text">应用场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A8%A1%E5%BC%8F%E7%BB%93%E6%9E%84"><span class="nav-text">模式结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81"><span class="nav-text">代码</span></a></li></ol></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E5%A4%96%E8%A7%82%E6%A8%A1%E5%BC%8F"><span class="nav-text"> 设计模式之外观模式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-text"> 应用场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A8%A1%E5%BC%8F%E7%BB%93%E6%9E%84"><span class="nav-text"> 模式结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81"><span class="nav-text"> 代码</span></a></li></ol></li></ol>
     </div>
 </div>
         </aside>

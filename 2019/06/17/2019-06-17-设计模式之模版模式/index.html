@@ -27,7 +27,7 @@
     KEEP.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 月前","year":"%s 年前"};
   </script>
 <meta name="generator" content="Hexo 5.4.0"><link rel="stylesheet" type="text/css" href="/css/injector/main.css" /><link rel="preload" as="style" href="/css/injector/light.css" /><link rel="preload" as="style" href="/css/injector/dark.css" /><link rel="alternate" href="/atom.xml" title="NanYin的博客" type="application/atom+xml">
-<link rel="stylesheet" href="/css/prism.css" type="text/css"></head>
+</head>
 
 
 <body>
@@ -47,7 +47,8 @@
     <div class="page-main-content">
 
         <div class="page-main-content-top">
-            <header class="header-wrapper">
+            <link rel="stylesheet" href="/css/prism.css">
+<header class="header-wrapper">
 
     <div class="header-content">
         <div class="left">
@@ -234,7 +235,7 @@
         
 
         <div class="article-content markdown-body">
-            <h1>设计模式之模版方法模式</h1>
+            <h1 id="设计模式之模版方法模式"><a class="header-anchor" href="#设计模式之模版方法模式">¶</a> 设计模式之模版方法模式</h1>
 <p>模版模式是类的行为模式，将部分逻辑以具体方法来实现，将其他方法声明为抽象方法来让子类来实现。不同的子类实现的方法逻辑不同，从而整体的逻辑有所差异。</p>
 <p>这里涉及到两个角色：</p>
 <p>一、抽象模板(Abstract Template)角色有如下责任：</p>
@@ -251,26 +252,75 @@
 而每一个具体模板角色都可以给出这些抽象方法（也就是顶级逻辑的组成步骤）的不同实现，
 从而使得顶级逻辑的实现各不相同。
 </code></pre>
-<h2 id="应用场景">应用场景</h2>
+<h2 id="应用场景"><a class="header-anchor" href="#应用场景">¶</a> 应用场景</h2>
 <p>实现不变的部分一次，并将其他留给子类来实现可能需要变化的行为。</p>
 <ul>
 <li>需要简化代码，分离出公共的部分，抽离出一个公共的模板方法来替换所有的代码。</li>
 <li>控制子类扩展。定义在特定点调用“钩子”操作的模板方法，从而仅允许在那些点进行扩展。</li>
 </ul>
-<h2 id="模式结构">模式结构</h2>
+<h2 id="模式结构"><a class="header-anchor" href="#模式结构">¶</a> 模式结构</h2>
 <p>这里使用到模拟servlet中的httpServlet方法（简单的模拟方法中用到的模版方法）。定义一个公共的模版方法抽象类<code>HttpServletTemplate</code>，其中有两个钩子方法<code>doGet</code>和<code>doPost</code>，所谓的钩子方法就是需要由子类实现的方法。还有一个具体方法<code>service</code>来实现模版调用的作用。</p>
 <p>模拟两个子类实现<code>HttpServletTemplate</code>实现两个钩子方法。</p>
 <p>客户端<code>App</code>在调用的时候，直接调用两个子类的父类中的实现方法<code>service</code>实现调用模版。</p>
 <p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190617221808.png" alt="模版模式结构"></p>
-<h2 id="代码">代码</h2>
-<h3 id="抽象模版类">抽象模版类</h3>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">HttpServletTemplate</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">service</span><span class="params">(HttpRequestMethod method)</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(method.equals(HttpRequestMethod.METHOD_GET))&#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;so something 1&quot;</span>);</span><br><span class="line">            doGet();</span><br><span class="line">            System.out.println(<span class="string">&quot;so something 2&quot;</span>);</span><br><span class="line">        &#125;<span class="keyword">else</span> <span class="keyword">if</span>(method.equals(HttpRequestMethod.METHOD_POST))&#123;</span><br><span class="line">            doPost();</span><br><span class="line">        &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;do nothing!&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">doGet</span><span class="params">()</span></span>&#123;&#125;;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">doPost</span><span class="params">()</span></span>&#123;&#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="具体模版类">具体模版类</h3>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GetClient</span> <span class="keyword">extends</span> <span class="title">HttpServletTemplate</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">doGet</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;this is my get methods!&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PostClient</span> <span class="keyword">extends</span> <span class="title">HttpServletTemplate</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">doGet</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.doPost();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">doPost</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;this is my post methods!&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 请求类型枚举类</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">enum</span> <span class="title">HttpRequestMethod</span> </span>&#123;</span><br><span class="line">    METHOD_GET,METHOD_POST,METHOD_DELETE</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="客户端调用">客户端调用</h3>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">App</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//声明post客户端</span></span><br><span class="line">        PostClient post = <span class="keyword">new</span> PostClient();</span><br><span class="line">        <span class="comment">//调用模版</span></span><br><span class="line">        post.service(HttpRequestMethod.METHOD_POST);</span><br><span class="line">        GetClient get = <span class="keyword">new</span> GetClient();</span><br><span class="line">        get.service(HttpRequestMethod.METHOD_GET);</span><br><span class="line">        get.service(HttpRequestMethod.METHOD_POST);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>其实模版方法模式是创建一个算法的骨架，具体的内容由子类去填充的这个过程。</p>
+<h2 id="代码"><a class="header-anchor" href="#代码">¶</a> 代码</h2>
+<h3 id="抽象模版类"><a class="header-anchor" href="#抽象模版类">¶</a> 抽象模版类</h3>
+<pre><code class="language-java">public abstract class HttpServletTemplate &#123;
 
+    public void service(HttpRequestMethod method)&#123;
+        if(method.equals(HttpRequestMethod.METHOD_GET))&#123;
+            System.out.println(&quot;so something 1&quot;);
+            doGet();
+            System.out.println(&quot;so something 2&quot;);
+        &#125;else if(method.equals(HttpRequestMethod.METHOD_POST))&#123;
+            doPost();
+        &#125;else &#123;
+            System.out.println(&quot;do nothing!&quot;);
+        &#125;
+    &#125;
+    protected void doGet()&#123;&#125;;
+
+    protected void doPost()&#123;&#125;;
+&#125;
+</code></pre>
+<h3 id="具体模版类"><a class="header-anchor" href="#具体模版类">¶</a> 具体模版类</h3>
+<pre><code class="language-java">public class GetClient extends HttpServletTemplate &#123;
+    @Override
+    protected void doGet() &#123;
+        System.out.println(&quot;this is my get methods!&quot;);
+    &#125;
+&#125;
+public class PostClient extends HttpServletTemplate &#123;
+    @Override
+    protected void doGet() &#123;
+        this.doPost();
+    &#125;
+
+    @Override
+    protected void doPost() &#123;
+        System.out.println(&quot;this is my post methods!&quot;);
+    &#125;
+&#125;
+// 请求类型枚举类
+public enum HttpRequestMethod &#123;
+    METHOD_GET,METHOD_POST,METHOD_DELETE
+&#125;
+</code></pre>
+<h3 id="客户端调用"><a class="header-anchor" href="#客户端调用">¶</a> 客户端调用</h3>
+<pre><code class="language-java">public class App &#123;
+    public static void main(String[] args) &#123;
+        //声明post客户端
+        PostClient post = new PostClient();
+        //调用模版
+        post.service(HttpRequestMethod.METHOD_POST);
+        GetClient get = new GetClient();
+        get.service(HttpRequestMethod.METHOD_GET);
+        get.service(HttpRequestMethod.METHOD_POST);
+    &#125;
+&#125;
+</code></pre>
+<p>其实模版方法模式是创建一个算法的骨架，具体的内容由子类去填充的这个过程。</p>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css">
         </div>
 
         
@@ -357,6 +407,19 @@
     </div>
 </footer>
 
+<script src="/js/prism.js" async></script>
+
+# 文档底部引入js
+<script src="https://cdn.bootcss.com/jquery/3.4.0/jquery.min.js"></script>
+
+<script src="/js/prettify.js"></script>
+
+
+# 高亮设置
+<script type="text/javascript">
+$(window).on('load', function(){ 
+$('code').addClass('language-json');});</script>
+
 
         </div>
     </div>
@@ -437,7 +500,7 @@
         <aside class="page-aside">
             <div class="post-toc-wrap">
     <div class="post-toc">
-        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-text">设计模式之模版方法模式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-text">应用场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A8%A1%E5%BC%8F%E7%BB%93%E6%9E%84"><span class="nav-text">模式结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81"><span class="nav-text">代码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8A%BD%E8%B1%A1%E6%A8%A1%E7%89%88%E7%B1%BB"><span class="nav-text">抽象模版类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B7%E4%BD%93%E6%A8%A1%E7%89%88%E7%B1%BB"><span class="nav-text">具体模版类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%B0%83%E7%94%A8"><span class="nav-text">客户端调用</span></a></li></ol></li></ol></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E6%A8%A1%E7%89%88%E6%96%B9%E6%B3%95%E6%A8%A1%E5%BC%8F"><span class="nav-text"> 设计模式之模版方法模式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-text"> 应用场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A8%A1%E5%BC%8F%E7%BB%93%E6%9E%84"><span class="nav-text"> 模式结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81"><span class="nav-text"> 代码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8A%BD%E8%B1%A1%E6%A8%A1%E7%89%88%E7%B1%BB"><span class="nav-text"> 抽象模版类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B7%E4%BD%93%E6%A8%A1%E7%89%88%E7%B1%BB"><span class="nav-text"> 具体模版类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%B0%83%E7%94%A8"><span class="nav-text"> 客户端调用</span></a></li></ol></li></ol></li></ol>
     </div>
 </div>
         </aside>

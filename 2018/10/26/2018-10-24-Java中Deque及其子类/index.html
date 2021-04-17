@@ -27,7 +27,7 @@
     KEEP.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 月前","year":"%s 年前"};
   </script>
 <meta name="generator" content="Hexo 5.4.0"><link rel="stylesheet" type="text/css" href="/css/injector/main.css" /><link rel="preload" as="style" href="/css/injector/light.css" /><link rel="preload" as="style" href="/css/injector/dark.css" /><link rel="alternate" href="/atom.xml" title="NanYin的博客" type="application/atom+xml">
-<link rel="stylesheet" href="/css/prism.css" type="text/css"></head>
+</head>
 
 
 <body>
@@ -47,7 +47,8 @@
     <div class="page-main-content">
 
         <div class="page-main-content-top">
-            <header class="header-wrapper">
+            <link rel="stylesheet" href="/css/prism.css">
+<header class="header-wrapper">
 
     <div class="header-content">
         <div class="left">
@@ -217,7 +218,7 @@
     
     
         <span class="article-wordcount article-meta-item">
-            <i class="fas fa-file-word"></i>&nbsp;<span>877 字</span>
+            <i class="fas fa-file-word"></i>&nbsp;<span>876 字</span>
         </span>
     
     
@@ -234,38 +235,132 @@
         
 
         <div class="article-content markdown-body">
-            <h1>Java中Deque和ArrayDeque</h1>
-<h2 id="Deque类">Deque类</h2>
+            <h1 id="Java中Deque和ArrayDeque"><a class="header-anchor" href="#Java中Deque和ArrayDeque">¶</a> Java中Deque和ArrayDeque</h1>
+<h2 id="Deque类"><a class="header-anchor" href="#Deque类">¶</a> Deque类</h2>
 <p>一个线性的可在双端插入、删除节点的结构。他名字时Deque，实际上时“double ended queue”的简写；</p>
-<h2 id="ArrayDeque类">ArrayDeque类</h2>
+<h2 id="ArrayDeque类"><a class="header-anchor" href="#ArrayDeque类">¶</a> ArrayDeque类</h2>
 <p>对于ArrayDeque中的数组，它是一个逻辑上的循环数组，所谓循环是指元素到数组尾之后可以接着从数组头开始，数组的长度、第一个和最后一个元素都与head和tail这两个变量有关</p>
-<h3 id="构造方法">构造方法</h3>
+<h3 id="构造方法"><a class="header-anchor" href="#构造方法">¶</a> 构造方法</h3>
 <p>ArrayDeque就像他的名字一样，使用Array数组来实现Deque结构。构造方法和以前提到的ArrayList相似。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">ArrayDeque</span><span class="params">()</span> </span>&#123;</span><br><span class="line"><span class="comment">// 初始化的数组大小是16</span></span><br><span class="line">        elements = <span class="keyword">new</span> Object[<span class="number">16</span>];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">ArrayDeque</span><span class="params">(<span class="keyword">int</span> numElements)</span> </span>&#123;</span><br><span class="line">        allocateElements(numElements);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">ArrayDeque</span><span class="params">(Collection&lt;? extends E&gt; c)</span> </span>&#123;</span><br><span class="line">        allocateElements(c.size());</span><br><span class="line">        <span class="comment">// addAll方法就是为c 进行for循环添加</span></span><br><span class="line">        addAll(c);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-<h3 id="添加和移除方法">添加和移除方法</h3>
+<pre><code class="language-java">public ArrayDeque() &#123;
+// 初始化的数组大小是16
+        elements = new Object[16];
+    &#125;
+
+public ArrayDeque(int numElements) &#123;
+        allocateElements(numElements);
+    &#125;
+
+public ArrayDeque(Collection&lt;? extends E&gt; c) &#123;
+        allocateElements(c.size());
+        // addAll方法就是为c 进行for循环添加
+        addAll(c);
+    &#125;
+</code></pre>
+<h3 id="添加和移除方法"><a class="header-anchor" href="#添加和移除方法">¶</a> 添加和移除方法</h3>
 <ul>
 <li>add方法</li>
 </ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 在前面添加元素，也就是在数组的第一个位置上加元素</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addFirst</span><span class="params">(E e)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (e == <span class="keyword">null</span>)</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException();</span><br><span class="line">            <span class="comment">// 在前面添加的时候，head-1 的位置上插入 e</span></span><br><span class="line">        elements[head = (head - <span class="number">1</span>) &amp; (elements.length - <span class="number">1</span>)] = e;</span><br><span class="line">        <span class="keyword">if</span> (head == tail)</span><br><span class="line">            doubleCapacity();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addLast</span><span class="params">(E e)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (e == <span class="keyword">null</span>)</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException();</span><br><span class="line">            添加到下一个位置</span><br><span class="line">        elements[tail] = e;</span><br><span class="line">        <span class="comment">/* </span></span><br><span class="line"><span class="comment">         * 如果当前添加位置的下一个位置 与上 长度-1 </span></span><br><span class="line"><span class="comment">         *（因为长度都是2的倍数，所以-1之后，2进制后几位都是1，保证负数的时候也能够找到正确的索引）</span></span><br><span class="line"><span class="comment">         * 如果tail和head相等说明数组满了，需要扩容</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="keyword">if</span> ( (tail = (tail + <span class="number">1</span>) &amp; (elements.length - <span class="number">1</span>)) == head)</span><br><span class="line">            doubleCapacity();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="language-java">// 在前面添加元素，也就是在数组的第一个位置上加元素
+public void addFirst(E e) &#123;
+        if (e == null)
+            throw new NullPointerException();
+            // 在前面添加的时候，head-1 的位置上插入 e
+        elements[head = (head - 1) &amp; (elements.length - 1)] = e;
+        if (head == tail)
+            doubleCapacity();
+    &#125;
+
+public void addLast(E e) &#123;
+        if (e == null)
+            throw new NullPointerException();
+            添加到下一个位置
+        elements[tail] = e;
+        /* 
+         * 如果当前添加位置的下一个位置 与上 长度-1 
+         *（因为长度都是2的倍数，所以-1之后，2进制后几位都是1，保证负数的时候也能够找到正确的索引）
+         * 如果tail和head相等说明数组满了，需要扩容
+         */
+        if ( (tail = (tail + 1) &amp; (elements.length - 1)) == head)
+            doubleCapacity();
+    &#125;
+</code></pre>
 <p>有了这两种方法，队列或者栈的方法都可以轻松实现了。</p>
 <p>在进行增加元素的时候涉及到 <code>doubleCapacity</code> 这个方法，这个方法主要用来扩充数组的容量。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">doubleCapacity</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">assert</span> head == tail;</span><br><span class="line">        <span class="keyword">int</span> p = head;</span><br><span class="line">        <span class="keyword">int</span> n = elements.length;</span><br><span class="line">        <span class="keyword">int</span> r = n - p; <span class="comment">// head右边元素的个数</span></span><br><span class="line">        <span class="keyword">int</span> newCapacity = n &lt;&lt; <span class="number">1</span>; <span class="comment">// 扩充为原来的2倍</span></span><br><span class="line">        <span class="keyword">if</span> (newCapacity &lt; <span class="number">0</span>)</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">&quot;Sorry, deque too big&quot;</span>);</span><br><span class="line">        Object[] a = <span class="keyword">new</span> Object[newCapacity]; <span class="comment">//创建新数组</span></span><br><span class="line">        Systkkem.arraycopy(elements, p, a, <span class="number">0</span>, r); </span><br><span class="line">        System.arraycopy(elements, <span class="number">0</span>, a, r, p);<span class="comment">// 两部copy数组相当于从 head -&gt; tail 重新排序了</span></span><br><span class="line">        elements = a;</span><br><span class="line">        head = <span class="number">0</span>;</span><br><span class="line">        tail = n;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="language-java">private void doubleCapacity() &#123;
+        assert head == tail;
+        int p = head;
+        int n = elements.length;
+        int r = n - p; // head右边元素的个数
+        int newCapacity = n &lt;&lt; 1; // 扩充为原来的2倍
+        if (newCapacity &lt; 0)
+            throw new IllegalStateException(&quot;Sorry, deque too big&quot;);
+        Object[] a = new Object[newCapacity]; //创建新数组
+        Systkkem.arraycopy(elements, p, a, 0, r); 
+        System.arraycopy(elements, 0, a, r, p);// 两部copy数组相当于从 head -&gt; tail 重新排序了
+        elements = a;
+        head = 0;
+        tail = n;
+    &#125;
+</code></pre>
 <ul>
 <li>remove方法</li>
 </ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> E <span class="title">remove</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> removeFirst();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> E <span class="title">removeFirst</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        E x = pollFirst();</span><br><span class="line">        <span class="keyword">if</span> (x == <span class="keyword">null</span>)</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> NoSuchElementException();</span><br><span class="line">        <span class="keyword">return</span> x;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> E <span class="title">pollFirst</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> h = head;</span><br><span class="line">        <span class="meta">@SuppressWarnings(&quot;unchecked&quot;)</span></span><br><span class="line">        E result = (E) elements[h];</span><br><span class="line">        <span class="comment">// Element is null if deque empty</span></span><br><span class="line">        <span class="keyword">if</span> (result == <span class="keyword">null</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        elements[h] = <span class="keyword">null</span>;     <span class="comment">// Must null out slot</span></span><br><span class="line">        <span class="comment">// 把element的头部位置置空后，将head向前移</span></span><br><span class="line">        head = (h + <span class="number">1</span>) &amp; (elements.length - <span class="number">1</span>);</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="language-java">public E remove() &#123;
+        return removeFirst();
+    &#125;
+
+public E removeFirst() &#123;
+        E x = pollFirst();
+        if (x == null)
+            throw new NoSuchElementException();
+        return x;
+    &#125;
+
+public E pollFirst() &#123;
+        int h = head;
+        @SuppressWarnings(&quot;unchecked&quot;)
+        E result = (E) elements[h];
+        // Element is null if deque empty
+        if (result == null)
+            return null;
+        elements[h] = null;     // Must null out slot
+        // 把element的头部位置置空后，将head向前移
+        head = (h + 1) &amp; (elements.length - 1);
+        return result;
+    &#125;
+</code></pre>
 <ul>
 <li>toArray方法</li>
 </ul>
 <p>toArray方法主要是方便输出。用来真正的按照逻辑顺序，进行物理重排，实现方法和doubleCapacity实现相同。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> Object[] toArray() &#123;</span><br><span class="line">        <span class="keyword">return</span> copyElements(<span class="keyword">new</span> Object[size()]);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> &lt;T&gt; T[] copyElements(T[] a) &#123;</span><br><span class="line">        <span class="keyword">if</span> (head &lt; tail) &#123;</span><br><span class="line">         <span class="comment">// 如果顺序正常</span></span><br><span class="line">            System.arraycopy(elements, head, a, <span class="number">0</span>, size());</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (head &gt; tail) &#123;</span><br><span class="line">         <span class="comment">// 否则将head右侧的先copy到数组中，在copy剩下的</span></span><br><span class="line">            <span class="keyword">int</span> headPortionLen = elements.length - head;</span><br><span class="line">            System.arraycopy(elements, head, a, <span class="number">0</span>, headPortionLen);</span><br><span class="line">            System.arraycopy(elements, <span class="number">0</span>, a, headPortionLen, tail);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> a;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="language-java">public Object[] toArray() &#123;
+        return copyElements(new Object[size()]);
+    &#125;
+
+private &lt;T&gt; T[] copyElements(T[] a) &#123;
+        if (head &lt; tail) &#123;
+         // 如果顺序正常
+            System.arraycopy(elements, head, a, 0, size());
+        &#125; else if (head &gt; tail) &#123;
+         // 否则将head右侧的先copy到数组中，在copy剩下的
+            int headPortionLen = elements.length - head;
+            System.arraycopy(elements, head, a, 0, headPortionLen);
+            System.arraycopy(elements, 0, a, headPortionLen, tail);
+        &#125;
+        return a;
+   &#125;
+</code></pre>
 <ul>
 <li>size方法</li>
 </ul>
 <p>和很多数据结构类不同的是，他的size并不是依靠本身的变量字段进行维护，而是通过size方法计算而来。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">size</span><span class="params">()</span> </span>&#123;</span><br><span class="line">         <span class="keyword">return</span> (tail - head) &amp; (elements.length - <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="language-java">public int size() &#123;
+         return (tail - head) &amp; (elements.length - 1);
+    &#125;
+</code></pre>
 <p>总结一下，ArrayDeque实现了双端队列的特点，能够完成栈和队列的功能，效率比同样继承Deque的LinkedList效率高，因为在ArrayDeque中的计算大部分为位运算。ArrayDeque逻辑上循环的数组，但实际上并不是。</p>
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css">
         </div>
 
         
@@ -352,6 +447,19 @@
     </div>
 </footer>
 
+<script src="/js/prism.js" async></script>
+
+# 文档底部引入js
+<script src="https://cdn.bootcss.com/jquery/3.4.0/jquery.min.js"></script>
+
+<script src="/js/prettify.js"></script>
+
+
+# 高亮设置
+<script type="text/javascript">
+$(window).on('load', function(){ 
+$('code').addClass('language-json');});</script>
+
 
         </div>
     </div>
@@ -432,7 +540,7 @@
         <aside class="page-aside">
             <div class="post-toc-wrap">
     <div class="post-toc">
-        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-text">Java中Deque和ArrayDeque</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Deque%E7%B1%BB"><span class="nav-text">Deque类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ArrayDeque%E7%B1%BB"><span class="nav-text">ArrayDeque类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%84%E9%80%A0%E6%96%B9%E6%B3%95"><span class="nav-text">构造方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E5%92%8C%E7%A7%BB%E9%99%A4%E6%96%B9%E6%B3%95"><span class="nav-text">添加和移除方法</span></a></li></ol></li></ol></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Java%E4%B8%ADDeque%E5%92%8CArrayDeque"><span class="nav-text"> Java中Deque和ArrayDeque</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Deque%E7%B1%BB"><span class="nav-text"> Deque类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ArrayDeque%E7%B1%BB"><span class="nav-text"> ArrayDeque类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%84%E9%80%A0%E6%96%B9%E6%B3%95"><span class="nav-text"> 构造方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E5%92%8C%E7%A7%BB%E9%99%A4%E6%96%B9%E6%B3%95"><span class="nav-text"> 添加和移除方法</span></a></li></ol></li></ol></li></ol>
     </div>
 </div>
         </aside>

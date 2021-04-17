@@ -27,7 +27,7 @@
     KEEP.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 月前","year":"%s 年前"};
   </script>
 <meta name="generator" content="Hexo 5.4.0"><link rel="stylesheet" type="text/css" href="/css/injector/main.css" /><link rel="preload" as="style" href="/css/injector/light.css" /><link rel="preload" as="style" href="/css/injector/dark.css" /><link rel="alternate" href="/atom.xml" title="NanYin的博客" type="application/atom+xml">
-<link rel="stylesheet" href="/css/prism.css" type="text/css"></head>
+</head>
 
 
 <body>
@@ -47,7 +47,8 @@
     <div class="page-main-content">
 
         <div class="page-main-content-top">
-            <header class="header-wrapper">
+            <link rel="stylesheet" href="/css/prism.css">
+<header class="header-wrapper">
 
     <div class="header-content">
         <div class="left">
@@ -217,7 +218,7 @@
     
     
         <span class="article-wordcount article-meta-item">
-            <i class="fas fa-file-word"></i>&nbsp;<span>749 字</span>
+            <i class="fas fa-file-word"></i>&nbsp;<span>748 字</span>
         </span>
     
     
@@ -234,9 +235,9 @@
         
 
         <div class="article-content markdown-body">
-            <h1>设计模式之命令模式</h1>
+            <h1 id="设计模式之命令模式"><a class="header-anchor" href="#设计模式之命令模式">¶</a> 设计模式之命令模式</h1>
 <p>命令模式是对象的行为模式，命令模式将一个请求封装成一个对象，从而让你使用不同的请求把客户端参数化，对请求排队或者记录请求日志，可以提供命令的撤销和恢复功能。</p>
-<h2 id="应用场景">应用场景</h2>
+<h2 id="应用场景"><a class="header-anchor" href="#应用场景">¶</a> 应用场景</h2>
 <ol>
 <li>
 <p>通过要执行的操作来参数化对象。可以使用回调函数在过程语言中表达此类参数化，也就是说，某个函数已注册到稍后要调用的某个位置。命令模式可以说是面向对象的回调函数。起到在特定位置被调用的目的。</p>
@@ -254,7 +255,7 @@
 <p>命令模式使新的命令很容易地被加入到系统里。具有很好的拓展性。</p>
 </li>
 </ol>
-<h2 id="模式结构">模式结构</h2>
+<h2 id="模式结构"><a class="header-anchor" href="#模式结构">¶</a> 模式结构</h2>
 <div align='center'><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190702190857.png" style="zoom:50%"/></div>
 <p>命令模式涉及到五个角色，它们分别是：</p>
 <ol>
@@ -274,18 +275,77 @@
 <p><code>接收者(Receiver)</code>角色：负责具体实施和执行一个请求。任何一个类都可以成为接收者，实施和执行请求的方法叫做行动方法</p>
 </li>
 </ol>
-<h2 id="代码">代码</h2>
-<h3 id="抽象命令角色">抽象命令角色</h3>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Command</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">excute</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="请求者角色">请求者角色</h3>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 请求者用来请求命令</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">King</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Command command;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Command <span class="title">invoke</span><span class="params">(Command command)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.command = command;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.command;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">action</span><span class="params">()</span></span>&#123;</span><br><span class="line">        command.excute();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="接收者角色">接收者角色</h3>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Soldier</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 行动方法</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">prepareWeapon</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;Soldier prepare Weapon !!!&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">attack</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;Soldier Attack!!!&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">retreat</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;Soldier Retreat!!&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="具体命令者角色">具体命令者角色</h3>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AttackCommand</span> <span class="keyword">implements</span> <span class="title">Command</span></span>&#123;</span><br><span class="line"></span><br><span class="line">    Soldier soldier ;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">AttackCommand</span><span class="params">(Soldier soldier)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.soldier = soldier;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">excute</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 收到请求，执行操作</span></span><br><span class="line">        soldier.prepareWeapon();</span><br><span class="line">        soldier.attack();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="客户端代码">客户端代码</h3>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">App</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//  接受者和请求者</span></span><br><span class="line">        King king = <span class="keyword">new</span> King();</span><br><span class="line">        Soldier soldier = <span class="keyword">new</span> Soldier();</span><br><span class="line">        <span class="comment">// 请求者请求命令</span></span><br><span class="line">        king.invoke(<span class="keyword">new</span> AttackCommand(soldier));</span><br><span class="line">        <span class="comment">// 请求者发起命令</span></span><br><span class="line">        king.action();</span><br><span class="line">        king.invoke(<span class="keyword">new</span> RetreatCommand(soldier));</span><br><span class="line">        king.action();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="代码"><a class="header-anchor" href="#代码">¶</a> 代码</h2>
+<h3 id="抽象命令角色"><a class="header-anchor" href="#抽象命令角色">¶</a> 抽象命令角色</h3>
+<pre><code class="language-java">public interface Command &#123;
+    void excute();
+&#125;
+</code></pre>
+<h3 id="请求者角色"><a class="header-anchor" href="#请求者角色">¶</a> 请求者角色</h3>
+<pre><code class="language-java">// 请求者用来请求命令
+public class King &#123;
+    private Command command;
 
+    public Command invoke(Command command)&#123;
+        this.command = command;
+        return this.command;
+    &#125;
+
+    public void action()&#123;
+        command.excute();
+    &#125;
+&#125;
+</code></pre>
+<h3 id="接收者角色"><a class="header-anchor" href="#接收者角色">¶</a> 接收者角色</h3>
+<pre><code class="language-java">public class Soldier &#123;
+
+    // 行动方法
+    public void prepareWeapon()&#123;
+        System.out.println(&quot;Soldier prepare Weapon !!!&quot;);
+    &#125;
+
+    public void attack()&#123;
+        System.out.println(&quot;Soldier Attack!!!&quot;);
+    &#125;
+
+    public void retreat()&#123;
+        System.out.println(&quot;Soldier Retreat!!&quot;);
+    &#125;
+&#125;
+</code></pre>
+<h3 id="具体命令者角色"><a class="header-anchor" href="#具体命令者角色">¶</a> 具体命令者角色</h3>
+<pre><code class="language-java">public class AttackCommand implements Command&#123;
+
+    Soldier soldier ;
+
+    public AttackCommand(Soldier soldier) &#123;
+        this.soldier = soldier;
+    &#125;
+
+    @Override
+    public void excute() &#123;
+    // 收到请求，执行操作
+        soldier.prepareWeapon();
+        soldier.attack();
+    &#125;
+&#125;
+</code></pre>
+<h3 id="客户端代码"><a class="header-anchor" href="#客户端代码">¶</a> 客户端代码</h3>
+<pre><code class="language-java">public class App &#123;
+    public static void main(String[] args) &#123;
+        //  接受者和请求者
+        King king = new King();
+        Soldier soldier = new Soldier();
+        // 请求者请求命令
+        king.invoke(new AttackCommand(soldier));
+        // 请求者发起命令
+        king.action();
+        king.invoke(new RetreatCommand(soldier));
+        king.action();
+    &#125;
+&#125;
+</code></pre>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css">
         </div>
 
         
@@ -372,6 +432,19 @@
     </div>
 </footer>
 
+<script src="/js/prism.js" async></script>
+
+# 文档底部引入js
+<script src="https://cdn.bootcss.com/jquery/3.4.0/jquery.min.js"></script>
+
+<script src="/js/prettify.js"></script>
+
+
+# 高亮设置
+<script type="text/javascript">
+$(window).on('load', function(){ 
+$('code').addClass('language-json');});</script>
+
 
         </div>
     </div>
@@ -452,7 +525,7 @@
         <aside class="page-aside">
             <div class="post-toc-wrap">
     <div class="post-toc">
-        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-text">设计模式之命令模式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-text">应用场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A8%A1%E5%BC%8F%E7%BB%93%E6%9E%84"><span class="nav-text">模式结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81"><span class="nav-text">代码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8A%BD%E8%B1%A1%E5%91%BD%E4%BB%A4%E8%A7%92%E8%89%B2"><span class="nav-text">抽象命令角色</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%B7%E6%B1%82%E8%80%85%E8%A7%92%E8%89%B2"><span class="nav-text">请求者角色</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8E%A5%E6%94%B6%E8%80%85%E8%A7%92%E8%89%B2"><span class="nav-text">接收者角色</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B7%E4%BD%93%E5%91%BD%E4%BB%A4%E8%80%85%E8%A7%92%E8%89%B2"><span class="nav-text">具体命令者角色</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E4%BB%A3%E7%A0%81"><span class="nav-text">客户端代码</span></a></li></ol></li></ol></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E5%91%BD%E4%BB%A4%E6%A8%A1%E5%BC%8F"><span class="nav-text"> 设计模式之命令模式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-text"> 应用场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A8%A1%E5%BC%8F%E7%BB%93%E6%9E%84"><span class="nav-text"> 模式结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81"><span class="nav-text"> 代码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8A%BD%E8%B1%A1%E5%91%BD%E4%BB%A4%E8%A7%92%E8%89%B2"><span class="nav-text"> 抽象命令角色</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%B7%E6%B1%82%E8%80%85%E8%A7%92%E8%89%B2"><span class="nav-text"> 请求者角色</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8E%A5%E6%94%B6%E8%80%85%E8%A7%92%E8%89%B2"><span class="nav-text"> 接收者角色</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B7%E4%BD%93%E5%91%BD%E4%BB%A4%E8%80%85%E8%A7%92%E8%89%B2"><span class="nav-text"> 具体命令者角色</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E4%BB%A3%E7%A0%81"><span class="nav-text"> 客户端代码</span></a></li></ol></li></ol></li></ol>
     </div>
 </div>
         </aside>
