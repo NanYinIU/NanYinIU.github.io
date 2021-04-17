@@ -552,6 +552,66 @@ echo &quot;t2 = $t2    a = $a&quot;         # t2 = 5    a = 9
       </tags>
   </entry>
   <entry>
+    <title>正则表达式的入门</title>
+    <url>/2018/06/07/2018-06-06-%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/</url>
+    <content><![CDATA[<h1 id="正则表达式"><a class="header-anchor" href="#正则表达式">¶</a> 正则表达式</h1>
+<p>最近会时常遇到编写正则表达式，所以现在写一篇正则表达式的文章来简单记录一下学习正则的过程。</p>
+<p>在这个网站有正则表达式的中文文档 -》 <a class="link"   href="http://tool.oschina.net/uploads/apidocs/jquery/regexp.html" >正则表达式手册<i class="fas fa-external-link-alt"></i></a></p>
+<h2 id="特殊字符"><a class="header-anchor" href="#特殊字符">¶</a> 特殊字符</h2>
+<p>一般使用反斜杠 \ 来转义特殊字符 如在正则中有特殊意义的* 或者. 如果要使用原意则需要使用\来进行转义 如 \*。下面介绍几个具体的实例。</p>
+<ol>
+<li>^ 匹配输入字符串的开始位置</li>
+<li>$ 匹配输入字符串的结束位置</li>
+<li>. 匹配除去换行符之外的所有字符</li>
+<li>* 匹配前面字符0次或者多次</li>
+<li>? 匹配前面大的字符0次或者1次</li>
+<li>+ 匹配前面字符一次或多次</li>
+<li>\w 匹配字母或者数字</li>
+<li>\s 匹配任意空白</li>
+<li>\d 匹配数字</li>
+<li>\b 匹配单词的开始或者结束</li>
+</ol>
+<p>一般使用 ^ 开头并且以 $ 结束，如验证5-12位数字的时候可以这样写 <code>^\d&#123;5,12&#125;$</code> 当字符串为 <code>&quot;hello world</code> 是，使用$时匹配到一处，而使用\b时会匹配到四处，分别为每个单词的开头和结尾。</p>
+<p>特殊字符非常重要，是正则表达式的基本。在上面的例子中使用到了重复，也就是{m,n} m和n是重复的次数，如果n存在，那么就重复m到n次如果不存在，就重复m次。</p>
+<h2 id="字符匹配"><a class="header-anchor" href="#字符匹配">¶</a> 字符匹配</h2>
+<p><strong>当使用到非特殊字符的时候</strong>，可以使用中括号，如 [aeiou]用来表示其中的字符都可以匹配到。比如 字符串 <code>‘how hello’</code> 使用到正则表达式 <code>h[oe]</code> 这样可以提示匹配到两处</p>
+<p><strong>当需要使用与特殊字符相反的含义的时候</strong> 使用反斜杠+大写字符的格式来进行匹配。比如匹配非字母和数字的字符就应该使用<code>\W</code>(因为使用匹配字母和数字的特殊字符是\w)。非特殊字符的反义使用<sup>号。如[</sup>aeiou]表示原因字符意外的任意字符。</p>
+<p><strong>当想匹配多种情况的时候</strong>，比如我想匹配x或者y字符串那么就使用 x|y 来表示匹配x或者y。这样可以解决很多二义性的匹配串。</p>
+<h2 id="分组的匹配"><a class="header-anchor" href="#分组的匹配">¶</a> 分组的匹配</h2>
+<p 1,3="">当想对一个字符串进行重复，那么可以使用分组的功能。使用小括号来实现。典型的ip地址的匹配就可以这样使用(\d{1,3}.){3}\d</p>
+<p>使用 <code>\\+数字</code> 的形式 来实现重复那个分组的操作<br>
+如 <code>\b(\w+)\b\s+\1\b</code> 就可以匹配相同的字符串。</p>
+<h2 id="贪婪模式"><a class="header-anchor" href="#贪婪模式">¶</a> 贪婪模式</h2>
+<p>当使用?紧跟其他任何一个其他限制符之后比如. * 之后，匹配模式是非贪婪的，尽可能少的匹配搜素的所有字符串。比如搜多ppppppp字符串，使用‘o+?’会匹配到单个o</p>
+<h2 id="关于 的后续"><a class="header-anchor" href="#关于 的后续">¶</a> 关于 的后续</h2>
+<ul>
+<li>
+<p>(?:pattern) 匹配pattern但不获取结果。这在使用|来组合一个模式的各个部分非常有用，比如常规匹配两种字符串“username|userManner”可以使用user(?:name|Manner)来简写。</p>
+</li>
+<li>
+<p>(?=pattern) 正向肯定预查。比如windows(?=95|03|NT)能够匹配到windows95中的windows而不能匹配到windowsxp中的windows</p>
+</li>
+<li>
+<p>(?!pattern) 正向否定预查。与上面的意思相似，就是能够匹配到非的指定条件。比如windows(?!95|03|NT`能够匹配到windowsxp中的windows而不能匹配到windows95中的windows</p>
+</li>
+<li>
+<p>(?&lt;=pattern) 反向肯定预查。和第一个很相近，只不过方向不同。</p>
+</li>
+<li>
+<p>(?&lt;!) 反向否定预查 。</p>
+</li>
+</ul>
+<p>这次的正则表达式就先总结到这里，以后肯定会遇到更多的关于正则的问题。有时间一定还要读读<a class="link"   href="https://www.regular-expressions.info/" >英文的正则教程<i class="fas fa-external-link-alt"></i></a></p>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css">]]></content>
+      <categories>
+        <category>Linux</category>
+      </categories>
+      <tags>
+        <tag>Linux</tag>
+        <tag>正则表达式</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>bash学习记录（七）循环和分支（1）</title>
     <url>/2018/06/12/2018-06-11-bash_07_bash%E4%B8%AD%E7%9A%84%E5%BE%AA%E7%8E%AF%E5%92%8C%E5%88%86%E6%94%AF/</url>
     <content><![CDATA[<h1 id="循环和分支"><a class="header-anchor" href="#循环和分支">¶</a> 循环和分支</h1>
@@ -692,66 +752,6 @@ done
       <tags>
         <tag>bash</tag>
         <tag>Linux</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>正则表达式的入门</title>
-    <url>/2018/06/07/2018-06-06-%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/</url>
-    <content><![CDATA[<h1 id="正则表达式"><a class="header-anchor" href="#正则表达式">¶</a> 正则表达式</h1>
-<p>最近会时常遇到编写正则表达式，所以现在写一篇正则表达式的文章来简单记录一下学习正则的过程。</p>
-<p>在这个网站有正则表达式的中文文档 -》 <a class="link"   href="http://tool.oschina.net/uploads/apidocs/jquery/regexp.html" >正则表达式手册<i class="fas fa-external-link-alt"></i></a></p>
-<h2 id="特殊字符"><a class="header-anchor" href="#特殊字符">¶</a> 特殊字符</h2>
-<p>一般使用反斜杠 \ 来转义特殊字符 如在正则中有特殊意义的* 或者. 如果要使用原意则需要使用\来进行转义 如 \*。下面介绍几个具体的实例。</p>
-<ol>
-<li>^ 匹配输入字符串的开始位置</li>
-<li>$ 匹配输入字符串的结束位置</li>
-<li>. 匹配除去换行符之外的所有字符</li>
-<li>* 匹配前面字符0次或者多次</li>
-<li>? 匹配前面大的字符0次或者1次</li>
-<li>+ 匹配前面字符一次或多次</li>
-<li>\w 匹配字母或者数字</li>
-<li>\s 匹配任意空白</li>
-<li>\d 匹配数字</li>
-<li>\b 匹配单词的开始或者结束</li>
-</ol>
-<p>一般使用 ^ 开头并且以 $ 结束，如验证5-12位数字的时候可以这样写 <code>^\d&#123;5,12&#125;$</code> 当字符串为 <code>&quot;hello world</code> 是，使用$时匹配到一处，而使用\b时会匹配到四处，分别为每个单词的开头和结尾。</p>
-<p>特殊字符非常重要，是正则表达式的基本。在上面的例子中使用到了重复，也就是{m,n} m和n是重复的次数，如果n存在，那么就重复m到n次如果不存在，就重复m次。</p>
-<h2 id="字符匹配"><a class="header-anchor" href="#字符匹配">¶</a> 字符匹配</h2>
-<p><strong>当使用到非特殊字符的时候</strong>，可以使用中括号，如 [aeiou]用来表示其中的字符都可以匹配到。比如 字符串 <code>‘how hello’</code> 使用到正则表达式 <code>h[oe]</code> 这样可以提示匹配到两处</p>
-<p><strong>当需要使用与特殊字符相反的含义的时候</strong> 使用反斜杠+大写字符的格式来进行匹配。比如匹配非字母和数字的字符就应该使用<code>\W</code>(因为使用匹配字母和数字的特殊字符是\w)。非特殊字符的反义使用<sup>号。如[</sup>aeiou]表示原因字符意外的任意字符。</p>
-<p><strong>当想匹配多种情况的时候</strong>，比如我想匹配x或者y字符串那么就使用 x|y 来表示匹配x或者y。这样可以解决很多二义性的匹配串。</p>
-<h2 id="分组的匹配"><a class="header-anchor" href="#分组的匹配">¶</a> 分组的匹配</h2>
-<p 1,3="">当想对一个字符串进行重复，那么可以使用分组的功能。使用小括号来实现。典型的ip地址的匹配就可以这样使用(\d{1,3}.){3}\d</p>
-<p>使用 <code>\\+数字</code> 的形式 来实现重复那个分组的操作<br>
-如 <code>\b(\w+)\b\s+\1\b</code> 就可以匹配相同的字符串。</p>
-<h2 id="贪婪模式"><a class="header-anchor" href="#贪婪模式">¶</a> 贪婪模式</h2>
-<p>当使用?紧跟其他任何一个其他限制符之后比如. * 之后，匹配模式是非贪婪的，尽可能少的匹配搜素的所有字符串。比如搜多ppppppp字符串，使用‘o+?’会匹配到单个o</p>
-<h2 id="关于 的后续"><a class="header-anchor" href="#关于 的后续">¶</a> 关于 的后续</h2>
-<ul>
-<li>
-<p>(?:pattern) 匹配pattern但不获取结果。这在使用|来组合一个模式的各个部分非常有用，比如常规匹配两种字符串“username|userManner”可以使用user(?:name|Manner)来简写。</p>
-</li>
-<li>
-<p>(?=pattern) 正向肯定预查。比如windows(?=95|03|NT)能够匹配到windows95中的windows而不能匹配到windowsxp中的windows</p>
-</li>
-<li>
-<p>(?!pattern) 正向否定预查。与上面的意思相似，就是能够匹配到非的指定条件。比如windows(?!95|03|NT`能够匹配到windowsxp中的windows而不能匹配到windows95中的windows</p>
-</li>
-<li>
-<p>(?&lt;=pattern) 反向肯定预查。和第一个很相近，只不过方向不同。</p>
-</li>
-<li>
-<p>(?&lt;!) 反向否定预查 。</p>
-</li>
-</ul>
-<p>这次的正则表达式就先总结到这里，以后肯定会遇到更多的关于正则的问题。有时间一定还要读读<a class="link"   href="https://www.regular-expressions.info/" >英文的正则教程<i class="fas fa-external-link-alt"></i></a></p>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css">]]></content>
-      <categories>
-        <category>Linux</category>
-      </categories>
-      <tags>
-        <tag>Linux</tag>
-        <tag>正则表达式</tag>
       </tags>
   </entry>
   <entry>
@@ -1421,53 +1421,6 @@ n &gt; &amp;- #关闭输出文件描述符n
       </tags>
   </entry>
   <entry>
-    <title>bash学习记录（十五）bash中的函数定义与使用</title>
-    <url>/2018/07/03/2018-07-03-bash_14_bash%E4%B8%AD%E7%9A%84%E5%87%BD%E6%95%B0/</url>
-    <content><![CDATA[<h1 id="bash中的函数"><a class="header-anchor" href="#bash中的函数">¶</a> bash中的函数</h1>
-<p>其实bash函数和bash脚本时一样的，函数的使用如同使用一段bash脚本块一样。但是定义为bash函数执行更快。</p>
-<h2 id="函数定义与调用"><a class="header-anchor" href="#函数定义与调用">¶</a> 函数定义与调用</h2>
-<p>与很多脚本语言一样，使用 <code>function</code> 作为关键词来声明函数。下面来使用一段例子代码来说明函数的定义的格式。乍一看是不是和js有点像呢。。</p>
-<pre><code class="language-text">function hello()&#123;
-echo &quot;使用函数会输出这句话&quot;
-return 1
-&#125;
-hello #使用函数
-</code></pre>
-<h2 id="函数的参数传递"><a class="header-anchor" href="#函数的参数传递">¶</a> 函数的参数传递</h2>
-<p>与编写bash相似，参数使用 <code>$+位置的形式获取</code> 如$1获取紧跟在调用函数后的第一个参数的值。</p>
-<pre><code class="language-text">function hello()&#123;
-echo &quot;使用函数会输出这句话&quot;
-echo &quot;输出第一个参数 $1&quot;
-return 1
-&#125;
-hello world
-# 输出结果 ‘ 输出第一个参数 world ’
-</code></pre>
-<h2 id="函数的返回值"><a class="header-anchor" href="#函数的返回值">¶</a> 函数的返回值</h2>
-<p>使用return来返回特定值 如上面的函数中使用到了 <code>return 1</code> ,在return后发生的语句都不能被执行。并且return的的值只能在1~256之间的数。使用$?来获取返回到值。</p>
-<h2 id="函数的嵌套"><a class="header-anchor" href="#函数的嵌套">¶</a> 函数的嵌套</h2>
-<p>如同在Java js中使用函数类似，bash中的函数也允许使用嵌套结构。但是需要在外层函数调用内容函数。这是当然的了，因为在内部声明函数，却没有调用，这当然时不起作用的了。</p>
-<pre><code class="language-text">function x1()&#123;
-        echo &quot;在函数x1中！&quot;
-        function x2()&#123;
-        echo &quot;在函数x2中！&quot;
-        &#125;
-        x2 # 这里需要调用内层函数
-&#125;
-x1
-#结果：
-#在函数x1中！
-#在函数x2中！
-</code></pre>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css">]]></content>
-      <categories>
-        <category>Bash</category>
-      </categories>
-      <tags>
-        <tag>bash</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>bash学习记录（十六） bash学习终章</title>
     <url>/2018/07/08/2018-07-06-bash_15_%E7%BB%88%E7%AB%A0/</url>
     <content><![CDATA[<h1 id="bash学习终章"><a class="header-anchor" href="#bash学习终章">¶</a> bash学习终章</h1>
@@ -1546,6 +1499,53 @@ cat /dev/null &gt; /var/log/wtmp # 清空该文件内容
       <tags>
         <tag>bash</tag>
         <tag>Linux</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>bash学习记录（十五）bash中的函数定义与使用</title>
+    <url>/2018/07/03/2018-07-03-bash_14_bash%E4%B8%AD%E7%9A%84%E5%87%BD%E6%95%B0/</url>
+    <content><![CDATA[<h1 id="bash中的函数"><a class="header-anchor" href="#bash中的函数">¶</a> bash中的函数</h1>
+<p>其实bash函数和bash脚本时一样的，函数的使用如同使用一段bash脚本块一样。但是定义为bash函数执行更快。</p>
+<h2 id="函数定义与调用"><a class="header-anchor" href="#函数定义与调用">¶</a> 函数定义与调用</h2>
+<p>与很多脚本语言一样，使用 <code>function</code> 作为关键词来声明函数。下面来使用一段例子代码来说明函数的定义的格式。乍一看是不是和js有点像呢。。</p>
+<pre><code class="language-text">function hello()&#123;
+echo &quot;使用函数会输出这句话&quot;
+return 1
+&#125;
+hello #使用函数
+</code></pre>
+<h2 id="函数的参数传递"><a class="header-anchor" href="#函数的参数传递">¶</a> 函数的参数传递</h2>
+<p>与编写bash相似，参数使用 <code>$+位置的形式获取</code> 如$1获取紧跟在调用函数后的第一个参数的值。</p>
+<pre><code class="language-text">function hello()&#123;
+echo &quot;使用函数会输出这句话&quot;
+echo &quot;输出第一个参数 $1&quot;
+return 1
+&#125;
+hello world
+# 输出结果 ‘ 输出第一个参数 world ’
+</code></pre>
+<h2 id="函数的返回值"><a class="header-anchor" href="#函数的返回值">¶</a> 函数的返回值</h2>
+<p>使用return来返回特定值 如上面的函数中使用到了 <code>return 1</code> ,在return后发生的语句都不能被执行。并且return的的值只能在1~256之间的数。使用$?来获取返回到值。</p>
+<h2 id="函数的嵌套"><a class="header-anchor" href="#函数的嵌套">¶</a> 函数的嵌套</h2>
+<p>如同在Java js中使用函数类似，bash中的函数也允许使用嵌套结构。但是需要在外层函数调用内容函数。这是当然的了，因为在内部声明函数，却没有调用，这当然时不起作用的了。</p>
+<pre><code class="language-text">function x1()&#123;
+        echo &quot;在函数x1中！&quot;
+        function x2()&#123;
+        echo &quot;在函数x2中！&quot;
+        &#125;
+        x2 # 这里需要调用内层函数
+&#125;
+x1
+#结果：
+#在函数x1中！
+#在函数x2中！
+</code></pre>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css">]]></content>
+      <categories>
+        <category>Bash</category>
+      </categories>
+      <tags>
+        <tag>bash</tag>
       </tags>
   </entry>
   <entry>
@@ -1812,237 +1812,6 @@ System.out.println(arrayString);
 System.out.println(Arrays.deepToString(deepArray));
 结果：[[John, Mary], [Alice, Bob]]
 </code></pre>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css">]]></content>
-      <categories>
-        <category>Java</category>
-      </categories>
-      <tags>
-        <tag>Java</tag>
-        <tag>基础</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>ArrayList的源码查看</title>
-    <url>/2018/10/04/2018-10-04-ArrayList%E7%9A%84%E6%BA%90%E7%A0%81%E6%9F%A5%E7%9C%8B/</url>
-    <content><![CDATA[<h1 id="ArrayList的源码"><a class="header-anchor" href="#ArrayList的源码">¶</a> ArrayList的源码</h1>
-<table>
-<thead>
-<tr>
-<th>变量</th>
-<th>含义</th>
-<th>默认值</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>DEFAULT_CAPACITY</td>
-<td>默认的List初始化容量</td>
-<td>10</td>
-</tr>
-<tr>
-<td>EMPTY_ELEMENTDATA</td>
-<td>空实例的空数组内容</td>
-<td>{}</td>
-</tr>
-<tr>
-<td>DEFAULTCAPACITY_EMPTY_ELEMENTDATA</td>
-<td>共享的空数组实例，用于默认大小的空实例。</td>
-<td>{}</td>
-</tr>
-<tr>
-<td>elementData</td>
-<td>存储ArrayList内容的数组缓冲区,默认时 elementData == DEL</td>
-<td>[]</td>
-</tr>
-<tr>
-<td>size</td>
-<td>elementData数组大小</td>
-<td></td>
-</tr>
-</tbody>
-</table>
-<p>其中 <strong>elementData数组是ArrayList的存储结构,也就是说ArrayList使用数组存储元素</strong>, 但同时是使用transient进行修饰的,也就是不能序列化的,但实际上ArrayList实现了Serializable接口,那么这么做的原因时什么?</p>
-<p>因为ArrayList具有自动扩容机制,元素到一定的大小就会自动扩容,这就会导致ArrayList中的元素一定不是满的,也就是说如果当前ArrayList的大小时50,实际元素可能远远小于50,此时就没有将全部elementData都序列化的必要了.</p>
-<p>所以,ArrayList提供了一个writeObject方法,专门对elementData进行序列化.里面使用对小于size的所有元素进行序列化,就避免了上面阐述的问题.</p>
-<pre><code class="language-java">for (int i=0; i&lt;size; i++) &#123;
-    s.writeObject(elementData[i]);
-&#125;
-</code></pre>
-<h2 id="构造函数源码"><a class="header-anchor" href="#构造函数源码">¶</a> 构造函数源码</h2>
-<pre><code class="language-java">/* 没有参数的情况下 */
-public ArrayList() &#123;
-    // 设置默认的内容为&#123;&#125;
-    this.elementData = DEFAULTCAPACITY_EMPTY_ELEMENTDATA;
-&#125;
-/* 默认是拥有默认容量（10）的空的 array list */
-private static final Object[] DEFAULTCAPACITY_EMPTY_ELEMENTDATA = &#123;&#125;;
-/* 这个默认的容量是定义好的10  */
- private static final int DEFAULT_CAPACITY = 10;
-
-/* 当参数是容量的大小的时候  */
- public ArrayList(int initialCapacity) &#123;
-    if (initialCapacity &gt; 0) &#123;
-      /* 如果自定义初始容量大小*/
-        this.elementData = new Object[initialCapacity];
-    &#125; else if (initialCapacity == 0) &#123;
-        this.elementData = EMPTY_ELEMENTDATA;
-    &#125; else &#123;
-      /* 如果参数小于0 报参数异常的错误（IllegalArgumentException） */
-        throw new IllegalArgumentException(&quot;Illegal Capacity: &quot;+
-                                           initialCapacity);
-    &#125;
-&#125;
-/* 当参数是一个Collection结构的时候 */
-public ArrayList(Collection&lt;? extends E&gt; c) &#123;
-     elementData = c.toArray();
-     if ((size = elementData.length) != 0) &#123;
-         // c.toArray might (incorrectly) not return Object[] (see 6260652)
-         if (elementData.getClass() != Object[].class)
-         /* 如果不是object类型的话 转换成object类型 */
-             elementData = Arrays.copyOf(elementData, size, Object[].class);
-     &#125; else &#123;
-         // replace with empty array.
-         this.elementData = EMPTY_ELEMENTDATA;
-     &#125;
- &#125;
-</code></pre>
-<h2 id="常用方法源码"><a class="header-anchor" href="#常用方法源码">¶</a> 常用方法源码</h2>
-<p>在看源码之前先通过下面这张图片了解以下如果新建一个ArrayList后添加一个元素的大致过程：</p>
-<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/ArrayList%E6%B7%BB%E5%8A%A0%E8%BF%87%E7%A8%8B%E5%88%86%E6%9E%90.png" alt="过程图"></p>
-<ul>
-<li>add 添加方法</li>
-</ul>
-<pre><code class="language-java">/* 只有一个参数的添加 */
-public boolean add(E e) &#123;
-    /* 扩充容量 */
-    ensureCapacityInternal(size + 1);  // Increments modCount!!
-    /* ArrayList其实就是个数组 将新add的值放到数组的最后面 */
-    elementData[size++] = e;
-    return true;
-&#125;
-
-private void ensureCapacityInternal(int minCapacity) &#123;
-      ensureExplicitCapacity(calculateCapacity(elementData, minCapacity));
-  &#125;
-
-private static int calculateCapacity(Object[] elementData, int minCapacity) &#123;
-  /* 如果是空的话返回 默认或当前 */
-    if (elementData == DEFAULTCAPACITY_EMPTY_ELEMENTDATA) &#123;
-    // 如果elementData == &#123;&#125;时，返回给出的值和默认的DEFAULT_CAPACITY其中大的那个
-        return Math.max(DEFAULT_CAPACITY, minCapacity);
-     &#125;
-    return minCapacity;
- &#125;
-
-private void ensureExplicitCapacity(int minCapacity) &#123;
-  /* The number of times this list has been &lt;i&gt;structurally modified&lt;/i&gt;. */
-  // 这个modCount 指的是数据结构改变的次数（比如添加、移除元素）
-    modCount++;
-    // overflow-conscious code
-    if (minCapacity - elementData.length &gt; 0)
-    /* 如果当前的容量大于给定的长度的时候 需要扩充 */
-        grow(minCapacity);
-    &#125;
-
-private void grow(int minCapacity) &#123;
-    // overflow-conscious code
-    int oldCapacity = elementData.length; // 原长度
-    int newCapacity = oldCapacity + (oldCapacity &gt;&gt; 1); //新长度 右移运算。长度为1.5倍的原长度
-    if (newCapacity - minCapacity &lt; 0)
-        newCapacity = minCapacity;
-   if (newCapacity - MAX_ARRAY_SIZE &gt; 0)
-        newCapacity = hugeCapacity(minCapacity);
-    // minCapacity is usually close to size, so this is a win:
-    // 使用Arrays.copyof方法进行最终扩容，所以ArrayList添加元素时比较耗费性能。
-    elementData = Arrays.copyOf(elementData, newCapacity);
-&#125;
-
-</code></pre>
-<ul>
-<li>remove 移除元素方法</li>
-</ul>
-<pre><code class="language-java">public E remove(int index) &#123;
-    //如果超出 则抛出IndexOutOfBoundsException异常
-    rangeCheck(index);
-
-    modCount++;
-    E oldValue = elementData(index);
-    /* 想要移除元素后面元素的个数*/
-    int numMoved = size - index - 1;
-    if (numMoved &gt; 0)
-    /* arraycopy是个native方法 相当于把index+1位置上的元素挪到index位置上 */
-        System.arraycopy(elementData, index+1, elementData, index,
-                         numMoved);
-    elementData[--size] = null; //清空元素，利于GC 
-
-    return oldValue;
-&#125;
-
-/* 只会移除第一个符合条件的条目 */
-public boolean remove(Object o) &#123;
-      if (o == null) &#123;
-          for (int index = 0; index &lt; size; index++)
-              if (elementData[index] == null) &#123;
-                /* 这个fastRemove方法和上面的方法大相径庭  */
-                  fastRemove(index);
-                  return true;
-              &#125;
-      &#125; else &#123;
-          for (int index = 0; index &lt; size; index++)
-              if (o.equals(elementData[index])) &#123;
-                  fastRemove(index);
-                  return true;
-              &#125;
-      &#125;
-      return false;
-  &#125;
-</code></pre>
-<ul>
-<li>contain 是否包含</li>
-</ul>
-<pre><code class="language-java">public boolean contains(Object o) &#123;
-       return indexOf(o) &gt;= 0;
-   &#125;
-
-public int indexOf(Object o) &#123;
-       if (o == null) &#123;
-           for (int i = 0; i &lt; size; i++)
-               if (elementData[i]==null)
-                   return i;
-       &#125; else &#123;
-         /* 内部就是for循环一个一个判断的 */
-           for (int i = 0; i &lt; size; i++)
-               if (o.equals(elementData[i]))
-                   return i;
-                         &#125;
-        return -1;
-    &#125;
-</code></pre>
-<ul>
-<li>get 方法</li>
-</ul>
-<pre><code class="language-java">public E get(int index) &#123;
-    rangeCheck(index);
-
-    return elementData(index);
-&#125;
-/* 本质就是返回数组位置的元素 */
-E elementData(int index) &#123;
-      return (E) elementData[index];
-  &#125;
-
-</code></pre>
-<h2 id="总结"><a class="header-anchor" href="#总结">¶</a> 总结</h2>
-<ol>
-<li>有序性,可重复性 —&gt; 因为内部使用数组实现,所以元素能够保证有序性且能够添加重复的元素</li>
-<li>访问快 —&gt; ArrayList实现了 RandomAccess 接口,能够通过get实现快速的随机访问.因为ArrayList其中内部存储是使用数组实现的,元素是连续的,通过下标就能够得到对应元素,所以检索会比较快.</li>
-<li>插入删除慢 —&gt; 插入和移除元素时，在扩容时,使用的是copyOf方法，也就是将原数组元素拷贝到目标数组的方式,效率低下.</li>
-<li>非线程安全 —&gt; ArrayList是非线程安全的,Vector是ArrayList的线程安全版本.在多线程时,可使用Vector代替ArrayList.</li>
-</ol>
-<blockquote>
-<p>RandomAccess 只是一个标记接口,其中并没有实现方法,他的作用只是用来标记该结构支持随机访问.也就是说实现了这个接口的集合是支持 快速随机访问 策略的.举例来讲就是 ArrayList 的访问是随机访问,而 LinkedList的访问则是顺序访问的.<br>
-随机访问在使用fori循环时要比使用迭代器访问元素时效率高.</p>
-</blockquote>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css">]]></content>
       <categories>
         <category>Java</category>
@@ -2370,6 +2139,237 @@ public E pop() &#123;
 <li>其次通过add和remove方法可以看出它不向ArrayList一样，需要对容量进行扩容操作，而是通过‘指针’指向前后节点实现的‘连接’。</li>
 <li>然后通过get方法可以看出查找一个特定位置上的非常麻烦，需要遍历List，尽管使用了二分的方式进行了优化，但是查找性能依旧不能和ArrayList相比。</li>
 </ol>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css">]]></content>
+      <categories>
+        <category>Java</category>
+      </categories>
+      <tags>
+        <tag>Java</tag>
+        <tag>基础</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>ArrayList的源码查看</title>
+    <url>/2018/10/04/2018-10-04-ArrayList%E7%9A%84%E6%BA%90%E7%A0%81%E6%9F%A5%E7%9C%8B/</url>
+    <content><![CDATA[<h1 id="ArrayList的源码"><a class="header-anchor" href="#ArrayList的源码">¶</a> ArrayList的源码</h1>
+<table>
+<thead>
+<tr>
+<th>变量</th>
+<th>含义</th>
+<th>默认值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DEFAULT_CAPACITY</td>
+<td>默认的List初始化容量</td>
+<td>10</td>
+</tr>
+<tr>
+<td>EMPTY_ELEMENTDATA</td>
+<td>空实例的空数组内容</td>
+<td>{}</td>
+</tr>
+<tr>
+<td>DEFAULTCAPACITY_EMPTY_ELEMENTDATA</td>
+<td>共享的空数组实例，用于默认大小的空实例。</td>
+<td>{}</td>
+</tr>
+<tr>
+<td>elementData</td>
+<td>存储ArrayList内容的数组缓冲区,默认时 elementData == DEL</td>
+<td>[]</td>
+</tr>
+<tr>
+<td>size</td>
+<td>elementData数组大小</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>其中 <strong>elementData数组是ArrayList的存储结构,也就是说ArrayList使用数组存储元素</strong>, 但同时是使用transient进行修饰的,也就是不能序列化的,但实际上ArrayList实现了Serializable接口,那么这么做的原因时什么?</p>
+<p>因为ArrayList具有自动扩容机制,元素到一定的大小就会自动扩容,这就会导致ArrayList中的元素一定不是满的,也就是说如果当前ArrayList的大小时50,实际元素可能远远小于50,此时就没有将全部elementData都序列化的必要了.</p>
+<p>所以,ArrayList提供了一个writeObject方法,专门对elementData进行序列化.里面使用对小于size的所有元素进行序列化,就避免了上面阐述的问题.</p>
+<pre><code class="language-java">for (int i=0; i&lt;size; i++) &#123;
+    s.writeObject(elementData[i]);
+&#125;
+</code></pre>
+<h2 id="构造函数源码"><a class="header-anchor" href="#构造函数源码">¶</a> 构造函数源码</h2>
+<pre><code class="language-java">/* 没有参数的情况下 */
+public ArrayList() &#123;
+    // 设置默认的内容为&#123;&#125;
+    this.elementData = DEFAULTCAPACITY_EMPTY_ELEMENTDATA;
+&#125;
+/* 默认是拥有默认容量（10）的空的 array list */
+private static final Object[] DEFAULTCAPACITY_EMPTY_ELEMENTDATA = &#123;&#125;;
+/* 这个默认的容量是定义好的10  */
+ private static final int DEFAULT_CAPACITY = 10;
+
+/* 当参数是容量的大小的时候  */
+ public ArrayList(int initialCapacity) &#123;
+    if (initialCapacity &gt; 0) &#123;
+      /* 如果自定义初始容量大小*/
+        this.elementData = new Object[initialCapacity];
+    &#125; else if (initialCapacity == 0) &#123;
+        this.elementData = EMPTY_ELEMENTDATA;
+    &#125; else &#123;
+      /* 如果参数小于0 报参数异常的错误（IllegalArgumentException） */
+        throw new IllegalArgumentException(&quot;Illegal Capacity: &quot;+
+                                           initialCapacity);
+    &#125;
+&#125;
+/* 当参数是一个Collection结构的时候 */
+public ArrayList(Collection&lt;? extends E&gt; c) &#123;
+     elementData = c.toArray();
+     if ((size = elementData.length) != 0) &#123;
+         // c.toArray might (incorrectly) not return Object[] (see 6260652)
+         if (elementData.getClass() != Object[].class)
+         /* 如果不是object类型的话 转换成object类型 */
+             elementData = Arrays.copyOf(elementData, size, Object[].class);
+     &#125; else &#123;
+         // replace with empty array.
+         this.elementData = EMPTY_ELEMENTDATA;
+     &#125;
+ &#125;
+</code></pre>
+<h2 id="常用方法源码"><a class="header-anchor" href="#常用方法源码">¶</a> 常用方法源码</h2>
+<p>在看源码之前先通过下面这张图片了解以下如果新建一个ArrayList后添加一个元素的大致过程：</p>
+<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/ArrayList%E6%B7%BB%E5%8A%A0%E8%BF%87%E7%A8%8B%E5%88%86%E6%9E%90.png" alt="过程图"></p>
+<ul>
+<li>add 添加方法</li>
+</ul>
+<pre><code class="language-java">/* 只有一个参数的添加 */
+public boolean add(E e) &#123;
+    /* 扩充容量 */
+    ensureCapacityInternal(size + 1);  // Increments modCount!!
+    /* ArrayList其实就是个数组 将新add的值放到数组的最后面 */
+    elementData[size++] = e;
+    return true;
+&#125;
+
+private void ensureCapacityInternal(int minCapacity) &#123;
+      ensureExplicitCapacity(calculateCapacity(elementData, minCapacity));
+  &#125;
+
+private static int calculateCapacity(Object[] elementData, int minCapacity) &#123;
+  /* 如果是空的话返回 默认或当前 */
+    if (elementData == DEFAULTCAPACITY_EMPTY_ELEMENTDATA) &#123;
+    // 如果elementData == &#123;&#125;时，返回给出的值和默认的DEFAULT_CAPACITY其中大的那个
+        return Math.max(DEFAULT_CAPACITY, minCapacity);
+     &#125;
+    return minCapacity;
+ &#125;
+
+private void ensureExplicitCapacity(int minCapacity) &#123;
+  /* The number of times this list has been &lt;i&gt;structurally modified&lt;/i&gt;. */
+  // 这个modCount 指的是数据结构改变的次数（比如添加、移除元素）
+    modCount++;
+    // overflow-conscious code
+    if (minCapacity - elementData.length &gt; 0)
+    /* 如果当前的容量大于给定的长度的时候 需要扩充 */
+        grow(minCapacity);
+    &#125;
+
+private void grow(int minCapacity) &#123;
+    // overflow-conscious code
+    int oldCapacity = elementData.length; // 原长度
+    int newCapacity = oldCapacity + (oldCapacity &gt;&gt; 1); //新长度 右移运算。长度为1.5倍的原长度
+    if (newCapacity - minCapacity &lt; 0)
+        newCapacity = minCapacity;
+   if (newCapacity - MAX_ARRAY_SIZE &gt; 0)
+        newCapacity = hugeCapacity(minCapacity);
+    // minCapacity is usually close to size, so this is a win:
+    // 使用Arrays.copyof方法进行最终扩容，所以ArrayList添加元素时比较耗费性能。
+    elementData = Arrays.copyOf(elementData, newCapacity);
+&#125;
+
+</code></pre>
+<ul>
+<li>remove 移除元素方法</li>
+</ul>
+<pre><code class="language-java">public E remove(int index) &#123;
+    //如果超出 则抛出IndexOutOfBoundsException异常
+    rangeCheck(index);
+
+    modCount++;
+    E oldValue = elementData(index);
+    /* 想要移除元素后面元素的个数*/
+    int numMoved = size - index - 1;
+    if (numMoved &gt; 0)
+    /* arraycopy是个native方法 相当于把index+1位置上的元素挪到index位置上 */
+        System.arraycopy(elementData, index+1, elementData, index,
+                         numMoved);
+    elementData[--size] = null; //清空元素，利于GC 
+
+    return oldValue;
+&#125;
+
+/* 只会移除第一个符合条件的条目 */
+public boolean remove(Object o) &#123;
+      if (o == null) &#123;
+          for (int index = 0; index &lt; size; index++)
+              if (elementData[index] == null) &#123;
+                /* 这个fastRemove方法和上面的方法大相径庭  */
+                  fastRemove(index);
+                  return true;
+              &#125;
+      &#125; else &#123;
+          for (int index = 0; index &lt; size; index++)
+              if (o.equals(elementData[index])) &#123;
+                  fastRemove(index);
+                  return true;
+              &#125;
+      &#125;
+      return false;
+  &#125;
+</code></pre>
+<ul>
+<li>contain 是否包含</li>
+</ul>
+<pre><code class="language-java">public boolean contains(Object o) &#123;
+       return indexOf(o) &gt;= 0;
+   &#125;
+
+public int indexOf(Object o) &#123;
+       if (o == null) &#123;
+           for (int i = 0; i &lt; size; i++)
+               if (elementData[i]==null)
+                   return i;
+       &#125; else &#123;
+         /* 内部就是for循环一个一个判断的 */
+           for (int i = 0; i &lt; size; i++)
+               if (o.equals(elementData[i]))
+                   return i;
+                         &#125;
+        return -1;
+    &#125;
+</code></pre>
+<ul>
+<li>get 方法</li>
+</ul>
+<pre><code class="language-java">public E get(int index) &#123;
+    rangeCheck(index);
+
+    return elementData(index);
+&#125;
+/* 本质就是返回数组位置的元素 */
+E elementData(int index) &#123;
+      return (E) elementData[index];
+  &#125;
+
+</code></pre>
+<h2 id="总结"><a class="header-anchor" href="#总结">¶</a> 总结</h2>
+<ol>
+<li>有序性,可重复性 —&gt; 因为内部使用数组实现,所以元素能够保证有序性且能够添加重复的元素</li>
+<li>访问快 —&gt; ArrayList实现了 RandomAccess 接口,能够通过get实现快速的随机访问.因为ArrayList其中内部存储是使用数组实现的,元素是连续的,通过下标就能够得到对应元素,所以检索会比较快.</li>
+<li>插入删除慢 —&gt; 插入和移除元素时，在扩容时,使用的是copyOf方法，也就是将原数组元素拷贝到目标数组的方式,效率低下.</li>
+<li>非线程安全 —&gt; ArrayList是非线程安全的,Vector是ArrayList的线程安全版本.在多线程时,可使用Vector代替ArrayList.</li>
+</ol>
+<blockquote>
+<p>RandomAccess 只是一个标记接口,其中并没有实现方法,他的作用只是用来标记该结构支持随机访问.也就是说实现了这个接口的集合是支持 快速随机访问 策略的.举例来讲就是 ArrayList 的访问是随机访问,而 LinkedList的访问则是顺序访问的.<br>
+随机访问在使用fori循环时要比使用迭代器访问元素时效率高.</p>
+</blockquote>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css">]]></content>
       <categories>
         <category>Java</category>
@@ -4278,6 +4278,23 @@ public synchronized StringBuffer append(String str) &#123;
       </tags>
   </entry>
   <entry>
+    <title>Ubuntu系的IBUS输入法上方panel的输入法图标消失问题</title>
+    <url>/2018/12/29/2018-12-18-Pop!_Os%E7%9A%84Ibus%E8%BE%93%E5%85%A5%E6%B3%95%E4%B8%8A%E6%96%B9panel%E5%9B%BE%E6%A0%87%E6%B6%88%E5%A4%B1%E7%9A%84%E9%97%AE%E9%A2%98/</url>
+    <content><![CDATA[<h1 id="Ubuntu系的IBUS输入法上方panel的输入法图标消失问题"><a class="header-anchor" href="#Ubuntu系的IBUS输入法上方panel的输入法图标消失问题">¶</a> Ubuntu系的IBUS输入法上方panel的输入法图标消失问题</h1>
+<p>最近迷上了Pop!_Os，基于Ubuntu的发行版，非常简洁，开箱即用。和ubuntu相同，ibus的输入法图标有时消失，在这里总结以下，方便后面再出现问题的时候查阅。</p>
+<p>打开终端输入：</p>
+<pre><code class="language-text">ibus-daemon -drx
+</code></pre>
+<p>解决！！</p>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css">]]></content>
+      <categories>
+        <category>Linux</category>
+      </categories>
+      <tags>
+        <tag>Linux</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>关于SpringMvc实现restFul时DELETE和PUT出现错误</title>
     <url>/2018/11/09/2018-12-18-%E5%85%B3%E4%BA%8ESpringMvc%E4%BD%BF%E7%94%A8DELETE%E5%92%8CPUT%E8%AF%B7%E6%B1%82%E6%97%B6405%E9%94%99%E8%AF%AF/</url>
     <content><![CDATA[<h1 id="关于RESTful"><a class="header-anchor" href="#关于RESTful">¶</a> 关于RESTful</h1>
@@ -4315,23 +4332,6 @@ public synchronized StringBuffer append(String str) &#123;
       </categories>
       <tags>
         <tag>Java</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Ubuntu系的IBUS输入法上方panel的输入法图标消失问题</title>
-    <url>/2018/12/29/2018-12-18-Pop!_Os%E7%9A%84Ibus%E8%BE%93%E5%85%A5%E6%B3%95%E4%B8%8A%E6%96%B9panel%E5%9B%BE%E6%A0%87%E6%B6%88%E5%A4%B1%E7%9A%84%E9%97%AE%E9%A2%98/</url>
-    <content><![CDATA[<h1 id="Ubuntu系的IBUS输入法上方panel的输入法图标消失问题"><a class="header-anchor" href="#Ubuntu系的IBUS输入法上方panel的输入法图标消失问题">¶</a> Ubuntu系的IBUS输入法上方panel的输入法图标消失问题</h1>
-<p>最近迷上了Pop!_Os，基于Ubuntu的发行版，非常简洁，开箱即用。和ubuntu相同，ibus的输入法图标有时消失，在这里总结以下，方便后面再出现问题的时候查阅。</p>
-<p>打开终端输入：</p>
-<pre><code class="language-text">ibus-daemon -drx
-</code></pre>
-<p>解决！！</p>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css">]]></content>
-      <categories>
-        <category>Linux</category>
-      </categories>
-      <tags>
-        <tag>Linux</tag>
       </tags>
   </entry>
   <entry>
@@ -5108,199 +5108,6 @@ export PATH=$MAVEN_HOME/bin:$PATH
       </tags>
   </entry>
   <entry>
-    <title>SpringBoot过程问题</title>
-    <url>/2019/01/04/2019-01-25-%E8%BF%87%E7%A8%8B%E9%97%AE%E9%A2%98/</url>
-    <content><![CDATA[<h1 id="SpringBoot过程问题"><a class="header-anchor" href="#SpringBoot过程问题">¶</a> SpringBoot过程问题</h1>
-<h2 id="spring注解相关"><a class="header-anchor" href="#spring注解相关">¶</a> spring注解相关</h2>
-<h3 id="@RestController"><a class="header-anchor" href="#@RestController">¶</a> <code>@RestController</code></h3>
-<p>​	<code>@RestController</code> 是<code>spring 4.0</code>来引入的简化的<code>RESTful WEB</code>应用的创建，是一个结合<code>@Constroller</code>和<code>@ResponseBody</code>的注解，不用每个类都使用<code>ResponseBody</code>注解来达到处理请求的目的。</p>
-<p>​	控制器使用<code>@RestController</code>注释进行注释，因此不需要<code>@ResponseBody</code>。</p>
-<h3 id="@RequestMapping"><a class="header-anchor" href="#@RequestMapping">¶</a> <code>@RequestMapping</code></h3>
-<p><code>@RequestMapping</code>的注解中的参数：</p>
-<p>name ： 在4.0后引入的，开始我错把name当value用，结果出现 <code>[java.lang.IllegalStateException: Ambiguous mapping found. Cannot map 'appController' bean method]</code> 类似这种错误。其实name就是一个名字而已,没有什么特殊含义，但是官方文档中指出 <code>在类型级别和方法级别支持！在两个级别上使用时，组合名称通过串联以“＃”作为分隔符派生</code> 。使用上，官方说明是主要可以通过使用Spring jsp tag包里面的mvcUrl，来生成jsp到controller的链接。</p>
-<pre><code class="language-text">@RequestMapping(&quot;/people&quot;)
- class PersonController &#123;
-
-   @RequestMapping(&quot;/&#123;id&#125;&quot;)
-   public HttpEntity getPerson(@PathVariable String id) &#123; ... &#125;
-
- &#125;
-</code></pre>
-<pre><code class="language-text">&lt;%@ taglib uri=&quot;http://www.springframework.org/tags&quot; prefix=&quot;s&quot; %&gt;
-
- &lt;a href=&quot;$&#123;s:mvcUrl('PC#getPerson').arg(0,&quot;123&quot;).build()&#125;&quot;&gt;Get Person&lt;/a&gt;
-</code></pre>
-<p>value:用来表示主要映射,是常用的</p>
-<pre><code class="language-text">@RequestMapping(value = &quot;/user&quot;,method = RequestMethod.GET,produces = &quot;application/json&quot;)
-    public @ResponseBody
-    List&lt;User&gt; findUsers() &#123;
-        return userService.findUsers();
-    &#125;
-</code></pre>
-<p>path: 指定访问的uri地址</p>
-<pre><code class="language-text">@RequestMapping(path = &quot;/user&quot;,method = RequestMethod.POST,name = &quot;this is user`s post methods&quot;)
-    public String insertUser()&#123;
-        userService.saveUser();
-        return null;
-    &#125;
-</code></pre>
-<p>method:映射的HTTP的访问方法，有GET, POST, HEAD, OPTIONS, PUT, PATCH, DELETE, TRACE</p>
-<p>consumes： 指定<strong>处理请求的提交内容类型（Content-Type）</strong>，例如application/json, text/html;</p>
-<p>produces: 指定<strong>返回的内容类型</strong>，仅当request请求头中的(Accept)类型中包含该指定类型才返回；</p>
-<p>params： 指定request中必须包含某些参数值时，才让该方法处理。</p>
-<p>headers： 指定request中必须包含某些指定的header值，才能让该方法处理请求。</p>
-<h3 id="Jpa常用注解"><a class="header-anchor" href="#Jpa常用注解">¶</a> <code>Jpa</code>常用注解</h3>
-<h4 id="@Entity"><a class="header-anchor" href="#@Entity">¶</a> @Entity</h4>
-<p>标注在类外侧，标注着这个类是一个实体类。</p>
-<h4 id="@Table"><a class="header-anchor" href="#@Table">¶</a> <code>@Table</code></h4>
-<p>​	标注在类外侧，标注实体的主表，其中有 <code>catalog</code>,<code>indexes</code>, <code>name</code>, <code>schema</code>，分别注明为：指定database的目录，索引，名称，和表的结构描述</p>
-<p>​	注意：schema定义了表、每个表的字段，还有表和字段之间的关系。</p>
-<h4 id="@Id"><a class="header-anchor" href="#@Id">¶</a> @Id</h4>
-<p>表示是实体类的主键</p>
-<h4 id="@GeneratedValue"><a class="header-anchor" href="#@GeneratedValue">¶</a> @GeneratedValue</h4>
-<p>​	提供主键的值得生成策略规范。GeneratedValue注释可以与Id注释一起应用于实体或映射超类的主键属性或字段，派生主键不支持该注解。提供两个可选值：1. <a class="link"   href="https://docs.oracle.com/javaee/7/api/javax/persistence/GeneratedValue.html#generator--" >generator<i class="fas fa-external-link-alt"></i></a> ：要在SequenceGenerator或TableGenerator注解中指定的主键生成器的名称。2. <a class="link"   href="https://docs.oracle.com/javaee/7/api/javax/persistence/GeneratedValue.html#strategy--" >strategy<i class="fas fa-external-link-alt"></i></a> 生成策略，有四个可选值AUTO,INDENTITY,SEQUENCE 和 TABLE ，默认为AUTO</p>
-<h4 id="@Column"><a class="header-anchor" href="#@Column">¶</a> @Column</h4>
-<p>指定持久属性或字段的映射列。如果未指定Column注释，则应用默认值。</p>
-<p><a class="link"   href="https://docs.oracle.com/javaee/7/api/javax/persistence/Column.html#updatable--" >updatable<i class="fas fa-external-link-alt"></i></a>：是否包含在框架自动生成的update语句中。</p>
-<p>其他可以通过例子一看便知：</p>
-<pre><code class="language-text">@Column(name=&quot;description&quot;, nullable=false, length=512)
-public String getDescription() &#123; return description; &#125;
-</code></pre>
-<h4 id="@Transient"><a class="header-anchor" href="#@Transient">¶</a> @Transient</h4>
-<p><code>@Transient</code>表示该属性并非一个到数据库表的字段的映射,<code>ORM</code>框架将忽略该属性.<br>
-如果一个属性并非数据库表的字段映射,就<strong>务必</strong>将其标示为<code>@Transient</code>,否则,<code>ORM</code>框架默认其注解为<code>@Basic</code>.</p>
-<h4 id="@ManyToOne"><a class="header-anchor" href="#@ManyToOne">¶</a> @ManyToOne</h4>
-<p>表示一个多对一的映射,该注解标注的属性通常是数据库表的外键</p>
-<pre><code class="language-text">//订单Order和用户User是一个ManyToOne的关系
-//在Order类中定义
-@ManyToOne()
-@JoinColumn(name=”USER”)
-public User getUser() &#123;
-    return user;
-&#125;
-</code></pre>
-<h4 id="@JoinColumn"><a class="header-anchor" href="#@JoinColumn">¶</a> @JoinColumn</h4>
-<p>​	指定用于连接实体关联或元素集合的列。如果JoinColumn注解本身是默认的，则假定使用单个连接列并应用默认值。其默认的名称为实体User的名称+下划线+实体User的主键名称。也就是USER_ID.</p>
-<h4 id="@OneToMany"><a class="header-anchor" href="#@OneToMany">¶</a> @OneToMany</h4>
-<p>@OneToMany描述一个一对多的关联,该属性应该为集体类型,在数据库中并没有实际字段.例如:实体User和Order是OneToMany的关系,则实体User被删除时,其关联的实体Order也应该被全部删除</p>
-<pre><code class="language-text">@OneTyMany(cascade=ALL)
-public List getOrders() &#123;
-    return orders;
-&#125;
-</code></pre>
-<h4 id="@OneToOne"><a class="header-anchor" href="#@OneToOne">¶</a> @OneToOne</h4>
-<p>描述一对一的关系</p>
-<p>如User表和person表，一个是基本信息一个是详细信息</p>
-<pre><code class="language-text">@OneToOne(fetch=FetchType.LAZY) // Fetch是抓取策略，如果不写，自动的策略是LAZY
-public Person getPerson() &#123;
-    return person;
-&#125;
-</code></pre>
-<h4 id="@ManyToMany"><a class="header-anchor" href="#@ManyToMany">¶</a> @ManyToMany</h4>
-<p>@ManyToMany 描述一个多对多的关联.多对多关联上是两个一对多关联,但是在ManyToMany描述中,中间表是由ORM框架自动处理</p>
-<h4 id="@Embedded"><a class="header-anchor" href="#@Embedded">¶</a> @Embedded</h4>
-<p>@Embedded将几个字段组合成一个类,并作为整个Entity的一个属性.</p>
-<pre><code class="language-text">@Embeddable
-public class Address &#123;city,street,zip&#125;
-    @Entity
-public class User &#123;
-    @Embedded
-    public Address getAddress() &#123;
-
-    &#125;
-&#125;
-</code></pre>
-<table>
-<thead>
-<tr>
-<th>注解</th>
-<th><strong>说明</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>@Null</td>
-<td>被注释的元素必须为 null</td>
-</tr>
-<tr>
-<td>@NotNull</td>
-<td>被注释的元素必须不为 null</td>
-</tr>
-<tr>
-<td>@AssertTrue</td>
-<td>被注释的元素必须为 true</td>
-</tr>
-<tr>
-<td>@Min(value)</td>
-<td>被注释的元素必须是一个数字，其值必须大于等于指定的最小值,同理@Max(value)</td>
-</tr>
-<tr>
-<td>@DecimalMin(value)</td>
-<td>被注释的元素必须是一个数字，其值必须大于等于指定的最小值，同理@DecimalMax(value)</td>
-</tr>
-<tr>
-<td>@Size(max=, min=)</td>
-<td>被注释的元素的大小必须在指定的范围内</td>
-</tr>
-<tr>
-<td>@Past</td>
-<td>被注释的元素必须是一个过去的日期，同理@Future</td>
-</tr>
-<tr>
-<td>@Pattern(regex=,flag=)</td>
-<td>符合正则</td>
-</tr>
-<tr>
-<td>Hibernate Validator 附加的 constraint</td>
-<td></td>
-</tr>
-<tr>
-<td>@NotBlank(message =)</td>
-<td>验证字符串非null，且长度必须大于0，message表示提示信息</td>
-</tr>
-<tr>
-<td>@Email</td>
-<td>邮箱验证</td>
-</tr>
-<tr>
-<td>@Range(min=,max=,message=)</td>
-<td>被注释的元素必须在合适的范围内</td>
-</tr>
-<tr>
-<td></td>
-<td></td>
-</tr>
-</tbody>
-</table>
-<h2 id="spring boot 配置问题"><a class="header-anchor" href="#spring boot 配置问题">¶</a> spring boot 配置问题</h2>
-<h3 id="spring2.0后静态资源访问不到的问题"><a class="header-anchor" href="#spring2.0后静态资源访问不到的问题">¶</a> spring2.0后静态资源访问不到的问题</h3>
-<p>需要手动写配置类进行静态资源配置</p>
-<pre><code class="language-text">@Configuration
-public class WebMvcConfig implements WebMvcConfigurer &#123;
-    /**
-     * 添加静态资源文件，外部可以直接访问地址
-     * @param registry
-     */
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) &#123;
-        registry.addResourceHandler(&quot;/static/**&quot;).addResourceLocations(&quot;classpath:/static/&quot;);
-        registry.addResourceHandler(&quot;/templates/**&quot;).addResourceLocations(&quot;classpath:/templates/&quot;);
-    &#125;
-&#125;
-</code></pre>
-<h3 id="配置SpringBoot Jpa默认mysql生成表引擎为InnoDB"><a class="header-anchor" href="#配置SpringBoot Jpa默认mysql生成表引擎为InnoDB">¶</a> 配置<code>SpringBoot Jpa</code>默认<code>mysql</code>生成表引擎为<code>InnoDB</code></h3>
-<p>在配置文件<code>appliction.properties</code>中加入</p>
-<pre><code class="language-text">spring.jpa.database-platform=org.hibernate.dialect.MySQL5InnoDBDialect
-</code></pre>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css">]]></content>
-      <categories>
-        <category>Spring</category>
-      </categories>
-      <tags>
-        <tag>Spring</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Linux常用命令整理</title>
     <url>/2019/01/29/2019-01-29-%E5%9F%BA%E6%9C%ACLlinux%E5%91%BD%E4%BB%A4(%E5%BF%85%E9%A1%BB%E6%8E%8C%E6%8F%A1)%202/</url>
     <content><![CDATA[<h1 id="linux中必须掌握的基本命令"><a class="header-anchor" href="#linux中必须掌握的基本命令">¶</a> linux中必须掌握的基本命令</h1>
@@ -5514,6 +5321,199 @@ public class WebMvcConfig implements WebMvcConfigurer &#123;
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css">]]></content>
       <tags>
         <tag>Linux</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>SpringBoot过程问题</title>
+    <url>/2019/01/04/2019-01-25-%E8%BF%87%E7%A8%8B%E9%97%AE%E9%A2%98/</url>
+    <content><![CDATA[<h1 id="SpringBoot过程问题"><a class="header-anchor" href="#SpringBoot过程问题">¶</a> SpringBoot过程问题</h1>
+<h2 id="spring注解相关"><a class="header-anchor" href="#spring注解相关">¶</a> spring注解相关</h2>
+<h3 id="@RestController"><a class="header-anchor" href="#@RestController">¶</a> <code>@RestController</code></h3>
+<p>​	<code>@RestController</code> 是<code>spring 4.0</code>来引入的简化的<code>RESTful WEB</code>应用的创建，是一个结合<code>@Constroller</code>和<code>@ResponseBody</code>的注解，不用每个类都使用<code>ResponseBody</code>注解来达到处理请求的目的。</p>
+<p>​	控制器使用<code>@RestController</code>注释进行注释，因此不需要<code>@ResponseBody</code>。</p>
+<h3 id="@RequestMapping"><a class="header-anchor" href="#@RequestMapping">¶</a> <code>@RequestMapping</code></h3>
+<p><code>@RequestMapping</code>的注解中的参数：</p>
+<p>name ： 在4.0后引入的，开始我错把name当value用，结果出现 <code>[java.lang.IllegalStateException: Ambiguous mapping found. Cannot map 'appController' bean method]</code> 类似这种错误。其实name就是一个名字而已,没有什么特殊含义，但是官方文档中指出 <code>在类型级别和方法级别支持！在两个级别上使用时，组合名称通过串联以“＃”作为分隔符派生</code> 。使用上，官方说明是主要可以通过使用Spring jsp tag包里面的mvcUrl，来生成jsp到controller的链接。</p>
+<pre><code class="language-text">@RequestMapping(&quot;/people&quot;)
+ class PersonController &#123;
+
+   @RequestMapping(&quot;/&#123;id&#125;&quot;)
+   public HttpEntity getPerson(@PathVariable String id) &#123; ... &#125;
+
+ &#125;
+</code></pre>
+<pre><code class="language-text">&lt;%@ taglib uri=&quot;http://www.springframework.org/tags&quot; prefix=&quot;s&quot; %&gt;
+
+ &lt;a href=&quot;$&#123;s:mvcUrl('PC#getPerson').arg(0,&quot;123&quot;).build()&#125;&quot;&gt;Get Person&lt;/a&gt;
+</code></pre>
+<p>value:用来表示主要映射,是常用的</p>
+<pre><code class="language-text">@RequestMapping(value = &quot;/user&quot;,method = RequestMethod.GET,produces = &quot;application/json&quot;)
+    public @ResponseBody
+    List&lt;User&gt; findUsers() &#123;
+        return userService.findUsers();
+    &#125;
+</code></pre>
+<p>path: 指定访问的uri地址</p>
+<pre><code class="language-text">@RequestMapping(path = &quot;/user&quot;,method = RequestMethod.POST,name = &quot;this is user`s post methods&quot;)
+    public String insertUser()&#123;
+        userService.saveUser();
+        return null;
+    &#125;
+</code></pre>
+<p>method:映射的HTTP的访问方法，有GET, POST, HEAD, OPTIONS, PUT, PATCH, DELETE, TRACE</p>
+<p>consumes： 指定<strong>处理请求的提交内容类型（Content-Type）</strong>，例如application/json, text/html;</p>
+<p>produces: 指定<strong>返回的内容类型</strong>，仅当request请求头中的(Accept)类型中包含该指定类型才返回；</p>
+<p>params： 指定request中必须包含某些参数值时，才让该方法处理。</p>
+<p>headers： 指定request中必须包含某些指定的header值，才能让该方法处理请求。</p>
+<h3 id="Jpa常用注解"><a class="header-anchor" href="#Jpa常用注解">¶</a> <code>Jpa</code>常用注解</h3>
+<h4 id="@Entity"><a class="header-anchor" href="#@Entity">¶</a> @Entity</h4>
+<p>标注在类外侧，标注着这个类是一个实体类。</p>
+<h4 id="@Table"><a class="header-anchor" href="#@Table">¶</a> <code>@Table</code></h4>
+<p>​	标注在类外侧，标注实体的主表，其中有 <code>catalog</code>,<code>indexes</code>, <code>name</code>, <code>schema</code>，分别注明为：指定database的目录，索引，名称，和表的结构描述</p>
+<p>​	注意：schema定义了表、每个表的字段，还有表和字段之间的关系。</p>
+<h4 id="@Id"><a class="header-anchor" href="#@Id">¶</a> @Id</h4>
+<p>表示是实体类的主键</p>
+<h4 id="@GeneratedValue"><a class="header-anchor" href="#@GeneratedValue">¶</a> @GeneratedValue</h4>
+<p>​	提供主键的值得生成策略规范。GeneratedValue注释可以与Id注释一起应用于实体或映射超类的主键属性或字段，派生主键不支持该注解。提供两个可选值：1. <a class="link"   href="https://docs.oracle.com/javaee/7/api/javax/persistence/GeneratedValue.html#generator--" >generator<i class="fas fa-external-link-alt"></i></a> ：要在SequenceGenerator或TableGenerator注解中指定的主键生成器的名称。2. <a class="link"   href="https://docs.oracle.com/javaee/7/api/javax/persistence/GeneratedValue.html#strategy--" >strategy<i class="fas fa-external-link-alt"></i></a> 生成策略，有四个可选值AUTO,INDENTITY,SEQUENCE 和 TABLE ，默认为AUTO</p>
+<h4 id="@Column"><a class="header-anchor" href="#@Column">¶</a> @Column</h4>
+<p>指定持久属性或字段的映射列。如果未指定Column注释，则应用默认值。</p>
+<p><a class="link"   href="https://docs.oracle.com/javaee/7/api/javax/persistence/Column.html#updatable--" >updatable<i class="fas fa-external-link-alt"></i></a>：是否包含在框架自动生成的update语句中。</p>
+<p>其他可以通过例子一看便知：</p>
+<pre><code class="language-text">@Column(name=&quot;description&quot;, nullable=false, length=512)
+public String getDescription() &#123; return description; &#125;
+</code></pre>
+<h4 id="@Transient"><a class="header-anchor" href="#@Transient">¶</a> @Transient</h4>
+<p><code>@Transient</code>表示该属性并非一个到数据库表的字段的映射,<code>ORM</code>框架将忽略该属性.<br>
+如果一个属性并非数据库表的字段映射,就<strong>务必</strong>将其标示为<code>@Transient</code>,否则,<code>ORM</code>框架默认其注解为<code>@Basic</code>.</p>
+<h4 id="@ManyToOne"><a class="header-anchor" href="#@ManyToOne">¶</a> @ManyToOne</h4>
+<p>表示一个多对一的映射,该注解标注的属性通常是数据库表的外键</p>
+<pre><code class="language-text">//订单Order和用户User是一个ManyToOne的关系
+//在Order类中定义
+@ManyToOne()
+@JoinColumn(name=”USER”)
+public User getUser() &#123;
+    return user;
+&#125;
+</code></pre>
+<h4 id="@JoinColumn"><a class="header-anchor" href="#@JoinColumn">¶</a> @JoinColumn</h4>
+<p>​	指定用于连接实体关联或元素集合的列。如果JoinColumn注解本身是默认的，则假定使用单个连接列并应用默认值。其默认的名称为实体User的名称+下划线+实体User的主键名称。也就是USER_ID.</p>
+<h4 id="@OneToMany"><a class="header-anchor" href="#@OneToMany">¶</a> @OneToMany</h4>
+<p>@OneToMany描述一个一对多的关联,该属性应该为集体类型,在数据库中并没有实际字段.例如:实体User和Order是OneToMany的关系,则实体User被删除时,其关联的实体Order也应该被全部删除</p>
+<pre><code class="language-text">@OneTyMany(cascade=ALL)
+public List getOrders() &#123;
+    return orders;
+&#125;
+</code></pre>
+<h4 id="@OneToOne"><a class="header-anchor" href="#@OneToOne">¶</a> @OneToOne</h4>
+<p>描述一对一的关系</p>
+<p>如User表和person表，一个是基本信息一个是详细信息</p>
+<pre><code class="language-text">@OneToOne(fetch=FetchType.LAZY) // Fetch是抓取策略，如果不写，自动的策略是LAZY
+public Person getPerson() &#123;
+    return person;
+&#125;
+</code></pre>
+<h4 id="@ManyToMany"><a class="header-anchor" href="#@ManyToMany">¶</a> @ManyToMany</h4>
+<p>@ManyToMany 描述一个多对多的关联.多对多关联上是两个一对多关联,但是在ManyToMany描述中,中间表是由ORM框架自动处理</p>
+<h4 id="@Embedded"><a class="header-anchor" href="#@Embedded">¶</a> @Embedded</h4>
+<p>@Embedded将几个字段组合成一个类,并作为整个Entity的一个属性.</p>
+<pre><code class="language-text">@Embeddable
+public class Address &#123;city,street,zip&#125;
+    @Entity
+public class User &#123;
+    @Embedded
+    public Address getAddress() &#123;
+
+    &#125;
+&#125;
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>注解</th>
+<th><strong>说明</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>@Null</td>
+<td>被注释的元素必须为 null</td>
+</tr>
+<tr>
+<td>@NotNull</td>
+<td>被注释的元素必须不为 null</td>
+</tr>
+<tr>
+<td>@AssertTrue</td>
+<td>被注释的元素必须为 true</td>
+</tr>
+<tr>
+<td>@Min(value)</td>
+<td>被注释的元素必须是一个数字，其值必须大于等于指定的最小值,同理@Max(value)</td>
+</tr>
+<tr>
+<td>@DecimalMin(value)</td>
+<td>被注释的元素必须是一个数字，其值必须大于等于指定的最小值，同理@DecimalMax(value)</td>
+</tr>
+<tr>
+<td>@Size(max=, min=)</td>
+<td>被注释的元素的大小必须在指定的范围内</td>
+</tr>
+<tr>
+<td>@Past</td>
+<td>被注释的元素必须是一个过去的日期，同理@Future</td>
+</tr>
+<tr>
+<td>@Pattern(regex=,flag=)</td>
+<td>符合正则</td>
+</tr>
+<tr>
+<td>Hibernate Validator 附加的 constraint</td>
+<td></td>
+</tr>
+<tr>
+<td>@NotBlank(message =)</td>
+<td>验证字符串非null，且长度必须大于0，message表示提示信息</td>
+</tr>
+<tr>
+<td>@Email</td>
+<td>邮箱验证</td>
+</tr>
+<tr>
+<td>@Range(min=,max=,message=)</td>
+<td>被注释的元素必须在合适的范围内</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2 id="spring boot 配置问题"><a class="header-anchor" href="#spring boot 配置问题">¶</a> spring boot 配置问题</h2>
+<h3 id="spring2.0后静态资源访问不到的问题"><a class="header-anchor" href="#spring2.0后静态资源访问不到的问题">¶</a> spring2.0后静态资源访问不到的问题</h3>
+<p>需要手动写配置类进行静态资源配置</p>
+<pre><code class="language-text">@Configuration
+public class WebMvcConfig implements WebMvcConfigurer &#123;
+    /**
+     * 添加静态资源文件，外部可以直接访问地址
+     * @param registry
+     */
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) &#123;
+        registry.addResourceHandler(&quot;/static/**&quot;).addResourceLocations(&quot;classpath:/static/&quot;);
+        registry.addResourceHandler(&quot;/templates/**&quot;).addResourceLocations(&quot;classpath:/templates/&quot;);
+    &#125;
+&#125;
+</code></pre>
+<h3 id="配置SpringBoot Jpa默认mysql生成表引擎为InnoDB"><a class="header-anchor" href="#配置SpringBoot Jpa默认mysql生成表引擎为InnoDB">¶</a> 配置<code>SpringBoot Jpa</code>默认<code>mysql</code>生成表引擎为<code>InnoDB</code></h3>
+<p>在配置文件<code>appliction.properties</code>中加入</p>
+<pre><code class="language-text">spring.jpa.database-platform=org.hibernate.dialect.MySQL5InnoDBDialect
+</code></pre>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css">]]></content>
+      <categories>
+        <category>Spring</category>
+      </categories>
+      <tags>
+        <tag>Spring</tag>
       </tags>
   </entry>
   <entry>
@@ -6971,101 +6971,66 @@ public class CarStrategy implements TrafficStrategy &#123;
       </tags>
   </entry>
   <entry>
-    <title>设计模式之桥接模式</title>
-    <url>/2019/06/03/2019-06-03-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E6%A1%A5%E6%8E%A5%E6%A8%A1%E5%BC%8F/</url>
-    <content><![CDATA[<h1 id="设计模式之桥接模式"><a class="header-anchor" href="#设计模式之桥接模式">¶</a> 设计模式之桥接模式</h1>
-<p>目的在于将抽象与其实现分离，以便两者可以独立变化。独立变化的同时能够根据抽象类的对象关联从而能够将两个继承结构联动起来。就像在两个结构之间建立个桥梁一样进行通信，所以叫桥接模式。</p>
+    <title>设计模式之原型模式</title>
+    <url>/2019/06/02/2019-06-02-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E5%8E%9F%E5%9E%8B%E6%A8%A1%E5%BC%8F/</url>
+    <content><![CDATA[<h1 id="设计模式之原型模式"><a class="header-anchor" href="#设计模式之原型模式">¶</a> 设计模式之原型模式</h1>
+<p>使用原型实例指定要创建的对象类型，并通过复制此原型来创建新对象.实现方法:通过克隆方法,实现对现有对象的复制克隆.</p>
 <h2 id="应用场景"><a class="header-anchor" href="#应用场景">¶</a> 应用场景</h2>
-<ol>
-<li>如果想避免抽象类与实现的永久绑定，可以在运行时间选择和切换实现类。</li>
-<li>抽象类和接口都应该通过子类来进行拓展，在桥接模式中，可以使用子类来进行组合的同时能够独立拓展他们。</li>
-<li>接口的实现的变化对客户端无影响。</li>
-<li>如果想要在多个对象类中共享实现，并且避免让客户端感知到。</li>
-</ol>
-<h2 id="桥接模式结构图"><a class="header-anchor" href="#桥接模式结构图">¶</a> 桥接模式结构图</h2>
-<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190603220348.png" alt="桥接模式"></p>
+<ul>
+<li>当要在运行时指定要实例化的类时，例如，通过动态加载.</li>
+<li>避免构建与产品类层次结构相似的工厂类层次结构</li>
+<li>当一个类的实例可以只有几个不同的状态的组合之一时.组装相应数量的原型并克隆它们可能更方便，而不是手动实例化类，每次都有适当的状态.</li>
+<li>与对象创建相比,使用克隆成本更低</li>
+</ul>
 <h2 id="代码"><a class="header-anchor" href="#代码">¶</a> 代码</h2>
-<p>主要分为四部分，1.抽象类 2.抽象实现类 3.接口类 4.接口实现类</p>
-<pre><code class="language-java">
-// 抽象类与抽象实现类
+<p>直接由代码看结构,其实克隆的过程就是创建对象的过程</p>
+<pre><code class="language-java">/**
+ * 一个细胞
+ * @Author nanyin
+ * @Date 23:49 2019-06-01
+ **/
+public class Cell implements Cloneable&#123;
 
-public abstract class Shape &#123;
+    private String name;
 
-    Colors colors;
-
-    Shape(Colors colors) &#123;
-        this.colors = colors;
+    public String getName() &#123;
+        return name;
     &#125;
 
-    public abstract void buildShape();
-&#125;
-
-// 圆形实现类
-public class ShapeCircle extends Shape &#123;
-
-    public ShapeCircle(Colors colors) &#123;
-        super(colors);
+    public void setName(String name) &#123;
+        this.name = name;
     &#125;
 
-    @Override
-    public void buildShape() &#123;
-        System.out.println(&quot;\n first step : build circle\n and second step:&quot;);
-        colors.paint();
+    public Cell()&#123;
     &#125;
-&#125;
-//方形实现类
-public class ShapeSquare extends Shape &#123;
-    public ShapeSquare (Colors colors) &#123;
-        super(colors);
+
+    private Cell(String name) &#123;
+        this.name = name;
     &#125;
 
     @Override
-    public void buildShape() &#123;
-        System.out.println(&quot;\n first step : build Square\n and second step:&quot;);
-        colors.paint();
+    protected Cell clone() throws CloneNotSupportedException &#123;
+        super.clone();
+        return new Cell(name);
     &#125;
 &#125;
 </code></pre>
-<p>抽象方法中引用了Colors类变量，使用实现类中的buildShape方法实现具体功能。</p>
-<pre><code class="language-java">public interface Colors &#123;
-    public void paint();
-&#125;
-
-public class ColorBlue implements Colors &#123;
-    @Override
-    public void paint() &#123;
-        System.out.println(&quot; print blue !!&quot;);
-    &#125;
-&#125;
-
-public class ColorRed implements Colors &#123;
-    @Override
-    public void paint() &#123;
-        System.out.println(&quot; paint inner with red !!&quot;);
-    &#125;
-&#125;
-</code></pre>
-<p>通过使用Color接口，实现类实现Colors中的paint方法实现Color</p>
+<p>客户端程序:</p>
 <pre><code class="language-java">public class App &#123;
-    public static void main(String[] args) &#123;
-        Shape circle = new ShapeCircle(new ColorBlue());
-        circle.buildShape();
-        Shape square = new ShapeSquare(new ColorRed());
-        square.buildShape();
+    @Test
+    public void testPrototype()&#123;
+       Cell cell = new Cell();
+       cell.setName(&quot;org&quot;);
+       try&#123;
+           Cell cloneCell = cell.clone();
+           Assert.assertEquals(&quot;org&quot;,cloneCell.getName());//pass
+           Assert.assertEquals(cell,cloneCell);//not pass
+       &#125;catch (CloneNotSupportedException e)&#123;
+           e.printStackTrace();
+       &#125;
     &#125;
 &#125;
 </code></pre>
-<pre><code class="language-text">结果：
-
- first step : build circle
- and second step:
- print blue !!
-
- first step : build Square
- and second step:
- paint red !!
-</code></pre>
-<p>上面的例子中，颜色和图形是两个独立不同的维度，两个可以分别变化。将两个维度设计为两个不同的继承的结构，在两个结构之间使用在抽象类中的关联来达到链接的目的，这个链接成为两个继承结构通信的桥梁。所以为桥接模式。</p>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css">]]></content>
       <categories>
         <category>设计模式</category>
@@ -7172,66 +7137,101 @@ Process finished with exit code 0
       </tags>
   </entry>
   <entry>
-    <title>设计模式之原型模式</title>
-    <url>/2019/06/02/2019-06-02-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E5%8E%9F%E5%9E%8B%E6%A8%A1%E5%BC%8F/</url>
-    <content><![CDATA[<h1 id="设计模式之原型模式"><a class="header-anchor" href="#设计模式之原型模式">¶</a> 设计模式之原型模式</h1>
-<p>使用原型实例指定要创建的对象类型，并通过复制此原型来创建新对象.实现方法:通过克隆方法,实现对现有对象的复制克隆.</p>
+    <title>设计模式之桥接模式</title>
+    <url>/2019/06/03/2019-06-03-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E6%A1%A5%E6%8E%A5%E6%A8%A1%E5%BC%8F/</url>
+    <content><![CDATA[<h1 id="设计模式之桥接模式"><a class="header-anchor" href="#设计模式之桥接模式">¶</a> 设计模式之桥接模式</h1>
+<p>目的在于将抽象与其实现分离，以便两者可以独立变化。独立变化的同时能够根据抽象类的对象关联从而能够将两个继承结构联动起来。就像在两个结构之间建立个桥梁一样进行通信，所以叫桥接模式。</p>
 <h2 id="应用场景"><a class="header-anchor" href="#应用场景">¶</a> 应用场景</h2>
-<ul>
-<li>当要在运行时指定要实例化的类时，例如，通过动态加载.</li>
-<li>避免构建与产品类层次结构相似的工厂类层次结构</li>
-<li>当一个类的实例可以只有几个不同的状态的组合之一时.组装相应数量的原型并克隆它们可能更方便，而不是手动实例化类，每次都有适当的状态.</li>
-<li>与对象创建相比,使用克隆成本更低</li>
-</ul>
+<ol>
+<li>如果想避免抽象类与实现的永久绑定，可以在运行时间选择和切换实现类。</li>
+<li>抽象类和接口都应该通过子类来进行拓展，在桥接模式中，可以使用子类来进行组合的同时能够独立拓展他们。</li>
+<li>接口的实现的变化对客户端无影响。</li>
+<li>如果想要在多个对象类中共享实现，并且避免让客户端感知到。</li>
+</ol>
+<h2 id="桥接模式结构图"><a class="header-anchor" href="#桥接模式结构图">¶</a> 桥接模式结构图</h2>
+<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190603220348.png" alt="桥接模式"></p>
 <h2 id="代码"><a class="header-anchor" href="#代码">¶</a> 代码</h2>
-<p>直接由代码看结构,其实克隆的过程就是创建对象的过程</p>
-<pre><code class="language-java">/**
- * 一个细胞
- * @Author nanyin
- * @Date 23:49 2019-06-01
- **/
-public class Cell implements Cloneable&#123;
+<p>主要分为四部分，1.抽象类 2.抽象实现类 3.接口类 4.接口实现类</p>
+<pre><code class="language-java">
+// 抽象类与抽象实现类
 
-    private String name;
+public abstract class Shape &#123;
 
-    public String getName() &#123;
-        return name;
+    Colors colors;
+
+    Shape(Colors colors) &#123;
+        this.colors = colors;
     &#125;
 
-    public void setName(String name) &#123;
-        this.name = name;
-    &#125;
+    public abstract void buildShape();
+&#125;
 
-    public Cell()&#123;
-    &#125;
+// 圆形实现类
+public class ShapeCircle extends Shape &#123;
 
-    private Cell(String name) &#123;
-        this.name = name;
+    public ShapeCircle(Colors colors) &#123;
+        super(colors);
     &#125;
 
     @Override
-    protected Cell clone() throws CloneNotSupportedException &#123;
-        super.clone();
-        return new Cell(name);
+    public void buildShape() &#123;
+        System.out.println(&quot;\n first step : build circle\n and second step:&quot;);
+        colors.paint();
+    &#125;
+&#125;
+//方形实现类
+public class ShapeSquare extends Shape &#123;
+    public ShapeSquare (Colors colors) &#123;
+        super(colors);
+    &#125;
+
+    @Override
+    public void buildShape() &#123;
+        System.out.println(&quot;\n first step : build Square\n and second step:&quot;);
+        colors.paint();
     &#125;
 &#125;
 </code></pre>
-<p>客户端程序:</p>
+<p>抽象方法中引用了Colors类变量，使用实现类中的buildShape方法实现具体功能。</p>
+<pre><code class="language-java">public interface Colors &#123;
+    public void paint();
+&#125;
+
+public class ColorBlue implements Colors &#123;
+    @Override
+    public void paint() &#123;
+        System.out.println(&quot; print blue !!&quot;);
+    &#125;
+&#125;
+
+public class ColorRed implements Colors &#123;
+    @Override
+    public void paint() &#123;
+        System.out.println(&quot; paint inner with red !!&quot;);
+    &#125;
+&#125;
+</code></pre>
+<p>通过使用Color接口，实现类实现Colors中的paint方法实现Color</p>
 <pre><code class="language-java">public class App &#123;
-    @Test
-    public void testPrototype()&#123;
-       Cell cell = new Cell();
-       cell.setName(&quot;org&quot;);
-       try&#123;
-           Cell cloneCell = cell.clone();
-           Assert.assertEquals(&quot;org&quot;,cloneCell.getName());//pass
-           Assert.assertEquals(cell,cloneCell);//not pass
-       &#125;catch (CloneNotSupportedException e)&#123;
-           e.printStackTrace();
-       &#125;
+    public static void main(String[] args) &#123;
+        Shape circle = new ShapeCircle(new ColorBlue());
+        circle.buildShape();
+        Shape square = new ShapeSquare(new ColorRed());
+        square.buildShape();
     &#125;
 &#125;
 </code></pre>
+<pre><code class="language-text">结果：
+
+ first step : build circle
+ and second step:
+ print blue !!
+
+ first step : build Square
+ and second step:
+ paint red !!
+</code></pre>
+<p>上面的例子中，颜色和图形是两个独立不同的维度，两个可以分别变化。将两个维度设计为两个不同的继承的结构，在两个结构之间使用在抽象类中的关联来达到链接的目的，这个链接成为两个继承结构通信的桥梁。所以为桥接模式。</p>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css">]]></content>
       <categories>
         <category>设计模式</category>
@@ -8047,128 +8047,6 @@ public class VisitorB implements Visitor &#123;
       </tags>
   </entry>
   <entry>
-    <title>设计模式之模版模式</title>
-    <url>/2019/06/17/2019-06-17-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E6%A8%A1%E7%89%88%E6%A8%A1%E5%BC%8F/</url>
-    <content><![CDATA[<h1 id="设计模式之模版方法模式"><a class="header-anchor" href="#设计模式之模版方法模式">¶</a> 设计模式之模版方法模式</h1>
-<p>模版模式是类的行为模式，将部分逻辑以具体方法来实现，将其他方法声明为抽象方法来让子类来实现。不同的子类实现的方法逻辑不同，从而整体的逻辑有所差异。</p>
-<p>这里涉及到两个角色：</p>
-<p>一、抽象模板(Abstract Template)角色有如下责任：</p>
-<pre><code>- 定义了一个或多个抽象操作，以便让子类实现。这些抽象操作叫做基本操作，
-它们是一个顶级逻辑的组成步骤。
-
-- 定义并实现了一个模板方法。这个模板方法一般是一个具体方法，它给出了一个顶级逻辑的骨架，
-而逻辑的组成步骤在相应的抽象操作中，推迟到子类实现。顶级逻辑也有可能调用一些具体方法。
-</code></pre>
-<p>二、具体模板(Concrete Template)角色又如下责任：</p>
-<pre><code>- 实现父类所定义的一个或多个抽象方法，它们是一个顶级逻辑的组成步骤。
-
-- 每一个抽象模板角色都可以有任意多个具体模板角色与之对应，
-而每一个具体模板角色都可以给出这些抽象方法（也就是顶级逻辑的组成步骤）的不同实现，
-从而使得顶级逻辑的实现各不相同。
-</code></pre>
-<h2 id="应用场景"><a class="header-anchor" href="#应用场景">¶</a> 应用场景</h2>
-<p>实现不变的部分一次，并将其他留给子类来实现可能需要变化的行为。</p>
-<ul>
-<li>需要简化代码，分离出公共的部分，抽离出一个公共的模板方法来替换所有的代码。</li>
-<li>控制子类扩展。定义在特定点调用“钩子”操作的模板方法，从而仅允许在那些点进行扩展。</li>
-</ul>
-<h2 id="模式结构"><a class="header-anchor" href="#模式结构">¶</a> 模式结构</h2>
-<p>这里使用到模拟servlet中的httpServlet方法（简单的模拟方法中用到的模版方法）。定义一个公共的模版方法抽象类<code>HttpServletTemplate</code>，其中有两个钩子方法<code>doGet</code>和<code>doPost</code>，所谓的钩子方法就是需要由子类实现的方法。还有一个具体方法<code>service</code>来实现模版调用的作用。</p>
-<p>模拟两个子类实现<code>HttpServletTemplate</code>实现两个钩子方法。</p>
-<p>客户端<code>App</code>在调用的时候，直接调用两个子类的父类中的实现方法<code>service</code>实现调用模版。</p>
-<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190617221808.png" alt="模版模式结构"></p>
-<h2 id="代码"><a class="header-anchor" href="#代码">¶</a> 代码</h2>
-<h3 id="抽象模版类"><a class="header-anchor" href="#抽象模版类">¶</a> 抽象模版类</h3>
-<pre><code class="language-java">public abstract class HttpServletTemplate &#123;
-
-    public void service(HttpRequestMethod method)&#123;
-        if(method.equals(HttpRequestMethod.METHOD_GET))&#123;
-            System.out.println(&quot;so something 1&quot;);
-            doGet();
-            System.out.println(&quot;so something 2&quot;);
-        &#125;else if(method.equals(HttpRequestMethod.METHOD_POST))&#123;
-            doPost();
-        &#125;else &#123;
-            System.out.println(&quot;do nothing!&quot;);
-        &#125;
-    &#125;
-    protected void doGet()&#123;&#125;;
-
-    protected void doPost()&#123;&#125;;
-&#125;
-</code></pre>
-<h3 id="具体模版类"><a class="header-anchor" href="#具体模版类">¶</a> 具体模版类</h3>
-<pre><code class="language-java">public class GetClient extends HttpServletTemplate &#123;
-    @Override
-    protected void doGet() &#123;
-        System.out.println(&quot;this is my get methods!&quot;);
-    &#125;
-&#125;
-public class PostClient extends HttpServletTemplate &#123;
-    @Override
-    protected void doGet() &#123;
-        this.doPost();
-    &#125;
-
-    @Override
-    protected void doPost() &#123;
-        System.out.println(&quot;this is my post methods!&quot;);
-    &#125;
-&#125;
-// 请求类型枚举类
-public enum HttpRequestMethod &#123;
-    METHOD_GET,METHOD_POST,METHOD_DELETE
-&#125;
-</code></pre>
-<h3 id="客户端调用"><a class="header-anchor" href="#客户端调用">¶</a> 客户端调用</h3>
-<pre><code class="language-java">public class App &#123;
-    public static void main(String[] args) &#123;
-        //声明post客户端
-        PostClient post = new PostClient();
-        //调用模版
-        post.service(HttpRequestMethod.METHOD_POST);
-        GetClient get = new GetClient();
-        get.service(HttpRequestMethod.METHOD_GET);
-        get.service(HttpRequestMethod.METHOD_POST);
-    &#125;
-&#125;
-</code></pre>
-<p>其实模版方法模式是创建一个算法的骨架，具体的内容由子类去填充的这个过程。</p>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css">]]></content>
-      <categories>
-        <category>设计模式</category>
-      </categories>
-      <tags>
-        <tag>Java</tag>
-        <tag>设计模式</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Mac下使用idea时在dock栏一直存在java图标和控制台乱码问题</title>
-    <url>/2019/06/18/2019-06-18-Mac%E4%B8%8Bidea%E5%9C%A8Dock%E6%A0%8F%E4%B8%80%E7%9B%B4%E5%AD%98%E5%9C%A8%E5%9B%BE%E6%A0%87%E5%92%8C%E6%8E%A7%E5%88%B6%E5%8F%B0%E4%B8%AD%E6%96%87%E4%B9%B1%E7%A0%81%E9%97%AE%E9%A2%98/</url>
-    <content><![CDATA[<h1 id="Mac下使用Idea相关问题"><a class="header-anchor" href="#Mac下使用Idea相关问题">¶</a> Mac下使用Idea相关问题</h1>
-<h2 id="使用tomcat启动IDEA项目后，dock栏一直存在JAVA图标问题"><a class="header-anchor" href="#使用tomcat启动IDEA项目后，dock栏一直存在JAVA图标问题">¶</a> 使用tomcat启动IDEA项目后，dock栏一直存在JAVA图标问题</h2>
-<p>在mac上启动idea后，存在dock栏一直存在JAVA图标的问题，如下图：</p>
-<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618081946.png" alt="Dock栏存在java图标问题"></p>
-<p>解决方式：</p>
-<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618082435.png" alt="存在图标解决方式"></p>
-<p>打开<code>Run/Debug configurations</code>,在<code>vm options</code>中添加如下内容：</p>
-<pre><code class="language-java">-Dapple.awt.UIElement=true
-</code></pre>
-<h2 id="启动IDEA后，控制台乱码"><a class="header-anchor" href="#启动IDEA后，控制台乱码">¶</a> 启动IDEA后，控制台乱码</h2>
-<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618082124.png" alt="控制台乱码"></p>
-<p>解决方式和上一个问题相同，同样在vm options中增加参数，具体参数如下：</p>
-<pre><code class="language-java">-Dfile.encoding=UTF-8
-</code></pre>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css">]]></content>
-      <categories>
-        <category>工具</category>
-      </categories>
-      <tags>
-        <tag>idea</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>设计模式之状态模式</title>
     <url>/2019/06/19/2019-06-19-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F/</url>
     <content><![CDATA[<h1 id="设计模式之状态模式"><a class="header-anchor" href="#设计模式之状态模式">¶</a> 设计模式之状态模式</h1>
@@ -8374,6 +8252,31 @@ observer B get new weather message is SUNNY_DAY
       </tags>
   </entry>
   <entry>
+    <title>Mac下使用idea时在dock栏一直存在java图标和控制台乱码问题</title>
+    <url>/2019/06/18/2019-06-18-Mac%E4%B8%8Bidea%E5%9C%A8Dock%E6%A0%8F%E4%B8%80%E7%9B%B4%E5%AD%98%E5%9C%A8%E5%9B%BE%E6%A0%87%E5%92%8C%E6%8E%A7%E5%88%B6%E5%8F%B0%E4%B8%AD%E6%96%87%E4%B9%B1%E7%A0%81%E9%97%AE%E9%A2%98/</url>
+    <content><![CDATA[<h1 id="Mac下使用Idea相关问题"><a class="header-anchor" href="#Mac下使用Idea相关问题">¶</a> Mac下使用Idea相关问题</h1>
+<h2 id="使用tomcat启动IDEA项目后，dock栏一直存在JAVA图标问题"><a class="header-anchor" href="#使用tomcat启动IDEA项目后，dock栏一直存在JAVA图标问题">¶</a> 使用tomcat启动IDEA项目后，dock栏一直存在JAVA图标问题</h2>
+<p>在mac上启动idea后，存在dock栏一直存在JAVA图标的问题，如下图：</p>
+<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618081946.png" alt="Dock栏存在java图标问题"></p>
+<p>解决方式：</p>
+<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618082435.png" alt="存在图标解决方式"></p>
+<p>打开<code>Run/Debug configurations</code>,在<code>vm options</code>中添加如下内容：</p>
+<pre><code class="language-java">-Dapple.awt.UIElement=true
+</code></pre>
+<h2 id="启动IDEA后，控制台乱码"><a class="header-anchor" href="#启动IDEA后，控制台乱码">¶</a> 启动IDEA后，控制台乱码</h2>
+<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190618082124.png" alt="控制台乱码"></p>
+<p>解决方式和上一个问题相同，同样在vm options中增加参数，具体参数如下：</p>
+<pre><code class="language-java">-Dfile.encoding=UTF-8
+</code></pre>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css">]]></content>
+      <categories>
+        <category>工具</category>
+      </categories>
+      <tags>
+        <tag>idea</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>设计模式之备忘录模式</title>
     <url>/2019/06/25/2019-06-25-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E5%A4%87%E5%BF%98%E5%BD%95%E6%A8%A1%E5%BC%8F/</url>
     <content><![CDATA[<h1 id="设计模式之备忘录模式📕"><a class="header-anchor" href="#设计模式之备忘录模式📕">¶</a> 设计模式之备忘录模式📕</h1>
@@ -8503,123 +8406,6 @@ public enum GameState &#123;
       </tags>
   </entry>
   <entry>
-    <title>PlantUML类图使用总结</title>
-    <url>/2019/06/26/2019-06-26-PlantUML%E7%B1%BB%E5%9B%BE%E4%BD%BF%E7%94%A8%E6%80%BB%E7%BB%93/</url>
-    <content><![CDATA[<h1 id="使用PlantUML绘制类图"><a class="header-anchor" href="#使用PlantUML绘制类图">¶</a> 使用PlantUML绘制类图</h1>
-<p>本文基于PlantUML官网<a class="link"   href="http://plantuml.com/zh/class-diagram" >绘制类图<i class="fas fa-external-link-alt"></i></a>和相关如何正确uml类图相关文章。</p>
-<h2 id="为什么使用plantUml"><a class="header-anchor" href="#为什么使用plantUml">¶</a> 为什么使用plantUml</h2>
-<p>原因很简单，不用自己考虑构图，像写代码一样写出来，图出来既美观又能够符合逻辑。</p>
-<h2 id="基本类构成"><a class="header-anchor" href="#基本类构成">¶</a> 基本类构成</h2>
-<h3 id="基本使用"><a class="header-anchor" href="#基本使用">¶</a> 基本使用</h3>
-<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190626150930.png" alt="基本类构成"></p>
-<p>使用<code>class</code>关键字构件类，同理其他关键字。如<code>interface</code>,<code>enum</code>。</p>
-<p>在类中使用 <code>- # +</code> 分别对应表示类中的<code>private</code>,<code>protected</code>,<code>public</code>。如果在类中使用 <code>static</code>、<code>abstract</code>关键字，需要使用大括号包裹起来。</p>
-<p><strong>备注</strong>使用<code>note</code>来实现，可以使用js优化备注的样式,具体可以参考下面的代码。</p>
-<pre><code class="language-text">@startuml
-' 简单定义类A
-class classA
-'定义类B
-class classB&#123;
-    -&#123;static&#125; STATIC:Type
-    -a:A
-    #b:B
-    +c:C
-    +hello():void
-    -word():void
-&#125;
-'抽象类C
-abstract class classC &#123;
-    + &#123;abstract&#125; method1:void
-&#125;
-'备注
-note right: note on right
-note top of classA : note on top
-' 复杂备注
-note top of object
-In java, &lt;size:18&gt;every&lt;/size&gt; &lt;u&gt;class&lt;/u&gt;&lt;b&gt;extends&lt;/b&gt;&lt;i&gt;this&lt;/i&gt; one.
-end note
-@enduml
-</code></pre>
-<h3 id="类更多使用"><a class="header-anchor" href="#类更多使用">¶</a> 类更多使用</h3>
-<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190626144335.png" alt="复杂"></p>
-<p>更复杂一些的类的构件参考上图。</p>
-<p>使用<code>__内容__</code>来表示分割线，对不同类型的进行分割。在类名后加<code>&lt;? extends xxx&gt;</code> 表示范型,参考下面代码：</p>
-<pre><code class="language-text">@startuml
-class classC &lt;&lt;Serializable&gt;&gt; &#123;
-__variable__
-    -a:A
-    #b:B
-    +c:C
-__methods__
-    +hello():void
-    -word():void
-&#125;
-
-class classD &lt;? extends List&gt;&#123;
-
-&#125;
-@enduml
-</code></pre>
-<h3 id="关系表示"><a class="header-anchor" href="#关系表示">¶</a> 关系表示</h3>
-<h4 id="继承与实现"><a class="header-anchor" href="#继承与实现">¶</a> 继承与实现</h4>
-<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190626144700.png" alt="继承与实现"></p>
-<p>继承指的就是<strong>泛化</strong>，如图中左表示一样，类A继承于B，由子类实现父类的行为。泛化使用带<strong>大三角箭头和实线</strong>来表示，表示一种继承关系。</p>
-<p><strong>实现</strong>指的是特定类实现接口，如图中右表示一样，类<code>implement</code>实现<code>interface</code>,表示实现类实现接口类的关系。同样会由子类实现接口类中的行为。实现使用带<strong>大三角的箭头和虚线</strong>来实现。</p>
-<p>无论是继承还是实现，箭头都执行夫类，也就是被实现类。</p>
-<h4 id="依赖与关联"><a class="header-anchor" href="#依赖与关联">¶</a> 依赖与关联</h4>
-<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190626160514.png" alt="依赖与关联"></p>
-<p>使用plantUML代码实现：</p>
-<pre><code class="language-text">@startuml
-'依赖与关联
-Class X
-' 依赖关系
-X ..&gt; Y :&quot;依赖关系&quot;
-
-class A
-' 单向关联 A关联B
-A--&gt; B :&quot;单向关联&quot;
-' 双向关联
-class C
-C --  D : &quot;双向关联&quot;
-' 自关联
-class F
-F --&gt; F:&quot;自关联&quot;
-' 聚合关系
-class G &#123;
-List&lt;H&gt; h
-&#125;
-G &quot;n&quot; o-- &quot;1&quot; H : &quot;组合关系&quot;
-' 组合关系
-class K &#123;
-List&lt;L&gt; l
-&#125;
-K &quot;n&quot;*--&quot;1&quot; L :&quot;聚合关系&quot;
-@enduml
-</code></pre>
-<h5 id="一、依赖关系"><a class="header-anchor" href="#一、依赖关系">¶</a> 一、依赖关系</h5>
-<p>依赖是一种使用的关系，代码中体现到依赖的关系的情况:<code>局部变量</code>、<code>方法的参数或者对静态方法的调用</code>,依赖是最弱的一种关联。依赖关系使用虚线和普通的小箭头来实现，箭头指向被依赖的对象。如图中的x依赖y一样，所以指向y,这个被x依赖的对象。</p>
-<h5 id="二、关联关系"><a class="header-anchor" href="#二、关联关系">¶</a> 二、关联关系</h5>
-<p>关联是拥有的关系，如玩家与游戏中的角色一样。关联可能是单向的，也可能是双向的，也同样能够自己关联自己。代码中体现到关联的关系的情况：<code>成员变量</code>。关联关系使用实线和小尖头来实现，箭头指向被关联的对象。</p>
-<h5 id="三、组合关系"><a class="header-anchor" href="#三、组合关系">¶</a> 三、组合关系</h5>
-<p>组合关系是<code>整体与部分</code>的关系，但是如果整体不存在，那部分也不能存在。就如同公司与部门一样，公司解散了，部门也就不存在了。和关联关系相同，在代码中的体现也是<code>成员变量</code>。组合关系使用空心的菱形和实线来表示。</p>
-<h5 id="四、聚合关系"><a class="header-anchor" href="#四、聚合关系">¶</a> 四、聚合关系</h5>
-<p>聚合关系是<code>整体与部分</code>的关系，但是和组合关系不同的是，聚合关系中的<code>部分</code>可以脱离整体而存在，就如同麦当劳中的套餐与汉堡一样。在代码中的体现同样是<code>成员变量</code>。聚合关系使用实心的菱形和实线来表示。</p>
-<p>所以可以说聚合关系和组合关系是关系更加确定，更加紧密的关联关系。</p>
-<h5 id="各关系的强弱顺序"><a class="header-anchor" href="#各关系的强弱顺序">¶</a> 各关系的强弱顺序</h5>
-<blockquote>
-<p>泛化= 实现&gt; 组合&gt; 聚合&gt; 关联&gt; 依赖</p>
-</blockquote>
-<p>PlantUML支持更多的更复杂的情景下的图形绘制，具体可以查看<a class="link"   href="http://plantuml.com/zh/index" >PlantUML的中文网站<i class="fas fa-external-link-alt"></i></a>。</p>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css">]]></content>
-      <categories>
-        <category>工具</category>
-      </categories>
-      <tags>
-        <tag>工具</tag>
-        <tag>UML</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>设计模式之迭代器模式</title>
     <url>/2019/06/27/2019-06-27-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E8%BF%AD%E4%BB%A3%E5%99%A8%E6%A8%A1%E5%BC%8F/</url>
     <content><![CDATA[<h1 id="设计模式之迭代器模式"><a class="header-anchor" href="#设计模式之迭代器模式">¶</a> 设计模式之迭代器模式</h1>
@@ -8735,6 +8521,123 @@ K &quot;n&quot;*--&quot;1&quot; L :&quot;聚合关系&quot;
       <tags>
         <tag>Java</tag>
         <tag>设计模式</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>PlantUML类图使用总结</title>
+    <url>/2019/06/26/2019-06-26-PlantUML%E7%B1%BB%E5%9B%BE%E4%BD%BF%E7%94%A8%E6%80%BB%E7%BB%93/</url>
+    <content><![CDATA[<h1 id="使用PlantUML绘制类图"><a class="header-anchor" href="#使用PlantUML绘制类图">¶</a> 使用PlantUML绘制类图</h1>
+<p>本文基于PlantUML官网<a class="link"   href="http://plantuml.com/zh/class-diagram" >绘制类图<i class="fas fa-external-link-alt"></i></a>和相关如何正确uml类图相关文章。</p>
+<h2 id="为什么使用plantUml"><a class="header-anchor" href="#为什么使用plantUml">¶</a> 为什么使用plantUml</h2>
+<p>原因很简单，不用自己考虑构图，像写代码一样写出来，图出来既美观又能够符合逻辑。</p>
+<h2 id="基本类构成"><a class="header-anchor" href="#基本类构成">¶</a> 基本类构成</h2>
+<h3 id="基本使用"><a class="header-anchor" href="#基本使用">¶</a> 基本使用</h3>
+<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190626150930.png" alt="基本类构成"></p>
+<p>使用<code>class</code>关键字构件类，同理其他关键字。如<code>interface</code>,<code>enum</code>。</p>
+<p>在类中使用 <code>- # +</code> 分别对应表示类中的<code>private</code>,<code>protected</code>,<code>public</code>。如果在类中使用 <code>static</code>、<code>abstract</code>关键字，需要使用大括号包裹起来。</p>
+<p><strong>备注</strong>使用<code>note</code>来实现，可以使用js优化备注的样式,具体可以参考下面的代码。</p>
+<pre><code class="language-text">@startuml
+' 简单定义类A
+class classA
+'定义类B
+class classB&#123;
+    -&#123;static&#125; STATIC:Type
+    -a:A
+    #b:B
+    +c:C
+    +hello():void
+    -word():void
+&#125;
+'抽象类C
+abstract class classC &#123;
+    + &#123;abstract&#125; method1:void
+&#125;
+'备注
+note right: note on right
+note top of classA : note on top
+' 复杂备注
+note top of object
+In java, &lt;size:18&gt;every&lt;/size&gt; &lt;u&gt;class&lt;/u&gt;&lt;b&gt;extends&lt;/b&gt;&lt;i&gt;this&lt;/i&gt; one.
+end note
+@enduml
+</code></pre>
+<h3 id="类更多使用"><a class="header-anchor" href="#类更多使用">¶</a> 类更多使用</h3>
+<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190626144335.png" alt="复杂"></p>
+<p>更复杂一些的类的构件参考上图。</p>
+<p>使用<code>__内容__</code>来表示分割线，对不同类型的进行分割。在类名后加<code>&lt;? extends xxx&gt;</code> 表示范型,参考下面代码：</p>
+<pre><code class="language-text">@startuml
+class classC &lt;&lt;Serializable&gt;&gt; &#123;
+__variable__
+    -a:A
+    #b:B
+    +c:C
+__methods__
+    +hello():void
+    -word():void
+&#125;
+
+class classD &lt;? extends List&gt;&#123;
+
+&#125;
+@enduml
+</code></pre>
+<h3 id="关系表示"><a class="header-anchor" href="#关系表示">¶</a> 关系表示</h3>
+<h4 id="继承与实现"><a class="header-anchor" href="#继承与实现">¶</a> 继承与实现</h4>
+<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190626144700.png" alt="继承与实现"></p>
+<p>继承指的就是<strong>泛化</strong>，如图中左表示一样，类A继承于B，由子类实现父类的行为。泛化使用带<strong>大三角箭头和实线</strong>来表示，表示一种继承关系。</p>
+<p><strong>实现</strong>指的是特定类实现接口，如图中右表示一样，类<code>implement</code>实现<code>interface</code>,表示实现类实现接口类的关系。同样会由子类实现接口类中的行为。实现使用带<strong>大三角的箭头和虚线</strong>来实现。</p>
+<p>无论是继承还是实现，箭头都执行夫类，也就是被实现类。</p>
+<h4 id="依赖与关联"><a class="header-anchor" href="#依赖与关联">¶</a> 依赖与关联</h4>
+<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190626160514.png" alt="依赖与关联"></p>
+<p>使用plantUML代码实现：</p>
+<pre><code class="language-text">@startuml
+'依赖与关联
+Class X
+' 依赖关系
+X ..&gt; Y :&quot;依赖关系&quot;
+
+class A
+' 单向关联 A关联B
+A--&gt; B :&quot;单向关联&quot;
+' 双向关联
+class C
+C --  D : &quot;双向关联&quot;
+' 自关联
+class F
+F --&gt; F:&quot;自关联&quot;
+' 聚合关系
+class G &#123;
+List&lt;H&gt; h
+&#125;
+G &quot;n&quot; o-- &quot;1&quot; H : &quot;组合关系&quot;
+' 组合关系
+class K &#123;
+List&lt;L&gt; l
+&#125;
+K &quot;n&quot;*--&quot;1&quot; L :&quot;聚合关系&quot;
+@enduml
+</code></pre>
+<h5 id="一、依赖关系"><a class="header-anchor" href="#一、依赖关系">¶</a> 一、依赖关系</h5>
+<p>依赖是一种使用的关系，代码中体现到依赖的关系的情况:<code>局部变量</code>、<code>方法的参数或者对静态方法的调用</code>,依赖是最弱的一种关联。依赖关系使用虚线和普通的小箭头来实现，箭头指向被依赖的对象。如图中的x依赖y一样，所以指向y,这个被x依赖的对象。</p>
+<h5 id="二、关联关系"><a class="header-anchor" href="#二、关联关系">¶</a> 二、关联关系</h5>
+<p>关联是拥有的关系，如玩家与游戏中的角色一样。关联可能是单向的，也可能是双向的，也同样能够自己关联自己。代码中体现到关联的关系的情况：<code>成员变量</code>。关联关系使用实线和小尖头来实现，箭头指向被关联的对象。</p>
+<h5 id="三、组合关系"><a class="header-anchor" href="#三、组合关系">¶</a> 三、组合关系</h5>
+<p>组合关系是<code>整体与部分</code>的关系，但是如果整体不存在，那部分也不能存在。就如同公司与部门一样，公司解散了，部门也就不存在了。和关联关系相同，在代码中的体现也是<code>成员变量</code>。组合关系使用空心的菱形和实线来表示。</p>
+<h5 id="四、聚合关系"><a class="header-anchor" href="#四、聚合关系">¶</a> 四、聚合关系</h5>
+<p>聚合关系是<code>整体与部分</code>的关系，但是和组合关系不同的是，聚合关系中的<code>部分</code>可以脱离整体而存在，就如同麦当劳中的套餐与汉堡一样。在代码中的体现同样是<code>成员变量</code>。聚合关系使用实心的菱形和实线来表示。</p>
+<p>所以可以说聚合关系和组合关系是关系更加确定，更加紧密的关联关系。</p>
+<h5 id="各关系的强弱顺序"><a class="header-anchor" href="#各关系的强弱顺序">¶</a> 各关系的强弱顺序</h5>
+<blockquote>
+<p>泛化= 实现&gt; 组合&gt; 聚合&gt; 关联&gt; 依赖</p>
+</blockquote>
+<p>PlantUML支持更多的更复杂的情景下的图形绘制，具体可以查看<a class="link"   href="http://plantuml.com/zh/index" >PlantUML的中文网站<i class="fas fa-external-link-alt"></i></a>。</p>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css">]]></content>
+      <categories>
+        <category>工具</category>
+      </categories>
+      <tags>
+        <tag>工具</tag>
+        <tag>UML</tag>
       </tags>
   </entry>
   <entry>
@@ -8857,129 +8760,6 @@ public class King &#123;
       <tags>
         <tag>Java</tag>
         <tag>设计模式</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>SpringBoot与微服务简介</title>
-    <url>/2019/07/06/2019-07-03-SpringBoot%E4%B8%8E%E5%BE%AE%E6%9C%8D%E5%8A%A1%E7%AE%80%E4%BB%8B/</url>
-    <content><![CDATA[<h1 id="SpringBoot与微服务简介"><a class="header-anchor" href="#SpringBoot与微服务简介">¶</a> SpringBoot与微服务简介</h1>
-<p>SpringBoot通过整合Spring的各个技术栈用来简化Spring应用开发，使用约定大于配置的思想。简单快速的创建一个独立的，产品级的应用。</p>
-<h2 id="SpringBoot"><a class="header-anchor" href="#SpringBoot">¶</a> SpringBoot</h2>
-<h3 id="优点"><a class="header-anchor" href="#优点">¶</a> 优点</h3>
-<ol>
-<li>
-<p>快速创建独立运行的Spring项目与各大主流框架的集成。</p>
-</li>
-<li>
-<p>自带嵌入式的servlet容器。</p>
-</li>
-<li>
-<p>springboot带有starters自动依赖与版本控制。</p>
-</li>
-<li>
-<p>大量的自动配置，约定大于配置。</p>
-</li>
-<li>
-<p>无需配置xml，告别大量的xml文件。</p>
-</li>
-</ol>
-<h3 id="springboot的hello world"><a class="header-anchor" href="#springboot的hello world">¶</a> springboot的hello world</h3>
-<h4 id="创建一个maven应用"><a class="header-anchor" href="#创建一个maven应用">¶</a> 创建一个maven应用</h4>
-<ol>
-<li>创建一个普通的maven项目</li>
-</ol>
-<img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190704174954.png"/>
-<ol start="2">
-<li>创建后的maven结构，包含pom.xml文件内容</li>
-</ol>
-<img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190704175208.png"/>
-<ol start="3">
-<li>开启idea中对maven的自动导入功能</li>
-</ol>
-<img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190704175420.png"/>
-<h4 id="在POM文件中添加依赖"><a class="header-anchor" href="#在POM文件中添加依赖">¶</a> 在POM文件中添加依赖</h4>
-<pre><code class="language-xml">&lt;!-- org.springframework.boot 作用：
-            1. 默认使用java版本,默认编码
-            2. 引用管理的功能，比如version会从这里继承出去
-            3. 识别插件配置
-            4. 识别.properties 和.yml配置文件
-            5. 整体的版本依赖
---&gt;
-    &lt;parent&gt;
-        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
-        &lt;artifactId&gt;spring-boot-starter-parent&lt;/artifactId&gt;
-        &lt;version&gt;2.1.6.RELEASE&lt;/version&gt;
-    &lt;/parent&gt;
-
-    &lt;dependencies&gt;
-        &lt;dependency&gt;
-            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
-            &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;
-        &lt;/dependency&gt;
-    &lt;/dependencies&gt;
-</code></pre>
-<h4 id="创建应用主程序"><a class="header-anchor" href="#创建应用主程序">¶</a> 创建应用主程序</h4>
-<pre><code class="language-java">import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-/**
- * EnableAutoConfiguration 表示告诉spring boot如何去配置spring，
- * 其可以帮助 SpringBoot 应用将所有符合条件的 @Configuration 配置都加载到当前 IoC 容器之中
- * 自从添加spring-boot-starter-web这个starter添加了tomcat和spring MVC后，使用该注解，就说明使用spring启动一个web项目
- * SpringBootApplication 等同于使用@Configuration @EnableAutoConfiguration @ComponentScan这三个注解
- * @Author nanyin
- * @Date 21:46 2019-07-04
- **/
-@SpringBootApplication
-public class DeepSpringBootApplication &#123;
-    public static void main(String[] args) &#123;
-        // 使用SpringApplication.run方法来启动spring boot应用 其中参数有类和args
-        SpringApplication.run(DeepSpringBootApplication.class,args);
-    &#125;
-&#125;
-</code></pre>
-<h4 id="使用SPringMvc编写controller层"><a class="header-anchor" href="#使用SPringMvc编写controller层">¶</a> 使用SPringMvc编写controller层</h4>
-<pre><code class="language-java">import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-@Controller
-public class HelloController &#123;
-
-    @RequestMapping(&quot;/hello&quot;)
-    public @ResponseBody
-    String home() &#123;
-        return &quot;Hello World!&quot;;
-    &#125;
-&#125;
-</code></pre>
-<h4 id="运行主程序进行测试"><a class="header-anchor" href="#运行主程序进行测试">¶</a> 运行主程序进行测试</h4>
-<p>打开<code>http://localhost:8080/hello</code> 查看网页上的内容显示出hello world字符。测试成功</p>
-<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190704223338.png" alt="测试"></p>
-<h4 id="导入maven插件打jar包"><a class="header-anchor" href="#导入maven插件打jar包">¶</a> 导入maven插件打jar包</h4>
-<p>在pom.xml文件中添加如下内容</p>
-<pre><code class="language-xml">&lt;build&gt;
-    &lt;plugins&gt;
-        &lt;plugin&gt;
-            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
-            &lt;artifactId&gt;spring-boot-maven-plugin&lt;/artifactId&gt;
-        &lt;/plugin&gt;
-    &lt;/plugins&gt;
-&lt;/build&gt;
-</code></pre>
-<p>保存之后使用<code>mvn package</code>命令打成jar包，可以在输出信息中找出打完的jar包的位置。<br>
-使用<code>java -jar xxxxxx.jar</code>命令运行程序。</p>
-<h2 id="微服务"><a class="header-anchor" href="#微服务">¶</a> 微服务</h2>
-<p>微服务其实是一种架构风格，一个应用应该是一组小型服务组成，小型服务通过http api的方式进行沟通。每一个小型服务都是一个功能元素，能够独立替换和独立升级的应用单元。</p>
-<p>详细请参考<code>martinfowler.com</code> 中的这篇微服务文章：<a class="link"   href="https://martinfowler.com/microservices" >微服务<i class="fas fa-external-link-alt"></i></a></p>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css">]]></content>
-      <categories>
-        <category>SpringBoot</category>
-      </categories>
-      <tags>
-        <tag>Java</tag>
-        <tag>SpringBoot</tag>
       </tags>
   </entry>
   <entry>
@@ -9172,6 +8952,129 @@ public static List&lt;String&gt; loadFactoryNames(Class&lt;?&gt; factoryClass, @
 &#125;)
 </code></pre>
 <p>excludeFilters的作用是指定哪些类型不符合组件扫描的条件，也就是排除掉指定的类。</p>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css">]]></content>
+      <categories>
+        <category>SpringBoot</category>
+      </categories>
+      <tags>
+        <tag>Java</tag>
+        <tag>SpringBoot</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>SpringBoot与微服务简介</title>
+    <url>/2019/07/06/2019-07-03-SpringBoot%E4%B8%8E%E5%BE%AE%E6%9C%8D%E5%8A%A1%E7%AE%80%E4%BB%8B/</url>
+    <content><![CDATA[<h1 id="SpringBoot与微服务简介"><a class="header-anchor" href="#SpringBoot与微服务简介">¶</a> SpringBoot与微服务简介</h1>
+<p>SpringBoot通过整合Spring的各个技术栈用来简化Spring应用开发，使用约定大于配置的思想。简单快速的创建一个独立的，产品级的应用。</p>
+<h2 id="SpringBoot"><a class="header-anchor" href="#SpringBoot">¶</a> SpringBoot</h2>
+<h3 id="优点"><a class="header-anchor" href="#优点">¶</a> 优点</h3>
+<ol>
+<li>
+<p>快速创建独立运行的Spring项目与各大主流框架的集成。</p>
+</li>
+<li>
+<p>自带嵌入式的servlet容器。</p>
+</li>
+<li>
+<p>springboot带有starters自动依赖与版本控制。</p>
+</li>
+<li>
+<p>大量的自动配置，约定大于配置。</p>
+</li>
+<li>
+<p>无需配置xml，告别大量的xml文件。</p>
+</li>
+</ol>
+<h3 id="springboot的hello world"><a class="header-anchor" href="#springboot的hello world">¶</a> springboot的hello world</h3>
+<h4 id="创建一个maven应用"><a class="header-anchor" href="#创建一个maven应用">¶</a> 创建一个maven应用</h4>
+<ol>
+<li>创建一个普通的maven项目</li>
+</ol>
+<img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190704174954.png"/>
+<ol start="2">
+<li>创建后的maven结构，包含pom.xml文件内容</li>
+</ol>
+<img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190704175208.png"/>
+<ol start="3">
+<li>开启idea中对maven的自动导入功能</li>
+</ol>
+<img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190704175420.png"/>
+<h4 id="在POM文件中添加依赖"><a class="header-anchor" href="#在POM文件中添加依赖">¶</a> 在POM文件中添加依赖</h4>
+<pre><code class="language-xml">&lt;!-- org.springframework.boot 作用：
+            1. 默认使用java版本,默认编码
+            2. 引用管理的功能，比如version会从这里继承出去
+            3. 识别插件配置
+            4. 识别.properties 和.yml配置文件
+            5. 整体的版本依赖
+--&gt;
+    &lt;parent&gt;
+        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-boot-starter-parent&lt;/artifactId&gt;
+        &lt;version&gt;2.1.6.RELEASE&lt;/version&gt;
+    &lt;/parent&gt;
+
+    &lt;dependencies&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;
+        &lt;/dependency&gt;
+    &lt;/dependencies&gt;
+</code></pre>
+<h4 id="创建应用主程序"><a class="header-anchor" href="#创建应用主程序">¶</a> 创建应用主程序</h4>
+<pre><code class="language-java">import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+/**
+ * EnableAutoConfiguration 表示告诉spring boot如何去配置spring，
+ * 其可以帮助 SpringBoot 应用将所有符合条件的 @Configuration 配置都加载到当前 IoC 容器之中
+ * 自从添加spring-boot-starter-web这个starter添加了tomcat和spring MVC后，使用该注解，就说明使用spring启动一个web项目
+ * SpringBootApplication 等同于使用@Configuration @EnableAutoConfiguration @ComponentScan这三个注解
+ * @Author nanyin
+ * @Date 21:46 2019-07-04
+ **/
+@SpringBootApplication
+public class DeepSpringBootApplication &#123;
+    public static void main(String[] args) &#123;
+        // 使用SpringApplication.run方法来启动spring boot应用 其中参数有类和args
+        SpringApplication.run(DeepSpringBootApplication.class,args);
+    &#125;
+&#125;
+</code></pre>
+<h4 id="使用SPringMvc编写controller层"><a class="header-anchor" href="#使用SPringMvc编写controller层">¶</a> 使用SPringMvc编写controller层</h4>
+<pre><code class="language-java">import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+@Controller
+public class HelloController &#123;
+
+    @RequestMapping(&quot;/hello&quot;)
+    public @ResponseBody
+    String home() &#123;
+        return &quot;Hello World!&quot;;
+    &#125;
+&#125;
+</code></pre>
+<h4 id="运行主程序进行测试"><a class="header-anchor" href="#运行主程序进行测试">¶</a> 运行主程序进行测试</h4>
+<p>打开<code>http://localhost:8080/hello</code> 查看网页上的内容显示出hello world字符。测试成功</p>
+<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190704223338.png" alt="测试"></p>
+<h4 id="导入maven插件打jar包"><a class="header-anchor" href="#导入maven插件打jar包">¶</a> 导入maven插件打jar包</h4>
+<p>在pom.xml文件中添加如下内容</p>
+<pre><code class="language-xml">&lt;build&gt;
+    &lt;plugins&gt;
+        &lt;plugin&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-maven-plugin&lt;/artifactId&gt;
+        &lt;/plugin&gt;
+    &lt;/plugins&gt;
+&lt;/build&gt;
+</code></pre>
+<p>保存之后使用<code>mvn package</code>命令打成jar包，可以在输出信息中找出打完的jar包的位置。<br>
+使用<code>java -jar xxxxxx.jar</code>命令运行程序。</p>
+<h2 id="微服务"><a class="header-anchor" href="#微服务">¶</a> 微服务</h2>
+<p>微服务其实是一种架构风格，一个应用应该是一组小型服务组成，小型服务通过http api的方式进行沟通。每一个小型服务都是一个功能元素，能够独立替换和独立升级的应用单元。</p>
+<p>详细请参考<code>martinfowler.com</code> 中的这篇微服务文章：<a class="link"   href="https://martinfowler.com/microservices" >微服务<i class="fas fa-external-link-alt"></i></a></p>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css">]]></content>
       <categories>
         <category>SpringBoot</category>
@@ -9486,6 +9389,85 @@ public class DeepSpringBootApplicationTest &#123;
       </tags>
   </entry>
   <entry>
+    <title>SpringBoot的日志使用</title>
+    <url>/2019/07/10/2019-07-10-SpringBoot%E7%9A%84%E6%97%A5%E5%BF%97/</url>
+    <content><![CDATA[<h1 id="SpringBoot的日志使用"><a class="header-anchor" href="#SpringBoot的日志使用">¶</a> SpringBoot的日志使用</h1>
+<h2 id="SpringBoot的日志选择"><a class="header-anchor" href="#SpringBoot的日志选择">¶</a> SpringBoot的日志选择</h2>
+<p>SpringBoot默认使用SLF4j和logback用作日志。为什么是两个，为什么是这两个？</p>
+<h3 id="日志框架的大致分类"><a class="header-anchor" href="#日志框架的大致分类">¶</a> 日志框架的大致分类</h3>
+<p>日志框架分为日志的门面框架和具体的实现框架，为什么需要门面框架，是因为不同的系统对日志的需求可能不同，系统一可能使用日志框架一，系统二还需要实现日志功能，如果还用日志框架一，则需要适配系统二进行api的调整。</p>
+<p>门面日志框架就为了解决这一问题。让调用框架的api统一，具体的实现可以随不同的系统进行调整。类似jdbc，操作接口需要进行统一。</p>
+<p>所以SpringBoot的日志使用分别是用来日志门面框架<code>SLF4j</code>和日志具体实现框架<code>logback</code>作为日志服务。</p>
+<h2 id="使用日志"><a class="header-anchor" href="#使用日志">¶</a> 使用日志</h2>
+<h3 id="简易使用SLF4j"><a class="header-anchor" href="#简易使用SLF4j">¶</a> 简易使用SLF4j</h3>
+<p>参考<a class="link"   href="https://www.slf4j.org/manual.html" >SLF4j官网<i class="fas fa-external-link-alt"></i></a>中的hello world程序：</p>
+<pre><code class="language-java">// 导入slf4j的jar包
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class HelloWorld &#123;
+  public static void main(String[] args) &#123;
+    Logger logger = LoggerFactory.getLogger(HelloWorld.class);
+    logger.info(&quot;Hello World&quot;);
+  &#125;
+&#125;
+</code></pre>
+<p>下图表示了使用slf4j和各个日志实现框架的匹配。绿色的是适配层，深蓝色的是实现框架。比如使用logback作为实现框架，则需要导入slf4j的jar包和logback的相关jar包。但是如果使用log4j作为实现框架，还需导入中间的适配层jar包（中间绿色的）。</p>
+<p><img src="https://www.slf4j.org/images/concrete-bindings.png" alt="使用slf4j"></p>
+<p>在Springboot-logging-start中使用如下的jar包依赖：</p>
+<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190712095039.png" alt="jar包依赖"></p>
+<p>每一个实现框架都有各自的配置文件，使用slf4j后，配置文件还是使用具体实现的配置文件。</p>
+<h4 id="SpringBoot中的SLF4j"><a class="header-anchor" href="#SpringBoot中的SLF4j">¶</a> SpringBoot中的SLF4j</h4>
+<ol>
+<li>SpringBoot底层自动配置使用的是SLF4j和logback。</li>
+<li>SprintBoot使用中间包将其他日志框架转化为slf4j框架。</li>
+<li>引入其他日志框架时，需要把这个日志的jar包排除掉。否则与slf4j的jar包相冲突，上一条就是原因。</li>
+</ol>
+<p>在测试文件中测试SpringBoot的日志使用</p>
+<pre><code class="language-java"> Logger logger = LoggerFactory.getLogger(this.getClass());
+    @Test
+    public void testLogger()&#123;
+        // 由低到高 日志的级别，日志框架可以根据配置文件调整输出的日志级别，
+        // 只会输出相应日志级别及后面的高级别日志信息
+        logger.trace(&quot;这是trace日志&quot;);
+        logger.debug(&quot;这是debug日志&quot;);
+        // SpringBoot默认使用的是info级别，
+        // 可以使用日志的配置文件调整级别
+        logger.info(&quot;这是info日志&quot;);
+        logger.warn(&quot;这是warn日志&quot;);
+        logger.error(&quot;这是error日志&quot;);
+    &#125;
+</code></pre>
+<p>日志级别有<code>trace</code>, <code>debug</code>,<code>info</code>,<code>warn</code>,<code>error</code>五种日志级别。并且由低到高排序。指定日志级别，则系统会输出当前日志级别和更高的日志级别的日志。</p>
+<pre><code class="language-yaml"># 全局的日志记录级别
+#logging:
+#  level: trace
+
+# 指定的包下的日志记录级别
+logging:
+  level:
+    com :
+      nanyin : debug
+#  pattern: 输出格式
+#    file:
+#    console:
+
+#  file: -- 这里用于指定日志记录的文件名，可以指定具体的路径，未指定则生成在当前项目下
+#  path: -- 这里用于指定日志文件的路径，springboot会默认生成路径，默认文件名
+# 这两个指定一个就好了，都指定则会默认使用file
+</code></pre>
+<h4 id="使用自定义的配置文件"><a class="header-anchor" href="#使用自定义的配置文件">¶</a> 使用自定义的配置文件</h4>
+<h4 id="更换log4j2作为日志框架"><a class="header-anchor" href="#更换log4j2作为日志框架">¶</a> 更换log4j2作为日志框架</h4>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css">]]></content>
+      <categories>
+        <category>SpringBoot</category>
+      </categories>
+      <tags>
+        <tag>Java</tag>
+        <tag>SpringBoot</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>SpringBoot中的配置文件（拓展）</title>
     <url>/2019/07/08/2019-07-08-SpringBoot%E7%9A%84%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%EF%BC%88%E6%8B%93%E5%B1%95%EF%BC%89/</url>
     <content><![CDATA[<h1 id="SpringBoot中的配置文件(拓展)"><a class="header-anchor" href="#SpringBoot中的配置文件(拓展)">¶</a> SpringBoot中的配置文件(拓展)</h1>
@@ -9711,85 +9693,6 @@ public class CacheProperties &#123;
 <li>根据spring.factories配置加载AutoConfigure类</li>
 <li>根据 @Conditional注解的条件，进行自动配置并将Bean注入Spring Context</li>
 </ol>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css">]]></content>
-      <categories>
-        <category>SpringBoot</category>
-      </categories>
-      <tags>
-        <tag>Java</tag>
-        <tag>SpringBoot</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>SpringBoot的日志使用</title>
-    <url>/2019/07/10/2019-07-10-SpringBoot%E7%9A%84%E6%97%A5%E5%BF%97/</url>
-    <content><![CDATA[<h1 id="SpringBoot的日志使用"><a class="header-anchor" href="#SpringBoot的日志使用">¶</a> SpringBoot的日志使用</h1>
-<h2 id="SpringBoot的日志选择"><a class="header-anchor" href="#SpringBoot的日志选择">¶</a> SpringBoot的日志选择</h2>
-<p>SpringBoot默认使用SLF4j和logback用作日志。为什么是两个，为什么是这两个？</p>
-<h3 id="日志框架的大致分类"><a class="header-anchor" href="#日志框架的大致分类">¶</a> 日志框架的大致分类</h3>
-<p>日志框架分为日志的门面框架和具体的实现框架，为什么需要门面框架，是因为不同的系统对日志的需求可能不同，系统一可能使用日志框架一，系统二还需要实现日志功能，如果还用日志框架一，则需要适配系统二进行api的调整。</p>
-<p>门面日志框架就为了解决这一问题。让调用框架的api统一，具体的实现可以随不同的系统进行调整。类似jdbc，操作接口需要进行统一。</p>
-<p>所以SpringBoot的日志使用分别是用来日志门面框架<code>SLF4j</code>和日志具体实现框架<code>logback</code>作为日志服务。</p>
-<h2 id="使用日志"><a class="header-anchor" href="#使用日志">¶</a> 使用日志</h2>
-<h3 id="简易使用SLF4j"><a class="header-anchor" href="#简易使用SLF4j">¶</a> 简易使用SLF4j</h3>
-<p>参考<a class="link"   href="https://www.slf4j.org/manual.html" >SLF4j官网<i class="fas fa-external-link-alt"></i></a>中的hello world程序：</p>
-<pre><code class="language-java">// 导入slf4j的jar包
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-public class HelloWorld &#123;
-  public static void main(String[] args) &#123;
-    Logger logger = LoggerFactory.getLogger(HelloWorld.class);
-    logger.info(&quot;Hello World&quot;);
-  &#125;
-&#125;
-</code></pre>
-<p>下图表示了使用slf4j和各个日志实现框架的匹配。绿色的是适配层，深蓝色的是实现框架。比如使用logback作为实现框架，则需要导入slf4j的jar包和logback的相关jar包。但是如果使用log4j作为实现框架，还需导入中间的适配层jar包（中间绿色的）。</p>
-<p><img src="https://www.slf4j.org/images/concrete-bindings.png" alt="使用slf4j"></p>
-<p>在Springboot-logging-start中使用如下的jar包依赖：</p>
-<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190712095039.png" alt="jar包依赖"></p>
-<p>每一个实现框架都有各自的配置文件，使用slf4j后，配置文件还是使用具体实现的配置文件。</p>
-<h4 id="SpringBoot中的SLF4j"><a class="header-anchor" href="#SpringBoot中的SLF4j">¶</a> SpringBoot中的SLF4j</h4>
-<ol>
-<li>SpringBoot底层自动配置使用的是SLF4j和logback。</li>
-<li>SprintBoot使用中间包将其他日志框架转化为slf4j框架。</li>
-<li>引入其他日志框架时，需要把这个日志的jar包排除掉。否则与slf4j的jar包相冲突，上一条就是原因。</li>
-</ol>
-<p>在测试文件中测试SpringBoot的日志使用</p>
-<pre><code class="language-java"> Logger logger = LoggerFactory.getLogger(this.getClass());
-    @Test
-    public void testLogger()&#123;
-        // 由低到高 日志的级别，日志框架可以根据配置文件调整输出的日志级别，
-        // 只会输出相应日志级别及后面的高级别日志信息
-        logger.trace(&quot;这是trace日志&quot;);
-        logger.debug(&quot;这是debug日志&quot;);
-        // SpringBoot默认使用的是info级别，
-        // 可以使用日志的配置文件调整级别
-        logger.info(&quot;这是info日志&quot;);
-        logger.warn(&quot;这是warn日志&quot;);
-        logger.error(&quot;这是error日志&quot;);
-    &#125;
-</code></pre>
-<p>日志级别有<code>trace</code>, <code>debug</code>,<code>info</code>,<code>warn</code>,<code>error</code>五种日志级别。并且由低到高排序。指定日志级别，则系统会输出当前日志级别和更高的日志级别的日志。</p>
-<pre><code class="language-yaml"># 全局的日志记录级别
-#logging:
-#  level: trace
-
-# 指定的包下的日志记录级别
-logging:
-  level:
-    com :
-      nanyin : debug
-#  pattern: 输出格式
-#    file:
-#    console:
-
-#  file: -- 这里用于指定日志记录的文件名，可以指定具体的路径，未指定则生成在当前项目下
-#  path: -- 这里用于指定日志文件的路径，springboot会默认生成路径，默认文件名
-# 这两个指定一个就好了，都指定则会默认使用file
-</code></pre>
-<h4 id="使用自定义的配置文件"><a class="header-anchor" href="#使用自定义的配置文件">¶</a> 使用自定义的配置文件</h4>
-<h4 id="更换log4j2作为日志框架"><a class="header-anchor" href="#更换log4j2作为日志框架">¶</a> 更换log4j2作为日志框架</h4>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css">]]></content>
       <categories>
         <category>SpringBoot</category>
@@ -10320,49 +10223,6 @@ public class MyErrorAttributes extends DefaultErrorAttributes &#123;
       </tags>
   </entry>
   <entry>
-    <title>Mysql中的INSTR和FIND_IN_SET函数应用</title>
-    <url>/2020/03/09/INSTR%E5%92%8CFIND_IN_SET%E5%87%BD%E6%95%B0/</url>
-    <content><![CDATA[<h1 id="INSTR函数"><a class="header-anchor" href="#INSTR函数">¶</a> INSTR函数</h1>
-<p>The INSTR() function returns the position of the first occurrence of a string in another string.</p>
-<p>This function performs a case-insensitive search.</p>
-<p>能够找到第一个匹配到位置,类似java中的firstIndexOf,并且是大小写不敏感的搜索</p>
-<h2 id="用法"><a class="header-anchor" href="#用法">¶</a> 用法</h2>
-<p>首先:了解到 INSTR 函数的基本功能时能够 <strong>返回字符串在某一个字段的内容中的位置, 没有找到字符串返回0，否则返回位置（从1开始）</strong> .比如:</p>
-<pre><code class="language-sql">-- 结果为10
-select INSTR(&quot;this is mysql&quot;,&quot;y&quot;)  
--- 结果为0
-select INSTR(&quot;this is mysql&quot;,&quot;a&quot;)
-</code></pre>
-<p>2如果instr当作查询条件,就能起到<strong>类似in的作用</strong></p>
-<pre><code class="language-sql">-- 返回用户id为12的数据,同样的,也会返回id为 1,2的数据
-select * from user u where INSTR('12',u.id);
-</code></pre>
-<p>更复杂的能够查询数据为字符串,并且用特定符号分隔的特定的数据</p>
-<pre><code class="language-sql">select (
-	select GROUP_CONCAT(u.username) as name 
-		from `user` u 
-		where INSTR(concat(',',(p.leaderIds),','),concat(',',(u.id),','))
-)
-	from product p 
-	WHERE p.product_uid ='02124ff31eac4c14934b045358b10cca'
-</code></pre>
-<h1 id="FIND_IN_SET 函数"><a class="header-anchor" href="#FIND_IN_SET 函数">¶</a> FIND_IN_SET 函数</h1>
-<p>The FIND_IN_SET() function returns the position of a string within a list of strings.</p>
-<p>能够返回list中的字符串位置(使用逗号分隔)</p>
-<p>基础的就不多说,直接举例</p>
-<pre><code class="language-sql">-- 会只返回id为12,13的数据
-select * from user u where FIND_IN_SET(u.id,'12,13')
-</code></pre>
-<p>find_in_set 和 instr 函数做例子上的对比时,发现instr是模糊匹配,只要符合都会查出来,而find_in_set是针对使用逗号分隔的对instr的进一步处理,只有出现在逗号之间的进行精确匹配.</p>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css">]]></content>
-      <categories>
-        <category>MYSQL</category>
-      </categories>
-      <tags>
-        <tag>MYSQL</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Spring的缓存</title>
     <url>/2019/08/15/2019-08-15-Spring%E7%9A%84%E7%BC%93%E5%AD%98/</url>
     <content><![CDATA[<h1 id="Spring的缓存"><a class="header-anchor" href="#Spring的缓存">¶</a> Spring的缓存</h1>
@@ -10573,6 +10433,49 @@ public CacheManager cacheManager(RedisConnectionFactory connectionFactory) &#123
       </tags>
   </entry>
   <entry>
+    <title>Mysql中的INSTR和FIND_IN_SET函数应用</title>
+    <url>/2020/03/09/INSTR%E5%92%8CFIND_IN_SET%E5%87%BD%E6%95%B0/</url>
+    <content><![CDATA[<h1 id="INSTR函数"><a class="header-anchor" href="#INSTR函数">¶</a> INSTR函数</h1>
+<p>The INSTR() function returns the position of the first occurrence of a string in another string.</p>
+<p>This function performs a case-insensitive search.</p>
+<p>能够找到第一个匹配到位置,类似java中的firstIndexOf,并且是大小写不敏感的搜索</p>
+<h2 id="用法"><a class="header-anchor" href="#用法">¶</a> 用法</h2>
+<p>首先:了解到 INSTR 函数的基本功能时能够 <strong>返回字符串在某一个字段的内容中的位置, 没有找到字符串返回0，否则返回位置（从1开始）</strong> .比如:</p>
+<pre><code class="language-sql">-- 结果为10
+select INSTR(&quot;this is mysql&quot;,&quot;y&quot;)  
+-- 结果为0
+select INSTR(&quot;this is mysql&quot;,&quot;a&quot;)
+</code></pre>
+<p>2如果instr当作查询条件,就能起到<strong>类似in的作用</strong></p>
+<pre><code class="language-sql">-- 返回用户id为12的数据,同样的,也会返回id为 1,2的数据
+select * from user u where INSTR('12',u.id);
+</code></pre>
+<p>更复杂的能够查询数据为字符串,并且用特定符号分隔的特定的数据</p>
+<pre><code class="language-sql">select (
+	select GROUP_CONCAT(u.username) as name 
+		from `user` u 
+		where INSTR(concat(',',(p.leaderIds),','),concat(',',(u.id),','))
+)
+	from product p 
+	WHERE p.product_uid ='02124ff31eac4c14934b045358b10cca'
+</code></pre>
+<h1 id="FIND_IN_SET 函数"><a class="header-anchor" href="#FIND_IN_SET 函数">¶</a> FIND_IN_SET 函数</h1>
+<p>The FIND_IN_SET() function returns the position of a string within a list of strings.</p>
+<p>能够返回list中的字符串位置(使用逗号分隔)</p>
+<p>基础的就不多说,直接举例</p>
+<pre><code class="language-sql">-- 会只返回id为12,13的数据
+select * from user u where FIND_IN_SET(u.id,'12,13')
+</code></pre>
+<p>find_in_set 和 instr 函数做例子上的对比时,发现instr是模糊匹配,只要符合都会查出来,而find_in_set是针对使用逗号分隔的对instr的进一步处理,只有出现在逗号之间的进行精确匹配.</p>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css">]]></content>
+      <categories>
+        <category>MYSQL</category>
+      </categories>
+      <tags>
+        <tag>MYSQL</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Java的四种引用类型</title>
     <url>/2020/09/28/Java%E7%9A%84%E5%9B%9B%E7%A7%8D%E5%BC%95%E7%94%A8%E7%B1%BB%E5%9E%8B/</url>
     <content><![CDATA[<h1 id="Java 的四种引用类型"><a class="header-anchor" href="#Java 的四种引用类型">¶</a> Java 的四种引用类型</h1>
@@ -10595,175 +10498,6 @@ public CacheManager cacheManager(RedisConnectionFactory connectionFactory) &#123
 <li>另外一个线程，发现<code>ReferenceQueue</code>不为空，执行相关方法，清空堆外内存。</li>
 <li>清空堆外内存后，对虚引用进行真正的回收。</li>
 </ol>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css">]]></content>
-      <categories>
-        <category>Java</category>
-      </categories>
-      <tags>
-        <tag>Java</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Java的深拷贝和浅拷贝</title>
-    <url>/2020/04/16/Java%E7%9A%84%E6%B7%B1%E6%8B%B7%E8%B4%9D%E5%92%8C%E6%B5%85%E6%8B%B7%E8%B4%9D/</url>
-    <content><![CDATA[<h1 id="Java的深拷贝和浅拷贝"><a class="header-anchor" href="#Java的深拷贝和浅拷贝">¶</a> Java的深拷贝和浅拷贝</h1>
-<h2 id="对象拷贝"><a class="header-anchor" href="#对象拷贝">¶</a> 对象拷贝</h2>
-<p>在展开说深拷贝和浅拷贝之前，先来阐述阐述一下什么是对象拷贝。对象拷贝(Object Copy)就是将一个对象的属性拷贝到另一个有着相同类类型的对象中去。</p>
-<p>可以简单类比为在电脑上复制文件，这时候，复制普通文件和复制链接就产生了差异，这个差异就是接下来需要分析的深拷贝和浅拷贝的差异。</p>
-<h3 id="对象拷贝的实现"><a class="header-anchor" href="#对象拷贝的实现">¶</a> 对象拷贝的实现</h3>
-<p>在Java中如果想要实现拷贝（忽略对象之间使用<code>=</code>号），只能使用<code>clone</code>方法。clone方法使用<code>protect</code>修饰，声明在Object上，也就是所有Object子对象都可以使用clone方法进行对象拷贝。</p>
-<pre><code class="language-java">protected native Object clone() throws CloneNotSupportedException;
-
-</code></pre>
-<p>在注释中可以看到，如果这个类没有继承自<code>Cloneable</code>接口，那么它会抛出<code>CloneNotSupportedException</code> 异常。</p>
-<p>在实现接口，并调用clone时，就能完成对象的拷贝。</p>
-<h2 id="深拷贝和浅拷贝"><a class="header-anchor" href="#深拷贝和浅拷贝">¶</a> 深拷贝和浅拷贝</h2>
-<p>在对象拷贝章节类比电脑上复制文件一样，针对普通文件和链接文件有不同的处理方式，这种处理方式在Java对象拷贝的上的体现就是深拷贝。</p>
-<p>在 Java 中，除了<strong>基本数据类型</strong>（元类型）之外，还存在 <strong>类的实例对象</strong> 这个引用数据类型。如果再拷贝对象的过程中，只对基本类型的变量进行了值得复制，却对引用类型只做了引用的复制（也就是内存地址引用），没有真正复制引用到的对象。此时的对象拷贝就叫做<strong>浅拷贝</strong>。</p>
-<p>与之相反，不光对基本数据类型执行了值得复制，而且在复制引用类型复制时，不是仅仅传递引用，而是将引用到的对象真正的复制（分配内存），此时的对象拷贝就叫做<strong>深拷贝</strong>。</p>
-<h3 id="深拷贝和浅拷贝的区别"><a class="header-anchor" href="#深拷贝和浅拷贝的区别">¶</a> 深拷贝和浅拷贝的区别</h3>
-<p>其实上面在引申概念时，就已经得出深拷贝和浅拷贝的区别了，深拷贝不光要拷贝进本数据类型的值，还要完成对引用类型创建一个新的对象，并复制其内的成员变量。</p>
-<h3 id="深拷贝和浅拷贝的实例"><a class="header-anchor" href="#深拷贝和浅拷贝的实例">¶</a> 深拷贝和浅拷贝的实例</h3>
-<ul>
-<li>浅拷贝用例</li>
-</ul>
-<pre><code class="language-java">public class CloneTest implements Cloneable &#123;
-  public int x;
-  public SonClone son;
-
-  public int getX() &#123;
-      return x;
-  &#125;
-
-  public void setX(int x) &#123;
-      this.x = x;
-  &#125;
-
-  public SonClone getSon() &#123;
-      return son;
-  &#125;
-
-  public void setSon(SonClone son) &#123;
-      this.son = son;
-  &#125;
-
-  @Override
-  protected Object clone() throws CloneNotSupportedException &#123;
-      return super.clone();
-  &#125;
-
-  	@Test
-  public void testClone()&#123;
-      CloneTest test = new CloneTest();
-      test.setX(127);
-      test.setSon(new SonClone());
-      try &#123;
-          CloneTest clone = (CloneTest) test.clone();
-          // 比较test和复制对象copy
-          System.out.println(&quot;test == clone --&gt; &quot;
-                  +(test == clone));
-          System.out.println(&quot;test.hash == clone.hash --&gt; &quot;
-                  +(test.hashCode() == clone.hashCode()));
-          System.out.println(&quot;test.getClass() == clone.getClass() --&gt; &quot;
-                  + (test.getClass() == clone.getClass()));
-          System.out.println(&quot;test.son == clone.son --&gt; &quot; 
-                  +(test.getSon() == clone.getSon()));
-          System.out.println(&quot;test.son.hash == clone.son.hash --&gt; &quot; 
-                  +(test.getSon().hashCode() == clone.getSon().hashCode()));
-      &#125; catch (CloneNotSupportedException e) &#123;
-          e.printStackTrace();
-      &#125;
-  &#125;
-  class SonClone implements Cloneable&#123;
-      int a;
-  &#125;
-
-&#125;
-</code></pre>
-<p>浅拷贝的执行结果如下：</p>
-<pre><code>test == clone --&gt; false
-test.hash == clone.hash --&gt; false
-test.getClass() == clone.getClass() --&gt; true
-test.son == clone.son --&gt; true
-test.son.hash == clone.son.hash --&gt; true
-
-</code></pre>
-<p>可以看到，使用clone可以复制对象，对象的hashcode已经不相同了，但是引用对象却没有执行复制对象的过程，返回的hashcode值仍然是相同的，也就是仅仅复制了引用。</p>
-<ul>
-<li>深拷贝用例</li>
-</ul>
-<pre><code class="language-java">public class DeepClone implements Cloneable&#123; public int x; public SonClone son;
-  public int getX() &#123;
-      return x;
-  &#125;
-
-  public void setX(int x) &#123;
-      this.x = x;
-  &#125;
-
-  public SonClone getSon() &#123;
-      return son;
-  &#125;
-
-  public void setSon(SonClone son) &#123;
-      this.son = son;
-  &#125;
-
-  class SonClone implements Cloneable&#123;
-      int name;
-
-      public int getName() &#123;
-          return name;
-      &#125;
-
-      public void setName(int name) &#123;
-          this.name = name;
-      &#125;
-
-      @Override
-      protected Object clone() throws CloneNotSupportedException &#123;
-          return super.clone();
-      &#125;
-  &#125;
-
-  @Override
-  protected Object clone() throws CloneNotSupportedException &#123;
-      DeepClone clone = (DeepClone) super.clone();
-      clone.son = (SonClone) this.son.clone();
-      return clone;
-  &#125;
-
-  @Test
-  public void testClone()&#123;
-      DeepClone test = new DeepClone();
-      test.setX(127);
-      test.setSon(new SonClone());
-      try &#123;
-          DeepClone clone = (DeepClone) test.clone();
-          // 比较test和复制对象copy
-          System.out.println(&quot;test == clone --&gt; &quot;
-                  +(test == clone));
-          System.out.println(&quot;test.hash == clone.hash --&gt; &quot;
-                  +(test.hashCode() == clone.hashCode()));
-
-          System.out.println(&quot;test.getClass() == clone.getClass() --&gt; &quot;
-                  + (test.getClass() == clone.getClass()));
-          System.out.println(&quot;test.x == clone.x --&gt; &quot;
-                  +(test.getX() == clone.getX()));
-          System.out.println(&quot;test.son == clone.son --&gt; &quot;
-                  +(test.getSon() == clone.getSon()));
-          System.out.println(&quot;test.son.hash == clone.son.hash --&gt; &quot;
-                  +(test.getSon().hashCode() == clone.getSon().hashCode()));
-      &#125; catch (CloneNotSupportedException e) &#123;
-          e.printStackTrace();
-      &#125;
-  &#125;
-&#125;
-</code></pre>
-<p>这里深度拷贝可以看出在父类使用clone时，会手动将clone出的父类中的引用指向复制clone出来的子类对象。这时对父类执行了深拷贝，但实则对子类进行了一次浅拷贝。结果显而易见，最后的引用类型值和hashcode都不相同。</p>
-<h2 id="总结"><a class="header-anchor" href="#总结">¶</a> 总结</h2>
-<p>拷贝对象需要使用clone方法，并需要继承Cloneable接口，如果不手动重写clone方法，则默认会只能执行浅拷贝。</p>
-<p>浅拷贝只会复制基本数据类型的值，而不会复制引用类型的对象，而深拷贝需要手动编写clone方法来达到既能复制基本数据值，又能够完成对引用类型的对象的复制。</p>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css">]]></content>
       <categories>
         <category>Java</category>
@@ -11001,6 +10735,175 @@ List&lt;Integer&gt; resList = javaTester.functionMethods2(list, a -&gt; &#123;
       <tags>
         <tag>Java</tag>
         <tag>基础</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Java的深拷贝和浅拷贝</title>
+    <url>/2020/04/16/Java%E7%9A%84%E6%B7%B1%E6%8B%B7%E8%B4%9D%E5%92%8C%E6%B5%85%E6%8B%B7%E8%B4%9D/</url>
+    <content><![CDATA[<h1 id="Java的深拷贝和浅拷贝"><a class="header-anchor" href="#Java的深拷贝和浅拷贝">¶</a> Java的深拷贝和浅拷贝</h1>
+<h2 id="对象拷贝"><a class="header-anchor" href="#对象拷贝">¶</a> 对象拷贝</h2>
+<p>在展开说深拷贝和浅拷贝之前，先来阐述阐述一下什么是对象拷贝。对象拷贝(Object Copy)就是将一个对象的属性拷贝到另一个有着相同类类型的对象中去。</p>
+<p>可以简单类比为在电脑上复制文件，这时候，复制普通文件和复制链接就产生了差异，这个差异就是接下来需要分析的深拷贝和浅拷贝的差异。</p>
+<h3 id="对象拷贝的实现"><a class="header-anchor" href="#对象拷贝的实现">¶</a> 对象拷贝的实现</h3>
+<p>在Java中如果想要实现拷贝（忽略对象之间使用<code>=</code>号），只能使用<code>clone</code>方法。clone方法使用<code>protect</code>修饰，声明在Object上，也就是所有Object子对象都可以使用clone方法进行对象拷贝。</p>
+<pre><code class="language-java">protected native Object clone() throws CloneNotSupportedException;
+
+</code></pre>
+<p>在注释中可以看到，如果这个类没有继承自<code>Cloneable</code>接口，那么它会抛出<code>CloneNotSupportedException</code> 异常。</p>
+<p>在实现接口，并调用clone时，就能完成对象的拷贝。</p>
+<h2 id="深拷贝和浅拷贝"><a class="header-anchor" href="#深拷贝和浅拷贝">¶</a> 深拷贝和浅拷贝</h2>
+<p>在对象拷贝章节类比电脑上复制文件一样，针对普通文件和链接文件有不同的处理方式，这种处理方式在Java对象拷贝的上的体现就是深拷贝。</p>
+<p>在 Java 中，除了<strong>基本数据类型</strong>（元类型）之外，还存在 <strong>类的实例对象</strong> 这个引用数据类型。如果再拷贝对象的过程中，只对基本类型的变量进行了值得复制，却对引用类型只做了引用的复制（也就是内存地址引用），没有真正复制引用到的对象。此时的对象拷贝就叫做<strong>浅拷贝</strong>。</p>
+<p>与之相反，不光对基本数据类型执行了值得复制，而且在复制引用类型复制时，不是仅仅传递引用，而是将引用到的对象真正的复制（分配内存），此时的对象拷贝就叫做<strong>深拷贝</strong>。</p>
+<h3 id="深拷贝和浅拷贝的区别"><a class="header-anchor" href="#深拷贝和浅拷贝的区别">¶</a> 深拷贝和浅拷贝的区别</h3>
+<p>其实上面在引申概念时，就已经得出深拷贝和浅拷贝的区别了，深拷贝不光要拷贝进本数据类型的值，还要完成对引用类型创建一个新的对象，并复制其内的成员变量。</p>
+<h3 id="深拷贝和浅拷贝的实例"><a class="header-anchor" href="#深拷贝和浅拷贝的实例">¶</a> 深拷贝和浅拷贝的实例</h3>
+<ul>
+<li>浅拷贝用例</li>
+</ul>
+<pre><code class="language-java">public class CloneTest implements Cloneable &#123;
+  public int x;
+  public SonClone son;
+
+  public int getX() &#123;
+      return x;
+  &#125;
+
+  public void setX(int x) &#123;
+      this.x = x;
+  &#125;
+
+  public SonClone getSon() &#123;
+      return son;
+  &#125;
+
+  public void setSon(SonClone son) &#123;
+      this.son = son;
+  &#125;
+
+  @Override
+  protected Object clone() throws CloneNotSupportedException &#123;
+      return super.clone();
+  &#125;
+
+  	@Test
+  public void testClone()&#123;
+      CloneTest test = new CloneTest();
+      test.setX(127);
+      test.setSon(new SonClone());
+      try &#123;
+          CloneTest clone = (CloneTest) test.clone();
+          // 比较test和复制对象copy
+          System.out.println(&quot;test == clone --&gt; &quot;
+                  +(test == clone));
+          System.out.println(&quot;test.hash == clone.hash --&gt; &quot;
+                  +(test.hashCode() == clone.hashCode()));
+          System.out.println(&quot;test.getClass() == clone.getClass() --&gt; &quot;
+                  + (test.getClass() == clone.getClass()));
+          System.out.println(&quot;test.son == clone.son --&gt; &quot; 
+                  +(test.getSon() == clone.getSon()));
+          System.out.println(&quot;test.son.hash == clone.son.hash --&gt; &quot; 
+                  +(test.getSon().hashCode() == clone.getSon().hashCode()));
+      &#125; catch (CloneNotSupportedException e) &#123;
+          e.printStackTrace();
+      &#125;
+  &#125;
+  class SonClone implements Cloneable&#123;
+      int a;
+  &#125;
+
+&#125;
+</code></pre>
+<p>浅拷贝的执行结果如下：</p>
+<pre><code>test == clone --&gt; false
+test.hash == clone.hash --&gt; false
+test.getClass() == clone.getClass() --&gt; true
+test.son == clone.son --&gt; true
+test.son.hash == clone.son.hash --&gt; true
+
+</code></pre>
+<p>可以看到，使用clone可以复制对象，对象的hashcode已经不相同了，但是引用对象却没有执行复制对象的过程，返回的hashcode值仍然是相同的，也就是仅仅复制了引用。</p>
+<ul>
+<li>深拷贝用例</li>
+</ul>
+<pre><code class="language-java">public class DeepClone implements Cloneable&#123; public int x; public SonClone son;
+  public int getX() &#123;
+      return x;
+  &#125;
+
+  public void setX(int x) &#123;
+      this.x = x;
+  &#125;
+
+  public SonClone getSon() &#123;
+      return son;
+  &#125;
+
+  public void setSon(SonClone son) &#123;
+      this.son = son;
+  &#125;
+
+  class SonClone implements Cloneable&#123;
+      int name;
+
+      public int getName() &#123;
+          return name;
+      &#125;
+
+      public void setName(int name) &#123;
+          this.name = name;
+      &#125;
+
+      @Override
+      protected Object clone() throws CloneNotSupportedException &#123;
+          return super.clone();
+      &#125;
+  &#125;
+
+  @Override
+  protected Object clone() throws CloneNotSupportedException &#123;
+      DeepClone clone = (DeepClone) super.clone();
+      clone.son = (SonClone) this.son.clone();
+      return clone;
+  &#125;
+
+  @Test
+  public void testClone()&#123;
+      DeepClone test = new DeepClone();
+      test.setX(127);
+      test.setSon(new SonClone());
+      try &#123;
+          DeepClone clone = (DeepClone) test.clone();
+          // 比较test和复制对象copy
+          System.out.println(&quot;test == clone --&gt; &quot;
+                  +(test == clone));
+          System.out.println(&quot;test.hash == clone.hash --&gt; &quot;
+                  +(test.hashCode() == clone.hashCode()));
+
+          System.out.println(&quot;test.getClass() == clone.getClass() --&gt; &quot;
+                  + (test.getClass() == clone.getClass()));
+          System.out.println(&quot;test.x == clone.x --&gt; &quot;
+                  +(test.getX() == clone.getX()));
+          System.out.println(&quot;test.son == clone.son --&gt; &quot;
+                  +(test.getSon() == clone.getSon()));
+          System.out.println(&quot;test.son.hash == clone.son.hash --&gt; &quot;
+                  +(test.getSon().hashCode() == clone.getSon().hashCode()));
+      &#125; catch (CloneNotSupportedException e) &#123;
+          e.printStackTrace();
+      &#125;
+  &#125;
+&#125;
+</code></pre>
+<p>这里深度拷贝可以看出在父类使用clone时，会手动将clone出的父类中的引用指向复制clone出来的子类对象。这时对父类执行了深拷贝，但实则对子类进行了一次浅拷贝。结果显而易见，最后的引用类型值和hashcode都不相同。</p>
+<h2 id="总结"><a class="header-anchor" href="#总结">¶</a> 总结</h2>
+<p>拷贝对象需要使用clone方法，并需要继承Cloneable接口，如果不手动重写clone方法，则默认会只能执行浅拷贝。</p>
+<p>浅拷贝只会复制基本数据类型的值，而不会复制引用类型的对象，而深拷贝需要手动编写clone方法来达到既能复制基本数据值，又能够完成对引用类型的对象的复制。</p>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css">]]></content>
+      <categories>
+        <category>Java</category>
+      </categories>
+      <tags>
+        <tag>Java</tag>
       </tags>
   </entry>
   <entry>
@@ -11433,165 +11336,6 @@ public void refresh() throws BeansException, IllegalStateException &#123;
       </tags>
   </entry>
   <entry>
-    <title>SpringBoot的自定义starter开发</title>
-    <url>/2019/08/13/SpringBoot%E8%87%AA%E5%AE%9A%E4%B9%89starter/</url>
-    <content><![CDATA[<h1 id="SpringBoot的自定义starter开发"><a class="header-anchor" href="#SpringBoot的自定义starter开发">¶</a> SpringBoot的自定义starter开发</h1>
-<p>SpringBoot官方默认提供了很多的starter。参考<a class="link"   href="https://docs.spring.io/spring-boot/docs/2.1.7.RELEASE/reference/html/using-boot-build-systems.html#using-boot-starter" >官方的reference<i class="fas fa-external-link-alt"></i></a>。starter作为在SpringBoot中重要的特性，使用时能够在POM文件中直接引用这些starter，可以一站式的获取与Spring结合的相关服务和功能。如果想引入<code>redis</code>等功能。则直接添加使用<code>spring-boot-starter-data-redis</code>。只需在配置文件中配置少量属性，就可以在应用中使用。</p>
-<h2 id="SpringBoot的自动配置原理"><a class="header-anchor" href="#SpringBoot的自动配置原理">¶</a> SpringBoot的自动配置原理</h2>
-<p>SpringBoot通过starter，引用相关服务，然后通过autoConfigure来自动配置相关服务。更多具体的实现可以参考<a href="https://nanyiniu.github.io/2019/07/08/2019-07-08-SpringBoot%E7%9A%84%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%EF%BC%88%E6%8B%93%E5%B1%95%EF%BC%89/">这篇文章</a>，在这篇文章中，简要的分析来如何实现自定义starter和基本的自动配置实现。</p>
-<h2 id="starter的基本结构"><a class="header-anchor" href="#starter的基本结构">¶</a> starter的基本结构</h2>
-<ul>
-<li>包名称以 <code>spring-boot-starter-xxx</code> 命名，如引用<code>spring-boot-starter-data-jpa</code>.其中的内容只包括pom文件，用来引用相关服务的jar包。</li>
-<li>包名称以<code>xxx-spring-boot-autoconfigure</code>命名。包含：
-<ul>
-<li>xxxAutoConfiguration 自动配置类，使用<code>Configuration</code>注解标志为配置类。使用<code>Conditionalxxxx</code>相关注解表示条件，使用<code>EnableConfigurationProperties</code>注解，来指定配置属性类。</li>
-<li>xxxProperties 配置属性类。使用<code>ConfigurationProperties</code>注解来标志为配置属性类，并且需要指定<code>prefix</code>，以便在配置文件中，使用prefix+属性名来设置相关属性。</li>
-<li>spring.factories 文件中添加相关信息，用来指定需要进行自动配置的类的全限定名称。如：</li>
-</ul>
-</li>
-</ul>
-<pre><code class="language-java">org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-org.springframework.boot.autoconfigure.admin.SpringApplicationAdminJmxAutoConfiguration,
-</code></pre>
-<h2 id="开始自定义starter"><a class="header-anchor" href="#开始自定义starter">¶</a> 开始自定义starter</h2>
-<p>在正式进行之前，需要先创建一个空的Project，用来放<code>spring-boot-starter-xxx</code>和<code>xxx-spring-boot-autoconfigure</code>。</p>
-<h3 id="创建spring-boot-starter-xxx和xxx-spring-boot-autoconfigure"><a class="header-anchor" href="#创建spring-boot-starter-xxx和xxx-spring-boot-autoconfigure">¶</a> 创建spring-boot-starter-xxx和xxx-spring-boot-autoconfigure</h3>
-<p>在创建完空项目后，会要求创建<code>module</code>。选择<code>maven</code>或者<code>Spring Initializer</code>进行<code>spring-boot-starter-xxx</code>的创建。</p>
-<h3 id="配置starter"><a class="header-anchor" href="#配置starter">¶</a> 配置starter</h3>
-<p>在实际操作配置starter之前，先来分析SpringBoot官方提供的starter的基本的依赖结构，为接下来的构建起到模版的作用。</p>
-<p>在左边的为<code>spring-boot-starter-web</code>的的简单的依赖关系，它依赖<code>spring-boot-starter</code>。而<code>spring-boot-starter</code>进一步依赖于<code>spring-boot-autoconfigure</code>用来进行自动配置。</p>
-<h3 id="配置autoconfiguration包"><a class="header-anchor" href="#配置autoconfiguration包">¶</a> 配置autoconfiguration包</h3>
-<h4 id="pom配置"><a class="header-anchor" href="#pom配置">¶</a> pom配置</h4>
-<p>在pom.xml中添加如下内容：</p>
-<pre><code class="language-xml">&lt;dependencies&gt;
-    &lt;dependency&gt;
-        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
-        &lt;artifactId&gt;spring-boot&lt;/artifactId&gt;
-        &lt;version&gt;2.1.6.RELEASE&lt;/version&gt;
-        &lt;scope&gt;compile&lt;/scope&gt;
-    &lt;/dependency&gt;
-    &lt;dependency&gt;
-        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
-        &lt;artifactId&gt;spring-boot-configuration-processor&lt;/artifactId&gt;
-        &lt;optional&gt;true&lt;/optional&gt;
-    &lt;/dependency&gt;
-&lt;/dependencies&gt;
-</code></pre>
-<p>主要需要依赖<code>spring-boot</code>。如果在自动配置类需要进行其他特殊的<code>Conditional</code>设置时，还需要引入<code>spring-boot-autoconfigure</code>。</p>
-<h4 id="添加xxxAutoConfiuration和xxxProperties类"><a class="header-anchor" href="#添加xxxAutoConfiuration和xxxProperties类">¶</a> 添加xxxAutoConfiuration和xxxProperties类</h4>
-<p>这两个类是自动配置中必须的类。内容可以参考<code>WebMvcAutoConfiguration</code>和<code>WebMvcProperties</code>这两个类。下面是我的具体实现类。</p>
-<pre><code class="language-java">// HelloAutoConfiguration 自定义的AutoConfiguration类
-@Configuration
-@EnableConfigurationProperties(&#123;HelloProperties.class&#125;)
-public class HelloAutoConfiguration &#123;
-
-    private final HelloProperties helloProperties;
-
-    public HelloAutoConfiguration(HelloProperties helloProperties) &#123;
-        this.helloProperties = helloProperties;
-    &#125;
-
-    @Bean
-    public HelloService sayHello()&#123;
-        HelloService helloService = new HelloService();
-        // 设置配置属性
-        helloService.setHelloProperties(helloProperties);
-        return helloService;
-    &#125;
-
-&#125;
-
-//使用service类来测试是否配置成功，方法调用
-public class HelloService &#123;
-
-    HelloProperties helloProperties;
-
-    public HelloProperties getHelloProperties() &#123;
-        return helloProperties;
-    &#125;
-
-    public void setHelloProperties(HelloProperties helloProperties) &#123;
-        this.helloProperties = helloProperties;
-    &#125;
-
-    // 方法调用验证属性是否其作用。也就是自动配置是否生效
-    public String sayHello()&#123;
-        return helloProperties.getPrefix() + &quot; hello world !&quot;;
-    &#125;
-&#125;
-
-// 自定义的Properties类
-@ConfigurationProperties(prefix = &quot;spring.hello&quot;)
-public class HelloProperties &#123;
-    private String prefix ;
-
-    public String getPrefix() &#123;
-        return prefix;
-    &#125;
-
-    public void setPrefix(String prefix) &#123;
-        this.prefix = prefix;
-    &#125;
-&#125;
-</code></pre>
-<h4 id="spring.factories"><a class="header-anchor" href="#spring.factories">¶</a> spring.factories</h4>
-<p>如果想要使用自动配置，必须添加<code>spring.factories</code>这个文件。添加如下内容：</p>
-<pre><code class="language-xml"># Auto Configure
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-com.nanyin.hello.HelloAutoConfiguration
-</code></pre>
-<h3 id="配置 starter-xxx 包"><a class="header-anchor" href="#配置 starter-xxx 包">¶</a> 配置 starter-xxx 包</h3>
-<h4 id="pom配置-2"><a class="header-anchor" href="#pom配置-2">¶</a> pom配置</h4>
-<pre><code class="language-xml">&lt;dependencies&gt;
-    &lt;!--构建的starter依赖&gt;spring-boot-starter 和其他需要的starter--&gt;
-    &lt;dependency&gt;
-        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
-        &lt;artifactId&gt;spring-boot-starter&lt;/artifactId&gt;
-    &lt;/dependency&gt;
-
-    &lt;!--依赖自动配置包--&gt;
-    &lt;dependency&gt;
-        &lt;groupId&gt;com.nanyin&lt;/groupId&gt;
-        &lt;artifactId&gt;hello-spring-boot-autoconfigure&lt;/artifactId&gt;
-        &lt;version&gt;0.0.1-SNAPSHOT&lt;/version&gt;
-    &lt;/dependency&gt;
-&lt;/dependencies&gt;
-</code></pre>
-<h3 id="项目结构"><a class="header-anchor" href="#项目结构">¶</a> 项目结构</h3>
-<p>需要删除不需要的类或目录，如SpringBoot启动类、Resource目录、test目录。</p>
-<h3 id="打成jar包"><a class="header-anchor" href="#打成jar包">¶</a> 打成jar包</h3>
-<p>使用idea中的maven工具，对上个module进行分别打包，安装到本地。打包的顺序是先安装 <code>autoconfiuration</code> ，然后再安装 <code>starter-xxx</code>。</p>
-<h2 id="使用starter"><a class="header-anchor" href="#使用starter">¶</a> 使用starter</h2>
-<p>新建一个web的SpringBoot项目，新建一个Controller，里面添加如下内容：</p>
-<pre><code class="language-java">@RequestMapping(&quot;/sayHello&quot;)
-public @ResponseBody String sayHello()&#123;
-   return helloService.sayHello();
-&#125;
-</code></pre>
-<p>并在配置文件中添加：</p>
-<pre><code class="language-yaml">spring:
-  hello:
-    prefix: PREFIX
-</code></pre>
-<p>在pom.xml中添加自定义的starter：</p>
-<pre><code class="language-xml">&lt;!-- 添加自定义starter --&gt;
-&lt;dependency&gt;
-    &lt;groupId&gt;com.nanyin&lt;/groupId&gt;
-    &lt;artifactId&gt;spring-boot-starter-hello&lt;/artifactId&gt;
-    &lt;version&gt;0.0.1-SNAPSHOT&lt;/version&gt;
-&lt;/dependency&gt;
-</code></pre>
-<p>运行程序，在地址栏上输入<code>http://localhost:8081/sayHello</code></p>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css">]]></content>
-      <categories>
-        <category>SpringBoot</category>
-      </categories>
-      <tags>
-        <tag>Java</tag>
-        <tag>SpringBoot</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Spring的Bean的注册</title>
     <url>/2019/12/20/Spring%E4%BB%8E%E9%9B%B6%E5%AD%A6%E8%B5%B7%E4%B9%8B%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%89%EF%BC%89/</url>
     <content><![CDATA[<h1 id="Bean的注册"><a class="header-anchor" href="#Bean的注册">¶</a> Bean的注册</h1>
@@ -11865,6 +11609,165 @@ loadBeanDefinitionsFromRegistrars(configClass.getImportBeanDefinitionRegistrars(
       <tags>
         <tag>Java</tag>
         <tag>Spring</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>SpringBoot的自定义starter开发</title>
+    <url>/2019/08/13/SpringBoot%E8%87%AA%E5%AE%9A%E4%B9%89starter/</url>
+    <content><![CDATA[<h1 id="SpringBoot的自定义starter开发"><a class="header-anchor" href="#SpringBoot的自定义starter开发">¶</a> SpringBoot的自定义starter开发</h1>
+<p>SpringBoot官方默认提供了很多的starter。参考<a class="link"   href="https://docs.spring.io/spring-boot/docs/2.1.7.RELEASE/reference/html/using-boot-build-systems.html#using-boot-starter" >官方的reference<i class="fas fa-external-link-alt"></i></a>。starter作为在SpringBoot中重要的特性，使用时能够在POM文件中直接引用这些starter，可以一站式的获取与Spring结合的相关服务和功能。如果想引入<code>redis</code>等功能。则直接添加使用<code>spring-boot-starter-data-redis</code>。只需在配置文件中配置少量属性，就可以在应用中使用。</p>
+<h2 id="SpringBoot的自动配置原理"><a class="header-anchor" href="#SpringBoot的自动配置原理">¶</a> SpringBoot的自动配置原理</h2>
+<p>SpringBoot通过starter，引用相关服务，然后通过autoConfigure来自动配置相关服务。更多具体的实现可以参考<a href="https://nanyiniu.github.io/2019/07/08/2019-07-08-SpringBoot%E7%9A%84%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%EF%BC%88%E6%8B%93%E5%B1%95%EF%BC%89/">这篇文章</a>，在这篇文章中，简要的分析来如何实现自定义starter和基本的自动配置实现。</p>
+<h2 id="starter的基本结构"><a class="header-anchor" href="#starter的基本结构">¶</a> starter的基本结构</h2>
+<ul>
+<li>包名称以 <code>spring-boot-starter-xxx</code> 命名，如引用<code>spring-boot-starter-data-jpa</code>.其中的内容只包括pom文件，用来引用相关服务的jar包。</li>
+<li>包名称以<code>xxx-spring-boot-autoconfigure</code>命名。包含：
+<ul>
+<li>xxxAutoConfiguration 自动配置类，使用<code>Configuration</code>注解标志为配置类。使用<code>Conditionalxxxx</code>相关注解表示条件，使用<code>EnableConfigurationProperties</code>注解，来指定配置属性类。</li>
+<li>xxxProperties 配置属性类。使用<code>ConfigurationProperties</code>注解来标志为配置属性类，并且需要指定<code>prefix</code>，以便在配置文件中，使用prefix+属性名来设置相关属性。</li>
+<li>spring.factories 文件中添加相关信息，用来指定需要进行自动配置的类的全限定名称。如：</li>
+</ul>
+</li>
+</ul>
+<pre><code class="language-java">org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+org.springframework.boot.autoconfigure.admin.SpringApplicationAdminJmxAutoConfiguration,
+</code></pre>
+<h2 id="开始自定义starter"><a class="header-anchor" href="#开始自定义starter">¶</a> 开始自定义starter</h2>
+<p>在正式进行之前，需要先创建一个空的Project，用来放<code>spring-boot-starter-xxx</code>和<code>xxx-spring-boot-autoconfigure</code>。</p>
+<h3 id="创建spring-boot-starter-xxx和xxx-spring-boot-autoconfigure"><a class="header-anchor" href="#创建spring-boot-starter-xxx和xxx-spring-boot-autoconfigure">¶</a> 创建spring-boot-starter-xxx和xxx-spring-boot-autoconfigure</h3>
+<p>在创建完空项目后，会要求创建<code>module</code>。选择<code>maven</code>或者<code>Spring Initializer</code>进行<code>spring-boot-starter-xxx</code>的创建。</p>
+<h3 id="配置starter"><a class="header-anchor" href="#配置starter">¶</a> 配置starter</h3>
+<p>在实际操作配置starter之前，先来分析SpringBoot官方提供的starter的基本的依赖结构，为接下来的构建起到模版的作用。</p>
+<p>在左边的为<code>spring-boot-starter-web</code>的的简单的依赖关系，它依赖<code>spring-boot-starter</code>。而<code>spring-boot-starter</code>进一步依赖于<code>spring-boot-autoconfigure</code>用来进行自动配置。</p>
+<h3 id="配置autoconfiguration包"><a class="header-anchor" href="#配置autoconfiguration包">¶</a> 配置autoconfiguration包</h3>
+<h4 id="pom配置"><a class="header-anchor" href="#pom配置">¶</a> pom配置</h4>
+<p>在pom.xml中添加如下内容：</p>
+<pre><code class="language-xml">&lt;dependencies&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-boot&lt;/artifactId&gt;
+        &lt;version&gt;2.1.6.RELEASE&lt;/version&gt;
+        &lt;scope&gt;compile&lt;/scope&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-boot-configuration-processor&lt;/artifactId&gt;
+        &lt;optional&gt;true&lt;/optional&gt;
+    &lt;/dependency&gt;
+&lt;/dependencies&gt;
+</code></pre>
+<p>主要需要依赖<code>spring-boot</code>。如果在自动配置类需要进行其他特殊的<code>Conditional</code>设置时，还需要引入<code>spring-boot-autoconfigure</code>。</p>
+<h4 id="添加xxxAutoConfiuration和xxxProperties类"><a class="header-anchor" href="#添加xxxAutoConfiuration和xxxProperties类">¶</a> 添加xxxAutoConfiuration和xxxProperties类</h4>
+<p>这两个类是自动配置中必须的类。内容可以参考<code>WebMvcAutoConfiguration</code>和<code>WebMvcProperties</code>这两个类。下面是我的具体实现类。</p>
+<pre><code class="language-java">// HelloAutoConfiguration 自定义的AutoConfiguration类
+@Configuration
+@EnableConfigurationProperties(&#123;HelloProperties.class&#125;)
+public class HelloAutoConfiguration &#123;
+
+    private final HelloProperties helloProperties;
+
+    public HelloAutoConfiguration(HelloProperties helloProperties) &#123;
+        this.helloProperties = helloProperties;
+    &#125;
+
+    @Bean
+    public HelloService sayHello()&#123;
+        HelloService helloService = new HelloService();
+        // 设置配置属性
+        helloService.setHelloProperties(helloProperties);
+        return helloService;
+    &#125;
+
+&#125;
+
+//使用service类来测试是否配置成功，方法调用
+public class HelloService &#123;
+
+    HelloProperties helloProperties;
+
+    public HelloProperties getHelloProperties() &#123;
+        return helloProperties;
+    &#125;
+
+    public void setHelloProperties(HelloProperties helloProperties) &#123;
+        this.helloProperties = helloProperties;
+    &#125;
+
+    // 方法调用验证属性是否其作用。也就是自动配置是否生效
+    public String sayHello()&#123;
+        return helloProperties.getPrefix() + &quot; hello world !&quot;;
+    &#125;
+&#125;
+
+// 自定义的Properties类
+@ConfigurationProperties(prefix = &quot;spring.hello&quot;)
+public class HelloProperties &#123;
+    private String prefix ;
+
+    public String getPrefix() &#123;
+        return prefix;
+    &#125;
+
+    public void setPrefix(String prefix) &#123;
+        this.prefix = prefix;
+    &#125;
+&#125;
+</code></pre>
+<h4 id="spring.factories"><a class="header-anchor" href="#spring.factories">¶</a> spring.factories</h4>
+<p>如果想要使用自动配置，必须添加<code>spring.factories</code>这个文件。添加如下内容：</p>
+<pre><code class="language-xml"># Auto Configure
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.nanyin.hello.HelloAutoConfiguration
+</code></pre>
+<h3 id="配置 starter-xxx 包"><a class="header-anchor" href="#配置 starter-xxx 包">¶</a> 配置 starter-xxx 包</h3>
+<h4 id="pom配置-2"><a class="header-anchor" href="#pom配置-2">¶</a> pom配置</h4>
+<pre><code class="language-xml">&lt;dependencies&gt;
+    &lt;!--构建的starter依赖&gt;spring-boot-starter 和其他需要的starter--&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-boot-starter&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+
+    &lt;!--依赖自动配置包--&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;com.nanyin&lt;/groupId&gt;
+        &lt;artifactId&gt;hello-spring-boot-autoconfigure&lt;/artifactId&gt;
+        &lt;version&gt;0.0.1-SNAPSHOT&lt;/version&gt;
+    &lt;/dependency&gt;
+&lt;/dependencies&gt;
+</code></pre>
+<h3 id="项目结构"><a class="header-anchor" href="#项目结构">¶</a> 项目结构</h3>
+<p>需要删除不需要的类或目录，如SpringBoot启动类、Resource目录、test目录。</p>
+<h3 id="打成jar包"><a class="header-anchor" href="#打成jar包">¶</a> 打成jar包</h3>
+<p>使用idea中的maven工具，对上个module进行分别打包，安装到本地。打包的顺序是先安装 <code>autoconfiuration</code> ，然后再安装 <code>starter-xxx</code>。</p>
+<h2 id="使用starter"><a class="header-anchor" href="#使用starter">¶</a> 使用starter</h2>
+<p>新建一个web的SpringBoot项目，新建一个Controller，里面添加如下内容：</p>
+<pre><code class="language-java">@RequestMapping(&quot;/sayHello&quot;)
+public @ResponseBody String sayHello()&#123;
+   return helloService.sayHello();
+&#125;
+</code></pre>
+<p>并在配置文件中添加：</p>
+<pre><code class="language-yaml">spring:
+  hello:
+    prefix: PREFIX
+</code></pre>
+<p>在pom.xml中添加自定义的starter：</p>
+<pre><code class="language-xml">&lt;!-- 添加自定义starter --&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;com.nanyin&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-hello&lt;/artifactId&gt;
+    &lt;version&gt;0.0.1-SNAPSHOT&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre>
+<p>运行程序，在地址栏上输入<code>http://localhost:8081/sayHello</code></p>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css">]]></content>
+      <categories>
+        <category>SpringBoot</category>
+      </categories>
+      <tags>
+        <tag>Java</tag>
+        <tag>SpringBoot</tag>
       </tags>
   </entry>
   <entry>
@@ -12336,6 +12239,103 @@ public void registerBean(Class&lt;?&gt; beanClass) &#123;
       <tags>
         <tag>Java</tag>
         <tag>注释规范</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>设计模式之模版模式</title>
+    <url>/2019/06/17/2019-06-17-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E6%A8%A1%E7%89%88%E6%A8%A1%E5%BC%8F/</url>
+    <content><![CDATA[<h1 id="设计模式之模版方法模式"><a class="header-anchor" href="#设计模式之模版方法模式">¶</a> 设计模式之模版方法模式</h1>
+<p>模版模式是类的行为模式，将部分逻辑以具体方法来实现，将其他方法声明为抽象方法来让子类来实现。不同的子类实现的方法逻辑不同，从而整体的逻辑有所差异。</p>
+<p>这里涉及到两个角色：</p>
+<p>一、抽象模板(Abstract Template)角色有如下责任：</p>
+<pre><code>- 定义了一个或多个抽象操作，以便让子类实现。这些抽象操作叫做基本操作，
+它们是一个顶级逻辑的组成步骤。
+
+- 定义并实现了一个模板方法。这个模板方法一般是一个具体方法，它给出了一个顶级逻辑的骨架，
+而逻辑的组成步骤在相应的抽象操作中，推迟到子类实现。顶级逻辑也有可能调用一些具体方法。
+</code></pre>
+<p>二、具体模板(Concrete Template)角色又如下责任：</p>
+<pre><code>- 实现父类所定义的一个或多个抽象方法，它们是一个顶级逻辑的组成步骤。
+
+- 每一个抽象模板角色都可以有任意多个具体模板角色与之对应，
+而每一个具体模板角色都可以给出这些抽象方法（也就是顶级逻辑的组成步骤）的不同实现，
+从而使得顶级逻辑的实现各不相同。
+</code></pre>
+<h2 id="应用场景"><a class="header-anchor" href="#应用场景">¶</a> 应用场景</h2>
+<p>实现不变的部分一次，并将其他留给子类来实现可能需要变化的行为。</p>
+<ul>
+<li>需要简化代码，分离出公共的部分，抽离出一个公共的模板方法来替换所有的代码。</li>
+<li>控制子类扩展。定义在特定点调用“钩子”操作的模板方法，从而仅允许在那些点进行扩展。</li>
+</ul>
+<h2 id="模式结构"><a class="header-anchor" href="#模式结构">¶</a> 模式结构</h2>
+<p>这里使用到模拟servlet中的httpServlet方法（简单的模拟方法中用到的模版方法）。定义一个公共的模版方法抽象类<code>HttpServletTemplate</code>，其中有两个钩子方法<code>doGet</code>和<code>doPost</code>，所谓的钩子方法就是需要由子类实现的方法。还有一个具体方法<code>service</code>来实现模版调用的作用。</p>
+<p>模拟两个子类实现<code>HttpServletTemplate</code>实现两个钩子方法。</p>
+<p>客户端<code>App</code>在调用的时候，直接调用两个子类的父类中的实现方法<code>service</code>实现调用模版。</p>
+<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20190617221808.png" alt="模版模式结构"></p>
+<h2 id="代码"><a class="header-anchor" href="#代码">¶</a> 代码</h2>
+<h3 id="抽象模版类"><a class="header-anchor" href="#抽象模版类">¶</a> 抽象模版类</h3>
+<pre><code class="language-java">public abstract class HttpServletTemplate &#123;
+
+    public void service(HttpRequestMethod method)&#123;
+        if(method.equals(HttpRequestMethod.METHOD_GET))&#123;
+            System.out.println(&quot;so something 1&quot;);
+            doGet();
+            System.out.println(&quot;so something 2&quot;);
+        &#125;else if(method.equals(HttpRequestMethod.METHOD_POST))&#123;
+            doPost();
+        &#125;else &#123;
+            System.out.println(&quot;do nothing!&quot;);
+        &#125;
+    &#125;
+    protected void doGet()&#123;&#125;;
+
+    protected void doPost()&#123;&#125;;
+&#125;
+</code></pre>
+<h3 id="具体模版类"><a class="header-anchor" href="#具体模版类">¶</a> 具体模版类</h3>
+<pre><code class="language-java">public class GetClient extends HttpServletTemplate &#123;
+    @Override
+    protected void doGet() &#123;
+        System.out.println(&quot;this is my get methods!&quot;);
+    &#125;
+&#125;
+public class PostClient extends HttpServletTemplate &#123;
+    @Override
+    protected void doGet() &#123;
+        this.doPost();
+    &#125;
+
+    @Override
+    protected void doPost() &#123;
+        System.out.println(&quot;this is my post methods!&quot;);
+    &#125;
+&#125;
+// 请求类型枚举类
+public enum HttpRequestMethod &#123;
+    METHOD_GET,METHOD_POST,METHOD_DELETE
+&#125;
+</code></pre>
+<h3 id="客户端调用"><a class="header-anchor" href="#客户端调用">¶</a> 客户端调用</h3>
+<pre><code class="language-java">public class App &#123;
+    public static void main(String[] args) &#123;
+        //声明post客户端
+        PostClient post = new PostClient();
+        //调用模版
+        post.service(HttpRequestMethod.METHOD_POST);
+        GetClient get = new GetClient();
+        get.service(HttpRequestMethod.METHOD_GET);
+        get.service(HttpRequestMethod.METHOD_POST);
+    &#125;
+&#125;
+</code></pre>
+<p>其实模版方法模式是创建一个算法的骨架，具体的内容由子类去填充的这个过程。</p>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css">]]></content>
+      <categories>
+        <category>设计模式</category>
+      </categories>
+      <tags>
+        <tag>Java</tag>
+        <tag>设计模式</tag>
       </tags>
   </entry>
   <entry>
@@ -15652,460 +15652,6 @@ public LocaleResolver localeResolver()&#123;
       </tags>
   </entry>
   <entry>
-    <title>Spring的核心Refresh</title>
-    <url>/2019/12/15/Spring%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E4%B9%8B%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%EF%BC%88%E4%BA%8C%EF%BC%89/</url>
-    <content><![CDATA[<h1 id="在注册配置文件后的刷新（Refresh）"><a class="header-anchor" href="#在注册配置文件后的刷新（Refresh）">¶</a> 在注册配置文件后的刷新（Refresh）</h1>
-<p>在上一篇文章中，主要理清了Spring是如何（通过 <code>register(Class&lt;?&gt;... componentClasses)</code> ）注册一个或多个要处理的配置类。</p>
-<p>但是如果不进行下一步，也就是刷新（refresh）容器，整个类是得不到完全的处理的。下图是对 refresh 方法进行的主要过程总结。会通过对每一条线上的方法进行分析和总结方法的用途。</p>
-<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20191123225557.png" alt="20191123225557.png"></p>
-<h2 id="1.prepareRefresh"><a class="header-anchor" href="#1.prepareRefresh">¶</a> 1.prepareRefresh</h2>
-<p><code>prepareRefresh</code> 是 <code>refresh</code> 的第一个方法，用来准备上下文环境以用来刷新（refresh）。</p>
-<ol>
-<li>设置startupDate启动时间、设置closed为false，设置active为true.</li>
-<li>initPropertySources()方法，留给子类自行实现，用来在上下文环境中初始化任何占位符属性源.</li>
-<li>validateRequiredProperties() 用来验证所有的Proprities都是可解析的.</li>
-<li>最后存储预刷新的ApplicationListeners。也就是初始化earlyApplicationEvents；</li>
-</ol>
-<pre><code class="language-java">protected void prepareRefresh() &#123;
-    this.startupDate = System.currentTimeMillis();
-    this.closed.set(false);
-    this.active.set(**true**);
-    // ...省略部分代码.
-    // 在上下文环境中初始化任何占位符属性源，子类继承实现
-    initPropertySources();
-
-    // 验证所有必须的Property都是可解析的
-    getEnvironment().validateRequiredProperties();
-
-    // Store pre-refresh ApplicationListeners...
-    if (this.earlyApplicationListeners == null) &#123;
-        this.earlyApplicationListeners = new LinkedHashSet&lt;&gt;(this.applicationListeners);
-    &#125;
-    else &#123;
-        // Reset local application listeners to pre-refresh state.
-        this.applicationListeners.clear();
-        this.applicationListeners.addAll(this.earlyApplicationListeners);
-    &#125;
-
-    this.earlyApplicationEvents = new LinkedHashSet&lt;&gt;();
-&#125;
-</code></pre>
-<h2 id="2.obtainFreshBeanFactory"><a class="header-anchor" href="#2.obtainFreshBeanFactory">¶</a> 2.obtainFreshBeanFactory</h2>
-<p>用于获取BeanFactory,在 <code>obtainFreshBeanFactory</code> 方法中有两个子方法。</p>
-<ul>
-<li>refreshBeanFactory方法为BeanFactory设置SerializationId</li>
-</ul>
-<pre><code class="language-java">protected final void refreshBeanFactory() throws IllegalStateException &#123;
-    // ...省略部分代码
-    // 在register的时候，通过registerBeanDefinition时会创建一个beanFactory为DefaultListableBeanFactory
-    this.beanFactory.setSerializationId(getId());
-&#125;
-public final ConfigurableListableBeanFactory getBeanFactory() &#123;
-    return this.beanFactory;
-&#125;
-</code></pre>
-<ul>
-<li>使用getBeanFactory获取在register过程中已经产生的beanFactory。</li>
-</ul>
-<pre><code class="language-java">@Override
-public final ConfigurableListableBeanFactory getBeanFactory() &#123;
-    return this.beanFactory;
-&#125;
-</code></pre>
-<p>在上一篇文章中已经分析得知，在<code>GenericApplicationContext</code>的<code>this.beanFactory</code> 就是创建<code>ApplicationContext</code>时在构造函数中创建的<code>DefaultListableBeanFactory</code>。</p>
-<h2 id="3.prepareBeanFactory"><a class="header-anchor" href="#3.prepareBeanFactory">¶</a> 3.prepareBeanFactory</h2>
-<p>在这个方法里面实现类对BeanFactory的内容进行基本的初始化。设置了 <code>classLoador</code>、<code>ExpressionResolver</code>、<code>BeanPostProcessor</code>等等属性。</p>
-<pre><code class="language-java">protected void prepareBeanFactory(ConfigurableListableBeanFactory beanFactory) &#123;
-    beanFactory.setBeanClassLoader(getClassLoader());
-    beanFactory.setBeanExpressionResolver(new StandardBeanExpressionResolver(beanFactory.getBeanClassLoader()));
-  beanFactory.addPropertyEditorRegistrar(newResourceEditorRegistrar(this,getEnvironment()));
-
-    // 设置PostProcessor 回调方法
-    beanFactory.addBeanPostProcessor(new ApplicationContextAwareProcessor(this));
-    // 忽略给定的接口类的自动装配（就是不装配给定的接口类）
-    beanFactory.ignoreDependencyInterface(EnvironmentAware.class);
-    beanFactory.ignoreDependencyInterface(EmbeddedValueResolverAware.class);
-    beanFactory.ignoreDependencyInterface(ResourceLoaderAware.class);
-    beanFactory.ignoreDependencyInterface(ApplicationEventPublisherAware.class);
-    beanFactory.ignoreDependencyInterface(MessageSourceAware.class);
-    beanFactory.ignoreDependencyInterface(ApplicationContextAware.class);
-
-    // registerResolvableDependency的作用就是将 第一个参数作为依赖注入到第二个参数中
-    // 这里的this指的就是AbstractApplicationContext
-    beanFactory.registerResolvableDependency(BeanFactory.class, beanFactory);
-    beanFactory.registerResolvableDependency(ResourceLoader.class, this);
-    beanFactory.registerResolvableDependency(ApplicationEventPublisher.class, this);
-    beanFactory.registerResolvableDependency(ApplicationContext.class, this);
-
-    // Register early post-processor for detecting inner beans as ApplicationListeners. 注册一个applicationListeners检测器
-    beanFactory.addBeanPostProcessor(new ApplicationListenerDetector(this));
-
-    if (beanFactory.containsBean(LOAD_TIME_WEAVER_BEAN_NAME)) &#123;
-        beanFactory.addBeanPostProcessor(new LoadTimeWeaverAwareProcessor(beanFactory));
-        beanFactory.setTempClassLoader(new ContextTypeMatchClassLoader(beanFactory.getBeanClassLoader()));
-    &#125;
-
-    // 注册环境相关Bean
-    if (!beanFactory.containsLocalBean(ENVIRONMENT_BEAN_NAME)) &#123;
-        beanFactory.registerSingleton(ENVIRONMENT_BEAN_NAME, getEnvironment());
-    &#125;
-    if (!beanFactory.containsLocalBean(SYSTEM_PROPERTIES_BEAN_NAME)) &#123;
-        beanFactory.registerSingleton(SYSTEM_PROPERTIES_BEAN_NAME, getEnvironment().getSystemProperties());
-    &#125;
-    if (!beanFactory.containsLocalBean(SYSTEM_ENVIRONMENT_BEAN_NAME)) &#123;
-        beanFactory.registerSingleton(SYSTEM_ENVIRONMENT_BEAN_NAME, getEnvironment().getSystemEnvironment());
-    &#125;
-&#125;
-</code></pre>
-<h2 id="4.postProcessBeanFactory"><a class="header-anchor" href="#4.postProcessBeanFactory">¶</a> 4.postProcessBeanFactory</h2>
-<p>这个方法的含义为对BeanFactory的后置处理，方法的实现是空的，实际含义就是让子类去实现这个方法，然后调用的时候可以对BeanFactory在标准化的初始后，进行自定义的后置处理。</p>
-<h2 id="5.invokeBeanFactoryPostProcessors"><a class="header-anchor" href="#5.invokeBeanFactoryPostProcessors">¶</a> 5.invokeBeanFactoryPostProcessors</h2>
-<p>方法的作用就是实例化并调用所有已注册的BeanFactoryPostProcessor，也就是在这一步<strong>完成对configuration配置类中的Bean的注册过程</strong>。主要的执行方法是 <code>PostProcessorRegistrationDelegate</code> 中的 <code>invokeBeanFactoryPostProcessors</code> 方法。</p>
-<blockquote>
-<p>在上一篇文章中提到了在 register 方法中，调用了 <code>this.reader = new AnnotatedBeanDefinitionReader(this)</code> 后，使用 <code>registerAnnotationConfigProcessors</code> 注册一些相关配置类bean，如<code>ConfigurationClassPostProcessor</code>等等。</p>
-</blockquote>
-<h3 id="首先、如果有BeanFactoryPostProcessor,则会先执行类中的 postProcessBeanDefinitionRegistry 方法"><a class="header-anchor" href="#首先、如果有BeanFactoryPostProcessor,则会先执行类中的 postProcessBeanDefinitionRegistry 方法">¶</a> 首先、如果有BeanFactoryPostProcessor,则会先执行类中的 <code>postProcessBeanDefinitionRegistry</code> 方法</h3>
-<pre><code class="language-java">for (BeanFactoryPostProcessor postProcessor : beanFactoryPostProcessors) &#123;
-    if (postProcessor instanceof BeanDefinitionRegistryPostProcessor) &#123;
-        BeanDefinitionRegistryPostProcessor registryProcessor =
-                (BeanDefinitionRegistryPostProcessor) postProcessor;
-        registryProcessor.postProcessBeanDefinitionRegistry(registry);
-        registryProcessors.add(registryProcessor);
-    &#125;
-    else &#123;
-        regularPostProcessors.add(postProcessor);
-    &#125;
-&#125;
-</code></pre>
-<h3 id="第二步、会处理在beanFactory中存在的继承BeanDefinitionRegistryPostProcessor 并且实现了PriorityOrdered 接口的类"><a class="header-anchor" href="#第二步、会处理在beanFactory中存在的继承BeanDefinitionRegistryPostProcessor 并且实现了PriorityOrdered 接口的类">¶</a> 第二步、会处理在beanFactory中存在的继承<code>BeanDefinitionRegistryPostProcessor</code> 并且实现了<code>PriorityOrdered</code> 接口的类</h3>
-<pre><code class="language-java">String[] postProcessorNames =
-        beanFactory.getBeanNamesForType(BeanDefinitionRegistryPostProcessor.class, true, false);
-for (String ppName : postProcessorNames) &#123;
-    if (beanFactory.isTypeMatch(ppName, PriorityOrdered.class)) &#123;
-        currentRegistryProcessors.add(beanFactory.getBean(ppName, BeanDefinitionRegistryPostProcessor.class));
-        processedBeans.add(ppName);
-    &#125;
-&#125;
-// 对依赖排序
-sortPostProcessors(currentRegistryProcessors, beanFactory);
-// 添加到registryProcessors中
-registryProcessors.addAll(currentRegistryProcessors);
-// 执行&#123;ConfigurationClassPostProcessor的&#125;后置方法
-invokeBeanDefinitionRegistryPostProcessors(currentRegistryProcessors, registry);
-// 清空当前注册处理器
-currentRegistryProcessors.clear();
-</code></pre>
-<h4 id="通过Type获取BeanNames"><a class="header-anchor" href="#通过Type获取BeanNames">¶</a> 通过Type获取BeanNames</h4>
-<p>其中使用了方法 getBeanNamesForType 用来类型为BeanDefinitionRegistryPostProcessor的Bean的名称。</p>
-<pre><code class="language-java">@Override
-public String[] getBeanNamesForType(@Nullable Class&lt;?&gt; type, boolean includeNonSingletons, boolean allowEagerInit) &#123;
-    if (!isConfigurationFrozen() || type == null || !allowEagerInit) &#123;
-        return doGetBeanNamesForType(ResolvableType.forRawClass(type), includeNonSingletons, allowEagerInit);
-    &#125;
-</code></pre>
-<p>在 doGetBeanNamesForType 中，会通过循环 <code>this.beanDefinitionNames</code> 内容，获取所有的 RootBeanDefinition。通过debug可以看到在此处所有的 beanDefinitionNames为</p>
-<p><img src="https://gitee.com/NanYinIU/Pic/raw/master/img/20200718215509.png" alt="图片1"></p>
-<p>可以发现是在上一篇文章中提到的 <code>new AnnotatedBeanDefinitionReader</code> 的时候默认register的一些配置类。在通过使用isTypeMatch方法对所有获取到name循环比较。符合则将内容返回（只有ConfigurationAnnotationProcessor满足条件）。</p>
-<h4 id="执行ConfigurationAnnotationProcessor的后置方法"><a class="header-anchor" href="#执行ConfigurationAnnotationProcessor的后置方法">¶</a> 执行ConfigurationAnnotationProcessor的后置方法</h4>
-<p>通过调用ConfigurationClassPostProcessor中的processConfigBeanDefinitions方法进行【构建和验证配置类】，完成对配置文件中Bean的装配，具体步骤如下：</p>
-<ol>
-<li>获得符合条件的配置类</li>
-<li>使用@Order的顺序进行排序</li>
-<li>获取到处理每一个@Configuration处理类</li>
-<li>处理所有@Configuration的类</li>
-<li>验证所有@Coniguration的类</li>
-</ol>
-<p>更具体的内容在后续再详细介绍。</p>
-<h3 id="第三步、会处理在beanFactory中存在的 继承 BeanDefinitionRegistryPostProcessor 并且实现了Ordered 接口的类中的"><a class="header-anchor" href="#第三步、会处理在beanFactory中存在的 继承 BeanDefinitionRegistryPostProcessor 并且实现了Ordered 接口的类中的">¶</a> 第三步、会处理在beanFactory中存在的 继承 BeanDefinitionRegistryPostProcessor 并且实现了Ordered 接口的类中的</h3>
-<pre><code class="language-java">// 只列出差异点
-if (!processedBeans.contains(ppName) &amp;&amp; beanFactory.isTypeMatch(ppName, Ordered.class)) &#123;
-    currentRegistryProcessors.add(beanFactory.getBean(ppName, BeanDefinitionRegistryPostProcessor.class));
-    processedBeans.add(ppName);
-&#125;
-</code></pre>
-<p>和第二步几乎一样，同样会对依赖排序、添加到registryProcessors中到、处理后置方法等。</p>
-<h3 id="最后、处理剩下的BeanDefinitionRegistryPostProcessor类"><a class="header-anchor" href="#最后、处理剩下的BeanDefinitionRegistryPostProcessor类">¶</a> 最后、处理剩下的BeanDefinitionRegistryPostProcessor类</h3>
-<p>和前两步相似的重复的操作。就不展示代码了。</p>
-<h3 id="激活所有BeanFactoryPostProcessors"><a class="header-anchor" href="#激活所有BeanFactoryPostProcessors">¶</a> 激活所有BeanFactoryPostProcessors</h3>
-<p>处理完所有的BeanDefinitionRegistryPostProcessors后，进行对Bean工厂的后置处理器处理。</p>
-<pre><code class="language-java">// 在前面处理过的 registryProcessors 处理器
-invokeBeanFactoryPostProcessors(registryProcessors, beanFactory);
-invokeBeanFactoryPostProcessors(regularPostProcessors, beanFactory);
-
-private static void invokeBeanFactoryPostProcessors(
-        Collection&lt;? extends BeanFactoryPostProcessor&gt; postProcessors, ConfigurableListableBeanFactory beanFactory) &#123;
- // 执行postProcessBeanFactory回调方法
-    for (BeanFactoryPostProcessor postProcessor : postProcessors) &#123;
-        postProcessor.postProcessBeanFactory(beanFactory);
-    &#125;
-&#125;
-</code></pre>
-<p>上面是针对 <code>beanFactory instanceof BeanDefinitionRegistry</code> 的情况，如果返回false，具体内容可能稍有不容。但大致上没什么区别.</p>
-<h2 id="5.registerBeanPostProcessors"><a class="header-anchor" href="#5.registerBeanPostProcessors">¶</a> 5.registerBeanPostProcessors</h2>
-<p>就像名字一样，<code>registerBeanPostProcessors</code> 的作用就是注册 <code>BeanPostProcessors</code>，注册Bean的后置处理器。</p>
-<pre><code class="language-java">protected void registerBeanPostProcessors(ConfigurableListableBeanFactory beanFactory) &#123;
-    PostProcessorRegistrationDelegate.registerBeanPostProcessors(beanFactory, this);
-&#125;
-</code></pre>
-<p>调用<code>PostProcessorRegistrationDelegate</code>的静态方法 <code>registerBeanPostProcessors</code></p>
-<pre><code class="language-java">public static void registerBeanPostProcessors(
-        ConfigurableListableBeanFactory beanFactory, AbstractApplicationContext applicationContext) &#123;
-    // 获得所有的BeanPostProcessor
-    String[] postProcessorNames = beanFactory.getBeanNamesForType(BeanPostProcessor.class, true, false);
-    int beanProcessorTargetCount = beanFactory.getBeanPostProcessorCount() + 1 + postProcessorNames.length;
-    // 注册一个BeanPostProcessorChecker用来在BeanPostProcessor实例化Bean时打印信息
-    beanFactory.addBeanPostProcessor(new BeanPostProcessorChecker(beanFactory, beanProcessorTargetCount));
-
-    // Separate between BeanPostProcessors that implement PriorityOrdered,
-    // Ordered, and the rest.
-    List&lt;BeanPostProcessor&gt; priorityOrderedPostProcessors = new ArrayList&lt;&gt;();
-    List&lt;BeanPostProcessor&gt; internalPostProcessors = new ArrayList&lt;&gt;();
-    List&lt;String&gt; orderedPostProcessorNames = new ArrayList&lt;&gt;();
-    List&lt;String&gt; nonOrderedPostProcessorNames = new ArrayList&lt;&gt;();
-    for (String ppName : postProcessorNames) &#123;
-        if (beanFactory.isTypeMatch(ppName, PriorityOrdered.class)) &#123;
-            BeanPostProcessor pp = beanFactory.getBean(ppName, BeanPostProcessor.class);
-            priorityOrderedPostProcessors.add(pp);
-            if (pp instanceof MergedBeanDefinitionPostProcessor) &#123;
-                internalPostProcessors.add(pp);
-            &#125;
-        &#125;
-        else if (beanFactory.isTypeMatch(ppName, Ordered.class)) &#123;
-            orderedPostProcessorNames.add(ppName);
-        &#125;
-        else &#123;
-            nonOrderedPostProcessorNames.add(ppName);
-        &#125;
-    &#125;
-
-    // First, register the BeanPostProcessors that implement PriorityOrdered.
-    sortPostProcessors(priorityOrderedPostProcessors, beanFactory);
-    registerBeanPostProcessors(beanFactory, priorityOrderedPostProcessors);
-
-    // Next, register the BeanPostProcessors that implement Ordered.
-    List&lt;BeanPostProcessor&gt; orderedPostProcessors = new ArrayList&lt;&gt;(orderedPostProcessorNames.size());
-    for (String ppName : orderedPostProcessorNames) &#123;
-        BeanPostProcessor pp = beanFactory.getBean(ppName, BeanPostProcessor.class);
-        orderedPostProcessors.add(pp);
-        if (pp instanceof MergedBeanDefinitionPostProcessor) &#123;
-            internalPostProcessors.add(pp);
-        &#125;
-    &#125;
-    sortPostProcessors(orderedPostProcessors, beanFactory);
-    registerBeanPostProcessors(beanFactory, orderedPostProcessors);
-
-    // Now, register all regular BeanPostProcessors.
-    List&lt;BeanPostProcessor&gt; nonOrderedPostProcessors = new ArrayList&lt;&gt;(nonOrderedPostProcessorNames.size());
-    for (String ppName : nonOrderedPostProcessorNames) &#123;
-        BeanPostProcessor pp = beanFactory.getBean(ppName, BeanPostProcessor.class);
-        nonOrderedPostProcessors.add(pp);
-        if (pp instanceof MergedBeanDefinitionPostProcessor) &#123;
-            internalPostProcessors.add(pp);
-        &#125;
-    &#125;
-    registerBeanPostProcessors(beanFactory, nonOrderedPostProcessors);
-
-    // Finally, re-register all internal BeanPostProcessors.
-    sortPostProcessors(internalPostProcessors, beanFactory);
-    registerBeanPostProcessors(beanFactory, internalPostProcessors);
-
-    // Re-register post-processor for detecting inner beans as ApplicationListeners,
-    // moving it to the end of the processor chain (for picking up proxies etc).
-    beanFactory.addBeanPostProcessor(new ApplicationListenerDetector(applicationContext));
-&#125;
-</code></pre>
-<p>过程类似 <code>invokeBeanFactoryPostProcessors</code> 的过程，实际过程分步可以整理如下：</p>
-<ol>
-<li>获得所有的BeanPostProcessor，并注册一个<code>BeanPostProcessorChecker</code>，用来在BeanPostProcessor中创建Bean时打印信息。</li>
-<li>首先注册继承了PriorityOrdered接口的BeanPostProcessor;</li>
-<li>然后注册继承了Ordered接口的 BeanPostProcessor;然后注册所有的普通的 BeanPostProcessor；</li>
-<li>最后注册所有的内部的BeanPostProcessor;</li>
-</ol>
-<p>不管如何最后的结果都是将实现BeanPostProcessor的类注册到BeanFactory中。注册的过程就是一个CopyOnWriteArrayList添加的过程</p>
-<h2 id="6.initMessageSource"><a class="header-anchor" href="#6.initMessageSource">¶</a> 6.initMessageSource</h2>
-<p>处理初始化消息来源MessageSource。</p>
-<pre><code class="language-java">protected void initMessageSource() &#123;
-    // 获得beanFactory
-    ConfigurableListableBeanFactory beanFactory = getBeanFactory();
-    // 如果包含name为 messageSource 的bean
-    if (beanFactory.containsLocalBean(MESSAGE_SOURCE_BEAN_NAME)) &#123;
-        this.messageSource = beanFactory.getBean(MESSAGE_SOURCE_BEAN_NAME, MessageSource.class);
-        // 让当前 MessageSource 知道父MessageSource 
-        if (this.parent != null &amp;&amp; this.messageSource instanceof HierarchicalMessageSource) &#123;
-            HierarchicalMessageSource hms = (HierarchicalMessageSource) this.messageSource;
-            if (hms.getParentMessageSource() == null) &#123;
-                // Only set parent context as parent MessageSource if no parent MessageSource
-                // registered already.
-                hms.setParentMessageSource(getInternalParentMessageSource());
-            &#125;
-        &#125;
-        if (logger.isTraceEnabled()) &#123;
-            logger.trace(&quot;Using MessageSource [&quot; + this.messageSource + &quot;]&quot;);
-        &#125;
-    &#125;
-    else &#123;
-        // 如果不存在MS，则新建一个空的 MessageSource
-        DelegatingMessageSource dms = new DelegatingMessageSource();
-        dms.setParentMessageSource(getInternalParentMessageSource());
-        this.messageSource = dms;
-        beanFactory.registerSingleton(MESSAGE_SOURCE_BEAN_NAME, this.messageSource);
-        if (logger.isTraceEnabled()) &#123;
-            logger.trace(&quot;No '&quot; + MESSAGE_SOURCE_BEAN_NAME + &quot;' bean, using [&quot; + this.messageSource + &quot;]&quot;);
-        &#125;
-    &#125;
-&#125;
-</code></pre>
-<p>在 initMessageSource 过程中，做的事情很简单，主要分两步：</p>
-<ol>
-<li>如果包含messageSource的Bean，则设置父MessageSource</li>
-<li>如果不包含 messageSource 的 Bean，则创建一个 DelegatingMessageSource 的单例Bean并注册到 beanFactory 中。</li>
-</ol>
-<h2 id="7. initApplicationEventMulticaster"><a class="header-anchor" href="#7. initApplicationEventMulticaster">¶</a> 7. initApplicationEventMulticaster</h2>
-<p>初始化应用事件多播器</p>
-<pre><code class="language-java">protected void initApplicationEventMulticaster() &#123;
-    ConfigurableListableBeanFactory beanFactory = getBeanFactory();
-    if (beanFactory.containsLocalBean(APPLICATION_EVENT_MULTICASTER_BEAN_NAME)) &#123;
-        this.applicationEventMulticaster =
-                beanFactory.getBean(APPLICATION_EVENT_MULTICASTER_BEAN_NAME, ApplicationEventMulticaster.class);
-        if (logger.isTraceEnabled()) &#123;
-            logger.trace(&quot;Using ApplicationEventMulticaster [&quot; + this.applicationEventMulticaster + &quot;]&quot;);
-        &#125;
-    &#125;
-    else &#123;
-        this.applicationEventMulticaster = new SimpleApplicationEventMulticaster(beanFactory);
-        beanFactory.registerSingleton(APPLICATION_EVENT_MULTICASTER_BEAN_NAME, this.applicationEventMulticaster);
-        if (logger.isTraceEnabled()) &#123;
-            logger.trace(&quot;No '&quot; + APPLICATION_EVENT_MULTICASTER_BEAN_NAME + &quot;' bean, using &quot; +
-                    &quot;[&quot; + this.applicationEventMulticaster.getClass().getSimpleName() + &quot;]&quot;);
-        &#125;
-    &#125;
-&#125;
-</code></pre>
-<p>和初始化MessageSource过程相似,如果包含 applicationEventMulticaster，则设置 <code>this.applicationEventMulticaster</code> 为容器中的多播器。如果没有，则创建，并使用beanFactory进行注册为单例的Bean。</p>
-<h2 id="8. onRefresh"><a class="header-anchor" href="#8. onRefresh">¶</a> 8. onRefresh</h2>
-<p>方法用于在特定上下文子类中初始化其他特殊bean，点进方法后显示是一个空方法，是留给子类自行去实现的，去处理特殊的bean。</p>
-<h2 id="9. registerListeners"><a class="header-anchor" href="#9. registerListeners">¶</a> 9. registerListeners</h2>
-<p>注册Listeners</p>
-<pre><code class="language-java">protected void registerListeners() &#123;
-    // 首先注册静态的listener
-    for (ApplicationListener&lt;?&gt; listener : getApplicationListeners()) &#123;
-        getApplicationEventMulticaster().addApplicationListener(listener);
-    &#125;
-
-    String[] listenerBeanNames = getBeanNamesForType(ApplicationListener.class, true, false);
-    for (String listenerBeanName : listenerBeanNames) &#123;
-        getApplicationEventMulticaster().addApplicationListenerBean(listenerBeanName);
-    &#125;
-    // 发布早起的应用事件
-    Set&lt;ApplicationEvent&gt; earlyEventsToProcess = this.earlyApplicationEvents;
-    this.earlyApplicationEvents = null;
-    if (earlyEventsToProcess != null) &#123;
-        for (ApplicationEvent earlyEvent : earlyEventsToProcess) &#123;
-            getApplicationEventMulticaster().multicastEvent(earlyEvent);
-        &#125;
-    &#125;
-&#125;
-</code></pre>
-<h2 id="10.finishBeanFactoryInitialization"><a class="header-anchor" href="#10.finishBeanFactoryInitialization">¶</a> 10.finishBeanFactoryInitialization</h2>
-<p>用于完成BeanFactory的初始化，在这一步完成了所有的剩余的单实例Bean的初始化过程。</p>
-<pre><code class="language-java">protected void finishBeanFactoryInitialization(ConfigurableListableBeanFactory beanFactory) &#123;
-    //初始化 conversionService Bean
-    if (beanFactory.containsBean(CONVERSION_SERVICE_BEAN_NAME) &amp;&amp;
-            beanFactory.isTypeMatch(CONVERSION_SERVICE_BEAN_NAME, ConversionService.class)) &#123;
-        beanFactory.setConversionService(
-                beanFactory.getBean(CONVERSION_SERVICE_BEAN_NAME, ConversionService.class));
-    &#125;
-
-    // Register a default embedded value resolver if no bean post-processor
-    // (such as a PropertyPlaceholderConfigurer bean) registered any before:
-    // at this point, primarily for resolution in annotation attribute values.
-    if (!beanFactory.hasEmbeddedValueResolver()) &#123;
-        beanFactory.addEmbeddedValueResolver(strVal -&gt; getEnvironment().resolvePlaceholders(strVal));
-    &#125;
-
-    // Initialize LoadTimeWeaverAware beans early to allow for registering their transformers early.
-    String[] weaverAwareNames = beanFactory.getBeanNamesForType(LoadTimeWeaverAware.class, false, false);
-    for (String weaverAwareName : weaverAwareNames) &#123;
-        getBean(weaverAwareName);
-    &#125;
-
-    // Stop using the temporary ClassLoader for type matching.
-    beanFactory.setTempClassLoader(null);
-
-    // Allow for caching all bean definition metadata, not expecting further changes.
-    beanFactory.freezeConfiguration();
-
-    // Instantiate all remaining (non-lazy-init) singletons.
-    beanFactory.preInstantiateSingletons();
-&#125;
-</code></pre>
-<p>主要过程包括：</p>
-<ol>
-<li>初始化 conversionService ;</li>
-<li>如果没有内置的Value解析器，则设置一个StringValueResolver解析器到beanFactory中。</li>
-<li>初始化LoadTimeWeaverAware；</li>
-<li>停止使用临时的ClassLoader进行类型匹配。</li>
-<li>允许缓存所有bean定义元数据，而不期望进一步的更改。</li>
-<li>实例化所有的剩余的、非懒加载的单实例Bean。</li>
-</ol>
-<p>这里只针对第6条的实例化剩余的单实例Bean进行源码分析：</p>
-<pre><code class="language-java">beanFactory.preInstantiateSingletons();
-
-@Override
-public void preInstantiateSingletons() throws BeansException &#123;
-    // Iterate over a copy to allow for init methods which in turn register new bean definitions.
-    // While this may not be part of the regular factory bootstrap, it does otherwise work fine.
-    List&lt;String&gt; beanNames = new ArrayList&lt;&gt;(this.beanDefinitionNames);
-
-    // Trigger initialization of all non-lazy singleton beans...
-    for (String beanName : beanNames) &#123;
-        // 如果对应子Bean的定义，则遍历父Bean定义得到一个合并的RootBeanDefinition
-        RootBeanDefinition bd = getMergedLocalBeanDefinition(beanName);
-        //如果这个Bean不是abstract、是单例的、非懒加载的
-        if (!bd.isAbstract() &amp;&amp; bd.isSingleton() &amp;&amp; !bd.isLazyInit()) &#123;
-            // 如果是FactoryBean
-            if (isFactoryBean(beanName)) &#123;
-            // 想使用getBean时需要添加 &amp; 前缀
-                Object bean = getBean(FACTORY_BEAN_PREFIX + beanName);
-                if (bean instanceof FactoryBean) &#123;
-                    final FactoryBean&lt;?&gt; factory = (FactoryBean&lt;?&gt;) bean;
-                    boolean isEagerInit;
-                    if (System.getSecurityManager() != null &amp;&amp; factory instanceof SmartFactoryBean) &#123;
-                        isEagerInit = AccessController.doPrivileged((PrivilegedAction&lt;Boolean&gt;)
-                                        ((SmartFactoryBean&lt;?&gt;) factory)::isEagerInit,
-                                getAccessControlContext());
-                    &#125;
-                    else &#123;
-                        isEagerInit = (factory instanceof SmartFactoryBean &amp;&amp;
-                                ((SmartFactoryBean&lt;?&gt;) factory).isEagerInit());
-                    &#125;
-                    if (isEagerInit) &#123;
-                    // 调用getBean进行初始化
-                        getBean(beanName);
-                    &#125;
-                &#125;
-            &#125;
-            else &#123;
-                // 调用getBean进行初始化
-                getBean(beanName);
-            &#125;
-        &#125;
-    &#125;
-    // Trigger post-initialization callback for all applicable beans...
-&#125;
-</code></pre>
-<p>经过上面的分析可以看出：在preInstantiateSingletons方法中，真正去实例化的方式是去调用 <code>getBean</code>方法。</p>
-<p>接下来分析配置文件中的Bean的注册和使用 <code>getBean</code> 进行真正的实例化过程进行分析。</p>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css">]]></content>
-      <categories>
-        <category>Spring</category>
-      </categories>
-      <tags>
-        <tag>Java</tag>
-        <tag>Spring</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Spring的Bean的实例化</title>
     <url>/2020/01/17/Spring%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E4%B9%8B%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%EF%BC%88%E5%9B%9B%EF%BC%89/</url>
     <content><![CDATA[<h1 id="Bean的实例化"><a class="header-anchor" href="#Bean的实例化">¶</a> Bean的实例化</h1>
@@ -16713,6 +16259,460 @@ if (resolvedAutowireMode == AUTOWIRE_BY_NAME || resolvedAutowireMode == AUTOWIRE
 <h5 id="4.applyBeanPostProcessorsAfterInitialization"><a class="header-anchor" href="#4.applyBeanPostProcessorsAfterInitialization">¶</a> 4.applyBeanPostProcessorsAfterInitialization</h5>
 <p>循环容器中每一个BeanPostProcessor，执行BeanPostProcessor的 postProcessAfterInitialization 方法。</p>
 <p>至此Bean的实例化过程就大致完成了。</p>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css">]]></content>
+      <categories>
+        <category>Spring</category>
+      </categories>
+      <tags>
+        <tag>Java</tag>
+        <tag>Spring</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Spring的核心Refresh</title>
+    <url>/2019/12/15/Spring%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E4%B9%8B%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%EF%BC%88%E4%BA%8C%EF%BC%89/</url>
+    <content><![CDATA[<h1 id="在注册配置文件后的刷新（Refresh）"><a class="header-anchor" href="#在注册配置文件后的刷新（Refresh）">¶</a> 在注册配置文件后的刷新（Refresh）</h1>
+<p>在上一篇文章中，主要理清了Spring是如何（通过 <code>register(Class&lt;?&gt;... componentClasses)</code> ）注册一个或多个要处理的配置类。</p>
+<p>但是如果不进行下一步，也就是刷新（refresh）容器，整个类是得不到完全的处理的。下图是对 refresh 方法进行的主要过程总结。会通过对每一条线上的方法进行分析和总结方法的用途。</p>
+<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20191123225557.png" alt="20191123225557.png"></p>
+<h2 id="1.prepareRefresh"><a class="header-anchor" href="#1.prepareRefresh">¶</a> 1.prepareRefresh</h2>
+<p><code>prepareRefresh</code> 是 <code>refresh</code> 的第一个方法，用来准备上下文环境以用来刷新（refresh）。</p>
+<ol>
+<li>设置startupDate启动时间、设置closed为false，设置active为true.</li>
+<li>initPropertySources()方法，留给子类自行实现，用来在上下文环境中初始化任何占位符属性源.</li>
+<li>validateRequiredProperties() 用来验证所有的Proprities都是可解析的.</li>
+<li>最后存储预刷新的ApplicationListeners。也就是初始化earlyApplicationEvents；</li>
+</ol>
+<pre><code class="language-java">protected void prepareRefresh() &#123;
+    this.startupDate = System.currentTimeMillis();
+    this.closed.set(false);
+    this.active.set(**true**);
+    // ...省略部分代码.
+    // 在上下文环境中初始化任何占位符属性源，子类继承实现
+    initPropertySources();
+
+    // 验证所有必须的Property都是可解析的
+    getEnvironment().validateRequiredProperties();
+
+    // Store pre-refresh ApplicationListeners...
+    if (this.earlyApplicationListeners == null) &#123;
+        this.earlyApplicationListeners = new LinkedHashSet&lt;&gt;(this.applicationListeners);
+    &#125;
+    else &#123;
+        // Reset local application listeners to pre-refresh state.
+        this.applicationListeners.clear();
+        this.applicationListeners.addAll(this.earlyApplicationListeners);
+    &#125;
+
+    this.earlyApplicationEvents = new LinkedHashSet&lt;&gt;();
+&#125;
+</code></pre>
+<h2 id="2.obtainFreshBeanFactory"><a class="header-anchor" href="#2.obtainFreshBeanFactory">¶</a> 2.obtainFreshBeanFactory</h2>
+<p>用于获取BeanFactory,在 <code>obtainFreshBeanFactory</code> 方法中有两个子方法。</p>
+<ul>
+<li>refreshBeanFactory方法为BeanFactory设置SerializationId</li>
+</ul>
+<pre><code class="language-java">protected final void refreshBeanFactory() throws IllegalStateException &#123;
+    // ...省略部分代码
+    // 在register的时候，通过registerBeanDefinition时会创建一个beanFactory为DefaultListableBeanFactory
+    this.beanFactory.setSerializationId(getId());
+&#125;
+public final ConfigurableListableBeanFactory getBeanFactory() &#123;
+    return this.beanFactory;
+&#125;
+</code></pre>
+<ul>
+<li>使用getBeanFactory获取在register过程中已经产生的beanFactory。</li>
+</ul>
+<pre><code class="language-java">@Override
+public final ConfigurableListableBeanFactory getBeanFactory() &#123;
+    return this.beanFactory;
+&#125;
+</code></pre>
+<p>在上一篇文章中已经分析得知，在<code>GenericApplicationContext</code>的<code>this.beanFactory</code> 就是创建<code>ApplicationContext</code>时在构造函数中创建的<code>DefaultListableBeanFactory</code>。</p>
+<h2 id="3.prepareBeanFactory"><a class="header-anchor" href="#3.prepareBeanFactory">¶</a> 3.prepareBeanFactory</h2>
+<p>在这个方法里面实现类对BeanFactory的内容进行基本的初始化。设置了 <code>classLoador</code>、<code>ExpressionResolver</code>、<code>BeanPostProcessor</code>等等属性。</p>
+<pre><code class="language-java">protected void prepareBeanFactory(ConfigurableListableBeanFactory beanFactory) &#123;
+    beanFactory.setBeanClassLoader(getClassLoader());
+    beanFactory.setBeanExpressionResolver(new StandardBeanExpressionResolver(beanFactory.getBeanClassLoader()));
+  beanFactory.addPropertyEditorRegistrar(newResourceEditorRegistrar(this,getEnvironment()));
+
+    // 设置PostProcessor 回调方法
+    beanFactory.addBeanPostProcessor(new ApplicationContextAwareProcessor(this));
+    // 忽略给定的接口类的自动装配（就是不装配给定的接口类）
+    beanFactory.ignoreDependencyInterface(EnvironmentAware.class);
+    beanFactory.ignoreDependencyInterface(EmbeddedValueResolverAware.class);
+    beanFactory.ignoreDependencyInterface(ResourceLoaderAware.class);
+    beanFactory.ignoreDependencyInterface(ApplicationEventPublisherAware.class);
+    beanFactory.ignoreDependencyInterface(MessageSourceAware.class);
+    beanFactory.ignoreDependencyInterface(ApplicationContextAware.class);
+
+    // registerResolvableDependency的作用就是将 第一个参数作为依赖注入到第二个参数中
+    // 这里的this指的就是AbstractApplicationContext
+    beanFactory.registerResolvableDependency(BeanFactory.class, beanFactory);
+    beanFactory.registerResolvableDependency(ResourceLoader.class, this);
+    beanFactory.registerResolvableDependency(ApplicationEventPublisher.class, this);
+    beanFactory.registerResolvableDependency(ApplicationContext.class, this);
+
+    // Register early post-processor for detecting inner beans as ApplicationListeners. 注册一个applicationListeners检测器
+    beanFactory.addBeanPostProcessor(new ApplicationListenerDetector(this));
+
+    if (beanFactory.containsBean(LOAD_TIME_WEAVER_BEAN_NAME)) &#123;
+        beanFactory.addBeanPostProcessor(new LoadTimeWeaverAwareProcessor(beanFactory));
+        beanFactory.setTempClassLoader(new ContextTypeMatchClassLoader(beanFactory.getBeanClassLoader()));
+    &#125;
+
+    // 注册环境相关Bean
+    if (!beanFactory.containsLocalBean(ENVIRONMENT_BEAN_NAME)) &#123;
+        beanFactory.registerSingleton(ENVIRONMENT_BEAN_NAME, getEnvironment());
+    &#125;
+    if (!beanFactory.containsLocalBean(SYSTEM_PROPERTIES_BEAN_NAME)) &#123;
+        beanFactory.registerSingleton(SYSTEM_PROPERTIES_BEAN_NAME, getEnvironment().getSystemProperties());
+    &#125;
+    if (!beanFactory.containsLocalBean(SYSTEM_ENVIRONMENT_BEAN_NAME)) &#123;
+        beanFactory.registerSingleton(SYSTEM_ENVIRONMENT_BEAN_NAME, getEnvironment().getSystemEnvironment());
+    &#125;
+&#125;
+</code></pre>
+<h2 id="4.postProcessBeanFactory"><a class="header-anchor" href="#4.postProcessBeanFactory">¶</a> 4.postProcessBeanFactory</h2>
+<p>这个方法的含义为对BeanFactory的后置处理，方法的实现是空的，实际含义就是让子类去实现这个方法，然后调用的时候可以对BeanFactory在标准化的初始后，进行自定义的后置处理。</p>
+<h2 id="5.invokeBeanFactoryPostProcessors"><a class="header-anchor" href="#5.invokeBeanFactoryPostProcessors">¶</a> 5.invokeBeanFactoryPostProcessors</h2>
+<p>方法的作用就是实例化并调用所有已注册的BeanFactoryPostProcessor，也就是在这一步<strong>完成对configuration配置类中的Bean的注册过程</strong>。主要的执行方法是 <code>PostProcessorRegistrationDelegate</code> 中的 <code>invokeBeanFactoryPostProcessors</code> 方法。</p>
+<blockquote>
+<p>在上一篇文章中提到了在 register 方法中，调用了 <code>this.reader = new AnnotatedBeanDefinitionReader(this)</code> 后，使用 <code>registerAnnotationConfigProcessors</code> 注册一些相关配置类bean，如<code>ConfigurationClassPostProcessor</code>等等。</p>
+</blockquote>
+<h3 id="首先、如果有BeanFactoryPostProcessor,则会先执行类中的 postProcessBeanDefinitionRegistry 方法"><a class="header-anchor" href="#首先、如果有BeanFactoryPostProcessor,则会先执行类中的 postProcessBeanDefinitionRegistry 方法">¶</a> 首先、如果有BeanFactoryPostProcessor,则会先执行类中的 <code>postProcessBeanDefinitionRegistry</code> 方法</h3>
+<pre><code class="language-java">for (BeanFactoryPostProcessor postProcessor : beanFactoryPostProcessors) &#123;
+    if (postProcessor instanceof BeanDefinitionRegistryPostProcessor) &#123;
+        BeanDefinitionRegistryPostProcessor registryProcessor =
+                (BeanDefinitionRegistryPostProcessor) postProcessor;
+        registryProcessor.postProcessBeanDefinitionRegistry(registry);
+        registryProcessors.add(registryProcessor);
+    &#125;
+    else &#123;
+        regularPostProcessors.add(postProcessor);
+    &#125;
+&#125;
+</code></pre>
+<h3 id="第二步、会处理在beanFactory中存在的继承BeanDefinitionRegistryPostProcessor 并且实现了PriorityOrdered 接口的类"><a class="header-anchor" href="#第二步、会处理在beanFactory中存在的继承BeanDefinitionRegistryPostProcessor 并且实现了PriorityOrdered 接口的类">¶</a> 第二步、会处理在beanFactory中存在的继承<code>BeanDefinitionRegistryPostProcessor</code> 并且实现了<code>PriorityOrdered</code> 接口的类</h3>
+<pre><code class="language-java">String[] postProcessorNames =
+        beanFactory.getBeanNamesForType(BeanDefinitionRegistryPostProcessor.class, true, false);
+for (String ppName : postProcessorNames) &#123;
+    if (beanFactory.isTypeMatch(ppName, PriorityOrdered.class)) &#123;
+        currentRegistryProcessors.add(beanFactory.getBean(ppName, BeanDefinitionRegistryPostProcessor.class));
+        processedBeans.add(ppName);
+    &#125;
+&#125;
+// 对依赖排序
+sortPostProcessors(currentRegistryProcessors, beanFactory);
+// 添加到registryProcessors中
+registryProcessors.addAll(currentRegistryProcessors);
+// 执行&#123;ConfigurationClassPostProcessor的&#125;后置方法
+invokeBeanDefinitionRegistryPostProcessors(currentRegistryProcessors, registry);
+// 清空当前注册处理器
+currentRegistryProcessors.clear();
+</code></pre>
+<h4 id="通过Type获取BeanNames"><a class="header-anchor" href="#通过Type获取BeanNames">¶</a> 通过Type获取BeanNames</h4>
+<p>其中使用了方法 getBeanNamesForType 用来类型为BeanDefinitionRegistryPostProcessor的Bean的名称。</p>
+<pre><code class="language-java">@Override
+public String[] getBeanNamesForType(@Nullable Class&lt;?&gt; type, boolean includeNonSingletons, boolean allowEagerInit) &#123;
+    if (!isConfigurationFrozen() || type == null || !allowEagerInit) &#123;
+        return doGetBeanNamesForType(ResolvableType.forRawClass(type), includeNonSingletons, allowEagerInit);
+    &#125;
+</code></pre>
+<p>在 doGetBeanNamesForType 中，会通过循环 <code>this.beanDefinitionNames</code> 内容，获取所有的 RootBeanDefinition。通过debug可以看到在此处所有的 beanDefinitionNames为</p>
+<p><img src="https://gitee.com/NanYinIU/Pic/raw/master/img/20200718215509.png" alt="图片1"></p>
+<p>可以发现是在上一篇文章中提到的 <code>new AnnotatedBeanDefinitionReader</code> 的时候默认register的一些配置类。在通过使用isTypeMatch方法对所有获取到name循环比较。符合则将内容返回（只有ConfigurationAnnotationProcessor满足条件）。</p>
+<h4 id="执行ConfigurationAnnotationProcessor的后置方法"><a class="header-anchor" href="#执行ConfigurationAnnotationProcessor的后置方法">¶</a> 执行ConfigurationAnnotationProcessor的后置方法</h4>
+<p>通过调用ConfigurationClassPostProcessor中的processConfigBeanDefinitions方法进行【构建和验证配置类】，完成对配置文件中Bean的装配，具体步骤如下：</p>
+<ol>
+<li>获得符合条件的配置类</li>
+<li>使用@Order的顺序进行排序</li>
+<li>获取到处理每一个@Configuration处理类</li>
+<li>处理所有@Configuration的类</li>
+<li>验证所有@Coniguration的类</li>
+</ol>
+<p>更具体的内容在后续再详细介绍。</p>
+<h3 id="第三步、会处理在beanFactory中存在的 继承 BeanDefinitionRegistryPostProcessor 并且实现了Ordered 接口的类中的"><a class="header-anchor" href="#第三步、会处理在beanFactory中存在的 继承 BeanDefinitionRegistryPostProcessor 并且实现了Ordered 接口的类中的">¶</a> 第三步、会处理在beanFactory中存在的 继承 BeanDefinitionRegistryPostProcessor 并且实现了Ordered 接口的类中的</h3>
+<pre><code class="language-java">// 只列出差异点
+if (!processedBeans.contains(ppName) &amp;&amp; beanFactory.isTypeMatch(ppName, Ordered.class)) &#123;
+    currentRegistryProcessors.add(beanFactory.getBean(ppName, BeanDefinitionRegistryPostProcessor.class));
+    processedBeans.add(ppName);
+&#125;
+</code></pre>
+<p>和第二步几乎一样，同样会对依赖排序、添加到registryProcessors中到、处理后置方法等。</p>
+<h3 id="最后、处理剩下的BeanDefinitionRegistryPostProcessor类"><a class="header-anchor" href="#最后、处理剩下的BeanDefinitionRegistryPostProcessor类">¶</a> 最后、处理剩下的BeanDefinitionRegistryPostProcessor类</h3>
+<p>和前两步相似的重复的操作。就不展示代码了。</p>
+<h3 id="激活所有BeanFactoryPostProcessors"><a class="header-anchor" href="#激活所有BeanFactoryPostProcessors">¶</a> 激活所有BeanFactoryPostProcessors</h3>
+<p>处理完所有的BeanDefinitionRegistryPostProcessors后，进行对Bean工厂的后置处理器处理。</p>
+<pre><code class="language-java">// 在前面处理过的 registryProcessors 处理器
+invokeBeanFactoryPostProcessors(registryProcessors, beanFactory);
+invokeBeanFactoryPostProcessors(regularPostProcessors, beanFactory);
+
+private static void invokeBeanFactoryPostProcessors(
+        Collection&lt;? extends BeanFactoryPostProcessor&gt; postProcessors, ConfigurableListableBeanFactory beanFactory) &#123;
+ // 执行postProcessBeanFactory回调方法
+    for (BeanFactoryPostProcessor postProcessor : postProcessors) &#123;
+        postProcessor.postProcessBeanFactory(beanFactory);
+    &#125;
+&#125;
+</code></pre>
+<p>上面是针对 <code>beanFactory instanceof BeanDefinitionRegistry</code> 的情况，如果返回false，具体内容可能稍有不容。但大致上没什么区别.</p>
+<h2 id="5.registerBeanPostProcessors"><a class="header-anchor" href="#5.registerBeanPostProcessors">¶</a> 5.registerBeanPostProcessors</h2>
+<p>就像名字一样，<code>registerBeanPostProcessors</code> 的作用就是注册 <code>BeanPostProcessors</code>，注册Bean的后置处理器。</p>
+<pre><code class="language-java">protected void registerBeanPostProcessors(ConfigurableListableBeanFactory beanFactory) &#123;
+    PostProcessorRegistrationDelegate.registerBeanPostProcessors(beanFactory, this);
+&#125;
+</code></pre>
+<p>调用<code>PostProcessorRegistrationDelegate</code>的静态方法 <code>registerBeanPostProcessors</code></p>
+<pre><code class="language-java">public static void registerBeanPostProcessors(
+        ConfigurableListableBeanFactory beanFactory, AbstractApplicationContext applicationContext) &#123;
+    // 获得所有的BeanPostProcessor
+    String[] postProcessorNames = beanFactory.getBeanNamesForType(BeanPostProcessor.class, true, false);
+    int beanProcessorTargetCount = beanFactory.getBeanPostProcessorCount() + 1 + postProcessorNames.length;
+    // 注册一个BeanPostProcessorChecker用来在BeanPostProcessor实例化Bean时打印信息
+    beanFactory.addBeanPostProcessor(new BeanPostProcessorChecker(beanFactory, beanProcessorTargetCount));
+
+    // Separate between BeanPostProcessors that implement PriorityOrdered,
+    // Ordered, and the rest.
+    List&lt;BeanPostProcessor&gt; priorityOrderedPostProcessors = new ArrayList&lt;&gt;();
+    List&lt;BeanPostProcessor&gt; internalPostProcessors = new ArrayList&lt;&gt;();
+    List&lt;String&gt; orderedPostProcessorNames = new ArrayList&lt;&gt;();
+    List&lt;String&gt; nonOrderedPostProcessorNames = new ArrayList&lt;&gt;();
+    for (String ppName : postProcessorNames) &#123;
+        if (beanFactory.isTypeMatch(ppName, PriorityOrdered.class)) &#123;
+            BeanPostProcessor pp = beanFactory.getBean(ppName, BeanPostProcessor.class);
+            priorityOrderedPostProcessors.add(pp);
+            if (pp instanceof MergedBeanDefinitionPostProcessor) &#123;
+                internalPostProcessors.add(pp);
+            &#125;
+        &#125;
+        else if (beanFactory.isTypeMatch(ppName, Ordered.class)) &#123;
+            orderedPostProcessorNames.add(ppName);
+        &#125;
+        else &#123;
+            nonOrderedPostProcessorNames.add(ppName);
+        &#125;
+    &#125;
+
+    // First, register the BeanPostProcessors that implement PriorityOrdered.
+    sortPostProcessors(priorityOrderedPostProcessors, beanFactory);
+    registerBeanPostProcessors(beanFactory, priorityOrderedPostProcessors);
+
+    // Next, register the BeanPostProcessors that implement Ordered.
+    List&lt;BeanPostProcessor&gt; orderedPostProcessors = new ArrayList&lt;&gt;(orderedPostProcessorNames.size());
+    for (String ppName : orderedPostProcessorNames) &#123;
+        BeanPostProcessor pp = beanFactory.getBean(ppName, BeanPostProcessor.class);
+        orderedPostProcessors.add(pp);
+        if (pp instanceof MergedBeanDefinitionPostProcessor) &#123;
+            internalPostProcessors.add(pp);
+        &#125;
+    &#125;
+    sortPostProcessors(orderedPostProcessors, beanFactory);
+    registerBeanPostProcessors(beanFactory, orderedPostProcessors);
+
+    // Now, register all regular BeanPostProcessors.
+    List&lt;BeanPostProcessor&gt; nonOrderedPostProcessors = new ArrayList&lt;&gt;(nonOrderedPostProcessorNames.size());
+    for (String ppName : nonOrderedPostProcessorNames) &#123;
+        BeanPostProcessor pp = beanFactory.getBean(ppName, BeanPostProcessor.class);
+        nonOrderedPostProcessors.add(pp);
+        if (pp instanceof MergedBeanDefinitionPostProcessor) &#123;
+            internalPostProcessors.add(pp);
+        &#125;
+    &#125;
+    registerBeanPostProcessors(beanFactory, nonOrderedPostProcessors);
+
+    // Finally, re-register all internal BeanPostProcessors.
+    sortPostProcessors(internalPostProcessors, beanFactory);
+    registerBeanPostProcessors(beanFactory, internalPostProcessors);
+
+    // Re-register post-processor for detecting inner beans as ApplicationListeners,
+    // moving it to the end of the processor chain (for picking up proxies etc).
+    beanFactory.addBeanPostProcessor(new ApplicationListenerDetector(applicationContext));
+&#125;
+</code></pre>
+<p>过程类似 <code>invokeBeanFactoryPostProcessors</code> 的过程，实际过程分步可以整理如下：</p>
+<ol>
+<li>获得所有的BeanPostProcessor，并注册一个<code>BeanPostProcessorChecker</code>，用来在BeanPostProcessor中创建Bean时打印信息。</li>
+<li>首先注册继承了PriorityOrdered接口的BeanPostProcessor;</li>
+<li>然后注册继承了Ordered接口的 BeanPostProcessor;然后注册所有的普通的 BeanPostProcessor；</li>
+<li>最后注册所有的内部的BeanPostProcessor;</li>
+</ol>
+<p>不管如何最后的结果都是将实现BeanPostProcessor的类注册到BeanFactory中。注册的过程就是一个CopyOnWriteArrayList添加的过程</p>
+<h2 id="6.initMessageSource"><a class="header-anchor" href="#6.initMessageSource">¶</a> 6.initMessageSource</h2>
+<p>处理初始化消息来源MessageSource。</p>
+<pre><code class="language-java">protected void initMessageSource() &#123;
+    // 获得beanFactory
+    ConfigurableListableBeanFactory beanFactory = getBeanFactory();
+    // 如果包含name为 messageSource 的bean
+    if (beanFactory.containsLocalBean(MESSAGE_SOURCE_BEAN_NAME)) &#123;
+        this.messageSource = beanFactory.getBean(MESSAGE_SOURCE_BEAN_NAME, MessageSource.class);
+        // 让当前 MessageSource 知道父MessageSource 
+        if (this.parent != null &amp;&amp; this.messageSource instanceof HierarchicalMessageSource) &#123;
+            HierarchicalMessageSource hms = (HierarchicalMessageSource) this.messageSource;
+            if (hms.getParentMessageSource() == null) &#123;
+                // Only set parent context as parent MessageSource if no parent MessageSource
+                // registered already.
+                hms.setParentMessageSource(getInternalParentMessageSource());
+            &#125;
+        &#125;
+        if (logger.isTraceEnabled()) &#123;
+            logger.trace(&quot;Using MessageSource [&quot; + this.messageSource + &quot;]&quot;);
+        &#125;
+    &#125;
+    else &#123;
+        // 如果不存在MS，则新建一个空的 MessageSource
+        DelegatingMessageSource dms = new DelegatingMessageSource();
+        dms.setParentMessageSource(getInternalParentMessageSource());
+        this.messageSource = dms;
+        beanFactory.registerSingleton(MESSAGE_SOURCE_BEAN_NAME, this.messageSource);
+        if (logger.isTraceEnabled()) &#123;
+            logger.trace(&quot;No '&quot; + MESSAGE_SOURCE_BEAN_NAME + &quot;' bean, using [&quot; + this.messageSource + &quot;]&quot;);
+        &#125;
+    &#125;
+&#125;
+</code></pre>
+<p>在 initMessageSource 过程中，做的事情很简单，主要分两步：</p>
+<ol>
+<li>如果包含messageSource的Bean，则设置父MessageSource</li>
+<li>如果不包含 messageSource 的 Bean，则创建一个 DelegatingMessageSource 的单例Bean并注册到 beanFactory 中。</li>
+</ol>
+<h2 id="7. initApplicationEventMulticaster"><a class="header-anchor" href="#7. initApplicationEventMulticaster">¶</a> 7. initApplicationEventMulticaster</h2>
+<p>初始化应用事件多播器</p>
+<pre><code class="language-java">protected void initApplicationEventMulticaster() &#123;
+    ConfigurableListableBeanFactory beanFactory = getBeanFactory();
+    if (beanFactory.containsLocalBean(APPLICATION_EVENT_MULTICASTER_BEAN_NAME)) &#123;
+        this.applicationEventMulticaster =
+                beanFactory.getBean(APPLICATION_EVENT_MULTICASTER_BEAN_NAME, ApplicationEventMulticaster.class);
+        if (logger.isTraceEnabled()) &#123;
+            logger.trace(&quot;Using ApplicationEventMulticaster [&quot; + this.applicationEventMulticaster + &quot;]&quot;);
+        &#125;
+    &#125;
+    else &#123;
+        this.applicationEventMulticaster = new SimpleApplicationEventMulticaster(beanFactory);
+        beanFactory.registerSingleton(APPLICATION_EVENT_MULTICASTER_BEAN_NAME, this.applicationEventMulticaster);
+        if (logger.isTraceEnabled()) &#123;
+            logger.trace(&quot;No '&quot; + APPLICATION_EVENT_MULTICASTER_BEAN_NAME + &quot;' bean, using &quot; +
+                    &quot;[&quot; + this.applicationEventMulticaster.getClass().getSimpleName() + &quot;]&quot;);
+        &#125;
+    &#125;
+&#125;
+</code></pre>
+<p>和初始化MessageSource过程相似,如果包含 applicationEventMulticaster，则设置 <code>this.applicationEventMulticaster</code> 为容器中的多播器。如果没有，则创建，并使用beanFactory进行注册为单例的Bean。</p>
+<h2 id="8. onRefresh"><a class="header-anchor" href="#8. onRefresh">¶</a> 8. onRefresh</h2>
+<p>方法用于在特定上下文子类中初始化其他特殊bean，点进方法后显示是一个空方法，是留给子类自行去实现的，去处理特殊的bean。</p>
+<h2 id="9. registerListeners"><a class="header-anchor" href="#9. registerListeners">¶</a> 9. registerListeners</h2>
+<p>注册Listeners</p>
+<pre><code class="language-java">protected void registerListeners() &#123;
+    // 首先注册静态的listener
+    for (ApplicationListener&lt;?&gt; listener : getApplicationListeners()) &#123;
+        getApplicationEventMulticaster().addApplicationListener(listener);
+    &#125;
+
+    String[] listenerBeanNames = getBeanNamesForType(ApplicationListener.class, true, false);
+    for (String listenerBeanName : listenerBeanNames) &#123;
+        getApplicationEventMulticaster().addApplicationListenerBean(listenerBeanName);
+    &#125;
+    // 发布早起的应用事件
+    Set&lt;ApplicationEvent&gt; earlyEventsToProcess = this.earlyApplicationEvents;
+    this.earlyApplicationEvents = null;
+    if (earlyEventsToProcess != null) &#123;
+        for (ApplicationEvent earlyEvent : earlyEventsToProcess) &#123;
+            getApplicationEventMulticaster().multicastEvent(earlyEvent);
+        &#125;
+    &#125;
+&#125;
+</code></pre>
+<h2 id="10.finishBeanFactoryInitialization"><a class="header-anchor" href="#10.finishBeanFactoryInitialization">¶</a> 10.finishBeanFactoryInitialization</h2>
+<p>用于完成BeanFactory的初始化，在这一步完成了所有的剩余的单实例Bean的初始化过程。</p>
+<pre><code class="language-java">protected void finishBeanFactoryInitialization(ConfigurableListableBeanFactory beanFactory) &#123;
+    //初始化 conversionService Bean
+    if (beanFactory.containsBean(CONVERSION_SERVICE_BEAN_NAME) &amp;&amp;
+            beanFactory.isTypeMatch(CONVERSION_SERVICE_BEAN_NAME, ConversionService.class)) &#123;
+        beanFactory.setConversionService(
+                beanFactory.getBean(CONVERSION_SERVICE_BEAN_NAME, ConversionService.class));
+    &#125;
+
+    // Register a default embedded value resolver if no bean post-processor
+    // (such as a PropertyPlaceholderConfigurer bean) registered any before:
+    // at this point, primarily for resolution in annotation attribute values.
+    if (!beanFactory.hasEmbeddedValueResolver()) &#123;
+        beanFactory.addEmbeddedValueResolver(strVal -&gt; getEnvironment().resolvePlaceholders(strVal));
+    &#125;
+
+    // Initialize LoadTimeWeaverAware beans early to allow for registering their transformers early.
+    String[] weaverAwareNames = beanFactory.getBeanNamesForType(LoadTimeWeaverAware.class, false, false);
+    for (String weaverAwareName : weaverAwareNames) &#123;
+        getBean(weaverAwareName);
+    &#125;
+
+    // Stop using the temporary ClassLoader for type matching.
+    beanFactory.setTempClassLoader(null);
+
+    // Allow for caching all bean definition metadata, not expecting further changes.
+    beanFactory.freezeConfiguration();
+
+    // Instantiate all remaining (non-lazy-init) singletons.
+    beanFactory.preInstantiateSingletons();
+&#125;
+</code></pre>
+<p>主要过程包括：</p>
+<ol>
+<li>初始化 conversionService ;</li>
+<li>如果没有内置的Value解析器，则设置一个StringValueResolver解析器到beanFactory中。</li>
+<li>初始化LoadTimeWeaverAware；</li>
+<li>停止使用临时的ClassLoader进行类型匹配。</li>
+<li>允许缓存所有bean定义元数据，而不期望进一步的更改。</li>
+<li>实例化所有的剩余的、非懒加载的单实例Bean。</li>
+</ol>
+<p>这里只针对第6条的实例化剩余的单实例Bean进行源码分析：</p>
+<pre><code class="language-java">beanFactory.preInstantiateSingletons();
+
+@Override
+public void preInstantiateSingletons() throws BeansException &#123;
+    // Iterate over a copy to allow for init methods which in turn register new bean definitions.
+    // While this may not be part of the regular factory bootstrap, it does otherwise work fine.
+    List&lt;String&gt; beanNames = new ArrayList&lt;&gt;(this.beanDefinitionNames);
+
+    // Trigger initialization of all non-lazy singleton beans...
+    for (String beanName : beanNames) &#123;
+        // 如果对应子Bean的定义，则遍历父Bean定义得到一个合并的RootBeanDefinition
+        RootBeanDefinition bd = getMergedLocalBeanDefinition(beanName);
+        //如果这个Bean不是abstract、是单例的、非懒加载的
+        if (!bd.isAbstract() &amp;&amp; bd.isSingleton() &amp;&amp; !bd.isLazyInit()) &#123;
+            // 如果是FactoryBean
+            if (isFactoryBean(beanName)) &#123;
+            // 想使用getBean时需要添加 &amp; 前缀
+                Object bean = getBean(FACTORY_BEAN_PREFIX + beanName);
+                if (bean instanceof FactoryBean) &#123;
+                    final FactoryBean&lt;?&gt; factory = (FactoryBean&lt;?&gt;) bean;
+                    boolean isEagerInit;
+                    if (System.getSecurityManager() != null &amp;&amp; factory instanceof SmartFactoryBean) &#123;
+                        isEagerInit = AccessController.doPrivileged((PrivilegedAction&lt;Boolean&gt;)
+                                        ((SmartFactoryBean&lt;?&gt;) factory)::isEagerInit,
+                                getAccessControlContext());
+                    &#125;
+                    else &#123;
+                        isEagerInit = (factory instanceof SmartFactoryBean &amp;&amp;
+                                ((SmartFactoryBean&lt;?&gt;) factory).isEagerInit());
+                    &#125;
+                    if (isEagerInit) &#123;
+                    // 调用getBean进行初始化
+                        getBean(beanName);
+                    &#125;
+                &#125;
+            &#125;
+            else &#123;
+                // 调用getBean进行初始化
+                getBean(beanName);
+            &#125;
+        &#125;
+    &#125;
+    // Trigger post-initialization callback for all applicable beans...
+&#125;
+</code></pre>
+<p>经过上面的分析可以看出：在preInstantiateSingletons方法中，真正去实例化的方式是去调用 <code>getBean</code>方法。</p>
+<p>接下来分析配置文件中的Bean的注册和使用 <code>getBean</code> 进行真正的实例化过程进行分析。</p>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css">]]></content>
       <categories>
         <category>Spring</category>
