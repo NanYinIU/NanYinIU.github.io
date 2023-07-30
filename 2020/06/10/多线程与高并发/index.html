@@ -96,11 +96,11 @@
 <meta property="og:description" content="多线程线程和进程的概念什么是进程？进程是程序的一次执行过程，是系统运行程序的基本单位。系统运行一个程序即是一个创建进程的过程。 进程是资源（CPU、内存等）分配的基本单位，它是程序执行时的一个实例。 什么是线程？线程是比进程更小的执行单位，线程是程序执行时的最小单位，它是进程的一个执行流，是CPU调度和分派的基本单位，一个进程可以由很多个线程组成，线程间共享进程的所有资源，每个线程有自己的堆栈和局">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/master/img/20200328192955.png">
-<meta property="og:image" content="https://gitee.com/NanYinIU/Pic/raw/master/img/20200518230104.png">
-<meta property="og:image" content="https://gitee.com/NanYinIU/Pic/raw/master/img/20200518230119.png">
-<meta property="og:image" content="https://gitee.com/NanYinIU/Pic/raw/master/img/20200518233224.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/b563194e22fada4ec157ab3c2a06cbdf5d0cb018/img/20200518230104.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/b563194e22fada4ec157ab3c2a06cbdf5d0cb018/img/20200518230119.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/NanYinIU/PicRoom/b563194e22fada4ec157ab3c2a06cbdf5d0cb018/img/20200518233224.png">
 <meta property="article:published_time" content="2020-06-10T15:00:00.000Z">
-<meta property="article:modified_time" content="2020-07-16T14:45:35.905Z">
+<meta property="article:modified_time" content="2023-07-30T09:34:44.086Z">
 <meta property="article:author" content="NanYin">
 <meta property="article:tag" content="Java">
 <meta property="article:tag" content="多线程">
@@ -502,7 +502,7 @@
 <li>然后在线程2中修改了o的值，再写回内存。</li>
 <li>线程1从内存读取对象，得到最新的对象o。</li>
 </ol>
-<p><img src="https://gitee.com/NanYinIU/Pic/raw/master/img/20200518230104.png" alt="Untitled"></p>
+<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/b563194e22fada4ec157ab3c2a06cbdf5d0cb018/img/20200518230104.png" alt="Untitled"></p>
 <p>上面的步骤是正常，sync的情况下的情况下。然而在很多情况下，线程之间是同步进行的，在第一步线程2读取到内容，线程1也读取到了内容，线程2再写回内容，此时如果线程1再次修改和写回是，内容就出现了覆盖。</p>
 <p>这种方式就是将对象使用volatile修饰。此时，保证了对象在所有线程间的可见性。</p>
 <p>在这种情况下，最直接的方式就是在这个对象o被修改、写入到内存时，其他线程立刻能知道这个对象已经被修改了，进行再次获取最新的内容来保证最终的一致。</p>
@@ -527,7 +527,7 @@
 </ul>
 <p>因为CAS需要在操作值的时候检查下值有没有发生变化，如果没有发生变化则更新，但是如果一个值原来是A，变成了B，又变成了A，那么使用CAS进行检查时会发现它的值没有发生变化，但是实际上却变化了。</p>
 <p>对于一个基本数据类型如Integer等，不会出现ABA问题，只要保证最终的一致就可以了。</p>
-<p><img src="https://gitee.com/NanYinIU/Pic/raw/master/img/20200518230119.png" alt="Untitled 1"></p>
+<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/b563194e22fada4ec157ab3c2a06cbdf5d0cb018/img/20200518230119.png" alt="Untitled 1"></p>
 <p>但是对于一个普通对象，ABA问题的影响就体现出来了。如右图中。在第2步中，已经将c的内容进行了变更，然而在CAS判断的时候，会判断B有没有变。</p>
 <p>了解即可。。。</p>
 <h2 id="相关同步类"><a href="#相关同步类" class="headerlink" title="相关同步类"></a>相关同步类</h2><h3 id="ReentrantLock"><a href="#ReentrantLock" class="headerlink" title="ReentrantLock"></a>ReentrantLock</h3><p><a href="https://crossoverjie.top/2018/01/25/ReentrantLock/" target="_blank" rel="noopener">ReentrantLock 实现原理</a></p>
@@ -582,7 +582,7 @@
 <li>线程 a 被唤醒后，继续打印</li>
 </ol>
 <p>实现如图中的所显示的一样：当出现红色条时，证明当前线程为阻塞的。</p>
-<p><img src="https://gitee.com/NanYinIU/Pic/raw/master/img/20200518233224.png" alt="Untitled"></p>
+<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/b563194e22fada4ec157ab3c2a06cbdf5d0cb018/img/20200518233224.png" alt="Untitled"></p>
 <div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JUC04_StopOtherThread01</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> number = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">intercept</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (number != <span class="number">5</span>) &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="keyword">this</span>.wait();</span><br><span class="line">            &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(<span class="string">"print that message !!!"</span>);</span><br><span class="line">        <span class="keyword">this</span>.notify();</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">this</span>.wait();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(<span class="string">"intercept finished!!"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">increase</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">while</span> (number &lt;= <span class="number">10</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (number == <span class="number">5</span>) &#123;</span><br><span class="line">                <span class="keyword">this</span>.notify();</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    <span class="keyword">this</span>.wait();</span><br><span class="line">                &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            number++;</span><br><span class="line">            System.out.println(<span class="string">"current number size is :"</span> + number);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">this</span>.notify();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        JUC04_StopOtherThread01 stopOtherThread01 = <span class="keyword">new</span> JUC04_StopOtherThread01();</span><br><span class="line">        <span class="keyword">new</span> Thread(() -&gt; &#123;</span><br><span class="line">            stopOtherThread01.intercept();</span><br><span class="line">        &#125;).start();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">new</span> Thread(() -&gt; &#123;</span><br><span class="line">            stopOtherThread01.increase();</span><br><span class="line">        &#125;).start();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
 
 <h5 id="使用ReentrantLock和Condition实现"><a href="#使用ReentrantLock和Condition实现" class="headerlink" title="使用ReentrantLock和Condition实现"></a>使用ReentrantLock和Condition实现</h5><p>与 wait/notify 的结构相同</p>
@@ -628,7 +628,7 @@
   <p><span>本文标题:</span><a href="/2020/06/10/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%B8%8E%E9%AB%98%E5%B9%B6%E5%8F%91/">多线程实践</a></p>
   <p><span>文章作者:</span><a href="/" title="访问 NanYin 的个人博客">NanYin</a></p>
   <p><span>发布时间:</span>2020年06月10日 - 15:06</p>
-  <p><span>最后更新:</span>2020年07月16日 - 22:07</p>
+  <p><span>最后更新:</span>2023年07月30日 - 17:07</p>
   <p><span>原始链接:</span><a href="/2020/06/10/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%B8%8E%E9%AB%98%E5%B9%B6%E5%8F%91/" title="多线程实践">https://nanyiniu.github.io/2020/06/10/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%B8%8E%E9%AB%98%E5%B9%B6%E5%8F%91/</a>
     <span class="copy-path"  title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="https://nanyiniu.github.io/2020/06/10/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%B8%8E%E9%AB%98%E5%B9%B6%E5%8F%91/"  aria-label="复制成功！"></i></span>
   </p>
@@ -914,7 +914,7 @@
     <footer id="footer" class="footer">
       <div class="footer-inner">
         <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-<div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2023</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>

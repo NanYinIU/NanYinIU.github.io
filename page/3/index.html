@@ -975,7 +975,7 @@
 <div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> String[] getBeanNamesForType(<span class="meta">@Nullable</span> Class&lt;?&gt; type, <span class="keyword">boolean</span> includeNonSingletons, <span class="keyword">boolean</span> allowEagerInit) &#123;</span><br><span class="line">    <span class="keyword">if</span> (!isConfigurationFrozen() || type == <span class="keyword">null</span> || !allowEagerInit) &#123;</span><br><span class="line">        <span class="keyword">return</span> doGetBeanNamesForType(ResolvableType.forRawClass(type), includeNonSingletons, allowEagerInit);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></div>
 
 <p>在 doGetBeanNamesForType 中，会通过循环 <code>this.beanDefinitionNames</code> 内容，获取所有的 RootBeanDefinition。通过debug可以看到在此处所有的 beanDefinitionNames为</p>
-<p><img src="https://gitee.com/NanYinIU/Pic/raw/master/img/20200718215509.png" alt="图片1"></p>
+<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/b563194e22fada4ec157ab3c2a06cbdf5d0cb018/img/20200718215509.png" alt="图片1"></p>
 <p>可以发现是在上一篇文章中提到的 <code>new AnnotatedBeanDefinitionReader</code> 的时候默认register的一些配置类。在通过使用isTypeMatch方法对所有获取到name循环比较。符合则将内容返回（只有ConfigurationAnnotationProcessor满足条件）。</p>
 <h4 id="执行ConfigurationAnnotationProcessor的后置方法"><a href="#执行ConfigurationAnnotationProcessor的后置方法" class="headerlink" title="执行ConfigurationAnnotationProcessor的后置方法"></a>执行ConfigurationAnnotationProcessor的后置方法</h4><p>通过调用ConfigurationClassPostProcessor中的processConfigBeanDefinitions方法进行【构建和验证配置类】，完成对配置文件中Bean的装配，具体步骤如下：</p>
 <ol>
@@ -2900,7 +2900,7 @@
     <footer id="footer" class="footer">
       <div class="footer-inner">
         <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-<div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2023</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>

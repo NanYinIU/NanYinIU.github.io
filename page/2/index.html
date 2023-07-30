@@ -448,18 +448,18 @@
 <h2 id="GC-算法"><a href="#GC-算法" class="headerlink" title="GC 算法"></a>GC 算法</h2><p>在对对象的存活分析后，知道了哪些对象已死亡，哪些对象还存活，会通过下面三种方法对死亡的对象进行清除。</p>
 <h3 id="标记清除（Mark-Sweep）"><a href="#标记清除（Mark-Sweep）" class="headerlink" title="标记清除（Mark-Sweep）"></a>标记清除（Mark-Sweep）</h3><p>首先会为死亡的对象添加标记，然后在完成标记后，清除标记的对象。此算法为基础的清除算法，因为后面的算法都是基于此改进而来。</p>
 <p>这种算法产生两个问题，一是效率问题，标记和清除两步的效率都不高，二是空间碎片化问题，在内存中产生大量的内存<strong>碎片</strong>。</p>
-<p><img src="https://gitee.com/NanYinIU/Pic/raw/master/img/20200518210705.png" alt="Untitled"></p>
+<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/b563194e22fada4ec157ab3c2a06cbdf5d0cb018/img/20200518210705.png" alt="Untitled"></p>
 <h3 id="拷贝算法（Copying）"><a href="#拷贝算法（Copying）" class="headerlink" title="拷贝算法（Copying）"></a>拷贝算法（Copying）</h3><p>将内存一分为二，每次分配内存只分配在第一块里面，将存活的对象顺序拷贝的另外一块中，然后将第一块中的对象全部抹除掉。这种算法实现简单运行高效，但是带来了一个问题就是<strong>内存的利用率不高</strong>，每次只能用一半。</p>
-<p><img src="https://gitee.com/NanYinIU/Pic/raw/master/img/20200518213844.png" alt="Untitled 1"></p>
+<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/b563194e22fada4ec157ab3c2a06cbdf5d0cb018/img/20200518213844.png" alt="Untitled 1"></p>
 <h3 id="标记压缩（Mark-Compact）"><a href="#标记压缩（Mark-Compact）" class="headerlink" title="标记压缩（Mark-Compact）"></a>标记压缩（Mark-Compact）</h3><p>和标记清除相似，同样是做标记，但是后续步骤却有大不同，标记压缩不同于标记清除，直接将死亡对象进行清除，而是在标记死亡的对象后，将存活的对象向一端移动，最后清理到端边界以外的内存。相当于将存活的对象压缩到顺序的内存中后，清理掉其他内容。</p>
-<p><img src="https://gitee.com/NanYinIU/Pic/raw/master/img/20200518213855.png" alt="Untitled 2"></p>
+<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/b563194e22fada4ec157ab3c2a06cbdf5d0cb018/img/20200518213855.png" alt="Untitled 2"></p>
 <h2 id="垃圾回收器"><a href="#垃圾回收器" class="headerlink" title="垃圾回收器"></a>垃圾回收器</h2><p>现在JVM中一共有10中垃圾回收器，按照模型来分，可分为分代模型和不分代模型（.8之后）</p>
 <h3 id="分代模型"><a href="#分代模型" class="headerlink" title="分代模型"></a>分代模型</h3><p>虚拟机的垃圾收集可能会采用“分代收集”（GenerationalCollection）算法，这种算法并没有什么新的思想，只是根据对象存活周期的不同将内存划分为几块。根据不同的区域不同的特性使用不同的垃圾回收算法。</p>
 <p>默认新生代与老年代的占比默认是1:2。新产生的对象默认会生成在新生代中，经过gc增加对象的年龄（age），当age超过一定数值时，将对象从新生代转移到老年代中。</p>
 <h4 id="新生代"><a href="#新生代" class="headerlink" title="新生代"></a>新生代</h4><p>因为在新生代产生的对象，大部分都会被回收掉，也就是说有很少的对象会存活下来，因此，<strong>新生代适合使用复制算法</strong>能够尽可能少的挪动活的对象，又能够尽可能快的清除死亡的对象。在这个基础上，来谈一谈新生代中的分区。</p>
 <p>因为新生代的存活对象非常少，大概占比1/9，所以新生代的分区并不像上面介绍拷贝算法一样是均分为1：1，而是将新生代分为 Eden:survive1:survive2为 8:1:1。具体为何分为三个区域通过下面的图就能够了解：</p>
 <p>第一次回收会扫描Eden区，将存活对象从eden区挪到S1中，清空Eden区，第二次会扫描Eden区和S1区，将存活的对象放到S2中，清空Eden和S1区，一次</p>
-<p><img src="https://gitee.com/NanYinIU/Pic/raw/master/img/20200518213906.png" alt="Untitled 3"></p>
+<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/b563194e22fada4ec157ab3c2a06cbdf5d0cb018/img/20200518213906.png" alt="Untitled 3"></p>
 <h4 id="老年代"><a href="#老年代" class="headerlink" title="老年代"></a>老年代</h4><p>当对象经历了多次GC仍然没有被回收掉时，会被挪到老年代中，因为老年代中的回收次数和回收效率并不想新生代一样，经历一次gc只有少量的对象被回收掉。所以老年代采用标记整理算法，能够减少老年代中出现内存碎片的概率。</p>
 <p>TLAB<br>多线程同时在堆中分配内存时，为了避免多线程冲突，操作同一地址，所以需要对整堆进行加锁，进而影响分配速度。TLAB 能够解决这个问题。<br>通过对 Eden 区域再进行划分， Thread Local Allocation Buffer（TLAB），这是 JVM 在eden区中为每个线程分配的一个私有缓存区域。多线程分配时，会优先在自己的TLAB中分配，分配不下再在Eden区中分配。</p>
 <h4 id="对象在内存中的生命周期"><a href="#对象在内存中的生命周期" class="headerlink" title="对象在内存中的生命周期"></a>对象在内存中的生命周期</h4><ol>
@@ -468,7 +468,7 @@
 <li>如果对象太大，无法在新生代找到足够长的连续空闲空间， JVM 会直接将对象分配到老年代。</li>
 <li>GC过程，GC过程可以分为对新生代、老年代的回收、和全部回收的过程。其中新生代的YGC（young GC）的发生频率最高。</li>
 </ol>
-<p><img src="https://gitee.com/NanYinIU/Pic/raw/master/img/20200518213917.png" alt="Untitled 4"></p>
+<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/b563194e22fada4ec157ab3c2a06cbdf5d0cb018/img/20200518213917.png" alt="Untitled 4"></p>
 <h4 id="垃圾回收器的类型"><a href="#垃圾回收器的类型" class="headerlink" title="垃圾回收器的类型"></a>垃圾回收器的类型</h4><p>在列举垃圾回收器的类型时，先强调几个Hotspot在垃圾器算法的实现：</p>
 <ul>
 <li><p>OopMap：因为Hotspot在GC之前，查找内存中所有存活的对象使用<strong>可达性算法</strong>寻找死亡的对象，对于一个庞大的系统，每次都进行遍历查找引用是不可行的。因为在进行可达性算法的寻找对象时，需要将所有线程保持一个冻结的状态，Hotspot将这种状态成为”<strong>Stop The World</strong>“，也就是STW，来配合可达性分析，这样会停顿的时间会非常长。</p>
@@ -481,16 +481,16 @@
 </li>
 </ul>
 <p>JVM共有10中垃圾回收器，使用分代模型的共有六种，三种新生代的、三种老年代的，需要配对使用。</p>
-<p><img src="https://gitee.com/NanYinIU/Pic/raw/master/img/20200518213931.png" alt="Untitled 5"></p>
+<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/b563194e22fada4ec157ab3c2a06cbdf5d0cb018/img/20200518213931.png" alt="Untitled 5"></p>
 <p>一般的配对类型为：</p>
 <ul>
 <li>Serial&amp;Serial-Old 在暂停所有工作线程后，使用单个GC线程进行垃圾回收</li>
 </ul>
-<p><img src="https://gitee.com/NanYinIU/Pic/raw/master/img/20200518213941.png" alt="Untitled 6"></p>
+<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/b563194e22fada4ec157ab3c2a06cbdf5d0cb018/img/20200518213941.png" alt="Untitled 6"></p>
 <ul>
 <li>Parallel Scavenge &amp; Parallel Old 暂停所有工作线程使用多个GC线程进行回收</li>
 </ul>
-<p><img src="https://gitee.com/NanYinIU/Pic/raw/master/img/20200518213950.png" alt="Untitled 7"></p>
+<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/b563194e22fada4ec157ab3c2a06cbdf5d0cb018/img/20200518213950.png" alt="Untitled 7"></p>
 <ul>
 <li>ParNew &amp; CMS ， ParNew和 Parallel Scavenge 其实在功能上是相同的，只是名字不同，CMS在回收老年代时，会经历下图中的三个标记阶段、一个清理阶段：<ul>
 <li>初始标记</li>
@@ -505,7 +505,7 @@
 <blockquote>
 <p>由于CMS<strong>并发清理阶段用户线程还在运行着</strong>，伴随程序运行自然就还会有新的垃圾不断产生，这一部分垃圾出现在标记过程之后，CMS无法在当次收集中处理掉它们，只好留待下一次GC时再清理掉。这一部分垃圾就称为“浮动垃圾”</p>
 </blockquote>
-<p><img src="https://gitee.com/NanYinIU/Pic/raw/master/img/20200518214000.png" alt="Untitled 8"></p>
+<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/b563194e22fada4ec157ab3c2a06cbdf5d0cb018/img/20200518214000.png" alt="Untitled 8"></p>
 <h3 id="不分代模型"><a href="#不分代模型" class="headerlink" title="不分代模型"></a>不分代模型</h3><p>所谓的不分代模型指的是物理区域不分代，但是在逻辑上风染保留年轻代老年代的概念</p>
 <h4 id="G1"><a href="#G1" class="headerlink" title="G1"></a>G1</h4><p>G1的出现是为了替代掉在1.5时发布的CMS垃圾回收器。</p>
 <ul>
@@ -514,7 +514,7 @@
 <li>收集算法：CMS使用标记-清除算法，意味着会产生大量的空间碎片，而G1使用标记-整理，在收集后能提供规整的可用内存</li>
 <li>可预测的停顿：G1不像于分代模型中的收集器收集范围是整个年轻代或者老年代，在G1中产生一个概念叫做Region。G1会将堆分为大小相等的Region，在G1中所谓的老年代和年轻代就是不连续的Region区域。因为以上的特性，在G1中进行垃圾回收可以避免对整个区域回收，避免了停顿和增加了回收的效率。</li>
 </ul>
-<p><img src="https://gitee.com/NanYinIU/Pic/raw/master/img/20200518214020.png" alt="Untitled 9"></p>
+<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/b563194e22fada4ec157ab3c2a06cbdf5d0cb018/img/20200518214020.png" alt="Untitled 9"></p>
 
           
         
@@ -969,7 +969,7 @@
 
 <p>需要注意的是，使用 jmap 时，会使 JVM 处于 STW（stop the world） 状态，所以尽量不要在生产上有人使用时使用该命令，否则会导致非常长的时间停顿。</p>
 <p>在拿到堆转储信息后，使用MAT(Memory Analyzer Tool)工具进行分析，装载文件后，得到如下图中的内容：</p>
-<p><img src="https://gitee.com/NanYinIU/Pic/raw/master/img/20200627205207.png" alt="a1"></p>
+<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/b563194e22fada4ec157ab3c2a06cbdf5d0cb018/img/20200627205207.png" alt="a1"></p>
 <p>发现DefaultSVNRepositoryPoll引出的对象占用了3.6个G的空间（整个JVM分配空间为4个G），所以可以确定，是这个类生产 RunnableSecheduleFuture 对象的问题。</p>
 <h3 id="对-DefaultSVNRepositoryPool-进行分析，找问题"><a href="#对-DefaultSVNRepositoryPool-进行分析，找问题" class="headerlink" title="对 DefaultSVNRepositoryPool 进行分析，找问题"></a>对 DefaultSVNRepositoryPool 进行分析，找问题</h3><p>在前面已经分析出是DefaultSVNRepositoryPool引出的内存溢出，所以直接在IDEA中搜索到这个类，进入到该类，查看是否有相关 RunnableSecheduleFuture 方法。</p>
 <ul>
@@ -979,15 +979,15 @@
 <div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JAVA"><figure class="iseeu highlight /java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//1. 判断路径是否存在;</span></span><br><span class="line">SVNClientManipulator rp = <span class="keyword">new</span> SVNClientManipulator(user);</span><br><span class="line"><span class="comment">//2. 得到版本库;</span></span><br><span class="line">SVNRepository rps = rp.getRepository(svnDao.getSvnUrlByRepository(repository) + </span><br><span class="line">repository + <span class="string">"/"</span> + newPath);</span><br><span class="line"><span class="comment">//3. 判断是否存在;</span></span><br><span class="line">SVNNodeKind nodeKind = rps.checkPath(<span class="string">""</span>, -<span class="number">1</span>);</span><br><span class="line"><span class="keyword">if</span> (nodeKind == SVNNodeKind.NONE) &#123;<span class="comment">//如果存在则更新路径;</span></span><br><span class="line">    svnConfigDevelopService.addDir(svnDao.getSvnUrlByRepository(repository) +</span><br><span class="line"> repository + <span class="string">"/"</span> + newPath, desc, rp, <span class="keyword">true</span>);</span><br><span class="line">&#125;</span><br><span class="line">importFolder = newPath;</span><br><span class="line"><span class="comment">// 4. 上传文件</span></span><br><span class="line">String msg = svnCommonService.addFileToSVN(svnFilePath, gdFileName, </span><br><span class="line">repository, <span class="string">"/"</span> + importFolder + <span class="string">"/"</span>, user, desc);</span><br></pre></td></tr></table></figure></div>
 
 <p>其中对获取SVNClientManipulator时，其实是获取一个client客户端，整个过程可以用一个简单的sequence图来说明：</p>
-<p><img src="https://gitee.com/NanYinIU/Pic/raw/master/img/20200627205241.png" alt="a2"></p>
+<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/b563194e22fada4ec157ab3c2a06cbdf5d0cb018/img/20200627205241.png" alt="a2"></p>
 <ul>
 <li>然后对DefaultSVNRepositoryPool内部排查</li>
 </ul>
 <p>在引用到的 DefaultSVNRepositoryPool 的构造方法内，可以看到</p>
-<p><img src="https://gitee.com/NanYinIU/Pic/raw/master/img/20200627205258.png" alt="a3"></p>
+<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/b563194e22fada4ec157ab3c2a06cbdf5d0cb018/img/20200627205258.png" alt="a3"></p>
 <p>这里有两个Timer，作为全局的变量，可以看到作用是从10秒开始，没10秒执行一次 TimeOutTask() 方法。而这里的 <code>myScheduledTimeoutTask</code> 正是  <code>ScheduledFuture</code> 类型的。</p>
 <p>如果不确认该类是否为溢出的对象，可以再进入到scheduleWithFixedDelay中。可以看到返回的正是<code>RunnableScheduledFuture</code> 对象。</p>
-<p><img src="https://gitee.com/NanYinIU/Pic/raw/master/img/20200627205311.png" alt="a4"></p>
+<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/b563194e22fada4ec157ab3c2a06cbdf5d0cb018/img/20200627205311.png" alt="a4"></p>
 <p>此时就可以由刚才的seq图往回推</p>
 <p>最终问题有可能出现在在 svnCommonService 中创建了过多的 SVNClientManipulator 。</p>
 <h3 id="SVN上传代码排查"><a href="#SVN上传代码排查" class="headerlink" title="SVN上传代码排查"></a>SVN上传代码排查</h3><p>是否为上述分析的原因，需要在svnCommonService代码中确认。</p>
@@ -1009,7 +1009,7 @@
 </ul>
 <p>进阶修改：</p>
 <p>上述修改后，可以满足过程，但是实际上大部分代码会使用sycronized进行包裹，同时进行的线程只有一个，所以提前创建多线程是占用内存的时间的。</p>
-<p><img src="https://gitee.com/NanYinIU/Pic/raw/master/img/20200627205327.png" alt="a5"></p>
+<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/b563194e22fada4ec157ab3c2a06cbdf5d0cb018/img/20200627205327.png" alt="a5"></p>
 <p>最终修改为：</p>
 <ol>
 <li>使用单线程处理请求，单线程处理业务代码，避免了加锁解锁的消耗</li>
@@ -1018,7 +1018,7 @@
 <h3 id="插曲：为什么DefaultSVNRepositoryPool没有回收掉"><a href="#插曲：为什么DefaultSVNRepositoryPool没有回收掉" class="headerlink" title="插曲：为什么DefaultSVNRepositoryPool没有回收掉"></a>插曲：为什么DefaultSVNRepositoryPool没有回收掉</h3><p>这里涉及到客户端连接SVN的状态，默认连接状态时 keepAlive 的，但是不需要手动进行连接的关闭。</p>
 <p>一个客户端启动一个全局的Timer，这个Timer没10秒检测一下是否可以关闭连接，可以关闭连接的条件是 这个连接在 60 秒内没有再次访问过SVN。</p>
 <p>但是，因为task是需要线程进行执行的，当创建非常多的pool时，timer可能取不到CPU时间片来执行task，所以就在一直等待，导致链上的所有对象，虚拟机都无法进行回收，最终导致内存溢出。</p>
-<p><img src="https://gitee.com/NanYinIU/Pic/raw/master/img/20200627205339.png" alt="a6"></p>
+<p><img src="https://raw.githubusercontent.com/NanYinIU/PicRoom/b563194e22fada4ec157ab3c2a06cbdf5d0cb018/img/20200627205339.png" alt="a6"></p>
 <hr>
 <h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><h3 id="一、JVM调优参数"><a href="#一、JVM调优参数" class="headerlink" title="一、JVM调优参数"></a>一、JVM调优参数</h3><p>线上分为三台机器，而应用占其中一台，总内存为16g，针对此环境修改JAVA_OPTS</p>
 <div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="BASH"><figure class="iseeu highlight /bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">JAVA_OPTS=<span class="string">"-server -Xms8192m -Xmx8192m </span></span><br><span class="line"><span class="string">-XX:PermSize=1024M -XX:MaxPermSize=1024M -Duser.language=zh -Djava.util.Arrays.useLegacyMergeSort=true </span></span><br><span class="line"><span class="string">-Djava.awt.headless=true </span></span><br><span class="line"><span class="string">-Xloggc:/app/okit/java/gc-%t.log </span></span><br><span class="line"><span class="string">-XX:+UseGCLogFileRotation </span></span><br><span class="line"><span class="string">-XX:NumberOfGCLogFiles=5 </span></span><br><span class="line"><span class="string">-XX:GCLogFileSize=50M -XX:+PrintGCTimeStamps </span></span><br><span class="line"><span class="string">-XX:+PrintGCDetails </span></span><br><span class="line"><span class="string">-XX:HeapDumpPath=./java_dump.hprof </span></span><br><span class="line"><span class="string">-XX:+HeapDumpOnOutOfMemoryError"</span></span><br></pre></td></tr></table></figure></div>
@@ -3174,7 +3174,7 @@
     <footer id="footer" class="footer">
       <div class="footer-inner">
         <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-<div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2023</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
